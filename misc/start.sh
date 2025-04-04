@@ -51,10 +51,10 @@ CLONE_DIR="/tmp/tech-scripts"
 
 [ -d "$CLONE_DIR" ] && rm -rf "$CLONE_DIR"
 git clone "$REPO_URL" "$CLONE_DIR" || { echo "$MSG_CLONE_ERROR"; exit 1; }
-cd "$CLONE_DIR" || { echo "$MSG_CD_ERROR $CLONE_DIR."; exit 1; }
+cd "$CLONE_DIR/misc" || { echo "$MSG_CD_ERROR $CLONE_DIR/misc."; exit 1; }
 
 DIR_STACK=()
-CURRENT_DIR="$CLONE_DIR"
+CURRENT_DIR="$CLONE_DIR/misc"
 EXCLUDE_FILES=("LICENCE" "*.tmp")
 
 show_menu() {
@@ -82,7 +82,7 @@ show_menu() {
             done
         fi
 
-        [ "$CURRENT_DIR" != "$CLONE_DIR" ] && CHOICES+=("$MSG_BACK" "option")
+        [ "$CURRENT_DIR" != "$CLONE_DIR/misc" ] && CHOICES+=("$MSG_BACK" "option")
 
         if [ ${#CHOICES[@]} -eq 0 ]; then
             echo "$MSG_NO_SCRIPTS"
