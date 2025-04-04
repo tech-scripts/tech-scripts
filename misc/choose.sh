@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SCRIPT_DIR="/tmp/tech-scripts/tech"
+SCRIPT_DIR="/tmp/tech-scripts/misc/tech"
 cd "$SCRIPT_DIR" || exit 1
 
 for SCRIPT in *.sh; do
