@@ -6,6 +6,14 @@ install_dependencies() {
     $SUDO apt-get update
     $SUDO apt-get install -y dialog git
 }
+
+REPO_URL="https://github.com/tech-scripts/linux.git"
+CLONE_DIR="/tmp/tech-scripts"
+
+[ -d "$CLONE_DIR" ] && rm -rf "$CLONE_DIR"
+git clone "$REPO_URL" "$CLONE_DIR"
+cd "$CLONE_DIR" || exit 1
+
 echo "1"
 CONFIG_FILE="/etc/tech-scripts/choose.conf"
 if [ ! -f "$CONFIG_FILE" ]; then
@@ -42,12 +50,7 @@ if ! command -v dialog &> /dev/null || ! command -v git &> /dev/null; then
     [[ "$choice" == [Yy] ]] && install_dependencies || exit 1
 fi
 
-REPO_URL="https://github.com/tech-scripts/linux.git"
-CLONE_DIR="/tmp/tech-scripts"
 
-[ -d "$CLONE_DIR" ] && rm -rf "$CLONE_DIR"
-git clone "$REPO_URL" "$CLONE_DIR"
-cd "$CLONE_DIR" || exit 1
 
 DIR_STACK=()
 CURRENT_DIR="$CLONE_DIR"
