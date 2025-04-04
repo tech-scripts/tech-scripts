@@ -28,7 +28,6 @@ if [ -f "$CONFIG_FILE" ]; then
         MSG_SELECT="Select an option:"
     fi
 else
-    echo "Конфигурационный файл не найден. Запуск choose.sh."
     if [ -f "$CHOOSE_SCRIPT" ]; then
         chmod +x "$CHOOSE_SCRIPT"
         "$CHOOSE_SCRIPT"
