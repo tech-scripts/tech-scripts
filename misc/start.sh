@@ -67,4 +67,9 @@ show_menu() {
     done
 }
 
+
+CURRENT_DIR="$CLONE_DIR/misc"
+DIR_STACK=()
+
+
 show_menu
