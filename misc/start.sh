@@ -8,7 +8,10 @@ CONFIG_FILE="/etc/tech-scripts/choose.conf"
 CHOOSE_SCRIPT="/tmp/tech-scripts/misc/choose.sh"
 EXCLUDE_FILES=("start.sh" "*.tmp")
 
-# Сообщения в зависимости от языка
+[ -d "$CLONE_DIR" ] && rm -rf "$CLONE_DIR"
+git clone "$REPO_URL" "$CLONE_DIR" || exit 1
+cd "$CLONE_DIR" || exit 1
+
 if [ -f "$CONFIG_FILE" ]; then
     LANGUAGE=$(grep -E '^lang:' "$CONFIG_FILE" | cut -d':' -f2 | xargs)
     if [[ "$LANGUAGE" == "Русский" ]]; then
@@ -34,24 +37,16 @@ else
     fi
 fi
 
-# Установка зависимостей
 install_dependencies() {
     $SUDO apt-get update
     $SUDO apt-get install -y dialog git
 }
 
-# Проверка и установка зависимостей
 if ! command -v dialog &> /dev/null || ! command -v git &> /dev/null; then
     read -p "$MSG_INSTALL_PROMPT" choice
     [[ "$choice" == [Yy] ]] && install_dependencies || exit 1
 fi
 
-# Клонирование репозитория
-[ -d "$CLONE_DIR" ] && rm -rf "$CLONE_DIR"
-git clone "$REPO_URL" "$CLONE_DIR" || exit 1
-cd "$CLONE_DIR" || exit 1
-
-# Функция для отображения меню
 show_menu() {
     DIR_STACK=()
     CURRENT_DIR="$CLONE_DIR"
