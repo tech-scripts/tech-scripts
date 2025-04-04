@@ -7,6 +7,17 @@ install_dependencies() {
     $SUDO apt-get install -y dialog git
 }
 
+REPO_URL="https://github.com/tech-scripts/linux.git"
+CLONE_DIR="/tmp/tech-scripts"
+
+[ -d "$CLONE_DIR" ] && rm -rf "$CLONE_DIR"
+git clone "$REPO_URL" "$CLONE_DIR" || { echo "$MSG_CLONE_ERROR"; exit 1; }
+cd "$CLONE_DIR/misc" || { echo "$MSG_CD_ERROR $CLONE_DIR/misc."; exit 1; }
+
+DIR_STACK=()
+CURRENT_DIR="$CLONE_DIR/misc"
+EXCLUDE_FILES=("LICENCE" "*.tmp")
+
 CONFIG_FILE="/etc/tech-scripts/choose.conf"
 if [ ! -f "$CONFIG_FILE" ]; then
     CHOOSE_SCRIPT="/tmp/tech-scripts/choose.sh"
@@ -45,17 +56,6 @@ if ! command -v dialog &> /dev/null || ! command -v git &> /dev/null; then
         exit 1
     fi
 fi
-
-REPO_URL="https://github.com/tech-scripts/linux.git"
-CLONE_DIR="/tmp/tech-scripts"
-
-[ -d "$CLONE_DIR" ] && rm -rf "$CLONE_DIR"
-git clone "$REPO_URL" "$CLONE_DIR" || { echo "$MSG_CLONE_ERROR"; exit 1; }
-cd "$CLONE_DIR/misc" || { echo "$MSG_CD_ERROR $CLONE_DIR/misc."; exit 1; }
-
-DIR_STACK=()
-CURRENT_DIR="$CLONE_DIR/misc"
-EXCLUDE_FILES=("LICENCE" "*.tmp")
 
 show_menu() {
     while true; do
