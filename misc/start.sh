@@ -11,7 +11,6 @@ install_dependencies() {
     $SUDO apt-get install -y dialog git
 }
 
-# Очистка и клонирование репозитория
 [ -d "$CLONE_DIR" ] && rm -rf "$CLONE_DIR"
 git clone "$REPO_URL" "$CLONE_DIR" || { echo "Ошибка: Не удалось клонировать репозиторий!"; exit 1; }
 cd "$CLONE_DIR/misc" || { echo "Ошибка: Не удалось перейти в директорию $CLONE_DIR/misc."; exit 1; }
@@ -38,13 +37,13 @@ else
     MSG_SELECT="Select an option:"
 fi
 
-# Проверка и установка зависимостей
+
 if ! command -v dialog &> /dev/null || ! command -v git &> /dev/null; then
     read -p "$MSG_INSTALL_PROMPT" choice
     [[ "$choice" == [Yy] ]] && install_dependencies || exit 1
 fi
 
-# Функция отображения меню
+
 show_menu() {
     while true; do
         SCRIPTS=($(find . -maxdepth 1 -type f -name "*.sh" ! -name "${EXCLUDE_FILES[@]}"))
@@ -72,9 +71,9 @@ show_menu() {
     done
 }
 
-# Инициализация переменных
+
 CURRENT_DIR="$CLONE_DIR/misc"
 DIR_STACK=()
 
-# Запуск меню
+
 show_menu
