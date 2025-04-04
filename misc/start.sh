@@ -33,10 +33,10 @@ else
 fi
 
 REPO_URL="https://github.com/tech-scripts/linux.git"
-CLONE_DIR="/tmp/tech-scripts"
+CLONE_DIR="/tmp/tech-scripts/misc"
 
 [ -d "$CLONE_DIR" ] && rm -rf "$/tmp/tech-scripts"
-git clone "$REPO_URL" "$CLONE_DIR"
+git clone "$REPO_URL" "/tmp/tech-scripts"
 cd "/tmp/tech-scripts/misc" || exit 1
 
 DIR_STACK=()
@@ -68,7 +68,7 @@ show_menu() {
             done
         fi
 
-        [ "$CURRENT_DIR" != "/tmp/tech-scripts/misc" ] && CHOICES+=("$MSG_BACK" "option")
+        [ "$CURRENT_DIR" != "$CLONE_DIR" ] && CHOICES+=("$MSG_BACK" "option")
 
         [ ${#CHOICES[@]} -eq 0 ] && { echo "$MSG_NO_SCRIPTS"; exit 0; }
 
