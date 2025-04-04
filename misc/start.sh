@@ -8,7 +8,7 @@ install_dependencies() {
 }
 
 REPO_URL="https://github.com/tech-scripts/linux.git"
-CLONE_DIR="/tmp/tech-scripts"
+CLONE_DIR="/tmp/tech-scripts/misc"
 
 [ -d "$CLONE_DIR" ] && rm -rf "$CLONE_DIR"
 git clone "$REPO_URL" "$CLONE_DIR" || { echo "$MSG_CLONE_ERROR"; exit 1; }
@@ -20,7 +20,7 @@ EXCLUDE_FILES=("LICENCE" "*.tmp")
 
 CONFIG_FILE="/etc/tech-scripts/choose.conf"
 if [ ! -f "$CONFIG_FILE" ]; then
-    CHOOSE_SCRIPT="/tmp/tech-scripts/misc/choose.sh"
+    CHOOSE_SCRIPT="/tmp/tech-scripts/choose.sh"
     if [ -f "$CHOOSE_SCRIPT" ]; then
         chmod +x "$CHOOSE_SCRIPT"
         "$CHOOSE_SCRIPT"
