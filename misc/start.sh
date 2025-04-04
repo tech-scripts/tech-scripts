@@ -16,28 +16,28 @@ fi
 LANGUAGE=$(grep -E '^lang:' "$CONFIG_FILE" | cut -d':' -f2 | xargs)
 if [[ "$LANGUAGE" == "Русский" ]]; then
     MSG_INSTALL_PROMPT="Установить необходимые пакеты? (y/n): "
-    MSG_NO_SCRIPTS="Нет доступных скриптов или директорий."
-    MSG_CANCELLED="Выбор отменен."
+    MSG_NO_SCRIPTS="Нет доступных скриптов или директорий!"
+    MSG_CANCELLED="Выбор отменен!"
     MSG_BACK="назад"
     MSG_SELECT="Выберите опцию:"
-    MSG_CLONE_ERROR="Ошибка: Не удалось клонировать репозиторий."
-    MSG_CD_ERROR="Ошибка: Не удалось перейти в директорию."
+    MSG_CLONE_ERROR="Ошибка: Не удалось клонировать репозиторий!"
+    MSG_CD_ERROR="Ошибка: Не удалось перейти в директорию!"
 else
     MSG_INSTALL_PROMPT="Install necessary packages? (y/n): "
-    MSG_NO_SCRIPTS="No available scripts or directories."
-    MSG_CANCELLED="Selection cancelled."
+    MSG_NO_SCRIPTS="No available scripts or directories!"
+    MSG_CANCELLED="Selection cancelled!"
     MSG_BACK="back"
     MSG_SELECT="Select an option:"
-    MSG_CLONE_ERROR="Error: Failed to clone the repository."
-    MSG_CD_ERROR="Error: Failed to change directory."
+    MSG_CLONE_ERROR="Error: Failed to clone the repository!"
+    MSG_CD_ERROR="Error: Failed to change directory!"
 fi
 
 REPO_URL="https://github.com/tech-scripts/linux.git"
 CLONE_DIR="/tmp/tech-scripts"
 
-[ -d "$CLONE_DIR" ] && rm -rf "$CLONE_DIR"
+[ -d "$CLONE_DIR" ] && rm -rf "$/tmp/tech-scripts"
 git clone "$REPO_URL" "$CLONE_DIR"
-cd "$CLONE_DIR" || exit 1
+cd "/tmp/tech-scripts/misc" || exit 1
 
 DIR_STACK=()
 CURRENT_DIR="$CLONE_DIR"
@@ -68,7 +68,7 @@ show_menu() {
             done
         fi
 
-        [ "$CURRENT_DIR" != "$CLONE_DIR" ] && CHOICES+=("$MSG_BACK" "option")
+        [ "$CURRENT_DIR" != "/tmp/tech-scripts/misc" ] && CHOICES+=("$MSG_BACK" "option")
 
         [ ${#CHOICES[@]} -eq 0 ] && { echo "$MSG_NO_SCRIPTS"; exit 0; }
 
