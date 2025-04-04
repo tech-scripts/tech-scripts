@@ -17,7 +17,7 @@ cd "$CLONE_DIR" || exit 1
 echo "1"
 CONFIG_FILE="/etc/tech-scripts/choose.conf"
 if [ ! -f "$CONFIG_FILE" ]; then
-    CHOOSE_SCRIPT="/tmp/tech-scripts/choose.sh"
+    CHOOSE_SCRIPT="/tmp/tech-scripts/misc/choose.sh"
     if [ -f "$CHOOSE_SCRIPT" ]; then
         chmod +x "$CHOOSE_SCRIPT"
         "$CHOOSE_SCRIPT"
