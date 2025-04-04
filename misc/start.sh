@@ -2,6 +2,16 @@
 
 SUDO=$(command -v sudo)
 
+REPO_URL="https://github.com/tech-scripts/linux.git"
+CLONE_DIR="/tmp/tech-scripts/misc"
+
+[ -d "$CLONE_DIR" ] && rm -rf "$/tmp/tech-scripts"
+git clone "$REPO_URL" "/tmp/tech-scripts"
+cd "/tmp/tech-scripts/misc" || exit 1
+
+DIR_STACK=()
+CURRENT_DIR="$CLONE_DIR"
+EXCLUDE_FILES=("start.sh" "*.tmp")
 CONFIG_FILE="/etc/tech-scripts/choose.conf"
 if [ ! -f "$CONFIG_FILE" ]; then
     CHOOSE_SCRIPT="/tmp/tech-scripts/misc/choose.sh"
@@ -31,17 +41,6 @@ else
     MSG_CLONE_ERROR="Error: Failed to clone the repository!"
     MSG_CD_ERROR="Error: Failed to change directory!"
 fi
-
-REPO_URL="https://github.com/tech-scripts/linux.git"
-CLONE_DIR="/tmp/tech-scripts/misc"
-
-[ -d "$CLONE_DIR" ] && rm -rf "$/tmp/tech-scripts"
-git clone "$REPO_URL" "/tmp/tech-scripts"
-cd "/tmp/tech-scripts/misc" || exit 1
-
-DIR_STACK=()
-CURRENT_DIR="$CLONE_DIR"
-EXCLUDE_FILES=("start.sh" "*.tmp")
 
 show_menu() {
     while true; do
