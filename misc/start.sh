@@ -6,7 +6,7 @@ install_dependencies() {
     $SUDO apt-get update
     $SUDO apt-get install -y dialog git
 }
-
+echo "1"
 CONFIG_FILE="/etc/tech-scripts/choose.conf"
 if [ ! -f "$CONFIG_FILE" ]; then
     CHOOSE_SCRIPT="/tmp/tech-scripts/choose.sh"
@@ -17,7 +17,7 @@ if [ ! -f "$CONFIG_FILE" ]; then
         exit 1
     fi
 fi
-
+echo "2"
 LANGUAGE=$(grep -E '^lang:' "$CONFIG_FILE" | cut -d':' -f2 | xargs)
 if [[ "$LANGUAGE" == "Русский" ]]; then
     MSG_INSTALL_PROMPT="Установить необходимые пакеты? (y/n): "
@@ -36,7 +36,7 @@ else
     MSG_CLONE_ERROR="Error: Failed to clone the repository."
     MSG_CD_ERROR="Error: Failed to change directory."
 fi
-
+echo "3"
 if ! command -v dialog &> /dev/null || ! command -v git &> /dev/null; then
     read -p "$MSG_INSTALL_PROMPT" choice
     [[ "$choice" == [Yy] ]] && install_dependencies || exit 1
@@ -52,7 +52,7 @@ cd "$CLONE_DIR" || exit 1
 DIR_STACK=()
 CURRENT_DIR="$CLONE_DIR"
 EXCLUDE_FILES=("start.sh" "*.tmp")
-
+echo "4"
 show_menu() {
     while true; do
         SCRIPTS=()
@@ -106,5 +106,6 @@ show_menu() {
         fi
     done
 }
-
+echo "5"
 show_menu
+echo "6"
