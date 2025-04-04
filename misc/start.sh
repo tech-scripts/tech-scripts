@@ -8,6 +8,9 @@ CONFIG_FILE="/etc/tech-scripts/choose.conf"
 CHOOSE_SCRIPT="/tmp/tech-scripts/misc/choose.sh"
 EXCLUDE_FILES=("start.sh" "*.tmp")
 
+$SUDO apt-get update
+$SUDO apt-get install -y dialog git
+    
 [ -d "$CLONE_DIR" ] && rm -rf "$CLONE_DIR"
 git clone "$REPO_URL" "$CLONE_DIR" || exit 1
 cd "$CLONE_DIR" || exit 1
@@ -34,16 +37,6 @@ else
     else
         exit 1
     fi
-fi
-
-install_dependencies() {
-    $SUDO apt-get update
-    $SUDO apt-get install -y dialog git
-}
-
-if ! command -v dialog &> /dev/null || ! command -v git &> /dev/null; then
-    read -p "$MSG_INSTALL_PROMPT" choice
-    [[ "$choice" == [Yy] ]] && install_dependencies || exit 1
 fi
 
 show_menu() {
