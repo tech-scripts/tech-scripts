@@ -42,7 +42,7 @@ if ! command -v dialog &> /dev/null || ! command -v git &> /dev/null; then
     [[ "$choice" == [Yy] ]] && install_dependencies || exit 1
 fi
 
-REPO_URL="https://github.com/tech-scripts/Skripts.git"
+REPO_URL="https://github.com/tech-scripts/linux.git"
 CLONE_DIR="/tmp/tech-scripts"
 
 [ -d "$CLONE_DIR" ] && rm -rf "$CLONE_DIR"
