@@ -77,7 +77,6 @@ if systemctl list-units --full --all | grep -q "$SERVICE_NAME"; then
         edit
         exit 0
     fi
-else
 fi
 
 if ! $SUDO mkdir -p /usr/local/tech-scripts; then
