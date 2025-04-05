@@ -9,12 +9,14 @@ if [ "$LANG_CONF" = "Русский" ]; then
     CONFIRM_PROMPT="Вы ввели: %s секунд. Это правильно?"
     ERROR_MSG="Ошибка: Введите целое число."
     SUCCESS_MSG="Задержка перед запуском установлена на %s секунд. Конфигурация GRUB обновлена."
+    SED_INFO="Команда sed изменяет значение GRUB_TIMEOUT в файле /etc/default/grub на %s секунд."
 else
     INPUT_MSG="Enter the number of seconds for the boot delay:"
     CANCEL_MSG="Cancelled. Script terminated."
     CONFIRM_PROMPT="You entered: %s seconds. Is this correct?"
     ERROR_MSG="Error: Please enter a whole number."
     SUCCESS_MSG="Boot delay set to %s seconds. GRUB configuration updated."
+    SED_INFO="The sed command is updating the GRUB_TIMEOUT value in /etc/default/grub to %s seconds."
 fi
 
 is_number() {
@@ -34,4 +36,5 @@ done
 
 $SUDO sed -i "s/GRUB_TIMEOUT=.*/GRUB_TIMEOUT=$delay/" /etc/default/grub
 $SUDO update-grub
-dialog --msgbox "$(printf "$SUCCESS_MSG" "$delay")" 8 50
+echo "$(printf "$SED_INFO" "$delay")"
+#dialog --msgbox "$(printf "$SUCCESS_MSG" "$delay")" 8 50
