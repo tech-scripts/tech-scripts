@@ -39,15 +39,6 @@ else
     ZSWAP_NOT_SUPPORTED="ZSWAP is not supported by your kernel."
 fi
 
-install_dialog() {
-    $SUDO apt update && $SUDO apt install -y dialog || { echo "Error installing dialog."; exit 1; }
-}
-
-if ! command -v dialog &> /dev/null; then
-    echo "dialog not found. Installing..."
-    install_dialog
-fi
-
 is_valid_size() {
     [[ $1 =~ ^[0-9]+[GgMm]$ ]]
 }
