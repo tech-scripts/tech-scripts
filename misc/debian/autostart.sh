@@ -7,10 +7,10 @@ SERVICE_NAME="autostart.service"
 
 LANG_CONF=""
 [ -f /etc/tech-scripts/choose.conf ] && LANG_CONF=$(grep '^lang:' /etc/tech-scripts/choose.conf | cut -d':' -f2 | tr -d ' ')
+EDITOR=$(grep '^editor:' /etc/tech-scripts/choose.conf | cut -d ' ' -f 2)
 
 if [ "$LANG_CONF" = "Русский" ]; then
     EDIT_MSG="Хотите открыть $AUTOSTART_SCRIPT для редактирования? (y/n): "
-    EDITOR_MSG="Выберите редактор (nano/vim): "
     INVALID_EDITOR="Неверный выбор редактора. Пожалуйста, выберите nano или vim."
     SCRIPT_LOCATION="Скрипт autostart.sh расположен по адресу: $AUTOSTART_SCRIPT"
     SERVICE_EXISTS="Служба $SERVICE_NAME уже существует."
@@ -25,7 +25,6 @@ if [ "$LANG_CONF" = "Русский" ]; then
     START_ERROR="Ошибка: не удалось запустить службу $SERVICE_NAME."
 else
     EDIT_MSG="Do you want to open $AUTOSTART_SCRIPT for editing? (y/n): "
-    EDITOR_MSG="Choose an editor (nano/vim): "
     INVALID_EDITOR="Invalid editor choice. Please choose nano or vim."
     SCRIPT_LOCATION="The autostart.sh script is located at: $AUTOSTART_SCRIPT"
     SERVICE_EXISTS="Service $SERVICE_NAME already exists."
@@ -43,18 +42,11 @@ fi
 edit() {
     read -p "$EDIT_MSG" OPEN_SCRIPT
     if [[ "$OPEN_SCRIPT" == "y" || "$OPEN_SCRIPT" == "Y" ]]; then
-        while true; do
-            read -p "$EDITOR_MSG" EDITOR
-            if [[ "$EDITOR" == "nano" ]]; then
-                $SUDO nano "$AUTOSTART_SCRIPT"
-                break
-            elif [[ "$EDITOR" == "vim" ]]; then
-                $SUDO vim "$AUTOSTART_SCRIPT"
-                break
-            else
-                echo "$INVALID_EDITOR"
-            fi
-        done
+        if command -v "$EDITOR" &> /dev/null; then
+            $SUDO "$EDITOR" "$AUTOSTART_SCRIPT"
+        else
+            echo "$INVALID_EDITOR"
+        fi
     fi
     echo -e "\n$SCRIPT_LOCATION"
 }
