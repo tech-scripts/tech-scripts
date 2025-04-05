@@ -31,8 +31,7 @@ while true; do
     fi
 
     if is_number "$DELAY"; then
-        $DIALOG --yesno "$(printf "$MSG_CONFIRM" "$DELAY")" 6 40
-        if [ $? -eq 0 ]; then
+        if $DIALOG --yesno "$(printf "$MSG_CONFIRM" "$DELAY")" 6 40; then
             break
         fi
     else
