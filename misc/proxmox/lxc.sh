@@ -64,17 +64,13 @@ while true; do
         options+=("$container_id" "$container_name")
     done <<< "$containers"
 
-    # Выбор контейнера
-    selected_container_id=$(dialog --title "$SELECT_CONTAINER" --menu "$SELECT_CONTAINER:" 15 50 10 "${options[@]}" 3>&1 1>&2 2>&3)
-
-    # Выход, если выбор отменен
-    if [ $? != 0 ]; then
-        clear
-        exit
-    fi
-
     # Основное меню действий
     while true; do
+        selected_container_id=$(dialog --title "$SELECT_CONTAINER" --menu "$SELECT_CONTAINER:" 15 50 10 "${options[@]}" 3>&1 1>&2 2>&3)
+        if [ $? != 0 ]; then
+            clear
+            exit
+        fi
         ACTION=$(dialog --title "$SELECT_ACTION" --menu "$SELECT_ACTION" 15 50 8 \
             1 "Включить" \
             2 "Выключить" \
