@@ -10,7 +10,6 @@ if [ "$LANG_CONF" = "Русский" ]; then
     NO_CONTAINERS="Нет доступных LXC-контейнеров!"
     SELECT_CONTAINER="Выберите контейнер"
     SELECT_ACTION="Выберите действие"
-    MSG_WELCOME="Добро пожаловать в управление Proxmox"
     MSG_TYPE_LXC="LXC"
     MSG_TYPE_VM="VM"
     MSG_ID="Введите ID:"
@@ -24,7 +23,6 @@ else
     NO_CONTAINERS="No available LXC containers!"
     SELECT_CONTAINER="Select container"
     SELECT_ACTION="Select action"
-    MSG_WELCOME="Welcome to Proxmox management"
     MSG_TYPE_LXC="LXC"
     MSG_TYPE_VM="VM"
     MSG_ID="Enter the ID:"
@@ -55,8 +53,6 @@ options=()
 while read -r container_id container_name; do
     options+=("$container_id" "$container_name")
 done <<< "$containers"
-
-dialog --title "$MSG_WELCOME" --msgbox "$MSG_CHOICE" 10 30
 
 selected_container_id=$(dialog --title "$SELECT_CONTAINER" --menu "$SELECT_CONTAINER:" 15 50 10 "${options[@]}" 3>&1 1>&2 2>&3)
 
