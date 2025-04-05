@@ -1,5 +1,7 @@
 #!/bin/bash
 
+SUDO=$(command -v sudo)
+
 lang=$(grep -E '^lang:' /etc/tech-scripts/choose.conf | cut -d' ' -f2)
 
 if [ "$lang" == "Русский" ]; then
@@ -17,11 +19,11 @@ fi
 dialog --title "$title_add" --yesno "$msg_add" 10 40
 
 if [ $? -eq 0 ]; then
-    sudo tee /usr/local/bin/tech > /dev/null << 'EOF'
+    $SUDO tee /usr/local/bin/tech > /dev/null << 'EOF'
 #!/bin/bash
 bash -c "$(wget -qLO - https://raw.githubusercontent.com/tech-scripts/linux/refs/heads/main/misc/start.sh)"
 EOF
-    sudo chmod +x /usr/local/bin/tech
+    $SUDO chmod +x /usr/local/bin/tech
     dialog --title "$title_add" --msgbox "$msg_success" 10 40
 else
     dialog --title "$title_add" --msgbox "$msg_cancel" 10 40
