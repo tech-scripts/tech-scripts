@@ -92,7 +92,7 @@ After=network.target
 [Service]
 ExecStart=/usr/local/tech-scripts/alert.sh
 Restart=always
-User =root
+User=root
 
 [Install]
 WantedBy=multi-user.target
@@ -106,26 +106,52 @@ EOF
     echo "Скрипт расположен в /usr/local/tech-scripts/alert.sh."
 else
     # Если скрипт уже установлен, проверяем, существует ли сервис
-    if systemctl is-active --quiet ssh.alert.service; then
-        echo "Скрипт уже установлен и запущен."
-        read -p "Хотите удалить ssh.alert из автозапуска? (y/n): " REMOVE_CHOICE
-        if [ "$REMOVE_CHOICE" = "y" ]; then
-            sudo systemctl stop ssh.alert.service
-            sudo systemctl disable ssh.alert.service
-            sudo rm /etc/systemd/system/ssh.alert.service
-            sudo systemctl daemon-reload
-            echo "ssh.alert удален из автозапуска."
+    if [ -f "/etc/systemd/system/ssh.alert.service" ]; then
+        if systemctl is-active --quiet ssh.alert.service; then
+            echo "Скрипт уже установлен и запущен."
+            read -p "Хотите удалить ssh.alert из автозапуска? (y/n): " REMOVE_CHOICE
+            if [ "$REMOVE_CHOICE" = "y" ]; then
+                sudo systemctl stop ssh.alert.service
+                sudo systemctl disable ssh.alert.service
+                sudo rm /etc/systemd/system/ssh.alert.service
+                sudo systemctl daemon-reload
+                echo "ssh.alert удален из автозапуска."
+            else
+                echo "Удаление отменено."
+            fi
         else
-            echo "Удаление отменено."
+            echo "Скрипт уже установлен, но не запущен."
+            read -p "Хотите запустить его сейчас? (y/n): " START_CHOICE
+            if [ "$START_CHOICE" = "y" ]; then
+                sudo systemctl start ssh.alert.service
+                echo "Скрипт запущен."
+            else
+                echo "Скрипт не запущен."
+            fi
         fi
     else
-        echo "Скрипт уже установлен, но не запущен."
-        read -p "Хотите запустить его сейчас? (y/n): " START_CHOICE
-        if [ "$START_CHOICE" = "y" ]; then
+        echo "Скрипт уже установлен, но сервис ssh.alert.service не найден."
+        read -p "Хотите создать и запустить сервис? (y/n): " CREATE_CHOICE
+        if [ "$CREATE_CHOICE" = "y" ]; then
+            sudo bash -c "cat > /etc/systemd/system/ssh.alert.service" <<EOF
+[Unit]
+Description=SSH Alert Monitor
+After=network.target
+
+[Service]
+ExecStart=/usr/local/tech-scripts/alert.sh
+Restart=always
+User=root
+
+[Install]
+WantedBy=multi-user.target
+EOF
+            sudo systemctl daemon-reload
+            sudo systemctl enable ssh.alert.service
             sudo systemctl start ssh.alert.service
-            echo "Скрипт запущен."
+            echo "Сервис создан и запущен."
         else
-            echo "Скрипт не запущен."
+            echo "Создание сервиса отменено."
         fi
     fi
 fi
