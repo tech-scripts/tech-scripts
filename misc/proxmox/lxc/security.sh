@@ -68,4 +68,19 @@ fi
 
 case $action in
     1)
-        pct set $selected_container_id -privileged
+        pct set $selected_container_id -privileged 1
+        dialog --msgbox "$PRIVILEGED" 5 40
+        ;;
+    2)
+        pct set $selected_container_id -privileged 0
+        dialog --msgbox "$UNPRIVILEGED" 5 40
+        ;;
+    3)
+        pct lock $selected_container_id
+        dialog --msgbox "$LOCKED" 5 40
+        ;;
+    4)
+        pct unlock $selected_container_id
+        dialog --msgbox "$UNLOCKED" 5 40
+        ;;
+esac
