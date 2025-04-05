@@ -30,14 +30,27 @@ if [ ! -f "$CONFIG_FILE" ]; then
 CONFIG_FILE="/usr/local/tech-scripts/alert.conf"
 
 # Загрузка конфигурации
-source "$CONFIG_FILE"
+if [ -f "$CONFIG_FILE" ]; then
+    source "$CONFIG_FILE"
+else
+    echo "Ошибка: Конфигурационный файл не найден."
+    exit 1
+fi
 
 # Функция для отправки сообщения в Telegram
 send_telegram_message() {
     local message="$1"
-    curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+    local response
+
+    response=$(curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
         -d chat_id="${TELEGRAM_CHAT_ID}" \
-        -d text="${message}" > /dev/null
+        -d text="${message}" 2>&1)
+
+    if echo "$response" | grep -q '"ok":true'; then
+        echo "Сообщение успешно отправлено."
+    else
+        echo "Ошибка при отправке сообщения: $response"
+    fi
 }
 
 # Мониторинг логов SSH
