@@ -47,43 +47,25 @@ if ! command -v pct &> /dev/null; then
     exit 1
 fi
 
-# Получение списка контейнеров
-containers=$(pct list | awk 'NR>1 {print $1, $3}')
-
-# Проверка наличия контейнеров
-if [ -z "$containers" ]; then
-    dialog --msgbox "$NO_CONTAINERS" 5 40
-    exit 1
-fi
-
-# Формирование списка опций для выбора контейнера
-options=()
-while read -r container_id container_name; do
-    options+=("$container_id" "$container_name")
-done <<< "$containers"
-
-# Выбор контейнера
-selected_container_id=$(dialog --title "$SELECT_CONTAINER" --menu "$SELECT_CONTAINER:" 15 50 10 "${options[@]}" 3>&1 1>&2 2>&3)
-
-# Выход, если выбор отменен
-if [ $? != 0 ]; then
-    clear
-    exit
-fi
-
-# Основное меню действий
+# Основной цикл меню действий
 while true; do
-    ACTION=$(dialog --title "$SELECT_ACTION" --menu "$SELECT_ACTION" 15 50 8 \
-        1 "Включить" \
-        2 "Выключить" \
-        3 "Перезагрузить" \
-        4 "Открыть конфигурационный файл" \
-        5 "Уничтожить" \
-        6 "Разблокировать" \
-        7 "Усыпить" \
-        8 "Разбудить" \
-        9 "Консоль" \
-        10 "Выход" 3>&1 1>&2 2>&3)
+    # Получение списка контейнеров
+    containers=$(pct list | awk 'NR>1 {print $1, $3}')
+
+    # Проверка наличия контейнеров
+    if [ -z "$containers" ]; then
+        dialog --msgbox "$NO_CONTAINERS" 5 40
+        exit 1
+    fi
+
+    # Формирование списка опций для выбора контейнера
+    options=()
+    while read -r container_id container_name; do
+        options+=("$container_id" "$container_name")
+    done <<< "$containers"
+
+    # Выбор контейнера
+    selected_container_id=$(dialog --title "$SELECT_CONTAINER" --menu "$SELECT_CONTAINER:" 15 50 10 "${options[@]}" 3>&1 1>&2 2>&3)
 
     # Выход, если выбор отменен
     if [ $? != 0 ]; then
@@ -91,52 +73,72 @@ while true; do
         exit
     fi
 
-    # Обработка выбранного действия
-    case $ACTION in
-        1)
-            pct start "$selected_container_id" && dialog --msgbox "$MSG_SUCCESS" 5 30 || dialog --msgbox "$MSG_ERROR" 5 30
-            ;;
-        2)
-            pct stop "$selected_container_id" && dialog --msgbox "$MSG_SUCCESS" 5 30 || dialog --msgbox "$MSG_ERROR" 5 30
-            ;;
-        3)
-            pct reboot "$selected_container_id" && dialog --msgbox "$MSG_SUCCESS" 5 30 || dialog --msgbox "$MSG_ERROR" 5 30
-            ;;
-        4)
-            nano "/etc/pve/lxc/$selected_container_id.conf"
-            ;;
-        5)
-            if dialog --yesno "$MSG_CONFIRM_DELETE $selected_container_id?" 7 60; then
-                pct stop "$selected_container_id"
-                pct destroy "$selected_container_id" && dialog --msgbox "$MSG_SUCCESS" 5 30 || dialog --msgbox "$MSG_ERROR" 5 30
-            fi
-            ;;
-        6)
-            pct unlock "$selected_container_id" && dialog --msgbox "$MSG_LOCK" 5 30 || dialog --msgbox "$MSG_ERROR" 5 30
-            ;;
-        7)
-            pct suspend "$selected_container_id" && dialog --msgbox "$MSG_UNLOCK" 5 30 || dialog --msgbox "$MSG_ERROR" 5 30
-            ;;
-        8)
-            pct resume "$selected_container_id" && dialog --msgbox "$MSG_UNLOCK" 5 30 || dialog --msgbox "$MSG_ERROR" 5 30
-            ;;
-        9)
-            pct console "$selected_container_id" && dialog --msgbox "$MSG_UNLOCK" 5 30 || dialog --msgbox "$MSG_ERROR" 5 30
-            ;;
-        10)
-            clear
-            exit 0
-            ;;
-        *)
-            dialog --msgbox "$MSG_ERROR" 5 30
-            ;;
-    esac
+    # Основное меню действий
+    while true; do
+        ACTION=$(dialog --title "$SELECT_ACTION" --menu "$SELECT_ACTION" 15 50 8 \
+            1 "Включить" \
+            2 "Выключить" \
+            3 "Перезагрузить" \
+            4 "Открыть конфигурационный файл" \
+            5 "Уничтожить" \
+            6 "Разблокировать" \
+            7 "Усыпить" \
+            8 "Разбудить" \
+            9 "Консоль" \
+            10 "Выход" 3>&1 1>&2 2>&3)
 
-    # Запрос на продолжение
-    if dialog --title "$CONTINUE" --yesno "$CONTINUE" 5 40; then
-        continue
-    else
-        clear
-        exit 0
-    fi
+        # Выход, если выбор отменен
+        if [ $? != 0 ]; then
+            clear
+            exit
+        fi
+
+        # Обработка выбранного действия
+        case $ACTION in
+            1)
+                pct start "$selected_container_id" && dialog --msgbox "$MSG_SUCCESS" 5 30 || dialog --msgbox "$MSG_ERROR" 5 30
+                ;;
+            2)
+                pct stop "$selected_container_id" && dialog --msgbox "$MSG_SUCCESS" 5 30 || dialog --msgbox "$MSG_ERROR" 5 30
+                ;;
+            3)
+                pct reboot "$selected_container_id" && dialog --msgbox "$MSG_SUCCESS" 5 30 || dialog --msgbox "$MSG_ERROR" 5 30
+                ;;
+            4)
+                nano "/etc/pve/lxc/$selected_container_id.conf"
+                ;;
+            5)
+                if dialog --yesno "$MSG_CONFIRM_DELETE $selected_container_id?" 7 60; then
+                    pct stop "$selected_container_id"
+                    pct destroy "$selected_container_id" && dialog --msgbox "$MSG_SUCCESS" 5 30 || dialog --msgbox "$MSG_ERROR" 5 30
+                fi
+                ;;
+            6)
+                pct unlock "$selected_container_id" && dialog --msgbox "$MSG_LOCK" 5 30 || dialog --msgbox "$MSG_ERROR" 5 30
+                ;;
+            7)
+                pct suspend "$selected_container_id" && dialog --msgbox "$MSG_UNLOCK" 5 30 || dialog --msgbox "$MSG_ERROR" 5 30
+                ;;
+            8)
+                pct resume "$selected_container_id" && dialog --msgbox "$MSG_UNLOCK" 5 30 || dialog --msgbox "$MSG_ERROR" 5 30
+                ;;
+            9)
+                pct console "$selected_container_id" && dialog --msgbox "$MSG_UNLOCK" 5 30 || dialog --msgbox "$MSG_ERROR" 5 30
+                ;;
+            10)
+                clear
+                exit 0
+                ;;
+            *)
+                dialog --msgbox "$MSG_ERROR" 5 30
+                ;;
+        esac
+
+        # Запрос на продолжение
+        if dialog --title "$CONTINUE" --yesno "$CONTINUE" 5 40; then
+            continue
+        else
+            break
+        fi
+    done
 done
