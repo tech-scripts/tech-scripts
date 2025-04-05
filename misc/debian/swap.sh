@@ -24,10 +24,10 @@ if [ "$LANG_CONF" = "Русский" ]; then
     SWAP_OPTION="SWAP"
     ZSWAP_OPTION="ZSWAP (автоматически)"
     ZSWAP_NOT_SUPPORTED="ZSWAP не поддерживается вашим ядром."
-    SWAP_PARTITION_FOUND="Обнаружен раздел подкачки. Подкачка не поддерживается на системе с существующим разделом подкачки."
-    ACTIVE_SWAP_FOUND="Обнаружена активная подкачка. Пожалуйста, отключите её перед настройкой новой."
-    ACTIVE_ZRAM_FOUND="Обнаружена активная ZRAM. Пожалуйста, отключите её перед настройкой новой."
-    ACTIVE_ZSWAP_FOUND="Обнаружена активная ZSWAP. Пожалуйста, отключите её перед настройкой новой."
+    ACTIVE_SWAP_FOUND="Обнаружена активная подкачка (SWAP)."
+    ACTIVE_ZRAM_FOUND="Обнаружена активная ZRAM."
+    ACTIVE_ZSWAP_FOUND="Обнаружена активная ZSWAP."
+    DISABLE_SWAP_PROMPT="Хотите отключить активную подкачку?"
 else
     CANCEL_MSG="Script execution interrupted."
     INVALID_SIZE="Invalid input. Please enter size in format like 8G or 512M."
@@ -41,10 +41,10 @@ else
     SWAP_OPTION="SWAP"
     ZSWAP_OPTION="ZSWAP (automatic)"
     ZSWAP_NOT_SUPPORTED="ZSWAP is not supported by your kernel."
-    SWAP_PARTITION_FOUND="Swap partition found. Swap is not supported on a system with an existing swap partition."
-    ACTIVE_SWAP_FOUND="Active swap found. Please disable it before setting up a new one."
-    ACTIVE_ZRAM_FOUND="Active ZRAM found. Please disable it before setting up a new one."
-    ACTIVE_ZSWAP_FOUND="Active ZSWAP found. Please disable it before setting up a new one."
+    ACTIVE_SWAP_FOUND="Active swap found (SWAP)."
+    ACTIVE_ZRAM_FOUND="Active ZRAM found."
+    ACTIVE_ZSWAP_FOUND="Active ZSWAP found."
+    DISABLE_SWAP_PROMPT="Do you want to disable active swap?"
 fi
 
 install_dialog() {
@@ -68,37 +68,62 @@ close() {
 check_active_swap() {
     if swapon --show | grep -q '/'; then
         echo "$ACTIVE_SWAP_FOUND"
-        exit 1
+        return 0
     fi
+    return 1
 }
 
 check_active_zram() {
     if lsblk | grep -q zram; then
         echo "$ACTIVE_ZRAM_FOUND"
-        exit 1
+        return 0
     fi
+    return 1
 }
 
 check_active_zswap() {
     if [ -d /sys/module/zswap ]; then
         if [ "$(cat /sys/module/zswap/parameters/enabled)" -eq 1 ]; then
             echo "$ACTIVE_ZSWAP_FOUND"
-            exit 1
+            return 0
         fi
     fi
+    return 1
 }
 
-check_swap_partition() {
-    if [ "$(lsblk -o TYPE | grep -c 'part')" -gt 0 ]; then
-        echo "$SWAP_PARTITION_FOUND"
-        exit 1
+ACTIVE_SWAP=0
+ACTIVE_ZRAM=0
+ACTIVE_ZSWAP=0
+
+check_active_swap && ACTIVE_SWAP=1
+check_active_zram && ACTIVE_ZRAM=1
+check_active_zswap && ACTIVE_ZSWAP=1
+
+if [ $ACTIVE_SWAP -eq 1 ] || [ $ACTIVE_ZRAM -eq 1 ] || [ $ACTIVE_ZSWAP -eq 1 ]; then
+    if dialog --yesno "$DISABLE_SWAP_PROMPT" 7 40; then
+
+        if [ $ACTIVE_SWAP -eq 1 ]; then
+            echo "Отключение SWAP..."
+            $SUDO swapoff -a
+            echo "SWAP отключен."
+        fi
+
+        if [ $ACTIVE_ZRAM -eq 1 ]; then
+            echo "Отключение ZRAM..."
+            $SUDO swapoff /dev/zram0
+            $SUDO modprobe -r zram
+            echo "ZRAM отключен."
+        fi
+
+        if [ $ACTIVE_ZSWAP -eq 1 ]; then
+            echo "Отключение ZSWAP..."
+            echo 0 | $SUDO tee /sys/module/zswap/parameters/enabled > /dev/null
+            echo "ZSWAP отключен."
+        fi
+    else
+        echo "Отключение подкачки отменено."
     fi
-}
-
-check_active_swap
-check_active_zram
-check_active_zswap
-check_swap_partition
+fi
 
 dialog --menu "$CHOOSE_MEMORY" 10 40 3 \
 1 "$ZRAM_OPTION" \
