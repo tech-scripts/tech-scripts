@@ -44,5 +44,5 @@ case $EDITOR in
     *) echo "$MSG_INVALID"; exit 1 ;;
 esac
 
-echo "editor: $editor" | $SUDO tee /etc/tech-scripts/choose.conf > /dev/null
+echo "editor: $editor" | $SUDO tee -a /etc/tech-scripts/choose.conf > /dev/null
 echo "$MSG_SUCCESS $editor"
