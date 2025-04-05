@@ -83,36 +83,36 @@ while true; do
 
 case $action in
     1)
-        pct set $selected_container_id -unprivileged 0
-        dialog --msgbox "$PRIVILEGED" 5 40
-        ;;
-    2)
-        pct set $selected_container_id -unprivileged 1
-        dialog --msgbox "$UNPRIVILEGED" 5 40
-        ;;
-    3)
-        pct set $selected_container_id -lock 1
-        dialog --msgbox "$LOCKED" 5 40
-        ;;
-    4)
-        pct set $selected_container_id -lock 0
-        dialog --msgbox "$UNLOCKED" 5 40
-        ;;
-    5)
         pct start $selected_container_id
         dialog --msgbox "$STARTED" 5 40
         ;;
-    6)
+    2)
         pct stop $selected_container_id
         dialog --msgbox "$STOPPED" 5 40
         ;;
-    7)
+    3)
         pct reboot $selected_container_id
         dialog --msgbox "$REBOOTED" 5 40
         ;;
-    8)
+    4)
         pct reset $selected_container_id
         dialog --msgbox "$RESET" 5 40
+        ;;
+    5)
+        pct set $selected_container_id -unprivileged 0
+        dialog --msgbox "$PRIVILEGED" 5 40
+        ;;
+    6)
+        pct set $selected_container_id -unprivileged 1
+        dialog --msgbox "$UNPRIVILEGED" 5 40
+        ;;
+    7)
+        pct set $selected_container_id -lock 1
+        dialog --msgbox "$LOCKED" 5 40
+        ;;
+    8)
+        pct set $selected_container_id -lock 0
+        dialog --msgbox "$UNLOCKED" 5 40
         ;;
     esac
 
