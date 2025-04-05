@@ -1,7 +1,11 @@
 #!/bin/bash
 
+# Переменные для директорий
+CONFIG_DIR="/etc/tech-scripts"
+SCRIPT_DIR="/usr/local/tech-scripts"
+
 # Конфигурационный файл
-CONFIG_FILE="/etc/tech-scripts/alert.conf"
+CONFIG_FILE="$CONFIG_DIR/alert.conf"
 
 # Установка jq, если он не установлен
 if ! command -v jq &> /dev/null; then
@@ -21,9 +25,9 @@ if [ ! -f "$CONFIG_FILE" ]; then
     chmod 600 "$CONFIG_FILE"
 
     # Создание нового скрипта в /usr/local/tech-scripts/
-    echo "Создание скрипта в /usr/local/tech-scripts/alert.sh..."
-    sudo mkdir -p /usr/local/tech-scripts/
-    sudo bash -c "cat > /usr/local/tech-scripts/alert.sh" <<'EOF'
+    echo "Создание скрипта в $SCRIPT_DIR/alert.sh..."
+    sudo mkdir -p "$SCRIPT_DIR"
+    sudo bash -c "cat > $SCRIPT_DIR/alert.sh" <<'EOF'
 #!/bin/bash
 
 # Конфигурационный файл
@@ -80,7 +84,7 @@ journalctl -f -u ssh | while read -r line; do
 done
 EOF
 
-    sudo chmod +x /usr/local/tech-scripts/alert.sh
+    sudo chmod +x "$SCRIPT_DIR/alert.sh"
 
     # Добавление в автозапуск
     echo "Добавление в автозапуск..."
@@ -90,9 +94,9 @@ Description=SSH Alert Monitor
 After=network.target
 
 [Service]
-ExecStart=/usr/local/tech-scripts/alert.sh
+ExecStart=$SCRIPT_DIR/alert.sh
 Restart=always
-User=root
+User =root
 
 [Install]
 WantedBy=multi-user.target
@@ -103,7 +107,7 @@ EOF
     sudo systemctl start ssh.alert.service
 
     echo "Скрипт успешно установлен и добавлен в автозапуск."
-    echo "Скрипт расположен в /usr/local/tech-scripts/alert.sh"
+    echo "Скрипт расположен в $SCRIPT_DIR/alert.sh"
 else
     # Если скрипт уже установлен, проверяем, существует ли сервис
     if [ -f "/etc/systemd/system/ssh.alert.service" ]; then
@@ -138,7 +142,7 @@ Description=SSH Alert Monitor
 After=network.target
 
 [Service]
-ExecStart=/usr/local/tech-scripts/alert.sh
+ExecStart=$SCRIPT_DIR/alert.sh
 Restart=always
 User=root
 
