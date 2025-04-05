@@ -5,7 +5,7 @@ SUDO=$(command -v sudo)
 REPO_URL="https://github.com/tech-scripts/linux.git"
 CLONE_DIR="/tmp/tech-scripts/misc"
 
-[ -d "$CLONE_DIR" ] && rm -rf "$/tmp/tech-scripts"
+[ -d "$CLONE_DIR" ] && rm -rf "/tmp/tech-scripts"
 git clone "$REPO_URL" "/tmp/tech-scripts"
 cd "/tmp/tech-scripts/misc" || exit 1
 
