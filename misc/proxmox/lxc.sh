@@ -149,6 +149,7 @@ while true; do
             continue
         else
             break
+            exit 0
         fi
     done
 done
