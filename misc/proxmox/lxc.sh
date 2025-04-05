@@ -75,10 +75,12 @@ while true; do
         2 "Выключить" \
         3 "Перезагрузить" \
         4 "Открыть конфигурационный файл" \
-        5 "Удалить" \
-        6 "Заблокировать" \
-        7 "Разблокировать" \
-        8 "Выход" 3>&1 1>&2 2>&3)
+        5 "Уничтожить" \
+        6 "Разблокировать" \
+        7 "Усыпить" \
+        8 "Разбудить" \
+        9 "Консоль" \
+        10 "Выход" 3>&1 1>&2 2>&3)
 
     # Выход, если выбор отменен
     if [ $? != 0 ]; then
@@ -107,12 +109,18 @@ while true; do
             fi
             ;;
         6)
-            pct set "$selected_container_id" --lock 1 && dialog --msgbox "$MSG_LOCK" 5 30 || dialog --msgbox "$MSG_ERROR" 5 30
+            pct unlock "$selected_container_id" && dialog --msgbox "$MSG_LOCK" 5 30 || dialog --msgbox "$MSG_ERROR" 5 30
             ;;
         7)
-            pct set "$selected_container_id" --lock 0 && dialog --msgbox "$MSG_UNLOCK" 5 30 || dialog --msgbox "$MSG_ERROR" 5 30
+            pct suspend "$selected_container_id" && dialog --msgbox "$MSG_UNLOCK" 5 30 || dialog --msgbox "$MSG_ERROR" 5 30
             ;;
         8)
+            pct resume "$selected_container_id" && dialog --msgbox "$MSG_UNLOCK" 5 30 || dialog --msgbox "$MSG_ERROR" 5 30
+            ;;
+        9)
+            pct console "$selected_container_id" && dialog --msgbox "$MSG_UNLOCK" 5 30 || dialog --msgbox "$MSG_ERROR" 5 30
+            ;;
+        10)
             clear
             exit 0
             ;;
