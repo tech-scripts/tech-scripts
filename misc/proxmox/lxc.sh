@@ -1,10 +1,14 @@
 #!/bin/bash
 
 LANG_CONF=$(grep '^lang:' /etc/tech-scripts/choose.conf 2>/dev/null | cut -d':' -f2 | tr -d ' ')
-LANG_FILE="/etc/tech-scripts/choose.conf"
-source $LANG_FILE
+CONFIG_FILE="/etc/tech-scripts/choose.conf"
 
-# Языковые настройки
+if [ -f "$CONFIG_FILE" ]; then
+    LANG_CONF=$(grep '^lang:' "$CONFIG_FILE" | cut -d':' -f2 | tr -d ' ')
+else
+    LANG_CONF="English"
+fi
+
 if [ "$LANG_CONF" = "Русский" ]; then
     DIALOG_NOT_FOUND="Утилита dialog не установлена. Установите её с помощью команды: sudo apt install dialog"
     PCT_NOT_FOUND="Утилита pct не найдена. Убедитесь, что Proxmox установлен."
