@@ -3,7 +3,7 @@
 CONFIG_DIR="/etc/tech-scripts"
 SCRIPT_DIR="/usr/local/tech-scripts"
 CONFIG_FILE="$CONFIG_DIR/alert.conf"
-LANG_FILE="$CONFIG_DIR/choose.conf"
+LANG_FILE="/etc/tech-scripts/choose.conf"
 
 if [ -f "$LANG_FILE" ]; then
     source "$LANG_FILE"
