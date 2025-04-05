@@ -2,6 +2,7 @@
 
 LANG_CONF=$(grep '^lang:' /etc/tech-scripts/choose.conf 2>/dev/null | cut -d':' -f2 | tr -d ' ')
 CONFIG_FILE="/etc/tech-scripts/choose.conf"
+EDITOR=$(grep '^editor:' /etc/tech-scripts/choose.conf | cut -d ' ' -f 2)
 
 if [ -f "$CONFIG_FILE" ]; then
     LANG_CONF=$(grep '^lang:' "$CONFIG_FILE" | cut -d':' -f2 | tr -d ' ')
@@ -115,7 +116,7 @@ while true; do
                 pct reboot "$selected_container_id" && dialog --msgbox "$MSG_SUCCESS" 5 30 || dialog --msgbox "$MSG_ERROR" 5 30
                 ;;
             4)
-                nano "/etc/pve/lxc/$selected_container_id.conf"
+                $EDITOR "/etc/pve/lxc/$selected_container_id.conf"
                 ;;
             5)
                 if dialog --yesno "$MSG_CONFIRM_DELETE $selected_container_id?" 7 60; then
