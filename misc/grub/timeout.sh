@@ -2,7 +2,7 @@
 
 SUDO=$(command -v sudo)
 LANG_FILE="/etc/tech-scripts/choose.conf"
-DIALOG="dialog --stdout"
+DIALOG="dialog"
 DELAY=""
 
 if grep -q "^lang: Русский" "$LANG_FILE"; then
