@@ -92,7 +92,7 @@ After=network.target
 [Service]
 ExecStart=/usr/local/tech-scripts/alert.sh
 Restart=always
-User=root
+User =root
 
 [Install]
 WantedBy=multi-user.target
@@ -105,16 +105,27 @@ EOF
     echo "Скрипт успешно установлен и добавлен в автозапуск."
     echo "Скрипт расположен в /usr/local/tech-scripts/alert.sh."
 else
-    # Если скрипт уже установлен, предложить удалить из автозапуска
-    echo "Скрипт уже установлен и расположен в /usr/local/tech-scripts/alert.sh."
-    read -p "Хотите удалить ssh.alert из автозапуска? (y/n): " REMOVE_CHOICE
-    if [ "$REMOVE_CHOICE" = "y" ]; then
-        sudo systemctl stop ssh.alert.service
-        sudo systemctl disable ssh.alert.service
-        sudo rm /etc/systemd/system/ssh.alert.service
-        sudo systemctl daemon-reload
-        echo "ssh.alert удален из автозапуска."
+    # Если скрипт уже установлен, проверяем, существует ли сервис
+    if systemctl is-active --quiet ssh.alert.service; then
+        echo "Скрипт уже установлен и запущен."
+        read -p "Хотите удалить ssh.alert из автозапуска? (y/n): " REMOVE_CHOICE
+        if [ "$REMOVE_CHOICE" = "y" ]; then
+            sudo systemctl stop ssh.alert.service
+            sudo systemctl disable ssh.alert.service
+            sudo rm /etc/systemd/system/ssh.alert.service
+            sudo systemctl daemon-reload
+            echo "ssh.alert удален из автозапуска."
+        else
+            echo "Удаление отменено."
+        fi
     else
-        echo "Удаление отменено."
+        echo "Скрипт уже установлен, но не запущен."
+        read -p "Хотите запустить его сейчас? (y/n): " START_CHOICE
+        if [ "$START_CHOICE" = "y" ]; then
+            sudo systemctl start ssh.alert.service
+            echo "Скрипт запущен."
+        else
+            echo "Скрипт не запущен."
+        fi
     fi
 fi
