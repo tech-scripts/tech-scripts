@@ -75,42 +75,25 @@ while true; do
 
     case $ACTION in
         1)
-            if [[ $MANAGE_TYPE == 1 ]]; then
                 pct start "$selected_container_id" && dialog --msgbox "$MSG_SUCCESS" 5 30 || dialog --msgbox "$MSG_ERROR" 5 30
-            else
-                qm start "$ID" && dialog --msgbox "$MSG_SUCCESS" 5 30 || dialog --msgbox "$MSG_ERROR" 5 30
-            fi
             ;;
         2)
-            if [[ $MANAGE_TYPE == 1 ]]; then
+
                 pct stop "$selected_container_id" && dialog --msgbox "$MSG_SUCCESS" 5 30 || dialog --msgbox "$MSG_ERROR" 5 30
-            else
-                qm stop "$ID" && dialog --msgbox "$MSG_SUCCESS" 5 30 || dialog --msgbox "$MSG_ERROR" 5 30
-            fi
+
             ;;
         3)
-            if [[ $MANAGE_TYPE == 1 ]]; then
+
                 pct reboot "$selected_container_id" && dialog --msgbox "$MSG_SUCCESS" 5 30 || dialog --msgbox "$MSG_ERROR" 5 30
-            else
-                qm reboot "$ID" && dialog --msgbox "$MSG_SUCCESS" 5 30 || dialog --msgbox "$MSG_ERROR" 5 30
-            fi
             ;;
         4)
-            if [[ $MANAGE_TYPE == 1 ]]; then
                 nano "/etc/pve/lxc/$selected_container_id.conf"
-            else
-                nano "/etc/pve/qemu-server/$ID.conf"
-            fi
             ;;
         5)
             if dialog --yesno "$MSG_CONFIRM_DELETE $NAME?" 7 60; then
-                if [[ $MANAGE_TYPE == 1 ]]; then
-                    pct stop "$selected_container_id"
-                    pct destroy "$selected_container_id" && dialog --msgbox "$MSG_SUCCESS" 5 30 || dialog --msgbox "$MSG_ERROR" 5 30
-                else
-                    qm stop "$ID"
-                    qm del "$ID" && dialog --msgbox "$MSG_SUCCESS" 5 30 || dialog --msgbox "$MSG_ERROR" 5 30
-                fi
+
+                pct stop "$selected_container_id"
+                pct destroy "$selected_container_id" && dialog --msgbox "$MSG_SUCCESS" 5 30 || dialog --msgbox "$MSG_ERROR" 5 30
             fi
             ;;
         6)
