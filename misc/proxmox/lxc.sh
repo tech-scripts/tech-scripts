@@ -74,28 +74,28 @@ while true; do
         
         if [ "$LANG_CONF" = "Русский" ]; then
             ACTION=$(dialog --title "$SELECT_ACTION" --menu "$SELECT_ACTION" 15 50 8 \
-                 1 "Включить" \
-                 2 "Выключить" \
-                 3 "Перезагрузить" \
-                 4 "Открыть конфигурационный файл" \
-                 5 "Уничтожить" \
-                 6 "Разблокировать" \
-                 7 "Усыпить" \
-                 8 "Разбудить" \
-                 9 "Консоль" \
-                 10 "Выход" 3>&1 1>&2 2>&3)
+                1 "Включить" \
+                2 "Выключить" \
+                3 "Перезагрузить" \
+                4 "Открыть конфигурационный файл" \
+                5 "Уничтожить" \
+                6 "Разблокировать" \
+                7 "Усыпить" \
+                8 "Разбудить" \
+                9 "Консоль" \
+                10 "Выход" 3>&1 1>&2 2>&3)
         else
             ACTION=$(dialog --title "$SELECT_ACTION" --menu "$SELECT_ACTION" 15 50 8 \
-                 1 "Start" \
-                 2 "Stop" \
-                 3 "Reboot" \
-                 4 "Open configuration file" \
-                 5 "Destroy" \
-                 6 "Unlock" \
-                 7 "Suspend" \
-                 8 "Resume" \
-                 9 "Console" \
-                 10 "Exit" 3>&1 1>&2 2>&3)
+                1 "Start" \
+                2 "Stop" \
+                3 "Reboot" \
+                4 "Open configuration file" \
+                5 "Destroy" \
+                6 "Unlock" \
+                7 "Suspend" \
+                8 "Resume" \
+                9 "Console" \
+                10 "Exit" 3>&1 1>&2 2>&3)
         fi
         
         if [ $? != 0 ]; then
