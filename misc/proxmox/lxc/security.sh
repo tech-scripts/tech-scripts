@@ -12,6 +12,11 @@ if [ "$LANG_CONF" = "Русский" ]; then
     UNPRIVILEGED="Контейнер теперь непривилегированный."
     LOCKED="Контейнер заблокирован."
     UNLOCKED="Контейнер разблокирован."
+    STARTED="Контейнер запущен."
+    STOPPED="Контейнер остановлен."
+    REBOOTED="Контейнер перезагружен."
+    RESET="Контейнер сброшен."
+    CONTINUE="Хотите продолжить?"
 else
     DIALOG_NOT_FOUND="Utility dialog not found. Install it with: sudo apt install dialog"
     PCT_NOT_FOUND="Utility pct not found. Make sure Proxmox is installed."
@@ -22,6 +27,11 @@ else
     UNPRIVILEGED="Container is now unprivileged."
     LOCKED="Container is locked."
     UNLOCKED="Container is unlocked."
+    STARTED="Container started."
+    STOPPED="Container stopped."
+    REBOOTED="Container rebooted."
+    RESET="Container reset."
+    CONTINUE="Do you want to continue?"
 fi
 
 if ! command -v dialog &> /dev/null; then
@@ -54,33 +64,61 @@ if [ $exit_status != 0 ]; then
     exit
 fi
 
-action=$(dialog --title "$SELECT_ACTION" --menu "$( [ "$LANG_CONF" = "Русский" ] && echo "Что вы хотите сделать с контейнером $selected_container_id?" || echo "What do you want to do with container $selected_container_id?")" 15 50 6 \
-1 "$( [ "$LANG_CONF" = "Русский" ] && echo "Сделать привилегированным" || echo "Make privileged")" \
-2 "$( [ "$LANG_CONF" = "Русский" ] && echo "Сделать непривилегированным" || echo "Make unprivileged")" \
-3 "$( [ "$LANG_CONF" = "Русский" ] && echo "Заблокировать" || echo "Lock")" \
-4 "$( [ "$LANG_CONF" = "Русский" ] && echo "Разблокировать" || echo "Unlock")" 3>&1 1>&2 2>&3)
+while true; do
+    action=$(dialog --title "$SELECT_ACTION" --menu "$( [ "$LANG_CONF" = "Русский" ] && echo "Что вы хотите сделать с контейнером $selected_container_id?" || echo "What do you want to do with container $selected_container_id?")" 15 50 10 \
+    5 "$( [ "$LANG_CONF" = "Русский" ] && echo "Включить" || echo "Start")" \
+    6 "$( [ "$LANG_CONF" = "Русский" ] && echo "Выключить" || echo "Stop")" \
+    7 "$( [ "$LANG_CONF" = "Русский" ] && echo "Перезагрузить" || echo "Reboot")" \
+    8 "$( [ "$LANG_CONF" = "Русский" ] && echo "Сбросить" || echo "Reset")" \
+    1 "$( [ "$LANG_CONF" = "Русский" ] && echo "Сделать привилегированным" || echo "Make privileged")" \
+    2 "$( [ "$LANG_CONF" = "Русский" ] && echo "Сделать непривилегированным" || echo "Make unprivileged")" \
+    3 "$( [ "$LANG_CONF" = "Русский" ] && echo "Заблокировать" || echo "Lock")" \
+    4 "$( [ "$LANG_CONF" = "Русский" ] && echo "Разблокировать" || echo "Unlock")" 3>&1 1>&2 2>&3)
 
-exit_status=$?
-if [ $exit_status != 0 ]; then
-    clear
-    exit
-fi
+    exit_status=$?
+    if [ $exit_status != 0 ]; then
+        clear
+        exit
+    fi
 
-case $action in
-    1)
-        pct set $selected_container_id -privileged 1
-        dialog --msgbox "$PRIVILEGED" 5 40
-        ;;
-    2)
-        pct set $selected_container_id -privileged 0
-        dialog --msgbox "$UNPRIVILEGED" 5 40
-        ;;
-    3)
-        pct set $selected_container_id -locked 1
-        dialog --msgbox "$LOCKED" 5 40
-        ;;
-    4)
-        pct set $selected_container_id -locked 0
-        dialog --msgbox "$UNLOCKED" 5 40
-        ;;
-esac
+    case $action in
+        1)
+            pct set $selected_container_id -privileged 1
+            dialog --msgbox "$PRIVILEGED" 5 40
+            ;;
+        2)
+            pct set $selected_container_id -privileged 0
+            dialog --msgbox "$UNPRIVILEGED" 5 40
+            ;;
+        3)
+            pct set $selected_container_id -locked 1
+            dialog --msgbox "$LOCKED" 5 40
+            ;;
+        4)
+            pct set $selected_container_id -locked 0
+            dialog --msgbox "$UNLOCKED" 5 40
+            ;;
+        5)
+            pct start $selected_container_id
+            dialog --msgbox "$STARTED" 5 40
+            ;;
+        6)
+            pct stop $selected_container_id
+            dialog --msgbox "$STOPPED" 5 40
+            ;;
+        7)
+            pct reboot $selected_container_id
+            dialog --msgbox "$REBOOTED" 5 40
+            ;;
+        8)
+            pct reset $selected_container_id
+            dialog --msgbox "$RESET" 5 40
+            ;;
+    esac
+
+    continue_action=$(dialog --title "Продолжить?" --yesno "$CONTINUE" 5 40)
+    if [ $? -ne 0 ]; then
+        clear
+        exit
+    fi
+done
