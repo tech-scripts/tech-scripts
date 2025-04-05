@@ -66,16 +66,9 @@ if [ ! -f "$CONFIG_FILE" ]; then
 CONFIG_FILE="/etc/tech-scripts/alert.conf"
 LANG_FILE="/etc/tech-scripts/choose.conf"
 
-if [ -f "$CONFIG_FILE" ]; then
-    source "$CONFIG_FILE"
-else
-    echo "Ошибка: Конфигурационный файл не найден."
-    exit 1
-fi
+LANGUAGE=$(grep -E '^lang:' "$LANG_FILE" | cut -d':' -f2 | xargs)
 
-if [ -f "$LANG_FILE" ]; then
-    source "$LANG_FILE"
-    if [[ "$lang" == "Русский" ]]; then
+    if [[ "$LANGUAGE" == "Русский" ]]; then
         MSG_FAILED="🚨 Неудачная попытка входа 🚨"
         MSG_SUCCESS="✅ Успешный вход ✅"
         MSG_CLOSED="❌ Отмененная попытка входа ❌"
@@ -88,10 +81,6 @@ if [ -f "$LANG_FILE" ]; then
         MSG_ERROR="Error sending message"
         MSG_SENT="Message sent successfully."
     fi
-else
-    echo "Ошибка: Файл языка не найден."
-    exit 1
-fi
 
 send_telegram_message() {
     local message="$1"
