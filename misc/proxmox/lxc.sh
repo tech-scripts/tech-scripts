@@ -71,11 +71,18 @@ while true; do
             clear
             exit
         fi
-        if [ "$LANG_CONF" = "Русский" ]; then
-            ACTIONS=("Включить" "Выключить" "Перезагрузить" "Открыть конфигурационный файл" "Уничтожить" "Разблокировать" "Усыпить" "Разбудить" "Консоль" "Выход")
-        else
-            ACTIONS=("Start" "Stop" "Reboot" "Open configuration file" "Destroy" "Unlock" "Suspend" "Resume" "Console" "Exit")
-        fi
+
+         ACTION=$(dialog --title "$SELECT_ACTION" --menu "$SELECT_ACTION" 15 50 8 \
+             1 "Включить" \
+             2 "Выключить" \
+             3 "Перезагрузить" \
+             4 "Открыть конфигурационный файл" \
+             5 "Уничтожить" \
+             6 "Разблокировать" \
+             7 "Усыпить" \
+             8 "Разбудить" \
+             9 "Консоль" \
+             10 "Выход" 3>&1 1>&2 2>&3)
 
         if [ $? != 0 ]; then
             clear
