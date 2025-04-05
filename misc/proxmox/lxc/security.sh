@@ -76,11 +76,11 @@ case $action in
         dialog --msgbox "$UNPRIVILEGED" 5 40
         ;;
     3)
-        pct lock $selected_container_id
+        pct set $selected_container_id -locked 1
         dialog --msgbox "$LOCKED" 5 40
         ;;
     4)
-        pct unlock $selected_container_id
+        pct set $selected_container_id -locked 0
         dialog --msgbox "$UNLOCKED" 5 40
         ;;
 esac
