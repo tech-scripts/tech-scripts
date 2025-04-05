@@ -1,97 +1,152 @@
 #!/bin/bash
 
+# Проверка языка
 LANG_FILE="/etc/tech-scripts/choose.conf"
-source $LANG_FILE
-
-if [[ $lang == "Русский" ]]; then
-    MSG_WELCOME="Добро пожаловать в управление Proxmox"
-    MSG_CHOICE="Выберите тип управления:"
-    MSG_TYPE_LXC="LXC"
-    MSG_TYPE_VM="VM"
+if grep -q "lang: Русский" "$LANG_FILE"; then
+    MSG_CHOOSE="Выберите, чем управлять:"
+    MSG_LXC="LXC контейнеры"
+    MSG_VM="VM машины"
     MSG_ID="Введите ID:"
     MSG_NAME="Введите название:"
     MSG_ACTION="Выберите действие:"
-    MSG_CONFIRM_DELETE="Вы уверены, что хотите удалить"
-    MSG_SUCCESS="Успешно выполнено"
-    MSG_ERROR="Ошибка"
-    MSG_PRIVILEGES="Выберите привилегии для VM:"
+    MSG_START="Включение"
+    MSG_STOP="Выключение"
+    MSG_RESTART="Перезагрузка"
+    MSG_CONFIG="Открытие конфигурационного файла"
+    MSG_DELETE="Удаление (с подтверждением)"
+    MSG_PRIVILEGES="Выдача привилегий"
+    MSG_CONFIRM_DELETE="Вы уверены, что хотите удалить?"
+    MSG_INVALID_ID="Неверный ID."
+    MSG_EXIT="Выход"
 else
-    MSG_WELCOME="Welcome to Proxmox management"
-    MSG_CHOICE="Choose management type:"
-    MSG_TYPE_LXC="LXC"
-    MSG_TYPE_VM="VM"
-    MSG_ID="Enter the ID:"
-    MSG_NAME="Enter the name:"
-    MSG_ACTION="Choose an action:"
-    MSG_CONFIRM_DELETE="Are you sure you want to delete"
-    MSG_SUCCESS="Successfully executed"
-    MSG_ERROR="Error"
-    MSG_PRIVILEGES="Select privileges for the VM:"
+    MSG_CHOOSE="Choose what to manage:"
+    MSG_LXC="LXC containers"
+    MSG_VM="VM machines"
+    MSG_ID="Enter ID:"
+    MSG_NAME="Enter name:"
+    MSG_ACTION="Choose action:"
+    MSG_START="Start"
+    MSG_STOP="Stop"
+    MSG_RESTART="Restart"
+    MSG_CONFIG="Open configuration file"
+    MSG_DELETE="Delete (with confirmation)"
+    MSG_PRIVILEGES="Grant privileges"
+    MSG_CONFIRM_DELETE="Are you sure you want to delete?"
+    MSG_INVALID_ID="Invalid ID."
+    MSG_EXIT="Exit"
 fi
 
-dialog --title "$MSG_WELCOME" --msgbox "$MSG_CHOICE" 10 30
+# Выбор управления
+CHOICE=$(dialog --title "$MSG_CHOOSE" --menu "$MSG_CHOOSE" 15 50 2 \
+1 "$MSG_LXC" \
+2 "$MSG_VM" 3>&1 1>&2 2>&3)
 
-MANAGE_TYPE=$(dialog --menu "$MSG_CHOICE" 15 50 2 \
-    1 "$MSG_TYPE_LXC" \
-    2 "$MSG_TYPE_VM" 3>&1 1>&2 2>&3)
+if [ $? -ne 0 ]; then
+    exit 1
+fi
 
+# Ввод ID и имени
 ID=$(dialog --inputbox "$MSG_ID" 8 40 3>&1 1>&2 2>&3)
+if [ $? -ne 0 ]; then
+    exit 1
+fi
+
 NAME=$(dialog --inputbox "$MSG_NAME" 8 40 3>&1 1>&2 2>&3)
+if [ $? -ne 0 ]; then
+    exit 1
+fi
 
-while true; do
-    ACTION=$(dialog --menu "$MSG_ACTION" 15 50 6 \
-    1 "Включить" \
-    2 "Выключить" \
-    3 "Перезагрузить" \
-    4 "Открыть конфигурационный файл" \
-    5 "Удалить" \
-    6 "Выход" 3>&1 1>&2 2>&3)
+# Выбор действия
+ACTION=$(dialog --title "$MSG_ACTION" --menu "$MSG_ACTION" 15 50 5 \
+1 "$MSG_START" \
+2 "$MSG_STOP" \
+3 "$MSG_RESTART" \
+4 "$MSG_CONFIG" \
+5 "$MSG_DELETE" 3>&1 1>&2 2>&3)
 
-    case $ACTION in
-        1)
-            if [[ $MANAGE_TYPE == 1 ]]; then
-                pct start $ID && dialog --msgbox "$MSG_SUCCESS" 5 30 || dialog --msgbox "$MSG_ERROR" 5 30
+if [ $? -ne 0 ]; then
+    exit 1
+fi
+
+# Функция для выполнения действий
+perform_action() {
+    case $1 in
+        1) # Включение
+            if [ "$CHOICE" -eq 1 ]; then
+                pct start "$ID"
             else
-                qm start $ID && dialog --msgbox "$MSG_SUCCESS" 5 30 || dialog --msgbox "$MSG_ERROR" 5 30
+                qm start "$ID"
             fi
             ;;
-        2)
-            if [[ $MANAGE_TYPE == 1 ]]; then
-                pct stop $ID && dialog --msgbox "$MSG_SUCCESS" 5 30 || dialog --msgbox "$MSG_ERROR" 5 30
+        2) # Выключение
+            if [ "$CHOICE" -eq 1 ]; then
+                pct stop "$ID"
             else
-                qm stop $ID && dialog --msgbox "$MSG_SUCCESS" 5 30 || dialog --msgbox "$MSG_ERROR" 5 30
+                qm stop "$ID"
             fi
             ;;
-        3)
-            if [[ $MANAGE_TYPE == 1 ]]; then
-                pct reboot $ID && dialog --msgbox "$MSG_SUCCESS" 5 30 || dialog --msgbox "$MSG_ERROR" 5 30
+        3) # Перезагрузка
+            if [ "$CHOICE" -eq 1 ]; then
+                pct reboot "$ID"
             else
-                qm reboot $ID && dialog --msgbox "$MSG_SUCCESS" 5 30 || dialog --msgbox "$MSG_ERROR" 5 30
+                qm reboot "$ID"
             fi
             ;;
-        4)
-            if [[ $MANAGE_TYPE == 1 ]]; then
-                nano /etc/pve/lxc/$ID.conf
+        4) # Открытие конфигурационного файла
+            if [ "$CHOICE" -eq 1 ]; then
+                nano /etc/pve/lxc/"$ID".conf
             else
-                nano /etc/pve/qemu-server/$ID.conf
+                nano /etc/pve/qemu-server/"$ID".conf
             fi
             ;;
-        5)
-            if dialog --yesno "$MSG_CONFIRM_DELETE $NAME?" 7 60; then
-                if [[ $MANAGE_TYPE == 1 ]]; then
-                    pct stop $ID
-                    pct destroy $ID && dialog --msgbox "$MSG_SUCCESS" 5 30 || dialog --msgbox "$MSG_ERROR" 5 30
+        5) # Удаление
+            if dialog --yesno "$MSG_CONFIRM_DELETE" 7 60; then
+                if [ "$CHOICE" -eq 1 ]; then
+                    pct stop "$ID"
+                    pct destroy "$ID"
                 else
-                    qm stop $ID
-                    qm del $ID && dialog --msgbox "$MSG_SUCCESS" 5 30 || dialog --msgbox "$MSG_ERROR" 5 30
+                    qm stop "$ID"
+                    qm del "$ID"
                 fi
             fi
             ;;
-        6)
-            break
+    esac
+}
+
+# Выполнение действия
+perform_action "$ACTION"
+
+# Если выбраны VM, выдача привилегий
+if [ "$CHOICE" -eq 2 ]; then
+    PRIVILEGE_ACTION=$(dialog --title "$MSG_PRIVILEGES" --menu "$MSG_PRIVILEGES" 15 50 3 \
+    1 "Забрать привилегии" \
+    2 "Сброс" \
+    3 "Защита" 3>&1 1>&2 2>&3)
+
+    if [ $? -ne 0 ]; then
+        exit 1
+    fi
+
+    case $PRIVILEGE_ACTION in
+        1) # Забрать привилегии
+            # Здесь вы можете добавить логику для забирания привилегий
+            # Например, если у вас есть конкретные привилегии, которые нужно удалить
+            # qm set "$ID" --deleteprivileges
+            dialog --msgbox "Привилегии забраны." 6 30
             ;;
-        *)
-            dialog --msgbox "$MSG_ERROR" 5 30
+        2) # Сброс
+            # Здесь вы можете добавить логику для сброса привилегий
+            # qm resetprivileges "$ID"
+            dialog --msgbox "Привилегии сброшены." 6 30
+            ;;
+        3) # Защита
+            # Здесь вы можете добавить логику для защиты
+            # qm set "$ID" --protection 1
+            dialog --msgbox "Виртуальная машина защищена." 6 30
             ;;
     esac
-done
+fi
+
+# Завершение скрипта
+dialog --msgbox "$MSG_EXIT" 6 30
+exit 0
