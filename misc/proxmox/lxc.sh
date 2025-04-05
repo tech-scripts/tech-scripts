@@ -85,7 +85,7 @@ while true; do
                  9 "Консоль" \
                  10 "Выход" 3>&1 1>&2 2>&3)
         else
-        
+        echo 0
         fi
         
         if [ $? != 0 ]; then
