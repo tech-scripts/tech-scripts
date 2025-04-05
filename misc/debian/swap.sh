@@ -3,7 +3,7 @@
 trap 'echo "$CANCEL_MSG"; exit 0' SIGINT
 SUDO=$(command -v sudo || echo "")
 CONFIG_FILE="/etc/tech-scripts/choose.conf"
-ZRAM_CONFIG="/etc/tech-scripts/zram_config.conf"
+ZRAM_CONFIG="/etc/MootComb/zram_config.conf"
 
 if [ -f "$CONFIG_FILE" ]; then
     LANG_CONF=$(grep '^lang:' "$CONFIG_FILE" | cut -d':' -f2 | tr -d ' ')
@@ -22,7 +22,7 @@ if [ "$LANG_CONF" = "Русский" ]; then
     CHOOSE_MEMORY="Выберите тип памяти:"
     ZRAM_OPTION="ZRAM"
     SWAP_OPTION="SWAP"
-    ZSWAP_OPTION="ZSWAP"
+    ZSWAP_OPTION="ZSWAP (автоматически)"
     ZSWAP_NOT_SUPPORTED="ZSWAP не поддерживается вашим ядром."
 else
     CANCEL_MSG="Script execution interrupted."
@@ -35,7 +35,7 @@ else
     CHOOSE_MEMORY="Choose memory type:"
     ZRAM_OPTION="ZRAM"
     SWAP_OPTION="SWAP"
-    ZSWAP_OPTION="ZSWAP"
+    ZSWAP_OPTION="ZSWAP (automatic)"
     ZSWAP_NOT_SUPPORTED="ZSWAP is not supported by your kernel."
 fi
 
