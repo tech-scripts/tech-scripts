@@ -1,6 +1,5 @@
 #!/bin/bash
 
-# Чтение языковой конфигурации
 LANG_CONF=$(grep '^lang:' /etc/tech-scripts/choose.conf 2>/dev/null | cut -d':' -f2 | tr -d ' ')
 LANG_FILE="/etc/tech-scripts/choose.conf"
 source $LANG_FILE
