@@ -34,3 +34,9 @@ case $LANGUAGE in
 esac
 
 echo "lang: $lang" | $SUDO tee /etc/tech-scripts/choose.conf > /dev/null
+
+if [ "$lang" = "Русский" ]; then
+    echo "Язык установлен: $lang"
+else
+    echo "Language set to: $lang"
+fi
