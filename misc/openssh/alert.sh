@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Конфигурационный файл
-CONFIG_FILE="/usr/local/tech-scripts/alert.conf"
+CONFIG_FILE="/etc/tech-scripts/alert.conf"
 
 # Установка jq, если он не установлен
 if ! command -v jq &> /dev/null; then
@@ -27,7 +27,7 @@ if [ ! -f "$CONFIG_FILE" ]; then
 #!/bin/bash
 
 # Конфигурационный файл
-CONFIG_FILE="/usr/local/tech-scripts/alert.conf"
+CONFIG_FILE="/etc/tech-scripts/alert.conf"
 
 # Загрузка конфигурации
 if [ -f "$CONFIG_FILE" ]; then
@@ -103,7 +103,7 @@ EOF
     sudo systemctl start ssh.alert.service
 
     echo "Скрипт успешно установлен и добавлен в автозапуск."
-    echo "Скрипт расположен в /usr/local/tech-scripts/alert.sh."
+    echo "Скрипт расположен в /usr/local/tech-scripts/alert.sh"
 else
     # Если скрипт уже установлен, проверяем, существует ли сервис
     if [ -f "/etc/systemd/system/ssh.alert.service" ]; then
