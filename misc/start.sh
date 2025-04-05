@@ -11,7 +11,7 @@ cd "/tmp/tech-scripts/misc" || exit 1
 
 DIR_STACK=()
 CURRENT_DIR="$CLONE_DIR"
-EXCLUDE_FILES=("start.sh" "*.tmp")
+EXCLUDE_FILES=("start.sh" "choose.sh" "*.tmp")
 CONFIG_FILE="/etc/tech-scripts/choose.conf"
 if [ ! -f "$CONFIG_FILE" ]; then
     CHOOSE_SCRIPT="/tmp/tech-scripts/misc/choose.sh"
