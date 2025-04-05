@@ -5,8 +5,7 @@ SCRIPT_DIR="/usr/local/tech-scripts"
 CONFIG_FILE="$CONFIG_DIR/alert.conf"
 LANG_FILE="/etc/tech-scripts/choose.conf"
 LANGUAGE=$(grep -E '^lang:' "$LANG_FILE" | cut -d':' -f2 | xargs)
-if [ -f "$LANG_FILE" ]; then
-    source "$LANG_FILE"
+
     if [[ "$LANGUAGE" == "Русский" ]]; then
         MSG_INSTALL_JQ="Установка jq..."
         MSG_BOT_TOKEN="Введите токен вашего Telegram-бота: "
@@ -46,10 +45,6 @@ if [ -f "$LANG_FILE" ]; then
         MSG_SERVICE_CREATED="Service created and started."
         MSG_SERVICE_CANCELED="Service creation canceled."
     fi
-else
-    echo "Ошибка: Файл языка не найден."
-    exit 1
-fi
 
 if ! command -v jq &> /dev/null; then
     echo "$MSG_INSTALL_JQ"
