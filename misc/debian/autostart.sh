@@ -17,7 +17,6 @@ if [ "$LANG_CONF" = "Русский" ]; then
     REMOVE_SERVICE_MSG="Хотите удалить авто запуск $SERVICE_NAME? (y/n): "
     SERVICE_REMOVED="Служба $SERVICE_NAME успешно удалена."
     SERVICE_REMOVE_ERROR="Ошибка: не удалось удалить службу $SERVICE_NAME."
-    SERVICE_NOT_FOUND="Служба $SERVICE_NAME не найдена."
     DIR_ERROR="Ошибка: не удалось создать директорию /usr/local/tech-scripts"
     SCRIPT_ERROR="Ошибка: не удалось создать файл $AUTOSTART_SCRIPT."
     CHMOD_ERROR="Ошибка: не удалось сделать файл $AUTOSTART_SCRIPT исполняемым."
@@ -33,7 +32,6 @@ else
     REMOVE_SERVICE_MSG="Do you want to remove autostart for $SERVICE_NAME? (y/n): "
     SERVICE_REMOVED="Service $SERVICE_NAME successfully removed."
     SERVICE_REMOVE_ERROR="Error: Failed to remove service $SERVICE_NAME."
-    SERVICE_NOT_FOUND="Service $SERVICE_NAME not found."
     DIR_ERROR="Error: Failed to create directory /usr/local/tech-scripts"
     SCRIPT_ERROR="Error: Failed to create file $AUTOSTART_SCRIPT."
     CHMOD_ERROR="Error: Failed to make $AUTOSTART_SCRIPT executable."
@@ -80,7 +78,6 @@ if systemctl list-units --full --all | grep -q "$SERVICE_NAME"; then
         exit 0
     fi
 else
-    echo "$SERVICE_NOT_FOUND"
 fi
 
 if ! $SUDO mkdir -p /usr/local/tech-scripts; then
