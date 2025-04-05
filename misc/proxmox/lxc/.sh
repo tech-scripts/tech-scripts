@@ -11,7 +11,6 @@ if [ "$LANG_CONF" = "Русский" ]; then
     SELECT_CONTAINER="Выберите контейнер"
     SELECT_ACTION="Выберите действие"
     MSG_WELCOME="Добро пожаловать в управление Proxmox"
-    MSG_CHOICE="Выберите тип управления:"
     MSG_TYPE_LXC="LXC"
     MSG_TYPE_VM="VM"
     MSG_ID="Введите ID:"
@@ -26,7 +25,6 @@ else
     SELECT_CONTAINER="Select container"
     SELECT_ACTION="Select action"
     MSG_WELCOME="Welcome to Proxmox management"
-    MSG_CHOICE="Choose management type:"
     MSG_TYPE_LXC="LXC"
     MSG_TYPE_VM="VM"
     MSG_ID="Enter the ID:"
@@ -70,9 +68,6 @@ fi
 ID=$(dialog --inputbox "$MSG_ID" 8 40 3>&1 1>&2 2>&3)
 NAME=$(dialog --inputbox "$MSG_NAME" 8 40 3>&1 1>&2 2>&3)
 
-MANAGE_TYPE=$(dialog --menu "$MSG_CHOICE" 15 50 2 \
-    1 "$MSG_TYPE_LXC" \
-    2 "$MSG_TYPE_VM" 3>&1 1>&2 2>&3)
 
 if [ $? != 0 ]; then
     clear
