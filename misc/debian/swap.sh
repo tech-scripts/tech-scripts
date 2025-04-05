@@ -1,7 +1,9 @@
 #!/bin/bash
 
-LANG_CONF=$(grep '^lang:' /etc/tech-scripts/choose.conf 2>/dev/null | cut -d':' -f2 | tr -d ' ')
+trap 'echo "$CANCEL_MSG"; exit 0' SIGINT
+SUDO=$(command -v sudo || echo "")
 CONFIG_FILE="/etc/tech-scripts/choose.conf"
+ZRAM_CONFIG="/etc/MootComb/zram_config.conf"
 
 if [ -f "$CONFIG_FILE" ]; then
     LANG_CONF=$(grep '^lang:' "$CONFIG_FILE" | cut -d':' -f2 | tr -d ' ')
@@ -10,135 +12,180 @@ else
 fi
 
 if [ "$LANG_CONF" = "Русский" ]; then
-    DIALOG_NOT_FOUND="Утилита dialog не установлена. Установите её с помощью команды: sudo apt install dialog"
-    PCT_NOT_FOUND="Утилита pct не найдена. Убедитесь, что Proxmox установлен."
-    NO_CONTAINERS="Нет доступных LXC-контейнеров!"
-    SELECT_CONTAINER="Выберите контейнер"
-    SELECT_ACTION="Выберите действие"
-    MSG_CONFIRM_DELETE="Вы уверены, что хотите удалить"
-    MSG_SUCCESS="Успешно выполнено"
-    MSG_ERROR="Ошибка"
-    MSG_LOCK="Контейнер заблокирован"
-    MSG_UNLOCK="Контейнер разблокирован"
-    CONTINUE="Продолжить?"
+    CANCEL_MSG="Вы прервали выполнение скрипта."
+    INVALID_SIZE="Некорректный ввод. Введите размер в формате, например, 8G или 512M."
+    ENTER_SIZE="Введите размер ZRAM (например, 8G, 512M):"
+    REMOVE_ZRAM="Удалить настройки ZRAM?"
+    ZRAM_REMOVED="Настройки ZRAM удалены."
+    ZSWAP_ENABLED="ZSWAP включен."
+    SWAP_SETUP="SWAP настроен на размер $SWAP_SIZE."
+    CHOOSE_MEMORY="Выберите тип памяти:"
+    ZRAM_OPTION="ZRAM"
+    SWAP_OPTION="SWAP"
+    ZSWAP_OPTION="ZSWAP (автоматически)"
+    ZSWAP_NOT_SUPPORTED="ZSWAP не поддерживается вашим ядром."
+    ACTIVE_SWAP_FOUND="Обнаружена активная подкачка (SWAP)."
+    ACTIVE_ZRAM_FOUND="Обнаружена активная ZRAM."
+    ACTIVE_ZSWAP_FOUND="Обнаружена активная ZSWAP."
+    DISABLE_SWAP_PROMPT="Хотите отключить активную подкачку?"
 else
-    DIALOG_NOT_FOUND="Utility dialog not found. Install it with: sudo apt install dialog"
-    PCT_NOT_FOUND="Utility pct not found. Make sure Proxmox is installed."
-    NO_CONTAINERS="No available LXC containers!"
-    SELECT_CONTAINER="Select container"
-    SELECT_ACTION="Select action"
-    MSG_CONFIRM_DELETE="Are you sure you want to delete"
-    MSG_SUCCESS="Successfully executed"
-    MSG_ERROR="Error"
-    MSG_LOCK="Container locked"
-    MSG_UNLOCK="Container unlocked"
-    CONTINUE="Continue?"
+    CANCEL_MSG="Script execution interrupted."
+    INVALID_SIZE="Invalid input. Please enter size in format like 8G or 512M."
+    ENTER_SIZE="Enter ZRAM size (e.g., 8G, 512M):"
+    REMOVE_ZRAM="Remove ZRAM settings?"
+    ZRAM_REMOVED="ZRAM settings removed."
+    ZSWAP_ENABLED="ZSWAP enabled."
+    SWAP_SETUP="SWAP set up with size $SWAP_SIZE."
+    CHOOSE_MEMORY="Choose memory type:"
+    ZRAM_OPTION="ZRAM"
+    SWAP_OPTION="SWAP"
+    ZSWAP_OPTION="ZSWAP (automatic)"
+    ZSWAP_NOT_SUPPORTED="ZSWAP is not supported by your kernel."
+    ACTIVE_SWAP_FOUND="Active swap found (SWAP)."
+    ACTIVE_ZRAM_FOUND="Active ZRAM found."
+    ACTIVE_ZSWAP_FOUND="Active ZSWAP found."
+    DISABLE_SWAP_PROMPT="Do you want to disable active swap?"
 fi
 
-# Проверка наличия утилиты dialog
+install_dialog() {
+    $SUDO apt update && $SUDO apt install -y dialog || { echo "Error installing dialog."; exit 1; }
+}
+
 if ! command -v dialog &> /dev/null; then
-    echo "$DIALOG_NOT_FOUND"
-    exit 1
+    echo "dialog not found. Installing..."
+    install_dialog
 fi
 
-# Проверка наличия утилиты pct
-if ! command -v pct &> /dev/null; then
-    echo "$PCT_NOT_FOUND"
-    exit 1
-fi
+is_valid_size() {
+    [[ $1 =~ ^[0-9]+[GgMm]$ ]]
+}
 
-# Основной цикл выбора контейнера
-while true; do
-    # Получение списка контейнеров
-    containers=$(pct list | awk 'NR>1 {print $1, $3}')
+close() {
+    echo "$CANCEL_MSG"
+    exit 0
+}
 
-    # Проверка наличия контейнеров
-    if [ -z "$containers" ]; then
-        dialog --msgbox "$NO_CONTAINERS" 5 40
-        exit 1
+check_active_swap() {
+    if swapon --show | grep -q '/'; then
+        echo "$ACTIVE_SWAP_FOUND"
+        return 0
     fi
+    return 1
+}
 
-    # Формирование списка опций для выбора контейнера
-    options=()
-    while read -r container_id container_name; do
-        options+=("$container_id" "$container_name")
-    done <<< "$containers"
-
-    # Выбор контейнера
-    selected_container_id=$(dialog --title "$SELECT_CONTAINER" --menu "$SELECT_CONTAINER:" 15 50 10 "${options[@]}" 3>&1 1>&2 2>&3)
-
-    # Выход, если выбор отменен
-    if [ $? != 0 ]; then
-        clear
-        exit
+check_active_zram() {
+    if lsblk | grep -q zram; then
+        echo "$ACTIVE_ZRAM_FOUND"
+        return 0
     fi
+    return 1
+}
 
-    # Основное меню действий
-    while true; do
-        ACTION=$(dialog --title "$SELECT_ACTION" --menu "$SELECT_ACTION" 15 50 8 \
-            1 "Включить" \
-            2 "Выключить" \
-            3 "Перезагрузить" \
-            4 "Открыть конфигурационный файл" \
-            5 "Уничтожить" \
-            6 "Разблокировать" \
-            7 "Усыпить" \
-            8 "Разбудить" \
-            9 "Консоль" \
-            10 "Выход" 3>&1 1>&2 2>&3)
+check_active_zswap() {
+    if [ -d /sys/module/zswap ]; then
+        if [ "$(cat /sys/module/zswap/parameters/enabled)" -eq 1 ]; then
+            echo "$ACTIVE_ZSWAP_FOUND"
+            return 0
+        fi
+    fi
+    return 1
+}
 
-        # Выход, если выбор отменен
-        if [ $? != 0 ]; then
-            clear
-            exit
+ACTIVE_SWAP=0
+ACTIVE_ZRAM=0
+ACTIVE_ZSWAP=0
+
+check_active_swap && ACTIVE_SWAP=1
+check_active_zram && ACTIVE_ZRAM=1
+check_active_zswap && ACTIVE_ZSWAP=1
+
+if [ $ACTIVE_SWAP -eq 1 ] || [ $ACTIVE_ZRAM -eq 1 ] || [ $ACTIVE_ZSWAP -eq 1 ]; then
+    if dialog --yesno "$DISABLE_SWAP_PROMPT" 7 40; then
+
+        if [ $ACTIVE_SWAP -eq 1 ]; then
+            echo "Отключение SWAP..."
+            $SUDO swapoff -a
+            echo "SWAP отключен."
         fi
 
-        # Обработка выбранного действия
-        case $ACTION in
-            1)
-                pct start "$selected_container_id" && dialog --msgbox "$MSG_SUCCESS" 5 30 || dialog --msgbox "$MSG_ERROR" 5 30
-                ;;
-            2)
-                pct stop "$selected_container_id" && dialog --msgbox "$MSG_SUCCESS" 5 30 || dialog --msgbox "$MSG_ERROR" 5 30
-                ;;
-            3)
-                pct reboot "$selected_container_id" && dialog --msgbox "$MSG_SUCCESS" 5 30 || dialog --msgbox "$MSG_ERROR" 5 30
-                ;;
-            4)
-                nano "/etc/pve/lxc/$selected_container_id.conf"
-                ;;
-            5)
-                if dialog --yesno "$MSG_CONFIRM_DELETE $selected_container_id?" 7 60; then
-                    pct stop "$selected_container_id"
-                    pct destroy "$selected_container_id" && dialog --msgbox "$MSG_SUCCESS" 5 30 || dialog --msgbox "$MSG_ERROR" 5 30
-                fi
-                ;;
-            6)
-                pct unlock "$selected_container_id" && dialog --msgbox "$MSG_LOCK" 5 30 || dialog --msgbox "$MSG_ERROR" 5 30
-                ;;
-            7)
-                pct suspend "$selected_container_id" && dialog --msgbox "$MSG_UNLOCK" 5 30 || dialog --msgbox "$MSG_ERROR" 5 30
-                ;;
-            8)
-                pct resume "$selected_container_id" && dialog --msgbox "$MSG_UNLOCK" 5 30 || dialog --msgbox "$MSG_ERROR" 5 30
-                ;;
-            9)
-                pct console "$selected_container_id" && dialog --msgbox "$MSG_UNLOCK" 5 30 || dialog --msgbox "$MSG_ERROR" 5 30
-                ;;
-            10)
-                clear
-                exit 0
-                ;;
-            *)
-                dialog --msgbox "$MSG_ERROR" 5 30
-                ;;
-        esac
+        if [ $ACTIVE_ZRAM -eq 1 ]; then
+            echo "Отключение ZRAM..."
+            $SUDO swapoff /dev/zram0
+            $SUDO modprobe -r zram
+            echo "ZRAM отключен."
+        fi
 
-        # Запрос на продолжение
-        if dialog --title "$CONTINUE" --yesno "$CONTINUE" 5 40; then
-            continue
+        if [ $ACTIVE_ZSWAP -eq 1 ]; then
+            echo "Отключение ZSWAP..."
+            echo 0 | $SUDO tee /sys/module/zswap/parameters/enabled > /dev/null
+            echo "ZSWAP отключен."
+        fi
+    else
+        echo "Отключение подкачки отменено."
+    fi
+fi
+
+dialog --menu "$CHOOSE_MEMORY" 10 40 3 \
+1 "$ZRAM_OPTION" \
+2 "$SWAP_OPTION" \
+3 "$ZSWAP_OPTION" 2> /tmp/memory_choice
+
+MEMORY_CHOICE=$(< /tmp/memory_choice)
+
+case $MEMORY_CHOICE in
+    1)
+        while true; do
+            dialog --inputbox "$ENTER_SIZE" 8 40 2> /tmp/zram_size
+            if [ $? -ne 0 ]; then close; fi
+            ZRAM_SIZE=$(< /tmp/zram_size)
+            if is_valid_size "$ZRAM_SIZE"; then break; else dialog --msgbox "$INVALID_SIZE" 6 50; fi
+        done
+
+        if [ -f "$ZRAM_CONFIG" ]; then
+            source "$ZRAM_CONFIG"
+            if dialog --yesno "$REMOVE_ZRAM" 7 40; then
+                $SUDO rm -f "$ZRAM_CONFIG"
+                echo "$ZRAM_REMOVED"
+                $SUDO swapoff /dev/zram0 2>/dev/null
+                $SUDO modprobe -r zram 2>/dev/null
+            else
+                close
+            fi
+        fi
+
+        $SUDO modprobe zram
+        echo $ZRAM_SIZE | $SUDO tee /sys/block/zram0/disksize > /dev/null
+        $SUDO mkswap /dev/zram0
+        $SUDO swapon /dev/zram0
+        echo "ZRAM настроен на размер $ZRAM_SIZE."
+        echo "ZRAM_SIZE=$ZRAM_SIZE" | $SUDO tee $ZRAM_CONFIG > /dev/null
+        ;;
+
+    2)
+        dialog --inputbox "Введите размер SWAP (например, 2G):" 8 40 2> /tmp/swap_size
+        SWAP_SIZE=$(< /tmp/swap_size)
+        if is_valid_size "$SWAP_SIZE"; then
+            $SUDO fallocate -l $SWAP_SIZE /swapfile
+            $SUDO chmod 600 /swapfile
+            $SUDO mkswap /swapfile
+            $SUDO swapon /swapfile
+            echo "/swapfile none swap sw 0 0" | $SUDO tee -a /etc/fstab > /dev/null
+            echo "$SWAP_SETUP"
         else
-            break
+            dialog --msgbox "$INVALID_SIZE" 6 50
         fi
-    done
-done
+        ;;
+
+    3)
+        if [ -d /sys/module/zswap ]; then
+            echo 1 | $SUDO tee /sys/module/zswap/parameters/enabled > /dev/null
+            echo "z3fold" | $SUDO tee /sys/module/zswap/parameters/zpool > /dev/null
+            echo "lzo" | $SUDO tee /sys/module/zswap/parameters/compressor > /dev/null
+            echo "$ZSWAP_ENABLED"
+        else
+            echo "$ZSWAP_NOT_SUPPORTED"
+        fi
+        ;;
+esac
+
+rm -f /tmp/memory_choice /tmp/zram_size /tmp/swap_size
