@@ -10,10 +10,6 @@ if [ "$LANG_CONF" = "Русский" ]; then
     NO_CONTAINERS="Нет доступных LXC-контейнеров!"
     SELECT_CONTAINER="Выберите контейнер"
     SELECT_ACTION="Выберите действие"
-    MSG_TYPE_LXC="LXC"
-    MSG_TYPE_VM="VM"
-    MSG_ID="Введите ID:"
-    MSG_NAME="Введите название:"
     MSG_CONFIRM_DELETE="Вы уверены, что хотите удалить"
     MSG_SUCCESS="Успешно выполнено"
     MSG_ERROR="Ошибка"
@@ -23,10 +19,6 @@ else
     NO_CONTAINERS="No available LXC containers!"
     SELECT_CONTAINER="Select container"
     SELECT_ACTION="Select action"
-    MSG_TYPE_LXC="LXC"
-    MSG_TYPE_VM="VM"
-    MSG_ID="Enter the ID:"
-    MSG_NAME="Enter the name:"
     MSG_CONFIRM_DELETE="Are you sure you want to delete"
     MSG_SUCCESS="Successfully executed"
     MSG_ERROR="Error"
@@ -60,9 +52,6 @@ if [ $? != 0 ]; then
     clear
     exit
 fi
-
-ID=$(dialog --inputbox "$MSG_ID" 8 40 3>&1 1>&2 2>&3)
-NAME=$(dialog --inputbox "$MSG_NAME" 8 40 3>&1 1>&2 2>&3)
 
 
 if [ $? != 0 ]; then
