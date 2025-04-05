@@ -120,8 +120,7 @@ else
                 echo "Удаление отменено."
             fi
         else
-            echo "Скрипт уже установлен, но не запущен."
-            read -p "Хотите запустить его сейчас? (y/n): " START_CHOICE
+            read -p "Скрипт уже установлен. Хотите запустить его сейчас? (y/n): " START_CHOICE
             if [ "$START_CHOICE" = "y" ]; then
                 sudo systemctl start ssh.alert.service
                 echo "Скрипт запущен."
