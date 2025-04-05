@@ -24,6 +24,10 @@ if [ "$LANG_CONF" = "Русский" ]; then
     SWAP_OPTION="SWAP"
     ZSWAP_OPTION="ZSWAP (автоматически)"
     ZSWAP_NOT_SUPPORTED="ZSWAP не поддерживается вашим ядром."
+    SWAP_PARTITION_FOUND="Обнаружен раздел подкачки. Подкачка не поддерживается на системе с существующим разделом подкачки."
+    ACTIVE_SWAP_FOUND="Обнаружена активная подкачка. Пожалуйста, отключите её перед настройкой новой."
+    ACTIVE_ZRAM_FOUND="Обнаружена активная ZRAM. Пожалуйста, отключите её перед настройкой новой."
+    ACTIVE_ZSWAP_FOUND="Обнаружена активная ZSWAP. Пожалуйста, отключите её перед настройкой новой."
 else
     CANCEL_MSG="Script execution interrupted."
     INVALID_SIZE="Invalid input. Please enter size in format like 8G or 512M."
@@ -37,6 +41,19 @@ else
     SWAP_OPTION="SWAP"
     ZSWAP_OPTION="ZSWAP (automatic)"
     ZSWAP_NOT_SUPPORTED="ZSWAP is not supported by your kernel."
+    SWAP_PARTITION_FOUND="Swap partition found. Swap is not supported on a system with an existing swap partition."
+    ACTIVE_SWAP_FOUND="Active swap found. Please disable it before setting up a new one."
+    ACTIVE_ZRAM_FOUND="Active ZRAM found. Please disable it before setting up a new one."
+    ACTIVE_ZSWAP_FOUND="Active ZSWAP found. Please disable it before setting up a new one."
+fi
+
+install_dialog() {
+    $SUDO apt update && $SUDO apt install -y dialog || { echo "Error installing dialog."; exit 1; }
+}
+
+if ! command -v dialog &> /dev/null; then
+    echo "dialog not found. Installing..."
+    install_dialog
 fi
 
 is_valid_size() {
@@ -47,6 +64,41 @@ close() {
     echo "$CANCEL_MSG"
     exit 0
 }
+
+check_active_swap() {
+    if swapon --show | grep -q '/'; then
+        echo "$ACTIVE_SWAP_FOUND"
+        exit 1
+    fi
+}
+
+check_active_zram() {
+    if lsblk | grep -q zram; then
+        echo "$ACTIVE_ZRAM_FOUND"
+        exit 1
+    fi
+}
+
+check_active_zswap() {
+    if [ -d /sys/module/zswap ]; then
+        if [ "$(cat /sys/module/zswap/parameters/enabled)" -eq 1 ]; then
+            echo "$ACTIVE_ZSWAP_FOUND"
+            exit 1
+        fi
+    fi
+}
+
+check_swap_partition() {
+    if [ "$(lsblk -o TYPE | grep -c 'part')" -gt 0 ]; then
+        echo "$SWAP_PARTITION_FOUND"
+        exit 1
+    fi
+}
+
+check_active_swap
+check_active_zram
+check_active_zswap
+check_swap_partition
 
 dialog --menu "$CHOOSE_MEMORY" 10 40 3 \
 1 "$ZRAM_OPTION" \
