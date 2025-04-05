@@ -1,51 +1,48 @@
 #!/bin/bash
 
 SUDO=$(command -v sudo)
+LANG_CONF=$(grep '^lang:' /etc/tech-scripts/choose.conf 2>/dev/null | cut -d' ' -f2)
 
-# Создание директории и файла конфигурации, если они не существуют
-if [ ! -d "/etc/tech-scripts" ]; then
-    $SUDO mkdir -p /etc/tech-scripts
+if [ "$LANG_CONF" = "Русский" ]; then
+    TITLE_EDITOR="Выбор текстового редактора"
+    MSG_EDITOR="Выберите предпочитаемый текстовый редактор:"
+    TITLE_CUSTOM="Пользовательский редактор"
+    MSG_CUSTOM="Введите команду для вашего текстового редактора:"
+    MSG_CANCEL="Выбор отменен!"
+    MSG_CUSTOM_CANCEL="Ввод пользовательского редактора отменен!"
+    MSG_INVALID="Неверный выбор!"
+    MSG_SUCCESS="Текстовый редактор установлен:"
+else
+    TITLE_EDITOR="Text Editor Selection"
+    MSG_EDITOR="Choose your preferred text editor:"
+    TITLE_CUSTOM="Custom Editor"
+    MSG_CUSTOM="Enter the command for your custom text editor:"
+    MSG_CANCEL="Selection canceled!"
+    MSG_CUSTOM_CANCEL="Custom editor input canceled!"
+    MSG_INVALID="Invalid choice!"
+    MSG_SUCCESS="Text editor set to:"
 fi
 
-if [ ! -f "/etc/tech-scripts/editor.conf" ]; then
-    $SUDO touch /etc/tech-scripts/editor.conf
-fi
+[ ! -d "/etc/tech-scripts" ] && $SUDO mkdir -p /etc/tech-scripts
+[ ! -f "/etc/tech-scripts/editor.conf" ] && $SUDO touch /etc/tech-scripts/editor.conf
 
-# Выбор текстового редактора
-EDITOR=$(dialog --title "Text Editor Selection" --menu "Choose your preferred text editor:" 12 40 3 \
+EDITOR=$(dialog --title "$TITLE_EDITOR" --menu "$MSG_EDITOR" 12 40 3 \
     1 "nano" \
     2 "vim" \
     3 "Custom" \
     3>&1 1>&2 2>&3)
 
-# Выход, если выбор отменен
-if [ $? -ne 0 ]; then
-    echo "Selection canceled!"
-    exit 1
-fi
+[ $? -ne 0 ] && { echo "$MSG_CANCEL"; exit 1; }
 
-# Установка выбранного редактора
 case $EDITOR in
-    1)
-        editor="nano"
-        ;;
-    2)
-        editor="vim"
-        ;;
+    1) editor="nano" ;;
+    2) editor="vim" ;;
     3)
-        # Запрос пользовательского редактора
-        editor=$(dialog --title "Custom Editor" --inputbox "Enter the command for your custom text editor:" 10 40 3>&1 1>&2 2>&3)
-        if [ $? -ne 0 ]; then
-            echo "Custom editor input canceled!"
-            exit 1
-        fi
+        editor=$(dialog --title "$TITLE_CUSTOM" --inputbox "$MSG_CUSTOM" 10 40 3>&1 1>&2 2>&3)
+        [ $? -ne 0 ] && { echo "$MSG_CUSTOM_CANCEL"; exit 1; }
         ;;
-    *)
-        echo "Invalid choice!"
-        exit 1
-        ;;
+    *) echo "$MSG_INVALID"; exit 1 ;;
 esac
 
-echo "editor: $editor" | $SUDO tee /etc/tech-scripts/editor.conf > /dev/null
-
-echo "Text editor set to: $editor"
+echo "editor: $editor" | $SUDO tee /etc/tech-scripts/choose.conf > /dev/null
+echo "$MSG_SUCCESS $editor"
