@@ -1,7 +1,6 @@
 #!/bin/bash
 
 SUDO=$(command -v sudo)
-
 CONFIG_DIR="/etc/tech-scripts"
 SCRIPT_DIR="/usr/local/tech-scripts"
 CONFIG_FILE="$CONFIG_DIR/alert.conf"
@@ -9,7 +8,6 @@ LANG_FILE="/etc/tech-scripts/choose.conf"
 LANGUAGE=$(grep -E '^lang:' "$LANG_FILE" | cut -d':' -f2 | xargs)
 CONTINUE="true"
 
-# Установка текстовых сообщений
 if [[ "$LANGUAGE" == "Русский" ]]; then
     MSG_INSTALL_JQ="Установка jq..."
     MSG_BOT_TOKEN="Введите токен вашего Telegram-бота: "
@@ -65,7 +63,7 @@ After=network.target
 [Service]
 ExecStart=/usr/local/tech-scripts/alert.sh
 Restart=always
-User=root
+User =root
 RestartSec=5
 StandardOutput=syslog
 StandardError=syslog
@@ -83,8 +81,6 @@ EOF
 }
 
 create_ssh_alert_script() {
-#    local SCRIPT_DIR="$1"
-
     if [ ! -f "$SCRIPT_DIR/alert.sh" ]; then
         echo "Создание скрипта alert.sh"
         $SUDO mkdir -p "$SCRIPT_DIR"
@@ -178,11 +174,8 @@ if [ -f "$CONFIG_FILE" ]; then
     else
         echo "Обновление конфигурации отменено!"
     fi
-else
-    echo ""
 fi
 
-# Проверка и удаление конфигурационного файла
 if [ -f "$CONFIG_FILE" ]; then
     read -p "$MSG_REMOVE_CONFIG" REMOVE_CONFIG
     if [ "$REMOVE_CONFIG" = "y" ]; then
@@ -194,7 +187,6 @@ if [ -f "$CONFIG_FILE" ]; then
     fi
 fi
 
-# Проверка и удаление скрипта
 if [ -f "$SCRIPT_DIR/alert.sh" ]; then
     read -p "$MSG_REMOVE_SCRIPT" REMOVE_SCRIPT
     if [ "$REMOVE_SCRIPT" = "y" ]; then
@@ -206,7 +198,6 @@ if [ -f "$SCRIPT_DIR/alert.sh" ]; then
     fi
 fi
 
-# Проверка и удаление сервиса
 if [ -f "/etc/systemd/system/ssh.alert.service" ]; then
     read -p "$MSG_REMOVE_CHOICE" REMOVE_CHOICE
     if [ "$REMOVE_CHOICE" = "y" ]; then
@@ -221,7 +212,6 @@ if [ -f "/etc/systemd/system/ssh.alert.service" ]; then
     fi
 fi
 
-# Установка jq, если он не установлен
 if ! command -v jq &> /dev/null; then
     echo "$MSG_INSTALL_JQ"
     $SUDO apt update && $SUDO apt install -y jq
@@ -233,24 +223,24 @@ fi
 
 read -p "Хотите ли вы создать оповещение о входах по SSH через Telegram? (y/n): " answer
 if [ "$answer" = "Y" ] || [ "$answer" = "y" ]; then
-    CONFIG_FILE="/etc/tech-scripts/alert.conf"
-
-    # Проверка наличия конфигурационного файла
-    if [ ! -f "$CONFIG_FILE" ]; then
-        # Создание конфигурационного файла
-        read -p "Введите токен Telegram бота: " TELEGRAM_BOT_TOKEN
-        read -p "Введите ID Telegram чата: " TELEGRAM_CHAT_ID
+    if [ -f "$CONFIG_FILE" ]; then
+        CONTINUE="false"
+    else
+        read -p "$MSG_BOT_TOKEN" TELEGRAM_BOT_TOKEN
+        read -p "$MSG_CHAT_ID" TELEGRAM_CHAT_ID
         echo "TELEGRAM_BOT_TOKEN=$TELEGRAM_BOT_TOKEN" > "$CONFIG_FILE"
         echo "TELEGRAM_CHAT_ID=$TELEGRAM_CHAT_ID" >> "$CONFIG_FILE"
         chmod 600 "$CONFIG_FILE"
-    else
-        echo "Конфигурационный файл $CONFIG_FILE уже существует! Пропускаем создание."
     fi
 
-    create_ssh_alert_script
-    create_ssh_alert_service
-    echo "$MSG_SUCCESS_INSTALL"
-    echo "$MSG_SCRIPT_LOCATION"
+    if [ "$CONTINUE" = "false" ]; then
+        echo "Конфигурационный файл уже существует. Пропускаем создание."
+    else
+        create_ssh_alert_script
+        create_ssh_alert_service
+        echo "$MSG_SUCCESS_INSTALL"
+        echo "$MSG_SCRIPT_LOCATION"
+    fi
 else
     echo "Создание оповещения отменено!"
 fi
