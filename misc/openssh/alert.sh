@@ -7,6 +7,7 @@ SCRIPT_DIR="/usr/local/tech-scripts"
 CONFIG_FILE="$CONFIG_DIR/alert.conf"
 LANG_FILE="/etc/tech-scripts/choose.conf"
 LANGUAGE=$(grep -E '^lang:' "$LANG_FILE" | cut -d':' -f2 | xargs)
+CONTINUE="true"
 
 # Установка текстовых сообщений
 if [[ "$LANGUAGE" == "Русский" ]]; then
@@ -81,7 +82,7 @@ EOF
     fi
 }
 
-create_alert_script() {
+create_ssh_alert_script() {
 #    local SCRIPT_DIR="$1"
 
     if [ ! -f "$SCRIPT_DIR/alert.sh" ]; then
@@ -170,7 +171,7 @@ if [ -f "$CONFIG_FILE" ]; then
         $SUDO systemctl disable ssh.alert.service
         $SUDO rm /etc/systemd/system/ssh.alert.service
         $SUDO systemctl daemon-reload
-        create_alert_script
+        create_ssh_alert_script
         create_ssh_alert_service
         echo "Скрипт успешно обновлен!"
         exit 0
@@ -187,6 +188,7 @@ if [ -f "$CONFIG_FILE" ]; then
     if [ "$REMOVE_CONFIG" = "y" ]; then
         $SUDO rm "$CONFIG_FILE"
         echo "$MSG_REMOVED"
+        CONTINUE="false"
     else
         echo "$MSG_CANCELED"
     fi
@@ -198,6 +200,7 @@ if [ -f "$SCRIPT_DIR/alert.sh" ]; then
     if [ "$REMOVE_SCRIPT" = "y" ]; then
         $SUDO rm "$SCRIPT_DIR/alert.sh"
         echo "$MSG_REMOVED"
+        CONTINUE="false"
     else
         echo "$MSG_CANCELED"
     fi
@@ -212,6 +215,7 @@ if [ -f "/etc/systemd/system/ssh.alert.service" ]; then
         $SUDO rm /etc/systemd/system/ssh.alert.service
         $SUDO systemctl daemon-reload
         echo "$MSG_REMOVED"
+        CONTINUE="false"
     else
         echo "$MSG_CANCELED"
     fi
@@ -221,6 +225,10 @@ fi
 if ! command -v jq &> /dev/null; then
     echo "$MSG_INSTALL_JQ"
     $SUDO apt update && $SUDO apt install -y jq
+fi
+
+if [ "$CONTINUE" = "false" ]; then
+    exit 1
 fi
 
 read -p "Хотите ли вы создать оповещение о входах по SSH через Telegram? (y/n): " answer
@@ -239,7 +247,7 @@ if [ "$answer" = "Y" ] || [ "$answer" = "y" ]; then
         echo "Конфигурационный файл $CONFIG_FILE уже существует! Пропускаем создание."
     fi
 
-    create_alert_script
+    create_ssh_alert_script
     create_ssh_alert_service
     echo "$MSG_SUCCESS_INSTALL"
     echo "$MSG_SCRIPT_LOCATION"
