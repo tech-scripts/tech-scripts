@@ -82,7 +82,7 @@ EOF
 }
 
 create_alert_script() {
-    local SCRIPT_DIR="$1"
+#    local SCRIPT_DIR="$1"
 
     if [ ! -f "$SCRIPT_DIR/alert.sh" ]; then
         echo "Создание скрипта alert.sh"
