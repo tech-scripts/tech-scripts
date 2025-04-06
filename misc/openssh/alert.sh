@@ -65,6 +65,7 @@ if [ -f "$CONFIG_FILE" ]; then
         exit 0
     else
         echo "Обновление конфигурации отменено."
+    fi
 else
     echo ""
 fi
