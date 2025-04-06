@@ -8,6 +8,7 @@ LANG_FILE="/etc/tech-scripts/choose.conf"
 LANGUAGE=$(grep -E '^lang:' "$LANG_FILE" | cut -d':' -f2 | xargs)
 CONTINUE="true"
 
+# Установка текстовых сообщений
 if [[ "$LANGUAGE" == "Русский" ]]; then
     MSG_INSTALL_JQ="Установка jq..."
     MSG_BOT_TOKEN="Введите токен вашего Telegram-бота: "
@@ -29,6 +30,12 @@ if [[ "$LANGUAGE" == "Русский" ]]; then
     MSG_SERVICE_CANCELED="Создание сервиса отменено."
     MSG_REMOVE_CONFIG="Хотите удалить конфигурационный файл $CONFIG_FILE? (y/n): "
     MSG_REMOVE_SCRIPT="Хотите удалить скрипт $SCRIPT_DIR/alert.sh? (y/n): "
+    MSG_UPDATE_SCRIPT="Вы хотите обновить скрипт? (y/n): "
+    MSG_UPDATE_CANCELED="Обновление конфигурации отменено!"
+    MSG_UPDATE_SUCCESS="Скрипт успешно обновлен!"
+    MSG_CREATE_ALERT="Хотите ли вы создать оповещение о входах по SSH через Telegram? (y/n): "
+    MSG_ALERT_CANCELED="Создание оповещения отменено!"
+    MSG_CONFIG_EXISTS="Конфигурационный файл уже существует. Пропускаем создание."
 else
     MSG_INSTALL_JQ="Installing jq..."
     MSG_BOT_TOKEN="Enter your Telegram bot token: "
@@ -50,11 +57,38 @@ else
     MSG_SERVICE_CANCELED="Service creation canceled."
     MSG_REMOVE_CONFIG="Do you want to remove the configuration file $CONFIG_FILE? (y/n): "
     MSG_REMOVE_SCRIPT="Do you want to remove the script $SCRIPT_DIR/alert.sh? (y/n): "
+    MSG_UPDATE_SCRIPT="Do you want to update the script? (y/n): "
+    MSG_UPDATE_CANCELED="Configuration update canceled!"
+    MSG_UPDATE_SUCCESS="Script successfully updated!"
+    MSG_CREATE_ALERT="Do you want to create an SSH login alert via Telegram? (y/n): "
+    MSG_ALERT_CANCELED="Alert creation canceled!"
+    MSG_CONFIG_EXISTS="Configuration file already exists. Skipping creation."
 fi
+
+# Функция для отображения сообщений через dialog
+show_message() {
+    local msg="$1"
+    dialog --msgbox "$msg" 10 50
+}
+
+# Функция для ввода данных через dialog
+input_box() {
+    local title="$1"
+    local prompt="$2"
+    dialog --inputbox "$prompt" 10 50 2> /tmp/input.txt
+    cat /tmp/input.txt
+}
+
+# Функция для подтверждения через dialog
+yes_no_box() {
+    local title="$1"
+    local prompt="$2"
+    dialog --yesno "$prompt" 10 50
+    return $?
+}
 
 create_ssh_alert_service() {
     if [ ! -f "/etc/systemd/system/ssh.alert.service" ]; then
-        echo "Добавление сервиса ssh.alert.service в автозапуск"
         $SUDO bash -c "cat > /etc/systemd/system/ssh.alert.service" <<EOF
 [Unit]
 Description=SSH Alert
@@ -63,7 +97,7 @@ After=network.target
 [Service]
 ExecStart=/usr/local/tech-scripts/alert.sh
 Restart=always
-User =root
+User=root
 RestartSec=5
 StandardOutput=syslog
 StandardError=syslog
@@ -75,14 +109,11 @@ EOF
         $SUDO systemctl daemon-reload
         $SUDO systemctl enable ssh.alert.service
         $SUDO systemctl start ssh.alert.service
-    else
-        echo "Сервис ssh.alert.service уже существует. Пропускаем создание."
     fi
 }
 
 create_ssh_alert_script() {
     if [ ! -f "$SCRIPT_DIR/alert.sh" ]; then
-        echo "Создание скрипта alert.sh"
         $SUDO mkdir -p "$SCRIPT_DIR"
         $SUDO bash -c "cat > $SCRIPT_DIR/alert.sh" <<'EOF'
 #!/bin/bash
@@ -152,16 +183,13 @@ journalctl -f -u ssh | while read -r line; do
     fi
 done
 EOF
-
         $SUDO chmod +x "$SCRIPT_DIR/alert.sh"
-    else
-        echo "Скрипт $SCRIPT_DIR/alert.sh уже существует. Пропускаем создание."
     fi
 }
 
 if [ -f "$CONFIG_FILE" ]; then
-    read -p "Вы хотите обновить скрипт? (y/n): " answer
-    if [ "$answer" = "Y" ] || [ "$answer" = "y" ]; then
+    yes_no_box "Обновление" "$MSG_UPDATE_SCRIPT"
+    if [ $? -eq 0 ]; then
         $SUDO rm "$SCRIPT_DIR/alert.sh"
         $SUDO systemctl stop ssh.alert.service
         $SUDO systemctl disable ssh.alert.service
@@ -169,51 +197,51 @@ if [ -f "$CONFIG_FILE" ]; then
         $SUDO systemctl daemon-reload
         create_ssh_alert_script
         create_ssh_alert_service
-        echo "Скрипт успешно обновлен!"
+        show_message "$MSG_UPDATE_SUCCESS"
         exit 0
     else
-        echo "Обновление конфигурации отменено!"
+        show_message "$MSG_UPDATE_CANCELED"
     fi
 fi
 
 if [ -f "$CONFIG_FILE" ]; then
-    read -p "$MSG_REMOVE_CONFIG" REMOVE_CONFIG
-    if [ "$REMOVE_CONFIG" = "y" ]; then
+    yes_no_box "Удаление" "$MSG_REMOVE_CONFIG"
+    if [ $? -eq 0 ]; then
         $SUDO rm "$CONFIG_FILE"
-        echo "$MSG_REMOVED"
+        show_message "$MSG_REMOVED"
         CONTINUE="false"
     else
-        echo "$MSG_CANCELED"
+        show_message "$MSG_CANCELED"
     fi
 fi
 
 if [ -f "$SCRIPT_DIR/alert.sh" ]; then
-    read -p "$MSG_REMOVE_SCRIPT" REMOVE_SCRIPT
-    if [ "$REMOVE_SCRIPT" = "y" ]; then
+    yes_no_box "Удаление" "$MSG_REMOVE_SCRIPT"
+    if [ $? -eq 0 ]; then
         $SUDO rm "$SCRIPT_DIR/alert.sh"
-        echo "$MSG_REMOVED"
+        show_message "$MSG_REMOVED"
         CONTINUE="false"
     else
-        echo "$MSG_CANCELED"
+        show_message "$MSG_CANCELED"
     fi
 fi
 
 if [ -f "/etc/systemd/system/ssh.alert.service" ]; then
-    read -p "$MSG_REMOVE_CHOICE" REMOVE_CHOICE
-    if [ "$REMOVE_CHOICE" = "y" ]; then
+    yes_no_box "Удаление" "$MSG_REMOVE_CHOICE"
+    if [ $? -eq 0 ]; then
         $SUDO systemctl stop ssh.alert.service
         $SUDO systemctl disable ssh.alert.service
         $SUDO rm /etc/systemd/system/ssh.alert.service
         $SUDO systemctl daemon-reload
-        echo "$MSG_REMOVED"
+        show_message "$MSG_REMOVED"
         CONTINUE="false"
     else
-        echo "$MSG_CANCELED"
+        show_message "$MSG_CANCELED"
     fi
 fi
 
 if ! command -v jq &> /dev/null; then
-    echo "$MSG_INSTALL_JQ"
+    show_message "$MSG_INSTALL_JQ"
     $SUDO apt update && $SUDO apt install -y jq
 fi
 
@@ -221,26 +249,26 @@ if [ "$CONTINUE" = "false" ]; then
     exit 1
 fi
 
-read -p "Хотите ли вы создать оповещение о входах по SSH через Telegram? (y/n): " answer
-if [ "$answer" = "Y" ] || [ "$answer" = "y" ]; then
+yes_no_box "Создание оповещения" "$MSG_CREATE_ALERT"
+if [ $? -eq 0 ]; then
     if [ -f "$CONFIG_FILE" ]; then
         CONTINUE="false"
     else
-        read -p "$MSG_BOT_TOKEN" TELEGRAM_BOT_TOKEN
-        read -p "$MSG_CHAT_ID" TELEGRAM_CHAT_ID
+        TELEGRAM_BOT_TOKEN=$(input_box "Ввод данных" "$MSG_BOT_TOKEN")
+        TELEGRAM_CHAT_ID=$(input_box "Ввод данных" "$MSG_CHAT_ID")
         echo "TELEGRAM_BOT_TOKEN=$TELEGRAM_BOT_TOKEN" > "$CONFIG_FILE"
         echo "TELEGRAM_CHAT_ID=$TELEGRAM_CHAT_ID" >> "$CONFIG_FILE"
         chmod 600 "$CONFIG_FILE"
     fi
 
     if [ "$CONTINUE" = "false" ]; then
-        echo "Конфигурационный файл уже существует. Пропускаем создание."
+        show_message "$MSG_CONFIG_EXISTS"
     else
         create_ssh_alert_script
         create_ssh_alert_service
-        echo "$MSG_SUCCESS_INSTALL"
-        echo "$MSG_SCRIPT_LOCATION"
+        show_message "$MSG_SUCCESS_INSTALL"
+        show_message "$MSG_SCRIPT_LOCATION"
     fi
 else
-    echo "Создание оповещения отменено!"
+    show_message "$MSG_ALERT_CANCELED"
 fi
