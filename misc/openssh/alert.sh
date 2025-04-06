@@ -117,6 +117,7 @@ CONFIG_FILE="/etc/tech-scripts/alert.conf"
 LANG_FILE="/etc/tech-scripts/choose.conf"
 
 LANGUAGE=$(grep -E '^lang:' "$LANG_FILE" | cut -d':' -f2 | xargs)
+source "$CONFIG_FILE"
 
 if [[ "$LANGUAGE" == "Русский" ]]; then
     MSG_FAILED="🚨 Неудачная попытка входа 🚨"
