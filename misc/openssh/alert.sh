@@ -130,12 +130,12 @@ journalctl -f -u ssh | while read -r line; do
     if echo "$line" | grep -q "sshd.*Failed password"; then
         ip=$(echo "$line" | grep -oP 'from \K[0-9.]+')
         user=$(echo "$line" | grep -oP 'for \K\w+')
-        message=$(echo -e "${MSG_FAILED}\nТип подключения: Пароль\nПользователь: ${user}\nIP: ${ip}")
+        message=$(echo -e "${MSG_FAILED}\nТип подключения: пароль\nПользователь: ${user}\nIP: ${ip}")
         send_telegram_message "$message"
     elif echo "$line" | grep -q "sshd.*Accepted password"; then
         ip=$(echo "$line" | grep -oP 'from \K[0-9.]+')
         user=$(echo "$line" | grep -oP 'for \K\w+')
-        message=$(echo -e "${MSG_SUCCESS}\nТип подключения: Пароль\nПользователь: ${user}\nIP: ${ip}")
+        message=$(echo -e "${MSG_SUCCESS}\nТип подключения: пароль\nПользователь: ${user}\nIP: ${ip}")
         send_telegram_message "$message"
     elif echo "$line" | grep -q "sshd.*Connection closed"; then
         ip=$(echo "$line" | grep -oP 'from \K[0-9.]+')
@@ -145,12 +145,12 @@ journalctl -f -u ssh | while read -r line; do
     elif echo "$line" | grep -q "sshd.*Invalid user"; then
         ip=$(echo "$line" | grep -oP 'from \K[0-9.]+')
         user=$(echo "$line" | grep -oP 'Invalid user \K\w+')
-        message=$(echo -e "${MSG_INVALID_USER}\nТип подключения: Пароль\nПользователь: ${user}\nIP: ${ip}")
+        message=$(echo -e "${MSG_INVALID_USER}\nТип подключения: пароль\nПользователь: ${user}\nIP: ${ip}")
         send_telegram_message "$message"
     elif echo "$line" | grep -q "sshd.*Accepted publickey"; then
         ip=$(echo "$line" | grep -oP 'from \K[0-9.]+')
         user=$(echo "$line" | grep -oP 'for \K\w+')
-        message=$(echo -e "${MSG_SUCCESS}\nТип подключения: Ключ SSH\nПользователь: ${user}\nIP: ${ip}")
+        message=$(echo -e "${MSG_SUCCESS}\nТип подключения: ключ ssh\nПользователь: ${user}\nIP: ${ip}")
         send_telegram_message "$message"
     fi
 done
