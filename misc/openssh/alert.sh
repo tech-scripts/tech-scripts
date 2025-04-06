@@ -51,6 +51,21 @@ else
     MSG_REMOVE_SCRIPT="Do you want to remove the script $SCRIPT_DIR/alert.sh? (y/n): "
 fi
 
+if [ -f "$CONFIG_FILE" ]; then
+    read -p "Вы хотите обноваить скрипт? (y/n): " answer
+    if [ "$answer" = "Y" ] || [ "$answer" = "y" ]; then
+        sudo rm "$SCRIPT_DIR/alert.sh"
+        echo "Старый скрипт удален."
+        sudo systemctl stop ssh.alert.service
+        sudo systemctl disable ssh.alert.service
+        sudo rm /etc/systemd/system/ssh.alert.service
+        sudo systemctl daemon-reload
+        echo "Сервис ssh.alert.service удален."
+        echo "Скрипт успешно обновлен!"
+        exit 0
+    else
+        echo "Обновление конфигурации отменено."
+        
 # Проверка и удаление конфигурационного файла
 if [ -f "$CONFIG_FILE" ]; then
     read -p "$MSG_REMOVE_CONFIG" REMOVE_CONFIG
