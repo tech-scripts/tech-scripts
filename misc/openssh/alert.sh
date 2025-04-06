@@ -223,8 +223,8 @@ if ! command -v jq &> /dev/null; then
     $SUDO apt update && $SUDO apt install -y jq
 fi
 
-read -p "Хотите ли вы создать оповещение о входах по SSH через Telegram? (да/нет): " answer
-if [ "$answer" = "да" ] || [ "$answer" = "yes" ]; then
+read -p "Хотите ли вы создать оповещение о входах по SSH через Telegram? (y/n): " answer
+if [ "$answer" = "Y" ] || [ "$answer" = "y" ]; then
     CONFIG_FILE="/etc/tech-scripts/alert.conf"
 
     # Проверка наличия конфигурационного файла
@@ -236,7 +236,7 @@ if [ "$answer" = "да" ] || [ "$answer" = "yes" ]; then
         echo "TELEGRAM_CHAT_ID=$TELEGRAM_CHAT_ID" >> "$CONFIG_FILE"
         chmod 600 "$CONFIG_FILE"
     else
-        echo "Конфигурационный файл $CONFIG_FILE уже существует. Пропускаем создание."
+        echo "Конфигурационный файл $CONFIG_FILE уже существует! Пропускаем создание."
     fi
 
     create_alert_script
@@ -244,5 +244,5 @@ if [ "$answer" = "да" ] || [ "$answer" = "yes" ]; then
     echo "$MSG_SUCCESS_INSTALL"
     echo "$MSG_SCRIPT_LOCATION"
 else
-    echo "Создание оповещения отменено."
+    echo "Создание оповещения отменено!"
 fi
