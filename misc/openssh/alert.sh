@@ -139,7 +139,7 @@ send_telegram_message() {
     response=$(curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
         -d chat_id="${TELEGRAM_CHAT_ID}" \
         -d text="${message}" \
-        -d parse_mode="Markdown" 2>&1)  # Указываем режим разметки Markdown
+        -d parse_mode="HTML" 2>&1)  # Используем HTML-разметку
 
     if echo "$response" | grep -q '"ok":true'; then
         echo "$MSG_SENT"
@@ -152,17 +152,17 @@ journalctl -f -u ssh | while read -r line; do
     if echo "$line" | grep -q "sshd.*Failed password"; then
         ip=$(echo "$line" | grep -oP 'from \K[0-9.]+')
         user=$(echo "$line" | grep -oP 'for \K\w+')
-        message="${MSG_FAILED}\nПользователь: ${user}\nIP: ${ip}"  # Используем \n для новой строки
+        message="${MSG_FAILED}<br>Пользователь: ${user}<br>IP: ${ip}"  # Используем <br> для новой строки
         send_telegram_message "$message"
     elif echo "$line" | grep -q "sshd.*Accepted password"; then
         ip=$(echo "$line" | grep -oP 'from \K[0-9.]+')
         user=$(echo "$line" | grep -oP 'for \K\w+')
-        message="${MSG_SUCCESS}\nПользователь: ${user}\nIP: ${ip}"
+        message="${MSG_SUCCESS}<br>Пользователь: ${user}<br>IP: ${ip}"
         send_telegram_message "$message"
     elif echo "$line" | grep -q "sshd.*Connection closed"; then
         ip=$(echo "$line" | grep -oP 'from \K[0-9.]+')
         user=$(echo "$line" | grep -oP 'user \K\w+')
-        message="${MSG_CLOSED}\nПользователь: ${user}\nIP: ${ip}"
+        message="${MSG_CLOSED}<br>Пользователь: ${user}<br>IP: ${ip}"
         send_telegram_message "$message"
     fi
 done
