@@ -134,13 +134,12 @@ else
 fi
 
 send_telegram_message() {
-    LANG_FILE="/etc/tech-scripts/choose.conf"
     local message="$1"
     local response
     response=$(curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
         -d chat_id="${TELEGRAM_CHAT_ID}" \
         -d text="${message}" \
-        -d parse_mode="Markdown" 2>&1)  # Указываем режим разметки
+        -d parse_mode="Markdown" 2>&1)  # Указываем режим разметки Markdown
 
     if echo "$response" | grep -q '"ok":true'; then
         echo "$MSG_SENT"
