@@ -1,5 +1,7 @@
 #!/bin/bash
 
+SUDO=$(command -v sudo)
+
 CONFIG_DIR="/etc/tech-scripts"
 SCRIPT_DIR="/usr/local/tech-scripts"
 CONFIG_FILE="$CONFIG_DIR/alert.conf"
@@ -54,7 +56,7 @@ fi
 create_ssh_alert_service() {
     if [ ! -f "/etc/systemd/system/ssh.alert.service" ]; then
         echo "Добавление сервиса ssh.alert.service в автозапуск"
-        sudo bash -c "cat > /etc/systemd/system/ssh.alert.service" <<EOF
+        $SUDO bash -c "cat > /etc/systemd/system/ssh.alert.service" <<EOF
 [Unit]
 Description=SSH Alert
 After=network.target
@@ -71,9 +73,9 @@ SyslogIdentifier=ssh-alert-monitor
 [Install]
 WantedBy=multi-user.target
 EOF
-        sudo systemctl daemon-reload
-        sudo systemctl enable ssh.alert.service
-        sudo systemctl start ssh.alert.service
+        $SUDO systemctl daemon-reload
+        $SUDO systemctl enable ssh.alert.service
+        $SUDO systemctl start ssh.alert.service
     else
         echo "Сервис ssh.alert.service уже существует. Пропускаем создание."
     fi
@@ -84,8 +86,8 @@ create_alert_script() {
 
     if [ ! -f "$SCRIPT_DIR/alert.sh" ]; then
         echo "Создание скрипта alert.sh"
-        sudo mkdir -p "$SCRIPT_DIR"
-        sudo bash -c "cat > $SCRIPT_DIR/alert.sh" <<'EOF'
+        $SUDO mkdir -p "$SCRIPT_DIR"
+        $SUDO bash -c "cat > $SCRIPT_DIR/alert.sh" <<'EOF'
 #!/bin/bash
 
 CONFIG_FILE="/etc/tech-scripts/alert.conf"
@@ -154,7 +156,7 @@ journalctl -f -u ssh | while read -r line; do
 done
 EOF
 
-        sudo chmod +x "$SCRIPT_DIR/alert.sh"
+        $SUDO chmod +x "$SCRIPT_DIR/alert.sh"
     else
         echo "Скрипт $SCRIPT_DIR/alert.sh уже существует. Пропускаем создание."
     fi
@@ -163,11 +165,11 @@ EOF
 if [ -f "$CONFIG_FILE" ]; then
     read -p "Вы хотите обновсить скрипт? (y/n): " answer
     if [ "$answer" = "Y" ] || [ "$answer" = "y" ]; then
-        sudo rm "$SCRIPT_DIR/alert.sh"
-        sudo systemctl stop ssh.alert.service
-        sudo systemctl disable ssh.alert.service
-        sudo rm /etc/systemd/system/ssh.alert.service
-        sudo systemctl daemon-reload
+        $SUDO rm "$SCRIPT_DIR/alert.sh"
+        $SUDO systemctl stop ssh.alert.service
+        $SUDO systemctl disable ssh.alert.service
+        $SUDO rm /etc/systemd/system/ssh.alert.service
+        $SUDO systemctl daemon-reload
         create_alert_script
         create_ssh_alert_service
         echo "Скрипт успешно обновлен!"
@@ -183,7 +185,7 @@ fi
 if [ -f "$CONFIG_FILE" ]; then
     read -p "$MSG_REMOVE_CONFIG" REMOVE_CONFIG
     if [ "$REMOVE_CONFIG" = "y" ]; then
-        sudo rm "$CONFIG_FILE"
+        $SUDO rm "$CONFIG_FILE"
         echo "$MSG_REMOVED"
     else
         echo "$MSG_CANCELED"
@@ -194,7 +196,7 @@ fi
 if [ -f "$SCRIPT_DIR/alert.sh" ]; then
     read -p "$MSG_REMOVE_SCRIPT" REMOVE_SCRIPT
     if [ "$REMOVE_SCRIPT" = "y" ]; then
-        sudo rm "$SCRIPT_DIR/alert.sh"
+        $SUDO rm "$SCRIPT_DIR/alert.sh"
         echo "$MSG_REMOVED"
     else
         echo "$MSG_CANCELED"
@@ -205,10 +207,10 @@ fi
 if [ -f "/etc/systemd/system/ssh.alert.service" ]; then
     read -p "$MSG_REMOVE_CHOICE" REMOVE_CHOICE
     if [ "$REMOVE_CHOICE" = "y" ]; then
-        sudo systemctl stop ssh.alert.service
-        sudo systemctl disable ssh.alert.service
-        sudo rm /etc/systemd/system/ssh.alert.service
-        sudo systemctl daemon-reload
+        $SUDO systemctl stop ssh.alert.service
+        $SUDO systemctl disable ssh.alert.service
+        $SUDO rm /etc/systemd/system/ssh.alert.service
+        $SUDO systemctl daemon-reload
         echo "$MSG_REMOVED"
     else
         echo "$MSG_CANCELED"
@@ -218,7 +220,7 @@ fi
 # Установка jq, если он не установлен
 if ! command -v jq &> /dev/null; then
     echo "$MSG_INSTALL_JQ"
-    sudo apt update && sudo apt install -y jq
+    $SUDO apt update && $SUDO apt install -y jq
 fi
 
 read -p "Хотите ли вы создать оповещение о входах по SSH через Telegram? (да/нет): " answer
