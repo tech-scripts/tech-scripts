@@ -55,7 +55,7 @@ if [ -f "$CONFIG_FILE" ]; then
     read -p "Вы хотите обноваить скрипт? (y/n): " answer
     if [ "$answer" = "Y" ] || [ "$answer" = "y" ]; then
         sudo rm "$SCRIPT_DIR/alert.sh"
-        echo "Старый скрипт удален."
+        create_alert_script
         sudo systemctl stop ssh.alert.service
         sudo systemctl disable ssh.alert.service
         sudo rm /etc/systemd/system/ssh.alert.service
@@ -124,13 +124,15 @@ if [ ! -f "$CONFIG_FILE" ]; then
 else
     echo "Конфигурационный файл $CONFIG_FILE уже существует. Пропускаем создание."
 fi
+create_alert_script
 
-# Проверка наличия скрипта
-if [ ! -f "$SCRIPT_DIR/alert.sh" ]; then
-    # Создание скрипта
-    echo "$MSG_CREATE_SCRIPT"
-    sudo mkdir -p "$SCRIPT_DIR"
-    sudo bash -c "cat > $SCRIPT_DIR/alert.sh" <<'EOF'
+create_alert_script() {
+    local SCRIPT_DIR="$1"
+
+    if [ ! -f "$SCRIPT_DIR/alert.sh" ]; then
+        echo "Создание скрипта alert.sh"
+        sudo mkdir -p "$SCRIPT_DIR"
+        sudo bash -c "cat > $SCRIPT_DIR/alert.sh" <<'EOF'
 #!/bin/bash
 
 CONFIG_FILE="/etc/tech-scripts/alert.conf"
@@ -199,11 +201,11 @@ journalctl -f -u ssh | while read -r line; do
 done
 EOF
 
-    # Установка прав на выполнение скрипта
-    sudo chmod +x "$SCRIPT_DIR/alert.sh"
-else
-    echo "Скрипт $SCRIPT_DIR/alert.sh уже существует. Пропускаем создание."
-fi
+        sudo chmod +x "$SCRIPT_DIR/alert.sh"
+    else
+        echo "Скрипт $SCRIPT_DIR/alert.sh уже существует. Пропускаем создание."
+    fi
+}
 
 # Проверка и удаление сервиса
 if [ -f "/etc/systemd/system/ssh.alert.service" ]; then
@@ -219,17 +221,18 @@ if [ -f "/etc/systemd/system/ssh.alert.service" ]; then
     fi
 fi
 
-# Проверка наличия systemd сервиса
-if [ ! -f "/etc/systemd/system/ssh.alert.service" ]; then
-    # Создание systemd сервиса
-    echo "$MSG_ADD_AUTOSTART"
-    sudo bash -c "cat > /etc/systemd/system/ssh.alert.service" <<EOF
+create_ssh_alert_service
+
+create_ssh_alert_service() {
+    if [ ! -f "/etc/systemd/system/ssh.alert.service" ]; then
+        echo "Добавление сервиса ssh.alert.service в автозапуск"
+        sudo bash -c "cat > /etc/systemd/system/ssh.alert.service" <<EOF
 [Unit]
 Description=SSH Alert
 After=network.target
 
 [Service]
-ExecStart=/usr/local/tech-scripts/alert.sh
+ExecStart=/usr/local/bin/tech-scripts/alert.sh
 Restart=always
 User=root
 RestartSec=5
@@ -240,13 +243,13 @@ SyslogIdentifier=ssh-alert-monitor
 [Install]
 WantedBy=multi-user.target
 EOF
-    # Перезагрузка конфигурации systemd
-    sudo systemctl daemon-reload
-    sudo systemctl enable ssh.alert.service
-    sudo systemctl start ssh.alert.service
-else
-    echo "Сервис ssh.alert.service уже существует. Пропускаем создание."
-fi
+        sudo systemctl daemon-reload
+        sudo systemctl enable ssh.alert.service
+        sudo systemctl start ssh.alert.service
+    else
+        echo "Сервис ssh.alert.service уже существует. Пропускаем создание."
+    fi
+}
 
 echo "$MSG_SUCCESS_INSTALL"
 echo "$MSG_SCRIPT_LOCATION"
