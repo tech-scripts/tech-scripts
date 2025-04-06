@@ -8,7 +8,6 @@ LANG_FILE="/etc/tech-scripts/choose.conf"
 LANGUAGE=$(grep -E '^lang:' "$LANG_FILE" | cut -d':' -f2 | xargs)
 CONTINUE="true"
 
-# Установка текстовых сообщений
 if [[ "$LANGUAGE" == "Русский" ]]; then
     MSG_INSTALL_JQ="Установка jq..."
     MSG_BOT_TOKEN="Введите токен вашего Telegram-бота: "
@@ -65,13 +64,11 @@ else
     MSG_CONFIG_EXISTS="Configuration file already exists. Skipping creation."
 fi
 
-# Функция для отображения сообщений через dialog
 show_message() {
     local msg="$1"
     dialog --msgbox "$msg" 10 50
 }
 
-# Функция для ввода данных через dialog
 input_box() {
     local title="$1"
     local prompt="$2"
@@ -79,7 +76,6 @@ input_box() {
     cat /tmp/input.txt
 }
 
-# Функция для подтверждения через dialog
 yes_no_box() {
     local title="$1"
     local prompt="$2"
