@@ -5,26 +5,40 @@ SUDO=$(command -v sudo)
 lang=$(grep -E '^lang:' /etc/tech-scripts/choose.conf | cut -d' ' -f2)
 
 if [ "$lang" == "Русский" ]; then
-    title_add="Добавление команды tech"
+    title_add="Быстрый доступ"
     msg_add="Хотите добавить команду tech для быстрого доступа?"
-    msg_success="Команда tech успешно добавлена!"
-    msg_cancel="Добавление команды tech отменено."
+    title_remove="Удаление команды"
+    msg_remove="Команда tech уже существует. Хотите удалить её?"
+    msg_removed="Команда tech успешно удалена."
+    msg_canceled="Действие отменено."
 else
-    title_add="Adding tech command"
+    title_add="Quick access"
     msg_add="Do you want to add the tech command for quick access?"
-    msg_success="Tech command has been successfully added!"
-    msg_cancel="Adding tech command has been canceled."
+    title_remove="Remove command"
+    msg_remove="The tech command already exists. Do you want to remove it?"
+    msg_removed="The tech command has been successfully removed."
+    msg_canceled="Action canceled."
 fi
 
-dialog --title "$title_add" --yesno "$msg_add" 10 40
+if [ -f /usr/local/bin/tech ]; then
 
-if [ $? -eq 0 ]; then
-    $SUDO tee /usr/local/bin/tech > /dev/null << 'EOF'
+    dialog --title "$title_remove" --yesno "$msg_remove" 10 40
+    if [ $? -eq 0 ]; then
+        $SUDO rm /usr/local/bin/tech
+        echo "$msg_removed"
+    else
+        echo "$msg_canceled"
+    fi
+else
+    # Если файл не существует, предлагаем создать его
+    dialog --title "$title_add" --yesno "$msg_add" 10 40
+    if [ $? -eq 0 ]; then
+        $SUDO tee /usr/local/bin/tech > /dev/null << 'EOF'
 #!/bin/bash
 bash -c "$(wget -qLO - https://raw.githubusercontent.com/tech-scripts/linux/refs/heads/main/misc/start.sh)"
 EOF
-    $SUDO chmod +x /usr/local/bin/tech
-    dialog --title "$title_add" --msgbox "$msg_success" 10 40
-else
-    dialog --title "$title_add" --msgbox "$msg_cancel" 10 40
+        $SUDO chmod +x /usr/local/bin/tech
+    else
+        echo "$msg_canceled"
+    fi
 fi
