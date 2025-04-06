@@ -65,7 +65,8 @@ if [ -f "$CONFIG_FILE" ]; then
         exit 0
     else
         echo "Обновление конфигурации отменено."
-        
+fi
+
 # Проверка и удаление конфигурационного файла
 if [ -f "$CONFIG_FILE" ]; then
     read -p "$MSG_REMOVE_CONFIG" REMOVE_CONFIG
