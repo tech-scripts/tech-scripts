@@ -21,8 +21,7 @@ else
 fi
 
 if [ -f /usr/local/bin/tech ]; then
-
-    dialog --title "$title_remove" --yesno "$msg_remove" 10 40
+    dialog --clear --title "$title_remove" --yesno "$msg_remove" 10 40
     if [ $? -eq 0 ]; then
         $SUDO rm /usr/local/bin/tech
         echo "$msg_removed"
@@ -31,7 +30,7 @@ if [ -f /usr/local/bin/tech ]; then
     fi
 else
     # Если файл не существует, предлагаем создать его
-    dialog --title "$title_add" --yesno "$msg_add" 10 40
+    dialog --clear --title "$title_add" --yesno "$msg_add" 10 40
     if [ $? -eq 0 ]; then
         $SUDO tee /usr/local/bin/tech > /dev/null << 'EOF'
 #!/bin/bash
