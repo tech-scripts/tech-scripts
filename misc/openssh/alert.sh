@@ -163,7 +163,7 @@ EOF
 }
 
 if [ -f "$CONFIG_FILE" ]; then
-    read -p "Вы хотите обновсить скрипт? (y/n): " answer
+    read -p "Вы хотите обновить скрипт? (y/n): " answer
     if [ "$answer" = "Y" ] || [ "$answer" = "y" ]; then
         $SUDO rm "$SCRIPT_DIR/alert.sh"
         $SUDO systemctl stop ssh.alert.service
