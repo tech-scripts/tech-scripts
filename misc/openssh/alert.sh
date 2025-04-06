@@ -62,7 +62,7 @@ Description=SSH Alert
 After=network.target
 
 [Service]
-ExecStart=/usr/local/bin/tech-scripts/alert.sh
+ExecStart=/usr/local/tech-scripts/alert.sh
 Restart=always
 User=root
 RestartSec=5
@@ -239,7 +239,7 @@ if [ "$answer" = "да" ] || [ "$answer" = "yes" ]; then
         echo "Конфигурационный файл $CONFIG_FILE уже существует. Пропускаем создание."
     fi
 
-    create_alert_script "/usr/local/bin/tech-scripts"
+    create_alert_script
     create_ssh_alert_service
     echo "$MSG_SUCCESS_INSTALL"
     echo "$MSG_SCRIPT_LOCATION"
