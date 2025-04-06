@@ -21,16 +21,19 @@ else
 fi
 
 if [ -f /usr/local/bin/tech ]; then
-    dialog --clear --title "$title_remove" --yesno "$msg_remove" 10 40
+
+    dialog --title "$title_remove" --yesno "$msg_remove" 10 40
     if [ $? -eq 0 ]; then
         $SUDO rm /usr/local/bin/tech
+        clear
         echo "$msg_removed"
     else
+        clear
         echo "$msg_canceled"
     fi
 else
     # Если файл не существует, предлагаем создать его
-    dialog --clear --title "$title_add" --yesno "$msg_add" 10 40
+    dialog --title "$title_add" --yesno "$msg_add" 10 40
     if [ $? -eq 0 ]; then
         $SUDO tee /usr/local/bin/tech > /dev/null << 'EOF'
 #!/bin/bash
@@ -38,6 +41,7 @@ bash -c "$(wget -qLO - https://raw.githubusercontent.com/tech-scripts/linux/refs
 EOF
         $SUDO chmod +x /usr/local/bin/tech
     else
+        clear
         echo "$msg_canceled"
     fi
 fi
