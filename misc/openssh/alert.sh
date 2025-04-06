@@ -60,6 +60,8 @@ if [ -f "$CONFIG_FILE" ]; then
         sudo systemctl disable ssh.alert.service
         sudo rm /etc/systemd/system/ssh.alert.service
         sudo systemctl daemon-reload
+        sudo systemctl enable ssh.alert.service
+        sudo systemctl start ssh.alert.service
         echo "Сервис ssh.alert.service удален."
         echo "Скрипт успешно обновлен!"
         exit 0
