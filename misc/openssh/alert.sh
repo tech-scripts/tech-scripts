@@ -193,18 +193,21 @@ if [ ! -f "/etc/systemd/system/ssh.alert.service" ]; then
     echo "$MSG_ADD_AUTOSTART"
     sudo bash -c "cat > /etc/systemd/system/ssh.alert.service" <<EOF
 [Unit]
-Description=SSH Alert Monitor
+Description=SSH Alert
 After=network.target
 
 [Service]
 ExecStart=/usr/local/tech-scripts/alert.sh
 Restart=always
-User =root
+User=root
+RestartSec=5
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=ssh-alert-monitor
 
 [Install]
 WantedBy=multi-user.target
 EOF
-
     # Перезагрузка конфигурации systemd
     sudo systemctl daemon-reload
     sudo systemctl enable ssh.alert.service
