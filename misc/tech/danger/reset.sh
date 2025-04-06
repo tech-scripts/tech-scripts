@@ -7,6 +7,15 @@ delete_directories() {
     echo "Директории успешно удалены."
 }
 
+# Ловушка для прерывания скрипта
+cleanup() {
+    echo "Скрипт прерван. Удаление отменено."
+    exit 1
+}
+
+# Устанавливаем ловушки для сигналов SIGINT (Ctrl+C), SIGTSTP (Ctrl+Z) и SIGTERM
+trap cleanup SIGINT SIGTSTP SIGTERM
+
 # Отображение диалога с активной кнопкой "ОК"
 dialog --yesno "Вы точно хотите удалить все файлы tech-scripts?" 10 50
 
@@ -18,6 +27,7 @@ if [ $? -eq 0 ]; then
             echo "XXX"
             echo "$i"  # Прогресс от 0% до 100%
             echo "Ожидание $((10 - i / 10)) секунд..."
+            echo "Вы еще можете отменить это (Ctrl + Z)"
             echo "XXX"
             sleep 0.1  # Пауза 0.1 секунды для плавного увеличения
         done
@@ -27,5 +37,5 @@ if [ $? -eq 0 ]; then
     delete_directories
 else
     # Если пользователь нажал "Отмена"
-    echo "Удаление отменено!"
+    echo "Удаление отменено."
 fi
