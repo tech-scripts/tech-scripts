@@ -51,79 +51,33 @@ else
     MSG_REMOVE_SCRIPT="Do you want to remove the script $SCRIPT_DIR/alert.sh? (y/n): "
 fi
 
-if [ -f "$CONFIG_FILE" ]; then
-    read -p "Вы хотите обноваить скрипт? (y/n): " answer
-    if [ "$answer" = "Y" ] || [ "$answer" = "y" ]; then
-        sudo rm "$SCRIPT_DIR/alert.sh"
-        create_alert_script
-        sudo systemctl stop ssh.alert.service
-        sudo systemctl disable ssh.alert.service
-        sudo rm /etc/systemd/system/ssh.alert.service
+create_ssh_alert_service() {
+    if [ ! -f "/etc/systemd/system/ssh.alert.service" ]; then
+        echo "Добавление сервиса ssh.alert.service в автозапуск"
+        sudo bash -c "cat > /etc/systemd/system/ssh.alert.service" <<EOF
+[Unit]
+Description=SSH Alert
+After=network.target
+
+[Service]
+ExecStart=/usr/local/bin/tech-scripts/alert.sh
+Restart=always
+User=root
+RestartSec=5
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=ssh-alert-monitor
+
+[Install]
+WantedBy=multi-user.target
+EOF
         sudo systemctl daemon-reload
-        create_alert_script
-        create_ssh_alert_service
-        echo "Скрипт успешно обновлен!"
-        exit 0
+        sudo systemctl enable ssh.alert.service
+        sudo systemctl start ssh.alert.service
     else
-        echo "Обновление конфигурации отменено."
+        echo "Сервис ssh.alert.service уже существует. Пропускаем создание."
     fi
-else
-    echo ""
-fi
-# Проверка и удаление конфигурационного файла
-if [ -f "$CONFIG_FILE" ]; then
-    read -p "$MSG_REMOVE_CONFIG" REMOVE_CONFIG
-    if [ "$REMOVE_CONFIG" = "y" ]; then
-        sudo rm "$CONFIG_FILE"
-        echo "$MSG_REMOVED"
-    else
-        echo "$MSG_CANCELED"
-    fi
-fi
-
-# Проверка и удаление скрипта
-if [ -f "$SCRIPT_DIR/alert.sh" ]; then
-    read -p "$MSG_REMOVE_SCRIPT" REMOVE_SCRIPT
-    if [ "$REMOVE_SCRIPT" = "y" ]; then
-        sudo rm "$SCRIPT_DIR/alert.sh"
-        echo "$MSG_REMOVED"
-    else
-        echo "$MSG_CANCELED"
-    fi
-fi
-
-# Проверка и удаление сервиса
-if [ -f "/etc/systemd/system/ssh.alert.service" ]; then
-    read -p "$MSG_REMOVE_CHOICE" REMOVE_CHOICE
-    if [ "$REMOVE_CHOICE" = "y" ]; then
-        sudo systemctl stop ssh.alert.service
-        sudo systemctl disable ssh.alert.service
-        sudo rm /etc/systemd/system/ssh.alert.service
-        sudo systemctl daemon-reload
-        echo "$MSG_REMOVED"
-    else
-        echo "$MSG_CANCELED"
-    fi
-fi
-
-# Установка jq, если он не установлен
-if ! command -v jq &> /dev/null; then
-    echo "$MSG_INSTALL_JQ"
-    sudo apt update && sudo apt install -y jq
-fi
-
-# Проверка наличия конфигурационного файла
-if [ ! -f "$CONFIG_FILE" ]; then
-    # Создание конфигурационного файла
-    read -p "$MSG_BOT_TOKEN" TELEGRAM_BOT_TOKEN
-    read -p "$MSG_CHAT_ID" TELEGRAM_CHAT_ID
-    echo "TELEGRAM_BOT_TOKEN=$TELEGRAM_BOT_TOKEN" > "$CONFIG_FILE"
-    echo "TELEGRAM_CHAT_ID=$TELEGRAM_CHAT_ID" >> "$CONFIG_FILE"
-    chmod 600 "$CONFIG_FILE"
-else
-    echo "Конфигурационный файл $CONFIG_FILE уже существует. Пропускаем создание."
-fi
-create_alert_script
+}
 
 create_alert_script() {
     local SCRIPT_DIR="$1"
@@ -206,6 +160,48 @@ EOF
     fi
 }
 
+if [ -f "$CONFIG_FILE" ]; then
+    read -p "Вы хотите обноваить скрипт? (y/n): " answer
+    if [ "$answer" = "Y" ] || [ "$answer" = "y" ]; then
+        sudo rm "$SCRIPT_DIR/alert.sh"
+        create_alert_script
+        sudo systemctl stop ssh.alert.service
+        sudo systemctl disable ssh.alert.service
+        sudo rm /etc/systemd/system/ssh.alert.service
+        sudo systemctl daemon-reload
+        create_alert_script
+        create_ssh_alert_service
+        echo "Скрипт успешно обновлен!"
+        exit 0
+    else
+        echo "Обновление конфигурации отменено."
+    fi
+else
+    echo ""
+fi
+
+# Проверка и удаление конфигурационного файла
+if [ -f "$CONFIG_FILE" ]; then
+    read -p "$MSG_REMOVE_CONFIG" REMOVE_CONFIG
+    if [ "$REMOVE_CONFIG" = "y" ]; then
+        sudo rm "$CONFIG_FILE"
+        echo "$MSG_REMOVED"
+    else
+        echo "$MSG_CANCELED"
+    fi
+fi
+
+# Проверка и удаление скрипта
+if [ -f "$SCRIPT_DIR/alert.sh" ]; then
+    read -p "$MSG_REMOVE_SCRIPT" REMOVE_SCRIPT
+    if [ "$REMOVE_SCRIPT" = "y" ]; then
+        sudo rm "$SCRIPT_DIR/alert.sh"
+        echo "$MSG_REMOVED"
+    else
+        echo "$MSG_CANCELED"
+    fi
+fi
+
 # Проверка и удаление сервиса
 if [ -f "/etc/systemd/system/ssh.alert.service" ]; then
     read -p "$MSG_REMOVE_CHOICE" REMOVE_CHOICE
@@ -220,35 +216,27 @@ if [ -f "/etc/systemd/system/ssh.alert.service" ]; then
     fi
 fi
 
+# Установка jq, если он не установлен
+if ! command -v jq &> /dev/null; then
+    echo "$MSG_INSTALL_JQ"
+    sudo apt update && sudo apt install -y jq
+fi
+
+# Проверка наличия конфигурационного файла
+if [ ! -f "$CONFIG_FILE" ]; then
+    # Создание конфигурационного файла
+    read -p "$MSG_BOT_TOKEN" TELEGRAM_BOT_TOKEN
+    read -p "$MSG_CHAT_ID" TELEGRAM_CHAT_ID
+    echo "TELEGRAM_BOT_TOKEN=$TELEGRAM_BOT_TOKEN" > "$CONFIG_FILE"
+    echo "TELEGRAM_CHAT_ID=$TELEGRAM_CHAT_ID" >> "$CONFIG_FILE"
+    chmod 600 "$CONFIG_FILE"
+else
+    echo "Конфигурационный файл $CONFIG_FILE уже существует. Пропускаем создание."
+fi
+
+create_alert_script
+
 create_ssh_alert_service
-
-create_ssh_alert_service() {
-    if [ ! -f "/etc/systemd/system/ssh.alert.service" ]; then
-        echo "Добавление сервиса ssh.alert.service в автозапуск"
-        sudo bash -c "cat > /etc/systemd/system/ssh.alert.service" <<EOF
-[Unit]
-Description=SSH Alert
-After=network.target
-
-[Service]
-ExecStart=/usr/local/bin/tech-scripts/alert.sh
-Restart=always
-User=root
-RestartSec=5
-StandardOutput=syslog
-StandardError=syslog
-SyslogIdentifier=ssh-alert-monitor
-
-[Install]
-WantedBy=multi-user.target
-EOF
-        sudo systemctl daemon-reload
-        sudo systemctl enable ssh.alert.service
-        sudo systemctl start ssh.alert.service
-    else
-        echo "Сервис ssh.alert.service уже существует. Пропускаем создание."
-    fi
-}
 
 echo "$MSG_SUCCESS_INSTALL"
 echo "$MSG_SCRIPT_LOCATION"
