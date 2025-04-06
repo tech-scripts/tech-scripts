@@ -164,7 +164,6 @@ if [ -f "$CONFIG_FILE" ]; then
     read -p "Вы хотите обноваить скрипт? (y/n): " answer
     if [ "$answer" = "Y" ] || [ "$answer" = "y" ]; then
         sudo rm "$SCRIPT_DIR/alert.sh"
-        create_alert_script
         sudo systemctl stop ssh.alert.service
         sudo systemctl disable ssh.alert.service
         sudo rm /etc/systemd/system/ssh.alert.service
