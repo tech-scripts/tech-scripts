@@ -161,7 +161,7 @@ EOF
 }
 
 if [ -f "$CONFIG_FILE" ]; then
-    read -p "Вы хотите обноваить скрипт? (y/n): " answer
+    read -p "Вы хотите обновсить скрипт? (y/n): " answer
     if [ "$answer" = "Y" ] || [ "$answer" = "y" ]; then
         sudo rm "$SCRIPT_DIR/alert.sh"
         sudo systemctl stop ssh.alert.service
@@ -173,7 +173,7 @@ if [ -f "$CONFIG_FILE" ]; then
         echo "Скрипт успешно обновлен!"
         exit 0
     else
-        echo "Обновление конфигурации отменено."
+        echo "Обновление конфигурации отменено!"
     fi
 else
     echo ""
@@ -221,21 +221,26 @@ if ! command -v jq &> /dev/null; then
     sudo apt update && sudo apt install -y jq
 fi
 
-# Проверка наличия конфигурационного файла
-if [ ! -f "$CONFIG_FILE" ]; then
-    # Создание конфигурационного файла
-    read -p "$MSG_BOT_TOKEN" TELEGRAM_BOT_TOKEN
-    read -p "$MSG_CHAT_ID" TELEGRAM_CHAT_ID
-    echo "TELEGRAM_BOT_TOKEN=$TELEGRAM_BOT_TOKEN" > "$CONFIG_FILE"
-    echo "TELEGRAM_CHAT_ID=$TELEGRAM_CHAT_ID" >> "$CONFIG_FILE"
-    chmod 600 "$CONFIG_FILE"
+read -p "Хотите ли вы создать оповещение о входах по SSH через Telegram? (да/нет): " answer
+if [ "$answer" = "да" ] || [ "$answer" = "yes" ]; then
+    CONFIG_FILE="/etc/tech-scripts/alert.conf"
+
+    # Проверка наличия конфигурационного файла
+    if [ ! -f "$CONFIG_FILE" ]; then
+        # Создание конфигурационного файла
+        read -p "Введите токен Telegram бота: " TELEGRAM_BOT_TOKEN
+        read -p "Введите ID Telegram чата: " TELEGRAM_CHAT_ID
+        echo "TELEGRAM_BOT_TOKEN=$TELEGRAM_BOT_TOKEN" > "$CONFIG_FILE"
+        echo "TELEGRAM_CHAT_ID=$TELEGRAM_CHAT_ID" >> "$CONFIG_FILE"
+        chmod 600 "$CONFIG_FILE"
+    else
+        echo "Конфигурационный файл $CONFIG_FILE уже существует. Пропускаем создание."
+    fi
+
+    create_alert_script "/usr/local/bin/tech-scripts"
+    create_ssh_alert_service
+    echo "$MSG_SUCCESS_INSTALL"
+    echo "$MSG_SCRIPT_LOCATION"
 else
-    echo "Конфигурационный файл $CONFIG_FILE уже существует. Пропускаем создание."
+    echo "Создание оповещения отменено."
 fi
-
-create_alert_script
-
-create_ssh_alert_service
-
-echo "$MSG_SUCCESS_INSTALL"
-echo "$MSG_SCRIPT_LOCATION"
