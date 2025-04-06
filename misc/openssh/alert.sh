@@ -126,7 +126,7 @@ Description=SSH Alert Monitor
 After=network.target
 
 [Service]
-ExecStart=$SCRIPT_DIR/alert.sh
+ExecStart=/bin/bash -c "nohup /usr/local/tech-scripts/alert.sh > /var/log/ssh_alert.log 2>&1 &"
 Restart=always
 User=root
 
