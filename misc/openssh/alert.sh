@@ -205,38 +205,38 @@ if [ -f "$CONFIG_FILE" ]; then
 fi
 
 if [ -f "$CONFIG_FILE" ]; then
-    yes_no_box "Удаление" "$MSG_REMOVE_CONFIG"
-    if [ $? -eq 0 ]; then
+    read -p "$MSG_REMOVE_CONFIG" REMOVE_CONFIG
+    if [ "$REMOVE_CONFIG" = "y" ]; then
         $SUDO rm "$CONFIG_FILE"
-        show_message "$MSG_REMOVED"
+        echo "$MSG_REMOVED"
         CONTINUE="false"
     else
-        show_message "$MSG_CANCELED"
+        echo "$MSG_CANCELED"
     fi
 fi
 
 if [ -f "$SCRIPT_DIR/alert.sh" ]; then
-    yes_no_box "Удаление" "$MSG_REMOVE_SCRIPT"
-    if [ $? -eq 0 ]; then
+    read -p "$MSG_REMOVE_SCRIPT" REMOVE_SCRIPT
+    if [ "$REMOVE_SCRIPT" = "y" ]; then
         $SUDO rm "$SCRIPT_DIR/alert.sh"
-        show_message "$MSG_REMOVED"
+        echo "$MSG_REMOVED"
         CONTINUE="false"
     else
-        show_message "$MSG_CANCELED"
+        echo "$MSG_CANCELED"
     fi
 fi
 
 if [ -f "/etc/systemd/system/ssh.alert.service" ]; then
-    yes_no_box "Удаление" "$MSG_REMOVE_CHOICE"
-    if [ $? -eq 0 ]; then
+    read -p "$MSG_REMOVE_CHOICE" REMOVE_CHOICE
+    if [ "$REMOVE_CHOICE" = "y" ]; then
         $SUDO systemctl stop ssh.alert.service
         $SUDO systemctl disable ssh.alert.service
         $SUDO rm /etc/systemd/system/ssh.alert.service
         $SUDO systemctl daemon-reload
-        show_message "$MSG_REMOVED"
+        echo "$MSG_REMOVED"
         CONTINUE="false"
     else
-        show_message "$MSG_CANCELED"
+        echo "$MSG_CANCELED"
     fi
 fi
 
@@ -254,20 +254,20 @@ if [ $? -eq 0 ]; then
     if [ -f "$CONFIG_FILE" ]; then
         CONTINUE="false"
     else
-        TELEGRAM_BOT_TOKEN=$(input_box "Ввод данных" "$MSG_BOT_TOKEN")
-        TELEGRAM_CHAT_ID=$(input_box "Ввод данных" "$MSG_CHAT_ID")
+        read -p "Введите токен Telegram бота: " TELEGRAM_BOT_TOKEN
+        read -p "Введите ID Telegram чата: " TELEGRAM_CHAT_ID
         echo "TELEGRAM_BOT_TOKEN=$TELEGRAM_BOT_TOKEN" > "$CONFIG_FILE"
         echo "TELEGRAM_CHAT_ID=$TELEGRAM_CHAT_ID" >> "$CONFIG_FILE"
         chmod 600 "$CONFIG_FILE"
     fi
 
     if [ "$CONTINUE" = "false" ]; then
-        show_message "$MSG_CONFIG_EXISTS"
+        echo "$MSG_CONFIG_EXISTS"
     else
         create_ssh_alert_script
         create_ssh_alert_service
-        show_message "$MSG_SUCCESS_INSTALL"
-        show_message "$MSG_SCRIPT_LOCATION"
+        echo "$MSG_SUCCESS_INSTALL"
+        echo "$MSG_SCRIPT_LOCATION"
     fi
 else
     show_message "$MSG_ALERT_CANCELED"
