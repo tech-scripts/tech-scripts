@@ -9,7 +9,7 @@ LANGUAGE=$(grep -E '^lang:' "$LANG_FILE" | cut -d':' -f2 | xargs)
 CONTINUE="true"
 
 if [[ "$LANGUAGE" == "Русский" ]]; then
-    MSG_INSTALL_JQ="Установка jq..."
+    MSG_INSTALL_JQ="Установка cc..."
     MSG_BOT_TOKEN="Введите токен вашего Telegram-бота: "
     MSG_CHAT_ID="Введите ваш chat_id в Telegram: "
     MSG_CREATE_SCRIPT="Создание скрипта в $SCRIPT_DIR/alert.sh..."
@@ -238,7 +238,12 @@ fi
 
 if ! command -v jq &> /dev/null; then
     show_message "$MSG_INSTALL_JQ"
-    $SUDO apt update && $SUDO apt install -y jq
+    read -p "Хотите установить jq? (y/n): " choice
+    if [[ "$choice" == [Yy]* ]]; then
+        $SUDO apt update && $SUDO apt install -y jq
+    else
+        echo "Установка jq отменена."
+    fi
 fi
 
 if [ "$CONTINUE" = "false" ]; then
@@ -266,5 +271,5 @@ if [ $? -eq 0 ]; then
         echo "$MSG_SCRIPT_LOCATION"
     fi
 else
-    show_message "$MSG_ALERT_CANCELED"
+    echo ""
 fi
