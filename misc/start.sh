@@ -75,7 +75,7 @@ show_menu() {
 
         [ "$CURRENT_DIR" != "$CLONE_DIR" ] && CHOICES+=("$MSG_BACK" "option")
 
-        [ ${#CHOICES[@]} -eq 0 ] && { echo "$MSG_NO_SCRIPTS"; exit 0; }
+        [ ${#CHOICES[@]} -eq 0 ] && { clear; echo "$MSG_NO_SCRIPTS"; exit 0; }
 
         MSG_TITLE="$CURRENT_DIR"
         SELECTED_ITEM=$(dialog --title "$MSG_TITLE" --menu "$MSG_SELECT" 15 50 10 "${CHOICES[@]}" 3>&1 1>&2 2>&3)
@@ -91,7 +91,7 @@ show_menu() {
         elif [ -d "$SELECTED_ITEM" ]; then
             DIR_STACK+=("$CURRENT_DIR")
             CURRENT_DIR="$CURRENT_DIR/$SELECTED_ITEM"
-            cd "$CURRENT_DIR" || { echo "$MSG_CD_ERROR"; exit 1; }
+            cd "$CURRENT_DIR" || { clear; echo "$MSG_CD_ERROR"; exit 1; }
         else
             if [ -f "$SELECTED_ITEM" ]; then
                 chmod +x "$SELECTED_ITEM"
@@ -103,7 +103,3 @@ show_menu() {
 }
 
 show_menu
-if [ $? -ne 0 ]; then
-    clear
-    exit 0
-fi
