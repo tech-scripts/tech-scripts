@@ -5,14 +5,22 @@ SUDO=$(command -v sudo)
 REPO_URL="https://github.com/tech-scripts/linux.git"
 CLONE_DIR="/tmp/tech-scripts/misc"
 
-[ -d "$CLONE_DIR" ] && rm -rf "/tmp/tech-scripts"
-git clone "$REPO_URL" "/tmp/tech-scripts"
-cd "/tmp/tech-scripts/misc" || exit 1
+# Проверка существования директории
+if [ -d "/tmp/tech-scripts" ]; then
+    cd "/tmp/tech-scripts" || { echo "Ошибка: Не удалось перейти в директорию!"; exit 1; }
+    git fetch --depth 1  # Обновление репозитория, получая только последний коммит
+else
+    git clone --depth 1 "$REPO_URL" "/tmp/tech-scripts" || { echo "Ошибка: Не удалось клонировать репозиторий!"; exit 1; }
+fi
+
+cd "$CLONE_DIR" || { echo "Ошибка: Не удалось перейти в директорию!"; exit 1; }
 
 DIR_STACK=()
 CURRENT_DIR="$CLONE_DIR"
 EXCLUDE_FILES=("start.sh" "choose.sh" "*.tmp")
 CONFIG_FILE="/etc/tech-scripts/choose.conf"
+
+# Проверка и запуск choose.sh
 if [ ! -f "$CONFIG_FILE" ]; then
     CHOOSE_SCRIPT="/tmp/tech-scripts/misc/choose.sh"
     if [ -f "$CHOOSE_SCRIPT" ]; then
@@ -85,7 +93,7 @@ show_menu() {
         elif [ -d "$SELECTED_ITEM" ]; then
             DIR_STACK+=("$CURRENT_DIR")
             CURRENT_DIR="$CURRENT_DIR/$SELECTED_ITEM"
-            cd "$CURRENT_DIR" || exit 1
+            cd "$CURRENT_DIR" || { echo "Ошибка: Не удалось перейти в директорию!"; exit 1; }
         else
             if [ -f "$SELECTED_ITEM" ]; then
                 chmod +x "$SELECTED_ITEM"
