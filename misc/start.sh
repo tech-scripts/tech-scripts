@@ -36,7 +36,6 @@ if [[ "$LANGUAGE" == "Русский" ]]; then
     MSG_CANCELLED="Выбор отменен!"
     MSG_BACK="назад"
     MSG_SELECT="Выберите опцию:"
-    MSG_CLONE_ERROR="Ошибка: Не удалось клонировать репозиторий!"
     MSG_CD_ERROR="Ошибка: Не удалось перейти в директорию!"
 else
     MSG_INSTALL_PROMPT="Install necessary packages? (y/n): "
@@ -44,7 +43,6 @@ else
     MSG_CANCELLED="Selection cancelled!"
     MSG_BACK="back"
     MSG_SELECT="Select an option:"
-    MSG_CLONE_ERROR="Error: Failed to clone the repository!"
     MSG_CD_ERROR="Error: Failed to change directory!"
 fi
 
@@ -91,7 +89,7 @@ show_menu() {
         elif [ -d "$SELECTED_ITEM" ]; then
             DIR_STACK+=("$CURRENT_DIR")
             CURRENT_DIR="$CURRENT_DIR/$SELECTED_ITEM"
-            cd "$CURRENT_DIR" || { echo "Ошибка: Не удалось перейти в директорию!"; exit 1; }
+            cd "$CURRENT_DIR" || { echo "$MSG_CD_ERROR"; exit 1; }
         else
             if [ -f "$SELECTED_ITEM" ]; then
                 chmod +x "$SELECTED_ITEM"
