@@ -13,6 +13,7 @@ if [ "$LANG_CONF" = "Русский" ]; then
     MSG_CONFIRM_DELETE="Вы уверены, что хотите удалить"
     MSG_SUCCESS="Успешно выполнено"
     MSG_ERROR="Ошибка"
+    MSG_LOCK="Контейнер заблокирован"
     MSG_UNLOCK="Контейнер разблокирован"
     CONTINUE="Продолжить?"
 else
@@ -24,6 +25,7 @@ else
     MSG_CONFIRM_DELETE="Are you sure you want to delete"
     MSG_SUCCESS="Successfully executed"
     MSG_ERROR="Error"
+    MSG_LOCK="Container locked"
     MSG_UNLOCK="Container unlocked"
     CONTINUE="Continue?"
 fi
@@ -38,8 +40,18 @@ if ! command -v pct &> /dev/null; then
     exit 1
 fi
 
+# Функция для получения списка контейнеров с кешированием
+get_containers() {
+    if [ -z "$CACHED_CONTAINERS" ]; then
+        CACHED_CONTAINERS=$(pct list | awk 'NR>1 {print $1, $3}')
+    fi
+    echo "$CACHED_CONTAINERS"
+}
+
+# Основной цикл меню действий
 while true; do
-    containers=$(pct list | awk 'NR>1 {print $1, $3}')
+    containers=$(get_containers)
+
     if [ -z "$containers" ]; then
         dialog --msgbox "$NO_CONTAINERS" 5 40
         exit 1
@@ -63,7 +75,7 @@ while true; do
                 2 "Выключить" \
                 3 "Перезагрузить" \
                 4 "Открыть конфигурационный файл" \
-                5 "Удалить" \
+                5 "Уничтожить" \
                 6 "Разблокировать" \
                 7 "Усыпить" \
                 8 "Разбудить" \
@@ -99,7 +111,7 @@ while true; do
                     pct destroy "$selected_container_id" && dialog --msgbox "$MSG_SUCCESS" 5 30 || dialog --msgbox "$MSG_ERROR" 5 30
                 fi
                 ;;
-            6) pct unlock "$selected_container_id" && dialog --msgbox "$MSG_UNLOCK" 5 30 || dialog --msgbox "$MSG_ERROR" 5 30 ;;
+            6) pct unlock "$selected_container_id" && dialog --msgbox "$MSG_LOCK" 5 30 || dialog --msgbox "$MSG_ERROR" 5 30 ;;
             7) pct suspend "$selected_container_id" && dialog --msgbox "$MSG_UNLOCK" 5 30 || dialog --msgbox "$MSG_ERROR" 5 30 ;;
             8) pct resume "$selected_container_id" && dialog --msgbox "$MSG_UNLOCK" 5 30 || dialog --msgbox "$MSG_ERROR" 5 30 ;;
             9) pct console "$selected_container_id" && dialog --msgbox "$MSG_UNLOCK" 5 30 || dialog --msgbox "$MSG_ERROR" 5 30 ;;
