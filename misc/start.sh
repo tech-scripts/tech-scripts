@@ -6,13 +6,13 @@ REPO_URL="https://github.com/tech-scripts/linux.git"
 CLONE_DIR="/tmp/tech-scripts/misc"
 
 if [ -d "/tmp/tech-scripts" ]; then
-    cd "/tmp/tech-scripts" || { echo "Ошибка: Не удалось перейти в директорию!"; exit 1; }
+    cd "/tmp/tech-scripts"
     git fetch --depth 1
 else
-    git clone --depth 1 "$REPO_URL" "/tmp/tech-scripts" || { echo "Ошибка: Не удалось клонировать репозиторий!"; exit 1; }
+    git clone --depth 1 "$REPO_URL" "/tmp/tech-scripts"
 fi
 
-cd "$CLONE_DIR" || { echo "Ошибка: Не удалось перейти в директорию!"; exit 1; }
+cd "$CLONE_DIR"
 
 DIR_STACK=()
 CURRENT_DIR="$CLONE_DIR"
