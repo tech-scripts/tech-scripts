@@ -105,6 +105,7 @@ show_menu() {
         else
             if [ -f "$SELECTED_ITEM" ]; then
                 chmod +x "$SELECTED_ITEM"
+                clear
                 ./"$SELECTED_ITEM"
                 exit 0
             fi
