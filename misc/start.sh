@@ -2,6 +2,8 @@
 
 SUDO=$(command -v sudo)
 
+trap 'clear; exit' SIGINT SIGTERM
+
 REPO_URL="https://github.com/tech-scripts/linux.git"
 CLONE_DIR="/tmp/tech-scripts/misc"
 
@@ -101,3 +103,4 @@ show_menu() {
 }
 
 show_menu
+clear
