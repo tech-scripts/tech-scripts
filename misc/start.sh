@@ -3,7 +3,7 @@
 SUDO=$(command -v sudo)
 
 trap 'clear; exit' SIGINT SIGTERM
-trap 'clear; echo "Диалог был приостановлен. Нажмите Enter для продолжения..."; read' SIGTSTP
+trap 'clear' SIGTSTP
 
 REPO_URL="https://github.com/tech-scripts/linux.git"
 CLONE_DIR="/tmp/tech-scripts/misc"
