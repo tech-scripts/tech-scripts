@@ -8,7 +8,17 @@ CLONE_DIR="/tmp/tech-scripts/misc"
 # Проверка существования директории
 if [ -d "/tmp/tech-scripts" ]; then
     cd "/tmp/tech-scripts" || { echo "Ошибка: Не удалось перейти в директорию!"; exit 1; }
-    git fetch --depth 1  # Обновление репозитория, получая только последний коммит
+    
+    # Проверка наличия новых коммитов
+    LOCAL_COMMIT=$(git rev-parse HEAD)
+    REMOTE_COMMIT=$(git rev-parse @{u})
+
+    if [ "$LOCAL_COMMIT" != "$REMOTE_COMMIT" ]; then
+        echo "Обновление репозитория..."
+        git fetch --depth 1  # Обновление репозитория, получая только последний коммит
+    else
+        echo "Репозиторий уже обновлен."
+    fi
 else
     git clone --depth 1 "$REPO_URL" "/tmp/tech-scripts" || { echo "Ошибка: Не удалось клонировать репозиторий!"; exit 1; }
 fi
@@ -86,8 +96,8 @@ show_menu() {
 
         if [ "$SELECTED_ITEM" == "$MSG_BACK" ]; then
             if [ ${#DIR_STACK[@]} -gt 0 ]; then
-                cd "${DIR_STACK[-1]}"
                 CURRENT_DIR="${DIR_STACK[-1]}"
+                cd "$CURRENT_DIR" || { echo "Ошибка: Не удалось перейти в директорию!"; exit 1; }
                 DIR_STACK=("${DIR_STACK[@]:0:${#DIR_STACK[@]}-1}")
             fi
         elif [ -d "$SELECTED_ITEM" ]; then
