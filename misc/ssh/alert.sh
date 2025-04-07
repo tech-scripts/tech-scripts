@@ -33,7 +33,6 @@ if [[ "$LANGUAGE" == "Русский" ]]; then
     MSG_UPDATE_CANCELED="Обновление конфигурации отменено!"
     MSG_UPDATE_SUCCESS="Скрипт успешно обновлен!"
     MSG_CREATE_ALERT="Хотите ли вы создать оповещение о входах по SSH через Telegram? (y/n): "
-    MSG_ALERT_CANCELED="Создание оповещения отменено!"
     MSG_CONFIG_EXISTS="Конфигурационный файл уже существует. Пропускаем создание."
 else
     MSG_INSTALL_JQ="Installing jq..."
@@ -60,7 +59,6 @@ else
     MSG_UPDATE_CANCELED="Configuration update canceled!"
     MSG_UPDATE_SUCCESS="Script successfully updated!"
     MSG_CREATE_ALERT="Do you want to create an SSH login alert via Telegram? (y/n): "
-    MSG_ALERT_CANCELED="Alert creation canceled!"
     MSG_CONFIG_EXISTS="Configuration file already exists. Skipping creation."
 fi
 
