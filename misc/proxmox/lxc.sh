@@ -1,6 +1,7 @@
 #!/bin/bash
 
 CONFIG_FILE="/etc/tech-scripts/choose.conf"
+
 LANG_CONF=$(grep '^lang:' "$CONFIG_FILE" 2>/dev/null | cut -d':' -f2 | tr -d ' ')
 EDITOR=$(grep '^editor:' "$CONFIG_FILE" | cut -d ' ' -f 2)
 
@@ -40,20 +41,23 @@ if ! command -v pct &> /dev/null; then
     exit 1
 fi
 
-# Функция для получения списка контейнеров с кешированием
 get_containers() {
-    if [ -z "$CACHED_CONTAINERS" ]; then
+    if [ -z "$CACHED_CONTAINERS" ] || dialog --yesno "Обновить список контейнеров?" 5 40; then
         CACHED_CONTAINERS=$(pct list | awk 'NR>1 {print $1, $3}')
     fi
     echo "$CACHED_CONTAINERS"
 }
 
-# Основной цикл меню действий
+show_message() {
+    local msg="$1"
+    dialog --msgbox "$msg" 5 30
+}
+
 while true; do
     containers=$(get_containers)
 
     if [ -z "$containers" ]; then
-        dialog --msgbox "$NO_CONTAINERS" 5 40
+        show_message "$NO_CONTAINERS"
         exit 1
     fi
 
@@ -65,7 +69,7 @@ while true; do
     while true; do
         selected_container_id=$(dialog --title "$SELECT_CONTAINER" --menu "$SELECT_CONTAINER:" 15 50 10 "${options[@]}" 3>&1 1>&2 2>&3)
         if [ $? != 0 ]; then
-            clear
+            reset
             exit
         fi
         
@@ -96,34 +100,31 @@ while true; do
         fi
         
         if [ $? != 0 ]; then
-            clear
+            reset
             exit
         fi
 
         case $ACTION in
-            1) pct start "$selected_container_id" && dialog --msgbox "$MSG_SUCCESS" 5 30 || dialog --msgbox "$MSG_ERROR" 5 30 ;;
-            2) pct stop "$selected_container_id" && dialog --msgbox "$MSG_SUCCESS" 5 30 || dialog --msgbox "$MSG_ERROR" 5 30 ;;
-            3) pct reboot "$selected_container_id" && dialog --msgbox "$MSG_SUCCESS" 5 30 || dialog --msgbox "$MSG_ERROR" 5 30 ;;
+            1) pct start "$selected_container_id" && show_message "$MSG_SUCCESS" || show_message "$MSG_ERROR: Не удалось запустить контейнер" ;;
+            2) pct stop "$selected_container_id" && show_message "$MSG_SUCCESS" || show_message "$MSG_ERROR: Не удалось остановить контейнер" ;;
+            3) pct reboot "$selected_container_id" && show_message "$MSG_SUCCESS" || show_message "$MSG_ERROR: Не удалось перезагрузить контейнер" ;;
             4) $EDITOR "/etc/pve/lxc/$selected_container_id.conf" ;;
             5)
                 if dialog --yesno "$MSG_CONFIRM_DELETE $selected_container_id?" 7 60; then
                     pct stop "$selected_container_id"
-                    pct destroy "$selected_container_id" && dialog --msgbox "$MSG_SUCCESS" 5 30 || dialog --msgbox "$MSG_ERROR" 5 30
+                    pct destroy "$selected_container_id" && show_message "$MSG_SUCCESS" || show_message "$MSG_ERROR: Не удалось удалить контейнер"
                 fi
                 ;;
-            6) pct unlock "$selected_container_id" && dialog --msgbox "$MSG_LOCK" 5 30 || dialog --msgbox "$MSG_ERROR" 5 30 ;;
-            7) pct suspend "$selected_container_id" && dialog --msgbox "$MSG_UNLOCK" 5 30 || dialog --msgbox "$MSG_ERROR" 5 30 ;;
-            8) pct resume "$selected_container_id" && dialog --msgbox "$MSG_UNLOCK" 5 30 || dialog --msgbox "$MSG_ERROR" 5 30 ;;
-            9) pct console "$selected_container_id" && dialog --msgbox "$MSG_UNLOCK" 5 30 || dialog --msgbox "$MSG_ERROR" 5 30 ;;
-            10) clear; exit 0 ;;
-            *) dialog --msgbox "$MSG_ERROR" 5 30 ;;
+            6) pct unlock "$selected_container_id" && show_message "$MSG_LOCK" || show_message "$MSG_ERROR: Не удалось разблокировать контейнер" ;;
+            7) pct suspend "$selected_container_id" && show_message "$MSG_UNLOCK" || show_message "$MSG_ERROR: Не удалось усыпить контейнер" ;;
+            8) pct resume "$selected_container_id" && show_message "$MSG_UNLOCK" || show_message "$MSG_ERROR: Не удалось разбудить контейнер" ;;
+            9) pct console "$selected_container_id" && show_message "$MSG_UNLOCK" || show_message "$MSG_ERROR: Не удалось открыть консоль" ;;
+            10) reset; exit 0 ;;
+            *) show_message "$MSG_ERROR" ;;
         esac
 
-        if dialog --title "$CONTINUE" --yesno "$CONTINUE" 5 40; then
-            continue
-        else
+        if ! dialog --title "$CONTINUE" --yesno "$CONTINUE" 5 40; then
             break
-            exit 0
         fi
     done
 done
