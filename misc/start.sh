@@ -103,4 +103,7 @@ show_menu() {
 }
 
 show_menu
-clear
+if [ $? -ne 0 ]; then
+    clear
+    exit 0
+fi
