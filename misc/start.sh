@@ -81,7 +81,10 @@ show_menu() {
         MSG_TITLE="$CURRENT_DIR"
         SELECTED_ITEM=$(dialog --title "$MSG_TITLE" --menu "$MSG_SELECT" 15 50 10 "${CHOICES[@]}" 3>&1 1>&2 2>&3)
 
-        [ $? -ne 0 ] && exit 0
+        if [ $? -ne 0 ]; then
+            clear
+            exit 0
+        fi
 
         if [ "$SELECTED_ITEM" == "$MSG_BACK" ]; then
             if [ ${#DIR_STACK[@]} -gt 0 ]; then
