@@ -26,12 +26,14 @@ while true; do
     [ $? -ne 0 ] && echo "$CANCEL_MSG" && exit 1
     if is_number "$delay"; then
         dialog --yesno "$(printf "$CONFIRM_PROMPT" "$delay")" 6 40
+        clear
         [ $? -eq 0 ] && break
     else
         dialog --msgbox "$ERROR_MSG" 6 40
+        clear
     fi
 done
 
 $SUDO sed -i "s/GRUB_TIMEOUT=.*/GRUB_TIMEOUT=$delay/" /etc/default/grub
 $SUDO update-grub
-echo "$(printf "$SUCCESS_MSG" "$delay")" 8 50
+echo "$(printf "$SUCCESS_MSG" "$delay")"
