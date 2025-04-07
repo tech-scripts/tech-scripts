@@ -16,7 +16,7 @@ if [ "$LANG_CONF" = "Русский" ]; then
     MSG_ERROR="Ошибка"
     MSG_LOCK="Контейнер заблокирован"
     MSG_UNLOCK="Контейнер разблокирован"
-    CONTINUE="Продолжить?"
+    CONTINUE="Продолжить работу с текущим контейнером?"
 else
     DIALOG_NOT_FOUND="Utility dialog not found. Install it with: sudo apt install dialog"
     PCT_NOT_FOUND="Utility pct not found. Make sure Proxmox is installed."
@@ -28,7 +28,7 @@ else
     MSG_ERROR="Error"
     MSG_LOCK="Container locked"
     MSG_UNLOCK="Container unlocked"
-    CONTINUE="Continue?"
+    CONTINUE="Continue working with the current container?"
 fi
 
 if ! command -v dialog &> /dev/null; then
@@ -42,7 +42,7 @@ if ! command -v pct &> /dev/null; then
 fi
 
 get_containers() {
-    if [ -z "$CACHED_CONTAINERS" ] || dialog --yesno "Обновить список контейнеров?" 5 40; then
+    if [ -z "$CACHED_CONTAINERS" ]; then
         CACHED_CONTAINERS=$(pct list | awk 'NR>1 {print $1, $3}')
     fi
     echo "$CACHED_CONTAINERS"
@@ -66,13 +66,13 @@ while true; do
         options+=("$container_id" "$container_name")
     done <<< "$containers"
 
+    selected_container_id=$(dialog --title "$SELECT_CONTAINER" --menu "$SELECT_CONTAINER:" 15 50 10 "${options[@]}" 3>&1 1>&2 2>&3)
+    if [ $? != 0 ]; then
+        reset
+        exit
+    fi
+
     while true; do
-        selected_container_id=$(dialog --title "$SELECT_CONTAINER" --menu "$SELECT_CONTAINER:" 15 50 10 "${options[@]}" 3>&1 1>&2 2>&3)
-        if [ $? != 0 ]; then
-            reset
-            exit
-        fi
-        
         if [ "$LANG_CONF" = "Русский" ]; then
             ACTION=$(dialog --title "$SELECT_ACTION" --menu "$SELECT_ACTION" 15 50 8 \
                 1 "Включить" \
@@ -98,10 +98,9 @@ while true; do
                 9 "Console" \
                 10 "Exit" 3>&1 1>&2 2>&3)
         fi
-        
+
         if [ $? != 0 ]; then
-            reset
-            exit
+            break
         fi
 
         case $ACTION in
