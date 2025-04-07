@@ -5,20 +5,9 @@ SUDO=$(command -v sudo)
 REPO_URL="https://github.com/tech-scripts/linux.git"
 CLONE_DIR="/tmp/tech-scripts/misc"
 
-# Проверка существования директории
 if [ -d "/tmp/tech-scripts" ]; then
     cd "/tmp/tech-scripts" || { echo "Ошибка: Не удалось перейти в директорию!"; exit 1; }
-    
-    # Проверка наличия новых коммитов
-    LOCAL_COMMIT=$(git rev-parse HEAD)
-    REMOTE_COMMIT=$(git rev-parse @{u})
-
-    if [ "$LOCAL_COMMIT" != "$REMOTE_COMMIT" ]; then
-        echo "Обновление репозитория..."
-        git fetch --depth 1  # Обновление репозитория, получая только последний коммит
-    else
-        echo "Репозиторий уже обновлен."
-    fi
+    git fetch --depth 1
 else
     git clone --depth 1 "$REPO_URL" "/tmp/tech-scripts" || { echo "Ошибка: Не удалось клонировать репозиторий!"; exit 1; }
 fi
@@ -30,7 +19,6 @@ CURRENT_DIR="$CLONE_DIR"
 EXCLUDE_FILES=("start.sh" "choose.sh" "*.tmp")
 CONFIG_FILE="/etc/tech-scripts/choose.conf"
 
-# Проверка и запуск choose.sh
 if [ ! -f "$CONFIG_FILE" ]; then
     CHOOSE_SCRIPT="/tmp/tech-scripts/misc/choose.sh"
     if [ -f "$CHOOSE_SCRIPT" ]; then
@@ -96,8 +84,8 @@ show_menu() {
 
         if [ "$SELECTED_ITEM" == "$MSG_BACK" ]; then
             if [ ${#DIR_STACK[@]} -gt 0 ]; then
+                cd "${DIR_STACK[-1]}"
                 CURRENT_DIR="${DIR_STACK[-1]}"
-                cd "$CURRENT_DIR" || { echo "Ошибка: Не удалось перейти в директорию!"; exit 1; }
                 DIR_STACK=("${DIR_STACK[@]:0:${#DIR_STACK[@]}-1}")
             fi
         elif [ -d "$SELECTED_ITEM" ]; then
