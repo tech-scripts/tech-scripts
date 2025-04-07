@@ -40,9 +40,9 @@ if [[ "$LANGUAGE" == "Русский" ]]; then
     MSG_BACK="назад"
     MSG_SELECT="Выберите опцию:"
     MSG_CD_ERROR="Ошибка: Не удалось перейти в директорию!"
-    DIRECTORY="директория"
-    SCRIPT="скрипт"
-    OPTION="опция"
+    DIRECTORY_FORMATE="директория"
+    SCRIPT_FORMATE="скрипт"
+    OPTION_FORMATE="опция"
 else
     MSG_INSTALL_PROMPT="Install necessary packages? (y/n): "
     MSG_NO_SCRIPTS="No available scripts or directories!"
@@ -50,9 +50,9 @@ else
     MSG_BACK="back"
     MSG_SELECT="Select an option:"
     MSG_CD_ERROR="Error: Failed to change directory!"
-    DIRECTORY="directory"
-    SCRIPT="script"
-    OPTION="option"
+    DIRECTORY_FORMATE="directory"
+    SCRIPT_FORMATE="script"
+    OPTION_FORMATE="option"
 fi
 
 show_menu() {
@@ -71,16 +71,16 @@ show_menu() {
         done
 
         for DIR in "${DIRECTORIES[@]}"; do
-            CHOICES+=("$DIR" "$DIRECTORY")
+            CHOICES+=("$DIR" "$DIRECTORY_FORMATE")
         done
 
         if [ ${#SCRIPTS[@]} -gt 0 ]; then
             for SCRIPT in "${SCRIPTS[@]}"; do
-                CHOICES+=("$SCRIPT" "$SCRIPT")
+                CHOICES+=("$SCRIPT" "$SCRIPT_FORMATE")
             done
         fi
 
-        [ "$CURRENT_DIR" != "$CLONE_DIR" ] && CHOICES+=("$MSG_BACK" "$OPTION")
+        [ "$CURRENT_DIR" != "$CLONE_DIR" ] && CHOICES+=("$MSG_BACK" "$OPTION_FORMATE")
 
         [ ${#CHOICES[@]} -eq 0 ] && { clear; echo "$MSG_NO_SCRIPTS"; exit 0; }
 
