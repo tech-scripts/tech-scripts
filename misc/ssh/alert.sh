@@ -251,7 +251,15 @@ if [ "$CONTINUE" = "false" ]; then
     exit 1
 fi
 
-yes_no_box "Создание оповещения" "$MSG_CREATE_ALERT"
+dialog --yesno "$MSG_CREATE_ALERT" 10 40
+response=$?
+
+if [ $response -eq 0 ]; then
+    :
+else
+    clear
+    exit
+fi
 if [ $? -eq 0 ]; then
     if [ -f "$CONFIG_FILE" ]; then
         CONTINUE="false"
