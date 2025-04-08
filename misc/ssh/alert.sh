@@ -65,12 +65,14 @@ fi
 show_message() {
     local msg="$1"
     dialog --msgbox "$msg" 10 50
+    clear
 }
 
 input_box() {
     local title="$1"
     local prompt="$2"
     dialog --inputbox "$prompt" 10 50 2> /tmp/input.txt
+    clear
     cat /tmp/input.txt
 }
 
@@ -78,6 +80,7 @@ yes_no_box() {
     local title="$1"
     local prompt="$2"
     dialog --yesno "$prompt" 10 50
+    clear
     return $?
 }
 
