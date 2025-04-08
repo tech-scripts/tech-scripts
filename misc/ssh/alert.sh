@@ -185,7 +185,7 @@ EOF
 }
 
 if [ -f "$CONFIG_FILE" ]; then
-    dialog --yesno "$MSG_UPDATE_SUCCESS" 10 40
+    dialog --yesno "$MSG_UPDATE_SCRIPT" 10 40
     response=$response
     if [ $response -eq 0 ]; then
         $SUDO rm "$SCRIPT_DIR/alert.sh"
