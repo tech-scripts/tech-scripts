@@ -185,7 +185,7 @@ EOF
 }
 
 if [ -f "$CONFIG_FILE" ]; then
-    yes_no_box "Обновление" "$MSG_UPDATE_SCRIPT"
+    yes_no_box "" "$MSG_UPDATE_SCRIPT"
     if [ $? -eq 0 ]; then
         $SUDO rm "$SCRIPT_DIR/alert.sh"
         $SUDO systemctl stop ssh.alert.service
@@ -198,6 +198,7 @@ if [ -f "$CONFIG_FILE" ]; then
         exit 0
     else
         show_message "$MSG_UPDATE_CANCELED"
+        exit 1
     fi
 fi
 
