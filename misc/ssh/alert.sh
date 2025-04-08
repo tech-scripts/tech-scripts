@@ -255,6 +255,7 @@ dialog --yesno "$MSG_CREATE_ALERT" 10 40
 response=$?
 
 if [ $response -eq 0 ]; then
+    clear
     :
 else
     clear
