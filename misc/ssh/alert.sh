@@ -185,8 +185,9 @@ EOF
 }
 
 if [ -f "$CONFIG_FILE" ]; then
-    yes_no_box "" "$MSG_UPDATE_SCRIPT"
-    if [ $? -eq 0 ]; then
+    dialog --yesno "$MSG_UPDATE_SUCCESS" 10 40
+    response=$response
+    if [ $response -eq 0 ]; then
         $SUDO rm "$SCRIPT_DIR/alert.sh"
         $SUDO systemctl stop ssh.alert.service
         $SUDO systemctl disable ssh.alert.service
