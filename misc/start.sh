@@ -2,9 +2,6 @@
 
 SUDO=$(command -v sudo)
 
-trap 'clear; exit' SIGINT SIGTERM
-trap 'clear; echo ""' SIGTSTP
-
 REPO_URL="https://github.com/tech-scripts/linux.git"
 CLONE_DIR="/tmp/tech-scripts/misc"
 
@@ -35,9 +32,9 @@ if [[ "$LANGUAGE" == "Русский" ]]; then
     MSG_BACK="назад"
     MSG_SELECT="Выберите опцию:"
     MSG_CD_ERROR="Ошибка: Не удалось перейти в директорию!"
-    DIRECTORY_FORMATE="директория"
-    SCRIPT_FORMATE="скрипт"
-    OPTION_FORMATE="опция"
+    DIRECTORY_FORMAT="директория"
+    SCRIPT_FORMAT="скрипт"
+    OPTION_FORMAT="опция"
 else
     MSG_INSTALL_PROMPT="Install necessary packages? (y/n): "
     MSG_NO_SCRIPTS="No available scripts or directories!"
@@ -45,9 +42,9 @@ else
     MSG_BACK="back"
     MSG_SELECT="Select an option:"
     MSG_CD_ERROR="Error: Failed to change directory!"
-    DIRECTORY_FORMATE="directory"
-    SCRIPT_FORMATE="script"
-    OPTION_FORMATE="option"
+    DIRECTORY_FORMAT="directory"
+    SCRIPT_FORMAT="script"
+    OPTION_FORMAT="option"
 fi
 
 show_menu() {
@@ -66,24 +63,23 @@ show_menu() {
         done
 
         for DIR in "${DIRECTORIES[@]}"; do
-            CHOICES+=("$DIR" "$DIRECTORY_FORMATE")
+            CHOICES+=("$DIR" "$DIRECTORY_FORMAT")
         done
 
         if [ ${#SCRIPTS[@]} -gt 0 ]; then
             for SCRIPT in "${SCRIPTS[@]}"; do
-                CHOICES+=("$SCRIPT" "$SCRIPT_FORMATE")
+                CHOICES+=("$SCRIPT" "$SCRIPT_FORMAT")
             done
         fi
 
-        [ "$CURRENT_DIR" != "$CLONE_DIR" ] && CHOICES+=("$MSG_BACK" "$OPTION_FORMATE")
+        [ "$CURRENT_DIR" != "$CLONE_DIR" ] && CHOICES+=("$MSG_BACK" "$OPTION_FORMAT")
 
-        [ ${#CHOICES[@]} -eq 0 ] && { clear; echo "$MSG_NO_SCRIPTS"; exit 0; }
+        [ ${#CHOICES[@]} -eq 0 ] && { echo "$MSG_NO_SCRIPTS"; exit 0; }
 
         MSG_TITLE="$CURRENT_DIR"
-        SELECTED_ITEM=$(dialog --title "$MSG_TITLE" --menu "$MSG_SELECT" 15 50 10 "${CHOICES[@]}" 3>&1 1>&2 2>&3)
+        SELECTED_ITEM=$(whiptail --title "$MSG_TITLE" --menu "$MSG_SELECT" 15 50 10 "${CHOICES[@]}" 3>&1 1>&2 2>&3)
 
         if [ $? -ne 0 ]; then
-            clear
             exit 0
         fi
 
@@ -96,11 +92,10 @@ show_menu() {
         elif [ -d "$SELECTED_ITEM" ]; then
             DIR_STACK+=("$CURRENT_DIR")
             CURRENT_DIR="$CURRENT_DIR/$SELECTED_ITEM"
-            cd "$CURRENT_DIR" || { clear; echo "$MSG_CD_ERROR"; exit 1; }
+            cd "$CURRENT_DIR" || { echo "$MSG_CD_ERROR"; exit 1; }
         else
             if [ -f "$SELECTED_ITEM" ]; then
                 chmod +x "$SELECTED_ITEM"
-                clear
                 ./"$SELECTED_ITEM"
                 exit 0
             fi
