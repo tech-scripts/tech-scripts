@@ -47,6 +47,14 @@ else
     OPTION_FORMAT="option"
 fi
 
+center_text() {
+    local text="$1"
+    local width=$(tput cols)  # Получаем ширину терминала
+    local text_length=${#text}  # Длина текста
+    local padding=$(( (width - text_length) / 2 ))  # Вычисляем количество пробелов
+    printf "%${padding}s%s\n" "" "$text"  # Выводим текст с выравниванием
+}
+
 show_menu() {
     while true; do
         SCRIPTS=()
@@ -76,8 +84,9 @@ show_menu() {
 
         [ ${#CHOICES[@]} -eq 0 ] && { echo "$MSG_NO_SCRIPTS"; exit 0; }
 
-        MSG_TITLE="$CURRENT_DIR"
-        SELECTED_ITEM=$(whiptail --clear --title "$MSG_SELECT" --menu "$MSG_TITLE" 12 40 4 "${CHOICES[@]}" 3>&1 1>&2 2>&3)
+        # Выводим заголовок по центру
+        center_text "$CURRENT_DIR"
+        SELECTED_ITEM=$(whiptail --clear --title "$MSG_SELECT" --menu "$CURRENT_DIR" 12 40 4 "${CHOICES[@]}" 3>&1 1>&2 2>&3)
 
         if [ $? -ne 0 ]; then
             exit 0
