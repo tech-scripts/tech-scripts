@@ -77,7 +77,7 @@ show_menu() {
         [ ${#CHOICES[@]} -eq 0 ] && { echo "$MSG_NO_SCRIPTS"; exit 0; }
 
         MSG_TITLE="$CURRENT_DIR"
-        SELECTED_ITEM=$(whiptail --title "$MSG_SELECT" --menu "Choise:" 10 40 5 "${CHOICES[@]}" 3>&1 1>&2 2>&3)
+        SELECTED_ITEM=$(whiptail --title "$MSG_SELECT" --menu "Choise:" 10 40 3 "${CHOICES[@]}" 3>&1 1>&2 2>&3)
 
         if [ $? -ne 0 ]; then
             exit 0
