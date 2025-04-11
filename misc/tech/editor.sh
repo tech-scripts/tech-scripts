@@ -26,7 +26,7 @@ fi
 [ ! -d "/etc/tech-scripts" ] && $SUDO mkdir -p /etc/tech-scripts
 [ ! -f "/etc/tech-scripts/editor.conf" ] && $SUDO touch /etc/tech-scripts/editor.conf
 
-EDITOR=$(dialog --title "$TITLE_EDITOR" --menu "$MSG_EDITOR" 12 40 3 \
+EDITOR=$(whiptail --title "$TITLE_EDITOR" --menu "$MSG_EDITOR" 12 40 3 \
     1 "nano" \
     2 "vim" \
     3 "Custom" \
@@ -38,7 +38,7 @@ case $EDITOR in
     1) editor="nano" ;;
     2) editor="vim" ;;
     3)
-        editor=$(dialog --title "$TITLE_CUSTOM" --inputbox "$MSG_CUSTOM" 10 40 3>&1 1>&2 2>&3)
+        editor=$(whiptail --title "$TITLE_CUSTOM" --inputbox "$MSG_CUSTOM" 10 40 3>&1 1>&2 2>&3)
         [ $? -ne 0 ] && { echo "$MSG_CUSTOM_CANCEL"; exit 1; }
         ;;
     *) echo "$MSG_INVALID"; exit 1 ;;
