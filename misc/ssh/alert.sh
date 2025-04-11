@@ -9,7 +9,7 @@ LANGUAGE=$(grep -E '^lang:' "$LANG_FILE" | cut -d':' -f2 | xargs)
 CONTINUE="true"
 
 if [[ "$LANGUAGE" == "Русский" ]]; then
-    MSG_INSTALL_JQ="Установка cc..."
+    MSG_INSTALL_JQ="Установка jq..."
     MSG_BOT_TOKEN="Введите токен вашего Telegram-бота: "
     MSG_CHAT_ID="Введите ваш chat_id в Telegram: "
     MSG_CREATE_SCRIPT="Создание скрипта в $SCRIPT_DIR/alert.sh..."
@@ -64,14 +64,14 @@ fi
 
 show_message() {
     local msg="$1"
-    dialog --msgbox "$msg" 10 50
+    whiptail --msgbox "$msg" 10 50
     clear
 }
 
 input_box() {
     local title="$1"
     local prompt="$2"
-    dialog --inputbox "$prompt" 10 50 2> /tmp/input.txt
+    whiptail --inputbox "$prompt" 10 50 2> /tmp/input.txt
     clear
     cat /tmp/input.txt
 }
@@ -79,7 +79,7 @@ input_box() {
 yes_no_box() {
     local title="$1"
     local prompt="$2"
-    dialog --yesno "$prompt" 10 50
+    whiptail --yesno "$prompt" 10 50
     clear
     return $?
 }
@@ -185,8 +185,8 @@ EOF
 }
 
 if [ -f "$CONFIG_FILE" ]; then
-    dialog --yesno "$MSG_UPDATE_SCRIPT" 10 40
-    response=$response
+    yes_no_box "Обновление скрипта" "$MSG_UPDATE_SCRIPT"
+    response=$?
     if [ $response -eq 0 ]; then
         $SUDO rm "$SCRIPT_DIR/alert.sh"
         $SUDO systemctl stop ssh.alert.service
@@ -204,8 +204,9 @@ if [ -f "$CONFIG_FILE" ]; then
 fi
 
 if [ -f "$CONFIG_FILE" ]; then
-    read -p "$MSG_REMOVE_CONFIG" REMOVE_CONFIG
-    if [ "$REMOVE_CONFIG" = "y" ]; then
+    yes_no_box "Удаление конфигурации" "$MSG_REMOVE_CONFIG"
+    response=$?
+    if [ $response -eq 0 ]; then
         $SUDO rm "$CONFIG_FILE"
         echo "$MSG_REMOVED"
         CONTINUE="false"
@@ -215,8 +216,9 @@ if [ -f "$CONFIG_FILE" ]; then
 fi
 
 if [ -f "$SCRIPT_DIR/alert.sh" ]; then
-    read -p "$MSG_REMOVE_SCRIPT" REMOVE_SCRIPT
-    if [ "$REMOVE_SCRIPT" = "y" ]; then
+    yes_no_box "Удаление скрипта" "$MSG_REMOVE_SCRIPT"
+    response=$?
+    if [ $response -eq 0 ]; then
         $SUDO rm "$SCRIPT_DIR/alert.sh"
         echo "$MSG_REMOVED"
         CONTINUE="false"
@@ -226,8 +228,9 @@ if [ -f "$SCRIPT_DIR/alert.sh" ]; then
 fi
 
 if [ -f "/etc/systemd/system/ssh.alert.service" ]; then
-    read -p "$MSG_REMOVE_CHOICE" REMOVE_CHOICE
-    if [ "$REMOVE_CHOICE" = "y" ]; then
+    yes_no_box "Удаление сервиса" "$MSG_REMOVE_CHOICE"
+    response=$?
+    if [ $response -eq 0 ]; then
         $SUDO systemctl stop ssh.alert.service
         $SUDO systemctl disable ssh.alert.service
         $SUDO rm /etc/systemd/system/ssh.alert.service
@@ -241,8 +244,9 @@ fi
 
 if ! command -v jq &> /dev/null; then
     show_message "$MSG_INSTALL_JQ"
-    read -p "Хотите установить jq? (y/n): " choice
-    if [[ "$choice" == [Yy]* ]]; then
+    yes_no_box "Установка jq" "Хотите установить jq?"
+    response=$?
+    if [[ $response -eq 0 ]]; then
         $SUDO apt update && $SUDO apt install -y jq
     else
         echo "Установка jq отменена."
@@ -253,22 +257,16 @@ if [ "$CONTINUE" = "false" ]; then
     exit 1
 fi
 
-dialog --yesno "$MSG_CREATE_ALERT" 10 40
+yes_no_box "Создание оповещения" "$MSG_CREATE_ALERT"
 response=$?
 
 if [ $response -eq 0 ]; then
     clear
-    :
-else
-    clear
-    exit
-fi
-if [ $? -eq 0 ]; then
     if [ -f "$CONFIG_FILE" ]; then
         CONTINUE="false"
     else
-        read -p "Введите токен Telegram бота: " TELEGRAM_BOT_TOKEN
-        read -p "Введите ID Telegram чата: " TELEGRAM_CHAT_ID
+        TELEGRAM_BOT_TOKEN=$(input_box "Telegram Bot Token" "$MSG_BOT_TOKEN")
+        TELEGRAM_CHAT_ID=$(input_box "Telegram Chat ID" "$MSG_CHAT_ID")
         echo "TELEGRAM_BOT_TOKEN=$TELEGRAM_BOT_TOKEN" > "$CONFIG_FILE"
         echo "TELEGRAM_CHAT_ID=$TELEGRAM_CHAT_ID" >> "$CONFIG_FILE"
         chmod 600 "$CONFIG_FILE"
