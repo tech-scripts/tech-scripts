@@ -23,7 +23,11 @@ if [ $? -eq 0 ]; then
             echo "XXX"
             sleep 0.1
         done
-    } | whiptail --title "Подтверждение удаления" --gauge "Вы еще можете отменить это (Ctrl + C)" 10 50 0
+    } | whiptail --title "Подтверждение удаления" --gauge "Вы еще можете отменить это (Ctrl + C)" 10 50 0 &
+    
+    GAUGE_PID=$!  # Сохраняем PID процесса whiptail
+
+    wait $GAUGE_PID  # Ожидаем завершения процесса whiptail
 
     delete_directories
 else
