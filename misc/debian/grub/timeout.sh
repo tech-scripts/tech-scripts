@@ -3,6 +3,7 @@
 SUDO=$(command -v sudo)
 LANG_CONF=""
 [ -f /etc/tech-scripts/choose.conf ] && LANG_CONF=$(grep '^lang:' /etc/tech-scripts/choose.conf | cut -d':' -f2 | tr -d ' ')
+
 if [ "$LANG_CONF" = "Русский" ]; then
     INPUT_MSG="Введите количество секунд для задержки перед запуском:"
     CANCEL_MSG="Отмена. Скрипт завершен."
@@ -22,15 +23,14 @@ is_number() {
 }
 
 while true; do
-    delay=$(dialog --stdout --inputbox "$INPUT_MSG" 0 0)
+    delay=$(whiptail --inputbox "$INPUT_MSG" 0 0 3>&1 1>&2 2>&3)
     [ $? -ne 0 ] && echo "$CANCEL_MSG" && exit 1
     if is_number "$delay"; then
-        dialog --yesno "$(printf "$CONFIRM_PROMPT" "$delay")" 6 40
-        clear
-        [ $? -eq 0 ] && break
+        if whiptail --yesno "$(printf "$CONFIRM_PROMPT" "$delay")" 6 40; then
+            break
+        fi
     else
-        dialog --msgbox "$ERROR_MSG" 6 40
-        clear
+        whiptail --msgbox "$ERROR_MSG" 6 40
     fi
 done
 
