@@ -43,7 +43,7 @@ get_containers() {
 
 show_message() {
     local msg="$1"
-    whiptail --msgbox "$msg" 5 30
+    whiptail --msgbox "$msg" 7 30
 }
 
 while true; do
