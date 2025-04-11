@@ -59,7 +59,7 @@ while true; do
         options+=("$container_id" "$container_name")
     done <<< "$containers"
 
-    selected_container_id=$(whiptail --title "$SELECT_CONTAINER" --menu "$SELECT_CONTAINER:" 15 50 7 "${options[@]}" 3>&1 1>&2 2>&3)
+    selected_container_id=$(whiptail --title "$SELECT_CONTAINER" --menu "" 15 50 9 "${options[@]}" 3>&1 1>&2 2>&3)
     if [ $? != 0 ]; then
         reset
         exit
