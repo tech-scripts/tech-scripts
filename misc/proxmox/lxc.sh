@@ -115,7 +115,7 @@ while true; do
             *) show_message "$MSG_ERROR" ;;
         esac
 
-        if ! whiptail --title "" --yesno "$CONTINUE" 7 40; then
+        if ! whiptail --title "" --yesno "$CONTINUE" 7 50; then
             break
         fi
     done
