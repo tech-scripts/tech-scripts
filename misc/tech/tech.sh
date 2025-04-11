@@ -1,7 +1,6 @@
 #!/bin/bash
 
 SUDO=$(command -v sudo)
-
 lang=$(grep -E '^lang:' /etc/tech-scripts/choose.conf | cut -d' ' -f2)
 
 if [ "$lang" == "Русский" ]; then
@@ -23,8 +22,7 @@ else
 fi
 
 if [ -f /usr/local/bin/tech ]; then
-
-    dialog --title "$title_remove" --yesno "$msg_remove" 10 40
+    whiptail --title "$title_remove" --yesno "$msg_remove" 10 40
     if [ $? -eq 0 ]; then
         $SUDO rm /usr/local/bin/tech
         clear
@@ -34,8 +32,7 @@ if [ -f /usr/local/bin/tech ]; then
         echo "$msg_remove_canceled"
     fi
 else
-    # Если файл не существует, предлагаем создать его
-    dialog --title "$title_add" --yesno "$msg_add" 10 40
+    whiptail --title "$title_add" --yesno "$msg_add" 10 40
     if [ $? -eq 0 ]; then
         $SUDO tee /usr/local/bin/tech > /dev/null << 'EOF'
 #!/bin/bash
