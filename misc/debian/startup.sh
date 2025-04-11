@@ -41,39 +41,36 @@ else
 fi
 
 edit() {
-    read -p "$EDIT_MSG" OPEN_SCRIPT
-    if [[ "$OPEN_SCRIPT" == "y" || "$OPEN_SCRIPT" == "Y" ]]; then
+    if whiptail --yesno "$EDIT_MSG" 8 50; then
         if command -v "$EDITOR" &> /dev/null; then
             $SUDO "$EDITOR" "$AUTOSTART_SCRIPT"
         else
-            echo "$INVALID_EDITOR"
+            whiptail --msgbox "$INVALID_EDITOR" 8 50
         fi
     fi
-    echo -e "\n$SCRIPT_LOCATION"
+    whiptail --msgbox "$SCRIPT_LOCATION" 8 50
 }
 
 if systemctl list-units --full --all | grep -q "$SERVICE_NAME"; then
-    echo "$SERVICE_EXISTS"
-    read -p "$REMOVE_SERVICE_MSG" REMOVE_SERVICE
-    if [[ "$REMOVE_SERVICE" == "y" || "$REMOVE_SERVICE" == "Y" ]]; then
+    whiptail --msgbox "$SERVICE_EXISTS" 8 50
+    if whiptail --yesno "$REMOVE_SERVICE_MSG" 8 50; then
         $SUDO systemctl stop "$SERVICE_NAME"
         $SUDO systemctl disable "$SERVICE_NAME"
         if $SUDO rm "$SERVICE_FILE"; then
-            echo "$SERVICE_REMOVED"
+            whiptail --msgbox "$SERVICE_REMOVED" 8 50
             exit 0
         else
-            echo "$SERVICE_REMOVE_ERROR"
+            whiptail --msgbox "$SERVICE_REMOVE_ERROR" 8 50
         fi
         $SUDO systemctl daemon-reload
     else
-        echo -e "\n"
         edit
         exit 0
     fi
 fi
 
 if ! $SUDO mkdir -p /usr/local/tech-scripts; then
-    echo "$DIR_ERROR"
+    whiptail --msgbox "$DIR_ERROR" 8 50
     exit 1
 fi
 
@@ -85,12 +82,12 @@ fi
 } | $SUDO tee "$AUTOSTART_SCRIPT" > /dev/null
 
 if [ $? -ne 0 ]; then
-    echo "$SCRIPT_ERROR"
+    whiptail --msgbox "$SCRIPT_ERROR" 8 50
     exit 1
 fi
 
 if ! $SUDO chmod +x "$AUTOSTART_SCRIPT"; then
-    echo "$CHMOD_ERROR"
+    whiptail --msgbox "$CHMOD_ERROR" 8 50
     exit 1
 fi
 
@@ -108,17 +105,17 @@ fi
 } | $SUDO tee "$SERVICE_FILE" > /dev/null
 
 if [ $? -ne 0 ]; then
-    echo "$SERVICE_CREATE_ERROR"
+    whiptail --msgbox "$SERVICE_CREATE_ERROR" 8 50
     exit 1
 fi
 
 if ! $SUDO systemctl enable "$SERVICE_NAME"; then
-    echo "$ENABLE_ERROR"
+    whiptail --msgbox "$ENABLE_ERROR" 8 50
     exit 1
 fi
 
 if ! $SUDO systemctl start "$SERVICE_NAME"; then
-    echo "$START_ERROR"
+    whiptail --msgbox "$START_ERROR" 8 50
     exit 1
 fi
 
