@@ -1,5 +1,7 @@
 #!/bin/bash
 
+SUDO=$(command -v sudo || echo "")
+
 lang=$(grep '^lang:' /etc/tech-scripts/choose.conf | cut -d' ' -f2)
 
 if [ "$lang" == "Русский" ]; then
@@ -18,10 +20,10 @@ fi
 
 if (whiptail --title "$title" --yesno "$question" 10 60); then
     echo "$updating"
-    sudo apt update
-    sudo apt upgrade -y
-    sudo apt dist-upgrade -y
-    sudo apt autoremove -y
+    $SUDO apt update
+    $SUDO apt upgrade -y
+    $SUDO apt dist-upgrade -y
+    $SUDO apt autoremove -y
     echo "$completed"
 else
     echo "$cancelled"
