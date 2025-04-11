@@ -1,6 +1,7 @@
 #!/bin/bash
 
 SUDO=$(command -v sudo || echo "")
+
 AUTOSTART_SCRIPT="/usr/local/tech-scripts/autostart.sh"
 SERVICE_FILE="/etc/systemd/system/autostart.service"
 SERVICE_NAME="autostart.service"
