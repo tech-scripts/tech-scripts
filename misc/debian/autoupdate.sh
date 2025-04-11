@@ -21,8 +21,7 @@ fi
 if (whiptail --title "$title" --yesno "$question" 10 60); then
     echo "$updating"
     $SUDO apt update
-    $SUDO apt upgrade -y
-    $SUDO apt dist-upgrade -y
+    $SUDO apt full-upgrade -y
     $SUDO apt autoremove -y
     echo "$completed"
 else
