@@ -36,9 +36,11 @@ esac
 echo "lang: $lang" | $SUDO tee /etc/tech-scripts/choose.conf > /dev/null
 
 if [ "$lang" = "Русский" ]; then
-    clear
+    echo " "
     echo "Язык установлен: $lang"
+    echo " "
 else
-    clear
+    echo " "
     echo "Language set to: $lang"
+    echo " "
 fi
