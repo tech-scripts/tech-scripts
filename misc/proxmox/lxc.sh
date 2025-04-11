@@ -6,7 +6,7 @@ LANG_CONF=$(grep '^lang:' "$CONFIG_FILE" 2>/dev/null | cut -d':' -f2 | tr -d ' '
 EDITOR=$(grep '^editor:' "$CONFIG_FILE" | cut -d ' ' -f 2)
 
 if [ "$LANG_CONF" = "Русский" ]; then
-    DIALOG_NOT_FOUND="Утилита dialog не установлена. Установите её с помощью команды: sudo apt install dialog"
+    WHIPTAIL_NOT_FOUND="Утилита whiptail не установлена. Установите её с помощью команды: sudo apt install whiptail"
     PCT_NOT_FOUND="Утилита pct не найдена. Убедитесь, что Proxmox установлен."
     NO_CONTAINERS="Нет доступных LXC-контейнеров!"
     SELECT_CONTAINER="Выберите контейнер"
@@ -18,7 +18,7 @@ if [ "$LANG_CONF" = "Русский" ]; then
     MSG_UNLOCK="Контейнер разблокирован"
     CONTINUE="Продолжить работу с текущим контейнером?"
 else
-    DIALOG_NOT_FOUND="Utility dialog not found. Install it with: sudo apt install dialog"
+    WHIPTAIL_NOT_FOUND="Utility whiptail not found. Install it with: sudo apt install whiptail"
     PCT_NOT_FOUND="Utility pct not found. Make sure Proxmox is installed."
     NO_CONTAINERS="No available LXC containers!"
     SELECT_CONTAINER="Select container"
@@ -31,8 +31,8 @@ else
     CONTINUE="Continue working with the current container?"
 fi
 
-if ! command -v dialog &> /dev/null; then
-    echo "$DIALOG_NOT_FOUND"
+if ! command -v whiptail &> /dev/null; then
+    echo "$WHIPTAIL_NOT_FOUND"
     exit 1
 fi
 
@@ -50,7 +50,7 @@ get_containers() {
 
 show_message() {
     local msg="$1"
-    dialog --msgbox "$msg" 5 30
+    whiptail --msgbox "$msg" 5 30
 }
 
 while true; do
@@ -66,7 +66,7 @@ while true; do
         options+=("$container_id" "$container_name")
     done <<< "$containers"
 
-    selected_container_id=$(dialog --title "$SELECT_CONTAINER" --menu "$SELECT_CONTAINER:" 15 50 10 "${options[@]}" 3>&1 1>&2 2>&3)
+    selected_container_id=$(whiptail --title "$SELECT_CONTAINER" --menu "$SELECT_CONTAINER:" 15 50 10 "${options[@]}" 3>&1 1>&2 2>&3)
     if [ $? != 0 ]; then
         reset
         exit
@@ -74,7 +74,7 @@ while true; do
 
     while true; do
         if [ "$LANG_CONF" = "Русский" ]; then
-            ACTION=$(dialog --title "$SELECT_ACTION" --menu "$SELECT_ACTION" 15 50 8 \
+            ACTION=$(whiptail --title "$SELECT_ACTION" --menu "$SELECT_ACTION" 15 50 8 \
                 1 "Включить" \
                 2 "Выключить" \
                 3 "Перезагрузить" \
@@ -86,7 +86,7 @@ while true; do
                 9 "Консоль" \
                 10 "Выход" 3>&1 1>&2 2>&3)
         else
-            ACTION=$(dialog --title "$SELECT_ACTION" --menu "$SELECT_ACTION" 15 50 8 \
+            ACTION=$(whiptail --title "$SELECT_ACTION" --menu "$SELECT_ACTION" 15 50 8 \
                 1 "Start" \
                 2 "Stop" \
                 3 "Reboot" \
@@ -109,7 +109,7 @@ while true; do
             3) pct reboot "$selected_container_id" && show_message "$MSG_SUCCESS" || show_message "$MSG_ERROR: Не удалось перезагрузить контейнер" ;;
             4) $EDITOR "/etc/pve/lxc/$selected_container_id.conf" ;;
             5)
-                if dialog --yesno "$MSG_CONFIRM_DELETE $selected_container_id?" 7 60; then
+                if whiptail --yesno "$MSG_CONFIRM_DELETE $selected_container_id?" 7 60; then
                     pct stop "$selected_container_id"
                     pct destroy "$selected_container_id" && show_message "$MSG_SUCCESS" || show_message "$MSG_ERROR: Не удалось удалить контейнер"
                 fi
@@ -122,7 +122,7 @@ while true; do
             *) show_message "$MSG_ERROR" ;;
         esac
 
-        if ! dialog --title "$CONTINUE" --yesno "$CONTINUE" 5 40; then
+        if ! whiptail --title "$CONTINUE" --yesno "$CONTINUE" 5 40; then
             break
         fi
     done
