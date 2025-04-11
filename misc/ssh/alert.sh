@@ -66,14 +66,12 @@ fi
 show_message() {
     local msg="$1"
     whiptail --msgbox "$msg" 10 50
-    clear
 }
 
 input_box() {
     local title="$1"
     local prompt="$2"
     whiptail --inputbox "$prompt" 10 50 2> /tmp/input.txt
-    clear
     cat /tmp/input.txt
 }
 
@@ -81,7 +79,6 @@ yes_no_box() {
     local title="$1"
     local prompt="$2"
     whiptail --yesno "$prompt" 10 50
-    clear
     return $?
 }
 
@@ -262,7 +259,6 @@ yes_no_box "Создание оповещения" "$MSG_CREATE_ALERT"
 response=$?
 
 if [ $response -eq 0 ]; then
-    clear
     if [ -f "$CONFIG_FILE" ]; then
         CONTINUE="false"
     else
