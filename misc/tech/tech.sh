@@ -25,11 +25,13 @@ if [ -f /usr/local/bin/tech ]; then
     whiptail --title "$title_remove" --yesno "$msg_remove" 10 40
     if [ $? -eq 0 ]; then
         $SUDO rm /usr/local/bin/tech
-        clear
+        echo " "
         echo "$msg_removed"
+        echo " "
     else
-        clear
+        echo " "
         echo "$msg_remove_canceled"
+        echo " "
     fi
 else
     whiptail --title "$title_add" --yesno "$msg_add" 10 40
@@ -41,6 +43,8 @@ EOF
         $SUDO chmod +x /usr/local/bin/tech
     else
         clear
+        echo " "
         echo "$msg_add_canceled"
+        echo " "
     fi
 fi
