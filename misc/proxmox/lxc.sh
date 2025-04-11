@@ -2,7 +2,8 @@
 
 CONFIG_FILE="/etc/tech-scripts/choose.conf"
 
-LANG_CONF=$(grep '^lang:' "$CONFIG_FILE" 2>/dev/null | cut -d':' -f2 | tr -d ' ')
+LANG_CONF=$(grep '^lang:' "$CONFIG_FILE" | cut -d' ' -f2)
+#LANG_CONF=$(grep '^lang:' "$CONFIG_FILE" 2>/dev/null | cut -d':' -f2 | tr -d ' ')
 EDITOR=$(grep '^editor:' "$CONFIG_FILE" | cut -d ' ' -f 2)
 
 if [ "$LANG_CONF" = "Русский" ]; then
@@ -59,7 +60,7 @@ while true; do
         options+=("$container_id" "$container_name")
     done <<< "$containers"
 
-    selected_container_id=$(whiptail --title "$SELECT_CONTAINER" --menu "" 15 50 9 "${options[@]}" 3>&1 1>&2 2>&3)
+    selected_container_id=$(whiptail --title "$SELECT_CONTAINER" --menu "" 15 50 8 "${options[@]}" 3>&1 1>&2 2>&3)
     if [ $? != 0 ]; then
         reset
         exit
