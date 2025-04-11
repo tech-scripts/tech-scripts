@@ -3,7 +3,6 @@
 CONFIG_FILE="/etc/tech-scripts/choose.conf"
 
 LANG_CONF=$(grep '^lang:' "$CONFIG_FILE" | cut -d' ' -f2)
-#LANG_CONF=$(grep '^lang:' "$CONFIG_FILE" 2>/dev/null | cut -d':' -f2 | tr -d ' ')
 EDITOR=$(grep '^editor:' "$CONFIG_FILE" | cut -d ' ' -f 2)
 
 if [ "$LANG_CONF" = "Русский" ]; then
@@ -116,7 +115,7 @@ while true; do
             *) show_message "$MSG_ERROR" ;;
         esac
 
-        if ! whiptail --title "$CONTINUE" --yesno "$CONTINUE" 5 40; then
+        if ! whiptail --title "" --yesno "$CONTINUE" 5 40; then
             break
         fi
     done
