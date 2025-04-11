@@ -6,7 +6,6 @@ LANG_CONF=$(grep '^lang:' "$CONFIG_FILE" 2>/dev/null | cut -d':' -f2 | tr -d ' '
 EDITOR=$(grep '^editor:' "$CONFIG_FILE" | cut -d ' ' -f 2)
 
 if [ "$LANG_CONF" = "Русский" ]; then
-    WHIPTAIL_NOT_FOUND="Утилита whiptail не установлена. Установите её с помощью команды: sudo apt install whiptail"
     PCT_NOT_FOUND="Утилита pct не найдена. Убедитесь, что Proxmox установлен."
     NO_CONTAINERS="Нет доступных LXC-контейнеров!"
     SELECT_CONTAINER="Выберите контейнер"
@@ -18,7 +17,6 @@ if [ "$LANG_CONF" = "Русский" ]; then
     MSG_UNLOCK="Контейнер разблокирован"
     CONTINUE="Продолжить работу с текущим контейнером?"
 else
-    WHIPTAIL_NOT_FOUND="Utility whiptail not found. Install it with: sudo apt install whiptail"
     PCT_NOT_FOUND="Utility pct not found. Make sure Proxmox is installed."
     NO_CONTAINERS="No available LXC containers!"
     SELECT_CONTAINER="Select container"
@@ -29,11 +27,6 @@ else
     MSG_LOCK="Container locked"
     MSG_UNLOCK="Container unlocked"
     CONTINUE="Continue working with the current container?"
-fi
-
-if ! command -v whiptail &> /dev/null; then
-    echo "$WHIPTAIL_NOT_FOUND"
-    exit 1
 fi
 
 if ! command -v pct &> /dev/null; then
