@@ -47,13 +47,13 @@ else
     DISABLE_SWAP_PROMPT="Do you want to disable active swap?"
 fi
 
-install_dialog() {
-    $SUDO apt update && $SUDO apt install -y dialog || { echo "Error installing dialog."; exit 1; }
+install_whiptail() {
+    $SUDO apt update && $SUDO apt install -y whiptail || { echo "Error installing whiptail."; exit 1; }
 }
 
-if ! command -v dialog &> /dev/null; then
-    echo "dialog not found. Installing..."
-    install_dialog
+if ! command -v whiptail &> /dev/null; then
+    echo "whiptail not found. Installing..."
+    install_whiptail
 fi
 
 is_valid_size() {
@@ -100,8 +100,7 @@ check_active_zram && ACTIVE_ZRAM=1
 check_active_zswap && ACTIVE_ZSWAP=1
 
 if [ $ACTIVE_SWAP -eq 1 ] || [ $ACTIVE_ZRAM -eq 1 ] || [ $ACTIVE_ZSWAP -eq 1 ]; then
-    if dialog --yesno "$DISABLE_SWAP_PROMPT" 7 40; then
-
+    if whiptail --yesno "$DISABLE_SWAP_PROMPT" 7 40; then
         if [ $ACTIVE_SWAP -eq 1 ]; then
             echo "Отключение SWAP..."
             $SUDO swapoff -a
@@ -125,7 +124,7 @@ if [ $ACTIVE_SWAP -eq 1 ] || [ $ACTIVE_ZRAM -eq 1 ] || [ $ACTIVE_ZSWAP -eq 1 ]; 
     fi
 fi
 
-dialog --menu "$CHOOSE_MEMORY" 10 40 3 \
+whiptail --title "$CHOOSE_MEMORY" --menu "$CHOOSE_MEMORY" 10 40 3 \
 1 "$ZRAM_OPTION" \
 2 "$SWAP_OPTION" \
 3 "$ZSWAP_OPTION" 2> /tmp/memory_choice
@@ -135,15 +134,14 @@ MEMORY_CHOICE=$(< /tmp/memory_choice)
 case $MEMORY_CHOICE in
     1)
         while true; do
-            dialog --inputbox "$ENTER_SIZE" 8 40 2> /tmp/zram_size
+            ZRAM_SIZE=$(whiptail --inputbox "$ENTER_SIZE" 8 40 3>&1 1>&2 2>&3)
             if [ $? -ne 0 ]; then close; fi
-            ZRAM_SIZE=$(< /tmp/zram_size)
-            if is_valid_size "$ZRAM_SIZE"; then break; else dialog --msgbox "$INVALID_SIZE" 6 50; fi
+            if is_valid_size "$ZRAM_SIZE"; then break; else whiptail --msgbox "$INVALID_SIZE" 6 50; fi
         done
 
         if [ -f "$ZRAM_CONFIG" ]; then
             source "$ZRAM_CONFIG"
-            if dialog --yesno "$REMOVE_ZRAM" 7 40; then
+            if whiptail --yesno "$REMOVE_ZRAM" 7 40; then
                 $SUDO rm -f "$ZRAM_CONFIG"
                 echo "$ZRAM_REMOVED"
                 $SUDO swapoff /dev/zram0 2>/dev/null
@@ -162,8 +160,7 @@ case $MEMORY_CHOICE in
         ;;
 
     2)
-        dialog --inputbox "Введите размер SWAP (например, 2G):" 8 40 2> /tmp/swap_size
-        SWAP_SIZE=$(< /tmp/swap_size)
+        SWAP_SIZE=$(whiptail --inputbox "Введите размер SWAP (например, 2G):" 8 40 3>&1 1>&2 2>&3)
         if is_valid_size "$SWAP_SIZE"; then
             $SUDO fallocate -l $SWAP_SIZE /swapfile
             $SUDO chmod 600 /swapfile
@@ -172,7 +169,7 @@ case $MEMORY_CHOICE in
             echo "/swapfile none swap sw 0 0" | $SUDO tee -a /etc/fstab > /dev/null
             echo "$SWAP_SETUP"
         else
-            dialog --msgbox "$INVALID_SIZE" 6 50
+            whiptail --msgbox "$INVALID_SIZE" 6 50
         fi
         ;;
 
@@ -188,4 +185,4 @@ case $MEMORY_CHOICE in
         ;;
 esac
 
-rm -f /tmp/memory_choice /tmp/zram_size /tmp/swap_size
+rm -f /tmp/memory_choice
