@@ -45,5 +45,4 @@ case $EDITOR in
 esac
 
 echo "editor: $editor" | $SUDO tee -a /etc/tech-scripts/choose.conf > /dev/null
-clear
 echo "$MSG_SUCCESS $editor"
