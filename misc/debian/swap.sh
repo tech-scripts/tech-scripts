@@ -3,7 +3,7 @@
 trap 'echo "$CANCEL_MSG"; exit 0' SIGINT
 SUDO=$(command -v sudo || echo "")
 CONFIG_FILE="/etc/tech-scripts/choose.conf"
-ZRAM_CONFIG="/etc/MootComb/zram_config.conf"
+ZRAM_CONFIG="/etc/tech-scripts/swap.conf"
 
 if [ -f "$CONFIG_FILE" ]; then
     LANG_CONF=$(grep '^lang:' "$CONFIG_FILE" | cut -d':' -f2 | tr -d ' ')
