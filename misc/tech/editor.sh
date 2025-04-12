@@ -2,9 +2,9 @@
 
 SUDO=$(command -v sudo)
 
-LANG=$(grep '^lang:' /etc/tech-scripts/choose.conf 2>/dev/null | cut -d' ' -f2)
+LANG_CONF=$(grep '^lang:' /etc/tech-scripts/choose.conf 2>/dev/null | cut -d' ' -f2)
 
-if [ "$LANG" = "Русский" ]; then
+if [ "$LANG_CONF" = "Русский" ]; then
     TITLE_EDITOR="Выбор текстового редактора"
     MSG_EDITOR="Выберите предпочитаемый текстовый редактор:"
     TITLE_CUSTOM="Пользовательский редактор"
