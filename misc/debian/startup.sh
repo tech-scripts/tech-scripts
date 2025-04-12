@@ -12,7 +12,6 @@ EDITOR=$(grep '^editor:' /etc/tech-scripts/choose.conf | cut -d ' ' -f 2)
 
 if [ "$LANG_CONF" = "Русский" ]; then
     INSTALL_MSG="Хотите установить скрипт автозапуска? (y/n): "
-    OVERWRITE_MSG="Файл $AUTOSTART_SCRIPT уже существует. Хотите перезаписать его? (y/n): "
     EDIT_MSG="Хотите открыть $AUTOSTART_SCRIPT для редактирования? (y/n): "
     INVALID_EDITOR="Неверный выбор редактора. Пожалуйста, выберите nano или vim."
     SCRIPT_LOCATION="Скрипт autostart.sh расположен по адресу: $AUTOSTART_SCRIPT"
@@ -28,7 +27,6 @@ if [ "$LANG_CONF" = "Русский" ]; then
     START_ERROR="Ошибка: не удалось запустить службу $SERVICE_NAME."
 else
     INSTALL_MSG="Do you want to install the autostart script? (y/n): "
-    OVERWRITE_MSG="The file $AUTOSTART_SCRIPT already exists. Do you want to overwrite it? (y/n): "
     EDIT_MSG="Do you want to open $AUTOSTART_SCRIPT for editing? (y/n): "
     INVALID_EDITOR="Invalid editor choice. Please choose nano or vim."
     SCRIPT_LOCATION="The autostart.sh script is located at: $AUTOSTART_SCRIPT"
@@ -42,13 +40,6 @@ else
     SERVICE_CREATE_ERROR="Error: Failed to create service file $SERVICE_FILE."
     ENABLE_ERROR="Error: Failed to enable service $SERVICE_NAME."
     START_ERROR="Error: Failed to start service $SERVICE_NAME."
-fi
-
-if [ -f "$AUTOSTART_SCRIPT" ]; then
-    if ! whiptail --yesno "$OVERWRITE_MSG" 8 50; then
-        echo "Установка отменена."
-        exit 0
-    fi
 fi
 
 if ! whiptail --yesno "$INSTALL_MSG" 8 50; then
