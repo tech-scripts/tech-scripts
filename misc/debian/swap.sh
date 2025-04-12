@@ -1,14 +1,13 @@
 #!/bin/bash
 
-trap 'echo "$CANCEL_MSG"; exit 0' SIGINT
 SUDO=$(command -v sudo || echo "")
 CONFIG_FILE="/etc/tech-scripts/choose.conf"
 ZRAM_CONFIG="/etc/tech-scripts/swap.conf"
 
-LANG=$(grep '^lang:' /etc/tech-scripts/choose.conf 2>/dev/null | cut -d' ' -f2)
+LANG_CONF=$(grep '^lang:' /etc/tech-scripts/choose.conf 2>/dev/null | cut -d' ' -f2)
 
 
-if [ "$LANG" = "Русский" ]; then
+if [ "$LANG_CONF" = "Русский" ]; then
     CANCEL_MSG="Вы прервали выполнение скрипта."
     INVALID_SIZE="Некорректный ввод. Введите размер в формате, например, 8G или 512M."
     ENTER_SIZE="Введите размер ZRAM (например, 8G, 512M):"
