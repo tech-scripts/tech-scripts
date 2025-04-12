@@ -2,9 +2,9 @@
 
 SUDO=$(command -v sudo || echo "")
 
-LANG=$(grep '^lang:' /etc/tech-scripts/choose.conf | cut -d' ' -f2)
+LANG_CONF=$(grep '^lang:' /etc/tech-scripts/choose.conf | cut -d' ' -f2)
 
-if [ "$LANG" == "Русский" ]; then
+if [ "$LANG_CONF" == "Русский" ]; then
     title="Обновление системы"
     question="Вы хотите запустить обновление системы?"
     updating="Обновление системы..."
