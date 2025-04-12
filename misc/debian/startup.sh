@@ -43,7 +43,7 @@ else
 fi
 
 if [ -f "$AUTOSTART_SCRIPT" ]; then
-    if ! whiptail --yesno "$OVERWRITE_MSG" 10 50; then
+    if ! whiptail --yesno "$INSTALL_MSG" 10 50; then
         exit 0
     fi
 fi
