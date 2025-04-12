@@ -60,18 +60,15 @@ if systemctl list-units --full --all | grep -q "$SERVICE_NAME"; then
         $SUDO systemctl disable "$SERVICE_NAME"
         if $SUDO rm "$SERVICE_FILE"; then
             whiptail --msgbox "$SERVICE_REMOVED" 8 50
-            exit 0
         else
             whiptail --msgbox "$SERVICE_REMOVE_ERROR" 8 50
         fi
         $SUDO systemctl daemon-reload
     else
         edit
-        exit 0
     fi
 else
-    if whiptail --yesno "$INSTALL_MSG" 10 50; then
-    else
+    if ! whiptail --yesno "$INSTALL_MSG" 10 50; then
         exit 1
     fi
 fi
