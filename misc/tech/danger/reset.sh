@@ -13,7 +13,6 @@ cleanup() {
 
 trap cleanup SIGINT SIGTSTP SIGTERM
 
-# Запрос подтверждения удаления
 if whiptail --title "Подтверждение удаления" --yesno "Вы точно хотите удалить все файлы tech-scripts?" 10 50; then
     {
         for i in {0..100}; do
@@ -24,12 +23,10 @@ if whiptail --title "Подтверждение удаления" --yesno "Вы 
         done
     } | whiptail --title "Подтверждение удаления" --gauge "Вы еще можете отменить это (Ctrl + C)" 10 50 0 &
     
-    GAUGE_PID=$!  # Сохраняем PID процесса whiptail
+    GAUGE_PID=$!
 
-    # Ожидаем завершения процесса whiptail
     wait $GAUGE_PID
 
-    # После завершения gauge, выполняем удаление директорий
     delete_directories
 else
     echo "Удаление отменено."
