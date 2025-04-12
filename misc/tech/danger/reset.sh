@@ -25,13 +25,20 @@ if whiptail --title "Подтверждение удаления" --yesno "Вы 
     
     GAUGE_PID=$!
 
+    # Цикл для обновления прогресса с обработкой SIGINT
+    for i in {0..100}; do
+        sleep 0.1
+        if ! kill -0 $GAUGE_PID 2>/dev/null; then
+            echo "Удаление отменено пользователем."
+            cleanup
+        fi
+        echo "XXX"
+        echo "$i"
+        echo "XXX"
+    done
+
     # Ожидание завершения whiptail
     wait $GAUGE_PID
-
-    # Проверка, был ли whiptail прерван
-    if [ $? -ne 0 ]; then
-        cleanup
-    fi
 
     # Удаляем директории после завершения прогресса
     delete_directories
