@@ -1,9 +1,10 @@
 #!/bin/bash
 
 SUDO=$(command -v sudo)
-lang=$(grep -E '^lang:' /etc/tech-scripts/choose.conf | cut -d' ' -f2)
 
-if [ "$lang" == "Русский" ]; then
+LANG_CONF=$(grep -E '^lang:' /etc/tech-scripts/choose.conf | cut -d' ' -f2)
+
+if [ "$LANG_CONF" == "Русский" ]; then
     title_add="Быстрый доступ"
     msg_add="Хотите добавить команду tech для быстрого доступа?"
     title_remove="Удаление команды"
