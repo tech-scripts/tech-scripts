@@ -1,8 +1,8 @@
 #!/bin/bash
 
 SUDO=$(command -v sudo)
-LANG_CONF=""
-[ -f /etc/tech-scripts/choose.conf ] && LANG_CONF=$(grep '^lang:' /etc/tech-scripts/choose.conf | cut -d':' -f2 | tr -d ' ')
+
+LANG_CONF=$(grep '^lang:' /etc/tech-scripts/choose.conf | cut -d' ' -f2)
 
 if [ "$LANG_CONF" = "Русский" ]; then
     INPUT_MSG="Введите количество секунд для задержки перед запуском:"
