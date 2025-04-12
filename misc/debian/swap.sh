@@ -5,13 +5,10 @@ SUDO=$(command -v sudo || echo "")
 CONFIG_FILE="/etc/tech-scripts/choose.conf"
 ZRAM_CONFIG="/etc/tech-scripts/swap.conf"
 
-if [ -f "$CONFIG_FILE" ]; then
-    LANG_CONF=$(grep '^lang:' "$CONFIG_FILE" | cut -d':' -f2 | tr -d ' ')
-else
-    LANG_CONF="English"
-fi
+LANG=$(grep '^lang:' /etc/tech-scripts/choose.conf 2>/dev/null | cut -d' ' -f2)
 
-if [ "$LANG_CONF" = "Русский" ]; then
+
+if [ "$LANG" = "Русский" ]; then
     CANCEL_MSG="Вы прервали выполнение скрипта."
     INVALID_SIZE="Некорректный ввод. Введите размер в формате, например, 8G или 512M."
     ENTER_SIZE="Введите размер ZRAM (например, 8G, 512M):"
