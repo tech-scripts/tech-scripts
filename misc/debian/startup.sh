@@ -51,6 +51,7 @@ edit() {
         fi
     fi
     whiptail --msgbox "$SCRIPT_LOCATION" 8 50
+    exit 0
 }
 
 if systemctl list-units --full --all | grep -q "$SERVICE_NAME"; then
