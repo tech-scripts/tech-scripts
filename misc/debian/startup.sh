@@ -70,7 +70,10 @@ if systemctl list-units --full --all | grep -q "$SERVICE_NAME"; then
         exit 0
     fi
 else
-    whiptail --yesno "$INSTALL_MSG" 10 50
+    if whiptail --yesno "$INSTALL_MSG" 10 50; then
+    else
+        exit 1
+    fi
 fi
 
 if ! $SUDO mkdir -p /usr/local/tech-scripts; then
