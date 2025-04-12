@@ -47,15 +47,6 @@ else
     DISABLE_SWAP_PROMPT="Do you want to disable active swap?"
 fi
 
-install_whiptail() {
-    $SUDO apt update && $SUDO apt install -y whiptail || { echo "Error installing whiptail."; exit 1; }
-}
-
-if ! command -v whiptail &> /dev/null; then
-    echo "whiptail not found. Installing..."
-    install_whiptail
-fi
-
 is_valid_size() {
     [[ $1 =~ ^[0-9]+[GgMm]$ ]]
 }
@@ -134,7 +125,7 @@ MEMORY_CHOICE=$(< /tmp/memory_choice)
 case $MEMORY_CHOICE in
     1)
         while true; do
-            ZRAM_SIZE=$(whiptail --inputbox "$ENTER_SIZE" 8 40 3>&1 1>&2 2>&3)
+            ZRAM_SIZE=$(whiptail --inputbox "$ENTER_SIZE" 10 40 3>&1 1>&2 2>&3)
             if [ $? -ne 0 ]; then close; fi
             if is_valid_size "$ZRAM_SIZE"; then break; else whiptail --msgbox "$INVALID_SIZE" 6 50; fi
         done
@@ -160,7 +151,7 @@ case $MEMORY_CHOICE in
         ;;
 
     2)
-        SWAP_SIZE=$(whiptail --inputbox "Введите размер SWAP (например, 2G):" 8 40 3>&1 1>&2 2>&3)
+        SWAP_SIZE=$(whiptail --inputbox "Введите размер SWAP (например, 2G):" 10 40 3>&1 1>&2 2>&3)
         if is_valid_size "$SWAP_SIZE"; then
             $SUDO fallocate -l $SWAP_SIZE /swapfile
             $SUDO chmod 600 /swapfile
