@@ -26,11 +26,11 @@ while true; do
     delay=$(whiptail --inputbox "$INPUT_MSG" 0 0 3>&1 1>&2 2>&3)
     [ $? -ne 0 ] && echo "$CANCEL_MSG" && exit 1
     if is_number "$delay"; then
-        if whiptail --yesno "$(printf "$CONFIRM_PROMPT" "$delay")" 6 40; then
+        if whiptail --yesno "$(printf "$CONFIRM_PROMPT" "$delay")" 7 40; then
             break
         fi
     else
-        whiptail --msgbox "$ERROR_MSG" 6 40
+        whiptail --msgbox "$ERROR_MSG" 7 40
     fi
 done
 
