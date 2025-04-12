@@ -42,12 +42,6 @@ else
     START_ERROR="Error: Failed to start service $SERVICE_NAME."
 fi
 
-if [ -f "$AUTOSTART_SCRIPT" ]; then
-    if ! whiptail --yesno "$INSTALL_MSG" 10 50; then
-        exit 0
-    fi
-fi
-
 edit() {
     if whiptail --yesno "$EDIT_MSG" 8 50; then
         if command -v "$EDITOR" &> /dev/null; then
@@ -60,7 +54,7 @@ edit() {
 }
 
 if systemctl list-units --full --all | grep -q "$SERVICE_NAME"; then
-    whiptail --msgbox "$SERVICE_EXISTS" 8 50
+    whiptail --yesno "$INSTALL_MSG" 10 50
     if whiptail --yesno "$REMOVE_SERVICE_MSG" 8 50; then
         $SUDO systemctl stop "$SERVICE_NAME"
         $SUDO systemctl disable "$SERVICE_NAME"
@@ -75,6 +69,8 @@ if systemctl list-units --full --all | grep -q "$SERVICE_NAME"; then
         edit
         exit 0
     fi
+else
+    exit 0
 fi
 
 if ! $SUDO mkdir -p /usr/local/tech-scripts; then
