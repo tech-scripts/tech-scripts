@@ -2,10 +2,10 @@
 
 CONFIG_FILE="/etc/tech-scripts/choose.conf"
 
-LANG_CONF=$(grep '^lang:' "$CONFIG_FILE" | cut -d' ' -f2)
 EDITOR=$(grep '^editor:' "$CONFIG_FILE" | cut -d ' ' -f 2)
+LANG=$(grep '^lang:' "$CONFIG_FILE" | cut -d' ' -f2)
 
-if [ "$LANG_CONF" = "Русский" ]; then
+if [ "$LANG" = "Русский" ]; then
     PCT_NOT_FOUND="Утилита pct не найдена. Убедитесь, что Proxmox установлен."
     NO_CONTAINERS="Нет доступных LXC-контейнеров!"
     SELECT_CONTAINER="Выберите контейнер"
@@ -66,7 +66,7 @@ while true; do
     fi
 
     while true; do
-        if [ "$LANG_CONF" = "Русский" ]; then
+        if [ "$LANG" = "Русский" ]; then
             ACTION=$(whiptail --title "$SELECT_ACTION" --menu "$SELECT_ACTION" 15 50 8 \
                 1 "Включить" \
                 2 "Выключить" \
@@ -111,7 +111,7 @@ while true; do
             7) pct suspend "$selected_container_id" && show_message "$MSG_UNLOCK" || show_message "$MSG_ERROR: Не удалось усыпить контейнер" ;;
             8) pct resume "$selected_container_id" && show_message "$MSG_UNLOCK" || show_message "$MSG_ERROR: Не удалось разбудить контейнер" ;;
             9) pct console "$selected_container_id" && show_message "$MSG_UNLOCK" || show_message "$MSG_ERROR: Не удалось открыть консоль" ;;
-            10) reset ;;
+            10) break ;;
             *) show_message "$MSG_ERROR" ;;
         esac
 
