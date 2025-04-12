@@ -42,9 +42,10 @@ else
     START_ERROR="Error: Failed to start service $SERVICE_NAME."
 fi
 
-if ! whiptail --yesno "$INSTALL_MSG" 8 50; then
-    echo "Установка отменена."
-    exit 0
+if [ -f "$AUTOSTART_SCRIPT" ]; then
+    if ! whiptail --yesno "$OVERWRITE_MSG" 8 50; then
+        exit 0
+    fi
 fi
 
 edit() {
