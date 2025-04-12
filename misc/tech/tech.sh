@@ -8,7 +8,7 @@ if [ "$lang" == "Русский" ]; then
     msg_add="Хотите добавить команду tech для быстрого доступа?"
     title_remove="Удаление команды"
     msg_remove="Команда tech уже существует. Хотите удалить её?"
-    msg_removed="Команда tech успешно удалена."
+    msg_removed="Команда tech успешно удалена!"
     msg_add_canceled="Добавление команды отменено!"
     msg_remove_canceled="Удаление команды отменено!"
 else
@@ -16,7 +16,7 @@ else
     msg_add="Do you want to add the tech command for quick access?"
     title_remove="Remove command"
     msg_remove="The tech command already exists. Do you want to remove it?"
-    msg_removed="The tech command has been successfully removed."
+    msg_removed="The tech command has been successfully removed!"
     msg_add_canceled="Adding a command has been canceled!"
     msg_remove_canceled="The removal of the team has been canceled!"
 fi
