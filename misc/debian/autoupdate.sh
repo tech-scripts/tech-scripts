@@ -9,13 +9,11 @@ if [ "$lang" == "Русский" ]; then
     question="Вы хотите запустить обновление системы?"
     updating="Обновление системы..."
     completed="Обновление завершено!"
-    cancelled="Обновление отменено!"
 else
     title="System Update"
     question="Do you want to start the system update?"
     updating="Updating the system..."
     completed="Update completed!"
-    cancelled="Update cancelled!"
 fi
 
 if (whiptail --title "$title" --yesno "$question" 10 60); then
@@ -29,7 +27,5 @@ if (whiptail --title "$title" --yesno "$question" 10 60); then
     echo "$completed"
     echo " "
 else
-    echo " "
-    echo "$cancelled"
-    echo " "
+    echo ""
 fi
