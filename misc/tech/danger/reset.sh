@@ -11,7 +11,7 @@ cleanup() {
     exit 1
 }
 
-trap cleanup SIGINT SIGTSTP SIGTERM
+
 
 if whiptail --title "Подтверждение удаления" --yesno "Вы точно хотите удалить все файлы tech-scripts?" 10 50; then
     {
@@ -28,10 +28,7 @@ if whiptail --title "Подтверждение удаления" --yesno "Вы 
     # Цикл для обновления прогресса с обработкой SIGINT
     for i in {0..100}; do
         sleep 0.1
-        if ! kill -0 $GAUGE_PID 2>/dev/null; then
-            echo "Удаление отменено пользователем."
-            cleanup
-        fi
+        trap cleanup SIGINT SIGTSTP SIGTERM
         echo "XXX"
         echo "$i"
         echo "XXX"
