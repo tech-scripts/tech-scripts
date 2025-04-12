@@ -19,11 +19,17 @@ else
 fi
 
 if (whiptail --title "$title" --yesno "$question" 10 60); then
+    echo " "
     echo "$updating"
+    echo " "
     $SUDO apt update
     $SUDO apt full-upgrade -y
     $SUDO apt autoremove -y
+    echo " "
     echo "$completed"
+    echo " "
 else
+    echo " "
     echo "$cancelled"
+    echo " "
 fi
