@@ -3,9 +3,9 @@
 CONFIG_FILE="/etc/tech-scripts/choose.conf"
 
 EDITOR=$(grep '^editor:' "$CONFIG_FILE" | cut -d ' ' -f 2)
-LANG=$(grep '^lang:' "$CONFIG_FILE" | cut -d' ' -f2)
+LANG_CONF=$(grep '^lang:' "$CONFIG_FILE" | cut -d' ' -f2)
 
-if [ "$LANG" = "Русский" ]; then
+if [ "$LANG_CONF" = "Русский" ]; then
     PCT_NOT_FOUND="Утилита pct не найдена. Убедитесь, что Proxmox установлен."
     NO_CONTAINERS="Нет доступных LXC-контейнеров!"
     SELECT_CONTAINER="Выберите контейнер"
@@ -66,7 +66,7 @@ while true; do
     fi
 
     while true; do
-        if [ "$LANG" = "Русский" ]; then
+        if [ "$LANG_CONF" = "Русский" ]; then
             ACTION=$(whiptail --title "$SELECT_ACTION" --menu "$SELECT_ACTION" 15 50 8 \
                 1 "Включить" \
                 2 "Выключить" \
