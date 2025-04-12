@@ -32,7 +32,7 @@ EDITOR=$(whiptail --title "$TITLE_EDITOR" --menu "$MSG_EDITOR" 12 40 3 \
     3 "Custom" \
     3>&1 1>&2 2>&3)
 
-[ $? -ne 0 ] && { echo "$MSG_CANCEL"; exit 1; }
+[ $? -ne 0 ] && { echo " "; echo "$MSG_CANCEL"; echo " "; exit 1; }
 
 case $EDITOR in
     1) editor="nano" ;;
@@ -41,8 +41,10 @@ case $EDITOR in
         editor=$(whiptail --title "$TITLE_CUSTOM" --inputbox "$MSG_CUSTOM" 10 40 3>&1 1>&2 2>&3)
         [ $? -ne 0 ] && { echo "$MSG_CUSTOM_CANCEL"; exit 1; }
         ;;
-    *) echo "$MSG_INVALID"; exit 1 ;;
+    *) echo " "; echo "$MSG_INVALID"; echo " "; exit 1 ;;
 esac
 
 echo "editor: $editor" | $SUDO tee -a /etc/tech-scripts/choose.conf > /dev/null
+echo " "
 echo "$MSG_SUCCESS $editor"
+echo " "
