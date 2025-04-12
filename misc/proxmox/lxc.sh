@@ -77,7 +77,7 @@ while true; do
                 7 "Усыпить" \
                 8 "Разбудить" \
                 9 "Консоль" \
-                10 "Выход" 3>&1 1>&2 2>&3)
+                10 "Назад" 3>&1 1>&2 2>&3)
         else
             ACTION=$(whiptail --title "$SELECT_ACTION" --menu "$SELECT_ACTION" 15 50 8 \
                 1 "Start" \
@@ -89,7 +89,7 @@ while true; do
                 7 "Suspend" \
                 8 "Resume" \
                 9 "Console" \
-                10 "Exit" 3>&1 1>&2 2>&3)
+                10 "Back" 3>&1 1>&2 2>&3)
         fi
 
         if [ $? != 0 ]; then
@@ -111,7 +111,7 @@ while true; do
             7) pct suspend "$selected_container_id" && show_message "$MSG_UNLOCK" || show_message "$MSG_ERROR: Не удалось усыпить контейнер" ;;
             8) pct resume "$selected_container_id" && show_message "$MSG_UNLOCK" || show_message "$MSG_ERROR: Не удалось разбудить контейнер" ;;
             9) pct console "$selected_container_id" && show_message "$MSG_UNLOCK" || show_message "$MSG_ERROR: Не удалось открыть консоль" ;;
-            10) reset; exit 0 ;;
+            10) reset ;;
             *) show_message "$MSG_ERROR" ;;
         esac
 
