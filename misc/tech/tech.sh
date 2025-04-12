@@ -38,7 +38,7 @@ else
     if [ $? -eq 0 ]; then
         $SUDO tee /usr/local/bin/tech > /dev/null << 'EOF'
 #!/bin/bash
-bash -c "$(wget -qLO - https://raw.githubusercontent.com/tech-scripts/linux/refs/heads/main/misc/start.sh)"
+bash -c "$(curl -sL https://raw.githubusercontent.com/tech-scripts/linux/refs/heads/main/misc/start.sh)"
 EOF
         $SUDO chmod +x /usr/local/bin/tech
     else
