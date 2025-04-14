@@ -1,7 +1,6 @@
 #!/bin/bash
 
 SUDO=$(command -v sudo)
-
 LANG_CONF=$(grep -E '^lang:' /etc/tech-scripts/choose.conf | cut -d' ' -f2)
 
 if [ "$LANG_CONF" == "Русский" ]; then
@@ -12,6 +11,9 @@ if [ "$LANG_CONF" == "Русский" ]; then
     msg_removed="Команда tech успешно удалена!"
     msg_add_canceled="Добавление команды отменено!"
     msg_remove_canceled="Удаление команды отменено!"
+    title_update="Обновление команды"
+    msg_update="Команда tech уже существует. Хотите обновить её?"
+    msg_updated="Команда tech успешно обновлена!"
 else
     title_add="Quick access"
     msg_add="Do you want to add the tech command for quick access?"
@@ -19,43 +21,22 @@ else
     msg_remove="The tech command already exists. Do you want to remove it?"
     msg_removed="The tech command has been successfully removed!"
     msg_add_canceled="Adding a command has been canceled!"
-    msg_remove_canceled="The removal of the team has been canceled!"
+    msg_remove_canceled="The removal of the command has been canceled!"
+    title_update="Update command"
+    msg_update="The tech command already exists. Do you want to update it?"
+    msg_updated="The tech command has been successfully updated!"
 fi
 
-if [ -f /usr/local/bin/tech ]; then
-    whiptail --title "$title_remove" --yesno "$msg_remove" 10 40
-    if [ $? -eq 0 ]; then
-        $SUDO rm /usr/local/bin/tech
-        echo " "
-        echo "$msg_removed"
-        echo " "
-    else
-        echo " "
-        echo "$msg_remove_canceled"
-        echo " "
-    fi
-else
-    whiptail --title "$title_add" --yesno "$msg_add" 10 40
-    if [ $? -eq 0 ]; then
-        $SUDO tee /usr/local/bin/tech > /dev/null << 'EOF'
-#!/bin/bash
+TECH_SCRIPT='#!/bin/bash
 
 REPO_URL="https://github.com/tech-scripts/linux.git"
 CLONE_DIR="/tmp/tech-scripts/misc"
 LANG_CONF=$(grep -E '^lang:' /etc/tech-scripts/choose.conf | cut -d' ' -f2)
 
 if [ "$LANG_CONF" == "Русский" ]; then
-    error_delete="Ошибка: не удалось удалить $CLONE_DIR"
-    error_clone="Ошибка: не удалось клонировать репозиторий"
-    error_cd="Ошибка: не удалось перейти в $CLONE_DIR/$1"
-    error_chmod="Ошибка: не удалось сделать $1 исполняемым"
     unknown_command="Неизвестная команда: $1"
     usage="Использование: tech [lxc|vm|ssh alert|...]"
 else
-    error_delete="Error: failed to delete $CLONE_DIR"
-    error_clone="Error: failed to clone repository"
-    error_cd="Error: failed to cd into $CLONE_DIR/$1"
-    error_chmod="Error: failed to make $1 executable"
     unknown_command="Unknown command: $1"
     usage="Usage: tech [lxc|vm|ssh alert|...]"
 fi
@@ -63,10 +44,10 @@ fi
 run_script() {
     local script_dir="$1"
     local script_name="$2"
-    rm -rf "$CLONE_DIR" || { echo "$error_delete"; exit 1; }
-    git clone --depth 1 "$REPO_URL" "$CLONE_DIR" || { echo "$error_clone"; exit 1; }
-    cd "$CLONE_DIR/$script_dir" || { echo "$(echo "$error_cd" | sed "s/\$1/$script_dir/")"; exit 1; }
-    chmod +x "$script_name" || { echo "$(echo "$error_chmod" | sed "s/\$1/$script_name/")"; exit 1; }
+    rm -rf "$CLONE_DIR"
+    git clone --depth 1 "$REPO_URL" "$CLONE_DIR"
+    cd "$CLONE_DIR/$script_dir"
+    chmod +x "$script_name"
     ./"$script_name"
 }
 
@@ -89,13 +70,39 @@ case "$combined_args" in
         ;;
     *)
         echo " "
-        echo "$(echo "$unknown_command" | sed "s/\$1/$combined_args/")"
+        echo "$unknown_command"
         echo "$usage"
         echo " "
         exit 1
         ;;
-esac
-EOF
+esac'
+
+if [ -f /usr/local/bin/tech ]; then
+    whiptail --title "$title_update" --yesno "$msg_update" 10 40
+    if [ $? -eq 0 ]; then
+        $SUDO rm /usr/local/bin/tech
+        $SUDO tee /usr/local/bin/tech > /dev/null <<< "$TECH_SCRIPT"
+        $SUDO chmod +x /usr/local/bin/tech
+        echo " "
+        echo "$msg_updated"
+        echo " "
+    else
+        whiptail --title "$title_remove" --yesno "$msg_remove" 10 40
+        if [ $? -eq 0 ]; then
+            $SUDO rm /usr/local/bin/tech
+            echo " "
+            echo "$msg_removed"
+            echo " "
+        else
+            echo " "
+            echo "$msg_remove_canceled"
+            echo " "
+        fi
+    fi
+else
+    whiptail --title "$title_add" --yesno "$msg_add" 10 40
+    if [ $? -eq 0 ]; then
+        $SUDO tee /usr/local/bin/tech > /dev/null <<< "$TECH_SCRIPT"
         $SUDO chmod +x /usr/local/bin/tech
     else
         clear
