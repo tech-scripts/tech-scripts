@@ -57,8 +57,7 @@ while true; do
 
     selected_container_id=$(whiptail --title "$SELECT_CONTAINER" --menu "" 15 50 8 "${CONTAINERS_CACHE[@]}" 3>&1 1>&2 2>&3)
     if [ $? != 0 ]; then
-        reset
-        exit
+        exit 0
     fi
 
     while true; do
