@@ -89,7 +89,7 @@ while true; do
         fi
 
         if [ $? != 0 ]; then
-            break
+            exit 0
         fi
 
         case $ACTION in
