@@ -25,13 +25,15 @@ if whiptail --title "Подтверждение удаления" --yesno "Вы 
     
     GAUGE_PID=$!
 
+    # Ожидание завершения прогресс-бара или отмены
     wait $GAUGE_PID
 
-    if [ $? -ne 0 ]; then
+    # Если прогресс-бар завершился успешно (не отменен), удаляем директории
+    if [ $? -eq 0 ]; then
+        delete_directories
+    else
         cleanup
     fi
-
-    delete_directories
 else
     echo "Удаление отменено."
 fi
