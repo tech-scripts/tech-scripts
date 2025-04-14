@@ -50,21 +50,21 @@ if [ "$LANG_CONF" == "Русский" ]; then
     error_cd="Ошибка: не удалось перейти в $CLONE_DIR/$1"
     error_chmod="Ошибка: не удалось сделать $1 исполняемым"
     unknown_command="Неизвестная команда: $1"
-    usage="Использование: tech [lxc|vm|ssh]"
+    usage="Использование: tech [lxc|vm|ssh alert|...]"
 else
     error_delete="Error: failed to delete $CLONE_DIR"
     error_clone="Error: failed to clone repository"
     error_cd="Error: failed to cd into $CLONE_DIR/$1"
     error_chmod="Error: failed to make $1 executable"
     unknown_command="Unknown command: $1"
-    usage="Usage: tech [lxc|vm|ssh]"
+    usage="Usage: tech [lxc|vm|ssh alert|...]"
 fi
 
 run_script() {
     local script_dir="$1"
     local script_name="$2"
-    rm -rf "/tmp/tech-scripts" || { echo "$error_delete"; exit 1; }
-    git clone --depth 1 "$REPO_URL" "/tmp/tech-scripts" || { echo "$error_clone"; exit 1; }
+    rm -rf "$CLONE_DIR" || { echo "$error_delete"; exit 1; }
+    git clone --depth 1 "$REPO_URL" "$CLONE_DIR" || { echo "$error_clone"; exit 1; }
     cd "$CLONE_DIR/$script_dir" || { echo "$(echo "$error_cd" | sed "s/\$1/$script_dir/")"; exit 1; }
     chmod +x "$script_name" || { echo "$(echo "$error_chmod" | sed "s/\$1/$script_name/")"; exit 1; }
     ./"$script_name"
@@ -75,19 +75,21 @@ if [ $# -eq 0 ]; then
     exit 0
 fi
 
-case "$1" in
+combined_args="$*"
+
+case "$combined_args" in
     lxc)
         run_script "proxmox" "lxc.sh"
         ;;
     vm)
         run_script "proxmox" "vm.sh"
         ;;
-    ssh)
+    "ssh alert")
         run_script "ssh" "alert.sh"
         ;;
     *)
         echo " "
-        echo "$(echo "$unknown_command" | sed "s/\$1/$1/")"
+        echo "$(echo "$unknown_command" | sed "s/\$1/$combined_args/")"
         echo "$usage"
         echo " "
         exit 1
