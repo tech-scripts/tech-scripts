@@ -34,6 +34,8 @@ if ! command -v pct &> /dev/null; then
     exit 1
 fi
 
+CACHED_CONTAINERS=""
+
 get_containers() {
     if [ -z "$CACHED_CONTAINERS" ]; then
         CACHED_CONTAINERS=$(pct list | awk 'NR>1 {print $1, $3}')
