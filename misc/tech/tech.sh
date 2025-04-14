@@ -41,7 +41,7 @@ else
 #!/bin/bash
 
 REPO_URL="https://github.com/tech-scripts/linux.git"
-CLONE_DIR="/tmp/tech-scripts"
+CLONE_DIR="/tmp/tech-scripts/misc"
 LANG_CONF=$(grep -E '^lang:' /etc/tech-scripts/choose.conf | cut -d' ' -f2)
 
 if [ "$LANG_CONF" == "Русский" ]; then
@@ -86,8 +86,10 @@ case "$1" in
         run_script "ssh" "alert.sh"
         ;;
     *)
-        whiptail --msgbox "$(echo "$unknown_command" | sed "s/\$1/$1/")" 10 50
-        whiptail --msgbox "$usage" 10 50
+        echo " "
+        echo "$unknown_command"
+        echo "$usage"
+        echo " "
         exit 1
         ;;
 esac
