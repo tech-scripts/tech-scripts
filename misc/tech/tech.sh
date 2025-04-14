@@ -14,6 +14,8 @@ if [ "$LANG_CONF" == "Русский" ]; then
     title_update="Обновление команды"
     msg_update="Команда tech уже существует. Хотите обновить её?"
     msg_updated="Команда tech успешно обновлена!"
+    unknown_command="Неизвестная команда: \$1"
+    usage="Использование: tech [lxc|vm|ssh alert|...]"
 else
     title_add="Quick access"
     msg_add="Do you want to add the tech command for quick access?"
@@ -25,21 +27,14 @@ else
     title_update="Update command"
     msg_update="The tech command already exists. Do you want to update it?"
     msg_updated="The tech command has been successfully updated!"
+    unknown_command="Unknown command: \$1"
+    usage="Usage: tech [lxc|vm|ssh alert|...]"
 fi
 
 TECH_SCRIPT='#!/bin/bash
 
 REPO_URL="https://github.com/tech-scripts/linux.git"
 CLONE_DIR="/tmp/tech-scripts/misc"
-LANG_CONF=$(grep -E '^lang:' /etc/tech-scripts/choose.conf | cut -d' ' -f2)
-
-if [ "$LANG_CONF" == "Русский" ]; then
-    unknown_command="Неизвестная команда: $1"
-    usage="Использование: tech [lxc|vm|ssh alert|...]"
-else
-    unknown_command="Unknown command: $1"
-    usage="Usage: tech [lxc|vm|ssh alert|...]"
-fi
 
 run_script() {
     local script_dir="$1"
@@ -56,9 +51,9 @@ if [ $# -eq 0 ]; then
     exit 0
 fi
 
-combined_args="$*"
+combined_args="\$*"
 
-case "$combined_args" in
+case "\$combined_args" in
     lxc)
         run_script "proxmox" "lxc.sh"
         ;;
@@ -70,8 +65,8 @@ case "$combined_args" in
         ;;
     *)
         echo " "
-        echo "$unknown_command"
-        echo "$usage"
+        echo "\$unknown_command"
+        echo "\$usage"
         echo " "
         exit 1
         ;;
