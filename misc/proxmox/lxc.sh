@@ -32,13 +32,14 @@ if ! command -v pct &> /dev/null; then
     exit 1
 fi
 
-CACHED_CONTAINERS=""
+declare -A CONTAINERS_CACHE
 
 get_containers() {
-    if [ -z "$CACHED_CONTAINERS" ]; then
-        CACHED_CONTAINERS=$(pct list | awk 'NR>1 {print $1, $3}')
+    if [ ${#CONTAINERS_CACHE[@]} -eq 0 ]; then
+        while read -r container_id container_name; do
+            CONTAINERS_CACHE["$container_id"]="$container_name"
+        done < <(pct list | awk 'NR>1 {print $1, $3}')
     fi
-    echo "$CACHED_CONTAINERS"
 }
 
 show_message() {
@@ -47,17 +48,17 @@ show_message() {
 }
 
 while true; do
-    containers=$(get_containers)
+    get_containers
 
-    if [ -z "$containers" ]; then
+    if [ ${#CONTAINERS_CACHE[@]} -eq 0 ]; then
         show_message "$NO_CONTAINERS"
         exit 1
     fi
 
     options=()
-    while read -r container_id container_name; do
-        options+=("$container_id" "$container_name")
-    done <<< "$containers"
+    for container_id in "${!CONTAINERS_CACHE[@]}"; do
+        options+=("$container_id" "${CONTAINERS_CACHE[$container_id]}")
+    done
 
     selected_container_id=$(whiptail --title "$SELECT_CONTAINER" --menu "" 15 50 8 "${options[@]}" 3>&1 1>&2 2>&3)
     if [ $? != 0 ]; then
