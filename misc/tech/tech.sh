@@ -39,7 +39,33 @@ else
     if [ $? -eq 0 ]; then
         $SUDO tee /usr/local/bin/tech > /dev/null << 'EOF'
 #!/bin/bash
-bash -c "$(curl -sL https://raw.githubusercontent.com/tech-scripts/linux/refs/heads/main/misc/start.sh)"
+
+REPO_URL="https://github.com/tech-scripts/linux.git"
+CLONE_DIR="/tmp/tech-scripts"
+
+if [ $# -eq 0 ]; then
+    bash -c "$(curl -sL https://raw.githubusercontent.com/tech-scripts/linux/refs/heads/main/misc/start.sh)"
+    exit 0
+fi
+
+if [ "$1" == "lxc" ] || [ $# -gt 1 ]; then
+    rm -rf "$CLONE_DIR"
+    git clone --depth 1 "$REPO_URL" "$CLONE_DIR"
+    cd "$CLONE_DIR"
+    cd "proxmox"
+    chmod +x lxc.sh
+    ./lxc.sh
+fi
+
+if [ "$1" == "vm" ] || [ $# -gt 1 ]; then
+    rm -rf "$CLONE_DIR"
+    git clone --depth 1 "$REPO_URL" "$CLONE_DIR"
+    cd "$CLONE_DIR"
+    cd "proxmox"
+    chmod +x vm.sh
+    ./vm.sh
+fi
+
 EOF
         $SUDO chmod +x /usr/local/bin/tech
     else
