@@ -32,13 +32,13 @@ if ! command -v pct &> /dev/null; then
     exit 1
 fi
 
-declare -A CONTAINERS_CACHE
+declare -a CONTAINERS_CACHE
 
 get_containers() {
     if [ ${#CONTAINERS_CACHE[@]} -eq 0 ]; then
         while read -r container_id container_name; do
-            CONTAINERS_CACHE["$container_id"]="$container_name"
-        done < <(pct list | awk 'NR>1 {print $1, $3}')
+            CONTAINERS_CACHE+=("$container_id" "$container_name")
+        done < <(pct list | awk 'NR>1 {print $1, $3}' | sort -n)
     fi
 }
 
@@ -55,12 +55,7 @@ while true; do
         exit 1
     fi
 
-    options=()
-    for container_id in "${!CONTAINERS_CACHE[@]}"; do
-        options+=("$container_id" "${CONTAINERS_CACHE[$container_id]}")
-    done
-
-    selected_container_id=$(whiptail --title "$SELECT_CONTAINER" --menu "" 15 50 8 "${options[@]}" 3>&1 1>&2 2>&3)
+    selected_container_id=$(whiptail --title "$SELECT_CONTAINER" --menu "" 15 50 8 "${CONTAINERS_CACHE[@]}" 3>&1 1>&2 2>&3)
     if [ $? != 0 ]; then
         reset
         exit
