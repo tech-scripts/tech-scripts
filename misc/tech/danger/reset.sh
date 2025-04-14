@@ -11,7 +11,6 @@ cleanup() {
     exit 1
 }
 
-# Устанавливаем обработчик сигналов
 trap cleanup SIGINT SIGTSTP SIGTERM
 
 if whiptail --title "Подтверждение удаления" --yesno "Вы точно хотите удалить все файлы tech-scripts?" 10 50; then
@@ -26,15 +25,12 @@ if whiptail --title "Подтверждение удаления" --yesno "Вы 
     
     GAUGE_PID=$!
 
-    # Ожидание завершения whiptail
     wait $GAUGE_PID
 
-    # Проверка, был ли whiptail прерван
     if [ $? -ne 0 ]; then
         cleanup
     fi
 
-    # Удаляем директории после завершения прогресса
     delete_directories
 else
     echo "Удаление отменено."
