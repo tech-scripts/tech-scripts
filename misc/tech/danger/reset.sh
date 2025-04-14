@@ -26,7 +26,9 @@ if whiptail --title "Подтверждение удаления" --yesno "Вы 
     GAUGE_PID=$!
 
     # Ожидание завершения прогресс-бара или отмены
-    wait $GAUGE_PID
+    while kill -0 $GAUGE_PID 2>/dev/null; do
+        sleep 0.1
+    done
 
     # Если прогресс-бар завершился успешно (не отменен), удаляем директории
     if [ $? -eq 0 ]; then
