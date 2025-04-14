@@ -1,8 +1,6 @@
 #!/bin/bash
 
 CONFIG_FILE="/etc/tech-scripts/choose.conf"
-
-EDITOR=$(grep '^editor:' "$CONFIG_FILE" | cut -d ' ' -f 2)
 LANG_CONF=$(grep '^lang:' "$CONFIG_FILE" | cut -d' ' -f2)
 
 if [ "$LANG_CONF" = "Русский" ]; then
@@ -99,20 +97,20 @@ while true; do
         fi
 
         case $ACTION in
-            1) pct start "$selected_container_id" && show_message "$MSG_SUCCESS" || show_message "$MSG_ERROR: Не удалось запустить контейнер" ;;
-            2) pct stop "$selected_container_id" && show_message "$MSG_SUCCESS" || show_message "$MSG_ERROR: Не удалось остановить контейнер" ;;
-            3) pct reboot "$selected_container_id" && show_message "$MSG_SUCCESS" || show_message "$MSG_ERROR: Не удалось перезагрузить контейнер" ;;
+            1) pct start "$selected_container_id" && show_message "$MSG_SUCCESS" || show_message "$MSG_ERROR" ;;
+            2) pct stop "$selected_container_id" && show_message "$MSG_SUCCESS" || show_message "$MSG_ERROR" ;;
+            3) pct reboot "$selected_container_id" && show_message "$MSG_SUCCESS" || show_message "$MSG_ERROR" ;;
             4) $EDITOR "/etc/pve/lxc/$selected_container_id.conf" ;;
             5)
                 if whiptail --yesno "$MSG_CONFIRM_DELETE $selected_container_id?" 7 60; then
                     pct stop "$selected_container_id"
-                    pct destroy "$selected_container_id" && show_message "$MSG_SUCCESS" || show_message "$MSG_ERROR: Не удалось удалить контейнер"
+                    pct destroy "$selected_container_id" && show_message "$MSG_SUCCESS" || show_message "$MSG_ERROR"
                 fi
                 ;;
-            6) pct unlock "$selected_container_id" && show_message "$MSG_LOCK" || show_message "$MSG_ERROR: Не удалось разблокировать контейнер" ;;
-            7) pct suspend "$selected_container_id" && show_message "$MSG_UNLOCK" || show_message "$MSG_ERROR: Не удалось усыпить контейнер" ;;
-            8) pct resume "$selected_container_id" && show_message "$MSG_UNLOCK" || show_message "$MSG_ERROR: Не удалось разбудить контейнер" ;;
-            9) pct console "$selected_container_id" && show_message "$MSG_UNLOCK" || show_message "$MSG_ERROR: Не удалось открыть консоль" ;;
+            6) pct unlock "$selected_container_id" && show_message "$MSG_LOCK" || show_message "$MSG_ERROR" ;;
+            7) pct suspend "$selected_container_id" && show_message "$MSG_UNLOCK" || show_message "$MSG_ERROR" ;;
+            8) pct resume "$selected_container_id" && show_message "$MSG_UNLOCK" || show_message "$MSG_ERROR" ;;
+            9) pct console "$selected_container_id" && show_message "$MSG_UNLOCK" || show_message "$MSG_ERROR" ;;
             10) break ;;
             *) show_message "$MSG_ERROR" ;;
         esac
