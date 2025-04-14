@@ -1,7 +1,9 @@
 #!/bin/bash
 
 CONFIG_FILE="/etc/tech-scripts/choose.conf"
+
 LANG_CONF=$(grep '^lang:' "$CONFIG_FILE" | cut -d' ' -f2)
+EDITOR=$(grep '^editor:' "$CONFIG_FILE" | cut -d ' ' -f 2)
 
 if [ "$LANG_CONF" = "Русский" ]; then
     PCT_NOT_FOUND="Утилита pct не найдена. Убедитесь, что Proxmox установлен."
