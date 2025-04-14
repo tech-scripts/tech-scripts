@@ -42,30 +42,55 @@ else
 
 REPO_URL="https://github.com/tech-scripts/linux.git"
 CLONE_DIR="/tmp/tech-scripts"
+LANG_CONF=$(grep -E '^lang:' /etc/tech-scripts/choose.conf | cut -d' ' -f2)
+
+if [ "$LANG_CONF" == "Русский" ]; then
+    error_delete="Ошибка: не удалось удалить $CLONE_DIR"
+    error_clone="Ошибка: не удалось клонировать репозиторий"
+    error_cd="Ошибка: не удалось перейти в $CLONE_DIR/$1"
+    error_chmod="Ошибка: не удалось сделать $1 исполняемым"
+    unknown_command="Неизвестная команда: $1"
+    usage="Использование: tech [lxc|vm|ssh]"
+else
+    error_delete="Error: failed to delete $CLONE_DIR"
+    error_clone="Error: failed to clone repository"
+    error_cd="Error: failed to cd into $CLONE_DIR/$1"
+    error_chmod="Error: failed to make $1 executable"
+    unknown_command="Unknown command: $1"
+    usage="Usage: tech [lxc|vm|ssh]"
+fi
+
+run_script() {
+    local script_dir="$1"
+    local script_name="$2"
+    rm -rf "$CLONE_DIR" || { whiptail --msgbox "$error_delete" 10 50; exit 1; }
+    git clone --depth 1 "$REPO_URL" "$CLONE_DIR" || { whiptail --msgbox "$error_clone" 10 50; exit 1; }
+    cd "$CLONE_DIR/$script_dir" || { whiptail --msgbox "$(echo "$error_cd" | sed "s/\$1/$script_dir/")" 10 50; exit 1; }
+    chmod +x "$script_name" || { whiptail --msgbox "$(echo "$error_chmod" | sed "s/\$1/$script_name/")" 10 50; exit 1; }
+    ./"$script_name"
+}
 
 if [ $# -eq 0 ]; then
     bash -c "$(curl -sL https://raw.githubusercontent.com/tech-scripts/linux/refs/heads/main/misc/start.sh)"
     exit 0
 fi
 
-if [ "$1" == "lxc" ] || [ $# -gt 1 ]; then
-    rm -rf "$CLONE_DIR"
-    git clone --depth 1 "$REPO_URL" "$CLONE_DIR"
-    cd "$CLONE_DIR"
-    cd "proxmox"
-    chmod +x lxc.sh
-    ./lxc.sh
-fi
-
-if [ "$1" == "vm" ] || [ $# -gt 1 ]; then
-    rm -rf "$CLONE_DIR"
-    git clone --depth 1 "$REPO_URL" "$CLONE_DIR"
-    cd "$CLONE_DIR"
-    cd "proxmox"
-    chmod +x vm.sh
-    ./vm.sh
-fi
-
+case "$1" in
+    lxc)
+        run_script "proxmox" "lxc.sh"
+        ;;
+    vm)
+        run_script "proxmox" "vm.sh"
+        ;;
+    ssh)
+        run_script "ssh" "alert.sh"
+        ;;
+    *)
+        whiptail --msgbox "$(echo "$unknown_command" | sed "s/\$1/$1/")" 10 50
+        whiptail --msgbox "$usage" 10 50
+        exit 1
+        ;;
+esac
 EOF
         $SUDO chmod +x /usr/local/bin/tech
     else
