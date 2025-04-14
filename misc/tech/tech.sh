@@ -35,7 +35,7 @@ TECH_SCRIPT=$(cat <<EOF
 #!/bin/bash
 
 REPO_URL="https://github.com/tech-scripts/linux.git"
-CLONE_DIR="/tmp/tech-scripts/misc"
+CLONE_DIR="/tmp/tech-scripts"
 
 unknown_command="$unknown_command"
 usage="$usage"
@@ -43,7 +43,7 @@ usage="$usage"
 run_script() {
     local script_dir="\$1"
     local script_name="\$2"
-    rm -rf "\$CLONE_DIR"
+    rm -rf "/tmp/tech-scripts"
     git clone --depth 1 "\$REPO_URL" "\$CLONE_DIR"
     cd "\$CLONE_DIR/\$script_dir"
     chmod +x "\$script_name"
