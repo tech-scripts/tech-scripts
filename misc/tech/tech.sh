@@ -63,8 +63,8 @@ fi
 run_script() {
     local script_dir="$1"
     local script_name="$2"
-    rm -rf "/tmp/tech-scripts" || { echo "$error_delete"; exit 1; }
-    git clone --depth 1 "$REPO_URL" "$CLONE_DIR" || { echo "$error_clone"; exit 1; }
+    rm -rf "$CLONE_DIR" || { whiptail --msgbox "$error_delete" 10 50; exit 1; }
+    git clone --depth 1 "$REPO_URL" "$CLONE_DIR" || { whiptail --msgbox "$error_clone" 10 50; exit 1; }
     cd "$CLONE_DIR/$script_dir" || { whiptail --msgbox "$(echo "$error_cd" | sed "s/\$1/$script_dir/")" 10 50; exit 1; }
     chmod +x "$script_name" || { whiptail --msgbox "$(echo "$error_chmod" | sed "s/\$1/$script_name/")" 10 50; exit 1; }
     ./"$script_name"
@@ -86,10 +86,8 @@ case "$1" in
         run_script "ssh" "alert.sh"
         ;;
     *)
-        echo " "
-        echo "$unknown_command"
-        echo "$usage"
-        echo " "
+        whiptail --msgbox "$(echo "$unknown_command" | sed "s/\$1/$1/")" 10 50
+        whiptail --msgbox "$usage" 10 50
         exit 1
         ;;
 esac
