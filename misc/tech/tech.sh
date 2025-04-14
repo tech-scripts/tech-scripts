@@ -45,7 +45,7 @@ run_script() {
     local script_name="\$2"
     rm -rf "/tmp/tech-scripts"
     git clone --depth 1 "\$REPO_URL" "\$CLONE_DIR"
-    cd "\$CLONE_DIR/\$script_dir"
+    cd "\$CLONE_DIR/misc/\$script_dir"
     chmod +x "\$script_name"
     ./"\$script_name"
 }
