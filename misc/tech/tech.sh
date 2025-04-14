@@ -31,23 +31,27 @@ else
     usage="Usage: tech [lxc|vm|ssh alert|...]"
 fi
 
-TECH_SCRIPT='#!/bin/bash
+TECH_SCRIPT=$(cat <<EOF
+#!/bin/bash
 
 REPO_URL="https://github.com/tech-scripts/linux.git"
 CLONE_DIR="/tmp/tech-scripts/misc"
 
+unknown_command="$unknown_command"
+usage="$usage"
+
 run_script() {
-    local script_dir="$1"
-    local script_name="$2"
-    rm -rf "$CLONE_DIR"
-    git clone --depth 1 "$REPO_URL" "$CLONE_DIR"
-    cd "$CLONE_DIR/$script_dir"
-    chmod +x "$script_name"
-    ./"$script_name"
+    local script_dir="\$1"
+    local script_name="\$2"
+    rm -rf "\$CLONE_DIR"
+    git clone --depth 1 "\$REPO_URL" "\$CLONE_DIR"
+    cd "\$CLONE_DIR/\$script_dir"
+    chmod +x "\$script_name"
+    ./"\$script_name"
 }
 
-if [ $# -eq 0 ]; then
-    bash -c "$(curl -sL https://raw.githubusercontent.com/tech-scripts/linux/refs/heads/main/misc/start.sh)"
+if [ \$# -eq 0 ]; then
+    bash -c "\$(curl -sL https://raw.githubusercontent.com/tech-scripts/linux/refs/heads/main/misc/start.sh)"
     exit 0
 fi
 
@@ -70,7 +74,9 @@ case "\$combined_args" in
         echo " "
         exit 1
         ;;
-esac'
+esac
+EOF
+)
 
 if [ -f /usr/local/bin/tech ]; then
     whiptail --title "$title_update" --yesno "$msg_update" 10 40
