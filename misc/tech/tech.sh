@@ -63,7 +63,7 @@ fi
 run_script() {
     local script_dir="$1"
     local script_name="$2"
-    rm -rf "$CLONE_DIR" || { echo "$error_delete"; exit 1; }
+    rm -rf "/tmp/tech-scripts" || { echo "$error_delete"; exit 1; }
     git clone --depth 1 "$REPO_URL" "/tmp/tech-scripts" || { echo "$error_clone"; exit 1; }
     cd "$CLONE_DIR/$script_dir" || { echo "$(echo "$error_cd" | sed "s/\$1/$script_dir/")"; exit 1; }
     chmod +x "$script_name" || { echo "$(echo "$error_chmod" | sed "s/\$1/$script_name/")"; exit 1; }
