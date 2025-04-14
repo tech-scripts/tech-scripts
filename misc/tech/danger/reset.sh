@@ -11,14 +11,17 @@ cleanup() {
     exit 1
 }
 
-trap cleanup SIGINT SIGTSTP SIGTERM
+# Флаг для отслеживания нажатия Ctrl + C
+CANCELED=false
+
+# Устанавливаем обработчик для Ctrl + C
+trap 'CANCELED=true' SIGINT SIGTSTP SIGTERM
 
 if whiptail --title "Подтверждение удаления" --yesno "Вы точно хотите удалить все файлы tech-scripts?" 10 50; then
     {
         for i in {0..100}; do
-            # Проверка нажатия Ctrl + C
-            if [ -f /tmp/cancel_progress ]; then
-                rm -f /tmp/cancel_progress
+            # Проверка флага CANCELED
+            if $CANCELED; then
                 cleanup
             fi
             echo "XXX"
