@@ -1,7 +1,6 @@
 #!/bin/bash
 
 SUDO=$(command -v sudo)
-
 LANG_CONF=$(grep '^lang:' /etc/tech-scripts/choose.conf 2>/dev/null | cut -d' ' -f2)
 
 if [ "$LANG_CONF" = "Русский" ]; then
@@ -50,12 +49,10 @@ case $EDITOR in
         ;;
 esac
 
-# Убедимся, что файл содержит хотя бы одну строку
 if ! grep -q '^lang:' /etc/tech-scripts/choose.conf; then
     echo "lang: English" | $SUDO tee /etc/tech-scripts/choose.conf > /dev/null
 fi
 
-# Заменяем или добавляем строку с editor
 if grep -q '^editor:' /etc/tech-scripts/choose.conf; then
     $SUDO sed -i "s/^editor:.*/editor: $editor/" /etc/tech-scripts/choose.conf
 else
