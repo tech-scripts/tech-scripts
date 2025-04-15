@@ -187,7 +187,6 @@ if [ -f "$CONFIG_FILE" ]; then
         exit 0
     else
         show_message "$MSG_UPDATE_CANCELED"
-        exit 1
     fi
 fi
 
