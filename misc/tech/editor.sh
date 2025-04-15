@@ -6,7 +6,7 @@ LANG_CONF=$(grep '^lang:' /etc/tech-scripts/choose.conf 2>/dev/null | cut -d' ' 
 
 if [ "$LANG_CONF" = "Русский" ]; then
     TITLE_EDITOR="Выбор текстового редактора"
-    MSG_EDITOR="Выберите предпочитаемый текстовый редактор:"
+    MSG_EDITOR="Выберите текстовый редактор:"
     TITLE_CUSTOM="Пользовательский редактор"
     MSG_CUSTOM="Введите команду для вашего текстового редактора:"
     MSG_CUSTOM_CANCEL="Ввод пользовательского редактора отменен!"
@@ -14,7 +14,7 @@ if [ "$LANG_CONF" = "Русский" ]; then
     MSG_SUCCESS="Текстовый редактор установлен:"
 else
     TITLE_EDITOR="Text Editor Selection"
-    MSG_EDITOR="Choose your preferred text editor:"
+    MSG_EDITOR="Choose your text editor:"
     TITLE_CUSTOM="Custom Editor"
     MSG_CUSTOM="Enter the command for your custom text editor:"
     MSG_CUSTOM_CANCEL="Custom editor input canceled!"
