@@ -47,6 +47,12 @@ else
     OPTION_FORMAT="option"
 fi
 
+get_relative_path() {
+    local full_path="$1"
+    local base_path="$2"
+    echo "${full_path#$base_path/}"
+}
+
 show_menu() {
     while true; do
         SCRIPTS=()
@@ -63,20 +69,22 @@ show_menu() {
         done
 
         for DIR in "${DIRECTORIES[@]}"; do
-            CHOICES+=("$DIR" "| $DIRECTORY_FORMAT")
+            CHOICES+=("$DIR" "$DIRECTORY_FORMAT")
         done
 
         if [ ${#SCRIPTS[@]} -gt 0 ]; then
             for SCRIPT in "${SCRIPTS[@]}"; do
-                CHOICES+=("$SCRIPT" "| $SCRIPT_FORMAT")
+                CHOICES+=("$SCRIPT" "$SCRIPT_FORMAT")
             done
         fi
 
-        [ "$CURRENT_DIR" != "$CLONE_DIR" ] && CHOICES+=("$MSG_BACK" "| $OPTION_FORMAT")
+        [ "$CURRENT_DIR" != "$CLONE_DIR" ] && CHOICES+=("$MSG_BACK" "$OPTION_FORMAT")
 
         [ ${#CHOICES[@]} -eq 0 ] && { echo "$MSG_NO_SCRIPTS"; exit 0; }
 
-        SELECTED_ITEM=$(whiptail --title "$MSG_SELECT" --menu "$CURRENT_DIR" 12 40 4 "${CHOICES[@]}" 3>&1 1>&2 2>&3)
+        # Получаем относительный путь для отображения
+        RELATIVE_PATH=$(get_relative_path "$CURRENT_DIR" "$CLONE_DIR")
+        SELECTED_ITEM=$(whiptail --title "$MSG_SELECT" --menu "$RELATIVE_PATH" 12 40 4 "${CHOICES[@]}" 3>&1 1>&2 2>&3)
 
         if [ $? -ne 0 ]; then
             exit 0
