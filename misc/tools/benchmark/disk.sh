@@ -2,7 +2,7 @@
 
 measure_write_speed() {
     local temp_file="$1/testfile"
-    echo "Измерение скорости записи на $1..."
+    echo "Измерение скорости записи на $1... файл $temp_file"
     write_speed=$(dd if=/dev/zero of="$temp_file" bs=1G count=1 oflag=direct 2>&1 | grep -o '[0-9.]* [A-Z]*' | head -n 1)
     echo "Скорость записи: $write_speed"
 }
