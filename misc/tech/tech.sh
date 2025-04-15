@@ -9,8 +9,6 @@ if [ "$LANG_CONF" == "Русский" ]; then
     title_remove="Удаление команды"
     msg_remove="Команда tech уже существует. Хотите удалить её?"
     msg_removed="Команда tech успешно удалена!"
-    msg_add_canceled="Добавление команды отменено!"
-    msg_remove_canceled="Удаление команды отменено!"
     title_update="Обновление команды"
     msg_update="Команда tech уже существует. Хотите обновить её?"
     msg_updated="Команда tech успешно обновлена!"
@@ -23,8 +21,6 @@ else
     title_remove="Remove command"
     msg_remove="The tech command already exists. Do you want to remove it?"
     msg_removed="The tech command has been successfully removed!"
-    msg_add_canceled="Adding a command has been canceled!"
-    msg_remove_canceled="The removal of the command has been canceled!"
     title_update="Update command"
     msg_update="The tech command already exists. Do you want to update it?"
     msg_updated="The tech command has been successfully updated!"
@@ -97,9 +93,7 @@ if [ -f /usr/local/bin/tech ]; then
             echo "$msg_removed"
             echo " "
         else
-            echo " "
-            echo "$msg_remove_canceled"
-            echo " "
+            exit 0
         fi
     fi
 else
@@ -111,8 +105,6 @@ else
         echo "$msg_add_complete"
         echo " "
     else
-        echo " "
-        echo "$msg_add_canceled"
-        echo " "
+        exit 0
     fi
 fi
