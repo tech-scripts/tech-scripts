@@ -1,24 +1,24 @@
 #!/bin/bash
 
 measure_write_speed() {
-    local temp_file="/tmp/testfile"
-    echo "Измерение скорости записи..."
+    local temp_file="$1/testfile"
+    echo "Измерение скорости записи на $1..."
     write_speed=$(dd if=/dev/zero of="$temp_file" bs=1G count=1 oflag=direct 2>&1 | grep -o '[0-9.]* [A-Z]*' | head -n 1)
-    rm -f "$temp_file"
     echo "Скорость записи: $write_speed"
 }
 
 measure_read_speed() {
-    local temp_file="/tmp/testfile"
+    local temp_file="$1/testfile"
+    echo "Создание тестового файла для чтения..."
     dd if=/dev/zero of="$temp_file" bs=1G count=1 oflag=direct > /dev/null 2>&1
-    echo "Измерение скорости чтения..."
+    echo "Измерение скорости чтения на $1..."
     read_speed=$(dd if="$temp_file" of=/dev/null bs=1G count=1 iflag=direct 2>&1 | grep -o '[0-9.]* [A-Z]*' | head -n 1)
-    rm -f "$temp_file"
     echo "Скорость чтения: $read_speed"
+    rm -f "$temp_file"
 }
 
 if (whiptail --title "Замер диска" --yesno "Вы хотите сделать замер диска?" 10 60); then
-    disks=("Домашняя директория" "/mnt" "/media")
+    disks=("Домашняя директория" "$HOME" "/mnt" "/media")
     disk_choices=()
 
     for dir in "${disks[@]}"; do
