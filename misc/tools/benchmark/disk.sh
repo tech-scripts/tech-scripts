@@ -15,8 +15,8 @@ if [ "$lang" == "Русский" ]; then
     msg_failed="Не удалось измерить скорость"
     title_disk_selection="Выбор диска"
     title_disk_measurement="Замер диска"
-    local_disk="Локальный диск"
-    connected_disk="Подключенный диск"
+    local_disk="локальный диск"
+    connected_disk="подключенный диск"
 else
     msg_measure="Do you want to measure disk speed?"
     msg_select="Select a disk to measure:"
@@ -29,13 +29,12 @@ else
     msg_failed="Failed to measure speed"
     title_disk_selection="Disk Selection"
     title_disk_measurement="Disk Measurement"
-    local_disk="Local Disk"
-    connected_disk="Connected Disk"
+    local_disk="local Disk"
+    connected_disk="connected Disk"
 fi
 
 if whiptail --title "$title_disk_measurement" --yesno "$msg_measure" 10 60; then
     disk_choices=("$HOME" "$local_disk")
-
     for dir in "/mnt" "/media"; do
         if [ -d "$dir" ]; then
             for disk in "$dir"/*; do
@@ -51,18 +50,19 @@ if whiptail --title "$title_disk_measurement" --yesno "$msg_measure" 10 60; then
     if [ $? -eq 0 ]; then
         temp_file="$selected_disk/testfile"
         output=$(dd if=/dev/zero of="$temp_file" bs="$block_size" count=1 oflag=direct 2>&1)
+        echo ""
         write_time=$(echo "$output" | grep -o '[0-9.]* s' | head -n 1)
         write_speed=$(echo "$output" | grep -o '[0-9.]* [MG]B/s' | head -n 1 || echo "$msg_failed")
         output=$(dd if="$temp_file" of=/dev/null bs="$block_size" count=1 iflag=direct 2>&1)
         read_time=$(echo "$output" | grep -o '[0-9.]* s' | head -n 1)
         read_speed=$(echo "$output" | grep -o '[0-9.]* [MG]B/s' | head -n 1 || echo "$msg_failed")
         echo ""
-        echo "$msg_write $selected_disk..."
         echo "$msg_speed_write $write_speed"
         echo "$msg_time_write $write_time"
-        echo "$msg_read $selected_disk..."
+        echo ""
         echo "$msg_speed_read $read_speed"
         echo "$msg_time_read $read_time"
+        echo ""
         rm -f "$temp_file"
     fi
 fi
