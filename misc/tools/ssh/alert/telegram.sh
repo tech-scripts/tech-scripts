@@ -238,7 +238,24 @@ if ! command -v jq &> /dev/null; then
     show_message "$MSG_INSTALL_JQ"
     response=$?
     if [[ $response -eq 0 ]]; then
-        $SUDO apt update && $SUDO apt install -y jq
+        if command -v apt &> /dev/null; then
+            $SUDO apt update && $SUDO apt install -y jq
+        elif command -v yum &> /dev/null; then
+            $SUDO yum install -y jq
+        elif command -v dnf &> /dev/null; then
+            $SUDO dnf install -y jq
+        elif command -v zypper &> /dev/null; then
+            $SUDO zypper install -y jq
+        elif command -v pacman &> /dev/null; then
+            $SUDO pacman -S --noconfirm jq
+        elif command -v apk &> /dev/null; then
+            $SUDO apk add jq
+        elif command -v brew &> /dev/null; then
+            brew install jq
+        else
+            echo "Не удалось определить пакетный менеджер. Установите jq вручную."
+            exit 1
+        fi
     else
         echo "Установка jq отменена."
     fi
