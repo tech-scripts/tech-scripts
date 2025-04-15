@@ -2,9 +2,11 @@
 
 measure_write_speed() {
     local temp_file="$1/testfile"
-    echo "Измерение скорости записи на $1... файл $temp_file"
-    write_speed=$(dd if=/dev/zero of="$temp_file" bs=1G count=1 oflag=direct 2>&1 | grep -o '[0-9.]* [A-Z]*' | head -n 1)
-    echo "Скорость записи: $write_speed"
+    echo "Измерение скорости записи на $1..."
+    output=$(dd if=/dev/zero of="$temp_file" bs=1G count=1 oflag=direct 2>&1)
+    write_time=$(echo "$output" | grep -o '[0-9.]* s' | head -n 1)
+    write_speed=$(echo "$output" | grep -o '[0-9.]* [A-Z]* copied' | head -n 1)
+    echo "Скорость записи: $write_speed, Время записи: $write_time"
 }
 
 measure_read_speed() {
@@ -12,8 +14,10 @@ measure_read_speed() {
     echo "Создание тестового файла для чтения..."
     dd if=/dev/zero of="$temp_file" bs=1G count=1 oflag=direct > /dev/null 2>&1
     echo "Измерение скорости чтения на $1..."
-    read_speed=$(dd if="$temp_file" of=/dev/null bs=1G count=1 iflag=direct 2>&1 | grep -o '[0-9.]* [A-Z]*' | head -n 1)
-    echo "Скорость чтения: $read_speed"
+    output=$(dd if="$temp_file" of=/dev/null bs=1G count=1 iflag=direct 2>&1)
+    read_time=$(echo "$output" | grep -o '[0-9.]* s' | head -n 1)
+    read_speed=$(echo "$output" | grep -o '[0-9.]* [A-Z]* copied' | head -n 1)
+    echo "Скорость чтения: $read_speed, Время чтения: $read_time"
     rm -f "$temp_file"
 }
 
