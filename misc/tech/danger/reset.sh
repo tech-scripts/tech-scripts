@@ -1,9 +1,9 @@
 #!/bin/bash
 
 SUDO=$(command -v sudo)
-LANG=$(grep -oP 'lang:\s*\K\w+' /etc/tech-scripts/choose.conf 2>/dev/null)
+LANG_CONF=$(grep -E '^lang:' /etc/tech-scripts/choose.conf | cut -d' ' -f2)
 
-if [[ $LANG == "Русский" ]]; then
+if [[ $LANG_CONF == "Русский" ]]; then
     TITLE="Подтверждение удаления"
     MESSAGE="Вы точно хотите удалить все файлы tech-scripts?"
     YES="Да"
