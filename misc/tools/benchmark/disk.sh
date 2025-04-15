@@ -6,8 +6,6 @@ lang=$(grep 'lang:' /etc/tech-scripts/choose.conf | awk '{print $2}')
 if [ "$lang" == "Русский" ]; then
     msg_measure="Вы хотите сделать замер диска?"
     msg_select="Выберите диск для замера:"
-    msg_write="Измерение скорости записи в"
-    msg_read="Измерение скорости чтения в"
     msg_speed_write="Скорость записи:"
     msg_speed_read="Скорость чтения:"
     msg_time_write="Время записи:"
@@ -20,8 +18,6 @@ if [ "$lang" == "Русский" ]; then
 else
     msg_measure="Do you want to measure disk speed?"
     msg_select="Select a disk to measure:"
-    msg_write="Measuring write speed in"
-    msg_read="Measuring read speed in"
     msg_speed_write="Write speed:"
     msg_speed_read="Read speed:"
     msg_time_write="Write time:"
