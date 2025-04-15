@@ -1,23 +1,41 @@
 #!/bin/bash
 
 measure_write_speed() {
-    local temp_file="$1/testfile"
+    local temp_file="\$1/testfile"
     echo " "
-    echo "Измерение скорости записи на $1..."
+    echo "Измерение скорости записи на \$1..."
     output=$(dd if=/dev/zero of="$temp_file" bs=1G count=1 oflag=direct 2>&1)
+    
     write_time=$(echo "$output" | grep -o '[0-9.]* s' | head -n 1)
-    write_speed=$(echo "$output" | grep -o '[0-9.]* MB/s' | head -n 1)
+    
+    if echo "$output" | grep -q 'MB/s'; then
+        write_speed=$(echo "$output" | grep -o '[0-9.]* MB/s' | head -n 1)
+    elif echo "$output" | grep -q 'GB/s'; then
+        write_speed=$(echo "$output" | grep -o '[0-9.]* GB/s' | head -n 1)
+    else
+        write_speed="Не удалось измерить скорость"
+    fi
+
     echo "Скорость записи: $write_speed, Время записи: $write_time"
 }
 
 measure_read_speed() {
-    local temp_file="$1/testfile"
+    local temp_file="\$1/testfile"
     echo "Создание тестового файла для чтения..."
     dd if=/dev/zero of="$temp_file" bs=1G count=1 oflag=direct > /dev/null 2>&1
-    echo "Измерение скорости чтения на $1..."
+    echo "Измерение скорости чтения на \$1..."
     output=$(dd if="$temp_file" of=/dev/null bs=1G count=1 iflag=direct 2>&1)
+    
     read_time=$(echo "$output" | grep -o '[0-9.]* s' | head -n 1)
-    read_speed=$(echo "$output" | grep -o '[0-9.]* MB/s' | head -n 1)
+    
+    if echo "$output" | grep -q 'MB/s'; then
+        read_speed=$(echo "$output" | grep -o '[0-9.]* MB/s' | head -n 1)
+    elif echo "$output" | grep -q 'GB/s'; then
+        read_speed=$(echo "$output" | grep -o '[0-9.]* GB/s' | head -n 1)
+    else
+        read_speed="Не удалось измерить скорость"
+    fi
+
     echo "Скорость чтения: $read_speed, Время чтения: $read_time"
     echo " "
     rm -f "$temp_file"
