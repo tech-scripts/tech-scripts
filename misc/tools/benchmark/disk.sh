@@ -36,13 +36,26 @@ if whiptail --title "Замер диска" --yesno "Хотите сделать
     disks=$(df -h --output=target | tail -n +2 | grep -vE '^(/dev|/run|/sys|/proc|/tmp|/var)')
     disks="Текущий диск ($current_disk)\n$disks"
 
-    selected_disk=$(whiptail --title "Выбор диска" --menu "Выберите диск для замера:" 15 60 4 $(echo -e "$disks" | awk '{print NR, $0}') 3>&1 1>&2 2>&3)
+    # Преобразуем список дисков в массив
+    mapfile -t disk_array <<< "$(echo -e "$disks")"
 
-    if [ -z "$selected_disk" ]; then
+    # Формируем список для whiptail
+    whiptail_list=()
+    for i in "${!disk_array[@]}"; do
+        whiptail_list+=("$((i+1))" "${disk_array[$i]}")
+    done
+
+    selected_index=$(whiptail --title "Выбор диска" --menu "Выберите диск для замера:" 15 60 4 "${whiptail_list[@]}" 3>&1 1>&2 2>&3)
+
+    if [ -z "$selected_index" ]; then
         whiptail --title "Ошибка" --msgbox "Диск не выбран." 10 60
         exit 1
     fi
 
+    # Получаем выбранный диск по индексу
+    selected_disk="${disk_array[$((selected_index-1))]}"
+
+    # Если выбран "Текущий диск", используем $HOME
     if [[ "$selected_disk" == "Текущий диск ($current_disk)" ]]; then
         selected_disk="$current_disk"
     fi
