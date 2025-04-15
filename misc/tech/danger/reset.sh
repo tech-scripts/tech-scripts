@@ -1,5 +1,6 @@
 #!/bin/bash
 
+SUDO=$(command -v sudo)
 LANG=$(grep -oP 'lang:\s*\K\w+' /etc/tech-scripts/choose.conf 2>/dev/null)
 
 if [[ $LANG == "Русский" ]]; then
@@ -24,7 +25,7 @@ whiptail --title "$TITLE" --yesno "$MESSAGE" --yes-button "$YES" --no-button "$N
 
 if [ $? -eq 0 ]; then
     echo "$DELETING"
-    rm -rf /tmp/tech-scripts /etc/tech-scripts /usr/local/tech-scripts /usr/local/bin/tech
+    $SUDO rm -rf /tmp/tech-scripts /etc/tech-scripts /usr/local/tech-scripts /usr/local/bin/tech
     echo "$DELETED"
 else
     echo "$CANCELLED"
