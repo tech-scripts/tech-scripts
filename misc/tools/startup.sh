@@ -1,11 +1,9 @@
 #!/bin/bash
 
 SUDO=$(command -v sudo || echo "")
-
 AUTOSTART_SCRIPT="/usr/local/tech-scripts/autostart.sh"
 SERVICE_FILE="/etc/systemd/system/autostart.service"
 SERVICE_NAME="autostart.service"
-
 LANG_CONF=$(grep '^lang:' /etc/tech-scripts/choose.conf 2>/dev/null | cut -d' ' -f2)
 EDITOR=$(grep '^editor:' /etc/tech-scripts/choose.conf | cut -d ' ' -f 2)
 
