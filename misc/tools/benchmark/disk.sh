@@ -17,10 +17,22 @@ measure_read_speed() {
 
 if whiptail --title "Замер диска" --yesno "Хотите сделать замер диска?" 10 60; then
     current_disk="$HOME"
-    whiptail --title "Текущий диск" --msgbox "Текущий диск для замера: $current_disk" 10 60
+    disks=$(df -h --output=target | tail -n +2 | grep -vE '^(/dev|/run|/sys|/proc|/tmp|/var)')
+    disks="Текущий диск ($current_disk)\n$disks"
 
-    measure_write_speed "$current_disk"
-    measure_read_speed "$current_disk"
+    selected_disk=$(whiptail --title "Выбор диска" --menu "Выберите диск для замера:" 15 60 4 $(echo -e "$disks" | awk '{print NR, $0}') 3>&1 1>&2 2>&3)
+
+    if [ -z "$selected_disk" ]; then
+        whiptail --title "Ошибка" --msgbox "Диск не выбран." 10 60
+        exit 1
+    fi
+
+    if [[ "$selected_disk" == "Текущий диск ($current_disk)" ]]; then
+        selected_disk="$current_disk"
+    fi
+
+    measure_write_speed "$selected_disk"
+    measure_read_speed "$selected_disk"
 
     whiptail --title "Результаты" --msgbox "Скорость записи: $write_speed\nСкорость чтения: $read_speed" 12 60
 else
