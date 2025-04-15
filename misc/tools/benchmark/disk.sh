@@ -10,8 +10,8 @@ if [ "$lang" == "Русский" ]; then
     msg_time_write="Время записи:"
     msg_time_read="Время чтения:"
     msg_failed="Не удалось измерить скорость"
-    local_disk="локальный диск"
-    connected_disk="подключенный диск"
+    local_dir="локальная директория"
+    remote_dir="удаленная директория"
     msg_selected_dir="Выбранная директория:"
 else
     msg_select="Select a directory"
@@ -20,17 +20,17 @@ else
     msg_time_write="Write time:"
     msg_time_read="Read time:"
     msg_failed="Failed to measure speed"
-    local_disk="local Disk"
-    connected_disk="connected Disk"
+    local_dir="local directory"
+    remote_dir="remote directory"
     msg_selected_dir="Selected directory:"
 fi
 
-disk_choices=("$HOME" "$local_disk")
+disk_choices=("$HOME" "$local_dir")
 for dir in "/mnt" "/media"; do
     if [ -d "$dir" ]; then
         for disk in "$dir"/*; do
             if [ -d "$disk" ]; then
-                disk_choices+=("$disk" "$connected_disk")
+                disk_choices+=("$disk" "$remote_dir")
             fi
         done
     fi
