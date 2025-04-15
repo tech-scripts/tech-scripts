@@ -9,7 +9,6 @@ if [ "$LANG_CONF" = "Русский" ]; then
     MSG_EDITOR="Выберите текстовый редактор:"
     TITLE_CUSTOM="Пользовательский редактор"
     MSG_CUSTOM="Введите команду вашего текстового редактора:"
-    MSG_CUSTOM_CANCEL="Ввод пользовательского редактора отменен!"
     MSG_INVALID="Неверный выбор!"
     MSG_SUCCESS="Текстовый редактор установлен:"
 else
@@ -17,7 +16,6 @@ else
     MSG_EDITOR="Choose your text editor:"
     TITLE_CUSTOM="Custom Editor"
     MSG_CUSTOM="Enter the command custom text editor:"
-    MSG_CUSTOM_CANCEL="Custom editor input canceled!"
     MSG_INVALID="Invalid choice!"
     MSG_SUCCESS="Text editor set to:"
 fi
@@ -41,7 +39,6 @@ case $EDITOR in
     3)
         editor=$(whiptail --title "$TITLE_CUSTOM" --inputbox "$MSG_CUSTOM" 10 40 3>&1 1>&2 2>&3)
         if [ $? -ne 0 ]; then
-            echo "$MSG_CUSTOM_CANCEL"
             exit 1
         fi
         ;;
