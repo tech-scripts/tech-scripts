@@ -3,7 +3,7 @@
 SUDO=$(command -v sudo)
 SCRIPT_DIR="/usr/local/tech-scripts"
 CONFIG_FILE="/etc/tech-scripts/alert.conf"
-LANG_CONF=$(grep '^lang:' "$CONFIG_FILE" | cut -d' ' -f2)
+LANG_CONF=$(grep '^lang:' /etc/tech-scripts/choose.conf | cut -d' ' -f2)
 CONTINUE="true"
 
 if [[ "$LANG_CONF" == "Русский" ]]; then
@@ -110,7 +110,7 @@ create_ssh_alert_script() {
         $SUDO bash -c "cat > $SCRIPT_DIR/alert.sh" <<'EOF'
 #!/bin/bash
 
-LANG_CONF=$(grep '^lang:' "$CONFIG_FILE" | cut -d' ' -f2)
+LANG_CONF=$(grep '^lang:' /etc/tech-scripts/choose.conf | cut -d' ' -f2)
 source "$CONFIG_FILE"
 
 if [[ "$LANG_CONF" == "Русский" ]]; then
