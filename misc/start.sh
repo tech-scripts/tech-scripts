@@ -1,7 +1,6 @@
 #!/bin/bash
 
 SUDO=$(command -v sudo)
-
 REPO_URL="https://github.com/tech-scripts/linux.git"
 CLONE_DIR="/tmp/tech-scripts/misc"
 
@@ -26,7 +25,6 @@ fi
 
 LANGUAGE=$(grep -E '^lang:' "$CONFIG_FILE" | cut -d':' -f2 | xargs)
 if [[ "$LANGUAGE" == "Русский" ]]; then
-    MSG_INSTALL_PROMPT="Установить необходимые пакеты? (y/n): "
     MSG_NO_SCRIPTS="Нет доступных скриптов или директорий!"
     MSG_CANCELLED="Выбор отменен!"
     MSG_BACK="назад"
@@ -36,7 +34,6 @@ if [[ "$LANGUAGE" == "Русский" ]]; then
     SCRIPT_FORMAT="скрипт"
     OPTION_FORMAT="опция"
 else
-    MSG_INSTALL_PROMPT="Install necessary packages? (y/n): "
     MSG_NO_SCRIPTS="No available scripts or directories!"
     MSG_CANCELLED="Selection cancelled!"
     MSG_BACK="back"
@@ -82,7 +79,6 @@ show_menu() {
 
         [ ${#CHOICES[@]} -eq 0 ] && { echo "$MSG_NO_SCRIPTS"; exit 0; }
 
-        # Получаем относительный путь для отображения
         RELATIVE_PATH=$(get_relative_path "$CURRENT_DIR" "$CLONE_DIR")
         SELECTED_ITEM=$(whiptail --title "$MSG_SELECT" --menu "$RELATIVE_PATH" 12 40 4 "${CHOICES[@]}" 3>&1 1>&2 2>&3)
 
