@@ -12,6 +12,7 @@ if [ "$lang" == "Русский" ]; then
     msg_failed="Не удалось измерить скорость"
     local_disk="локальный диск"
     connected_disk="подключенный диск"
+    msg_selected_disk="Выбранный диск:"
 else
     msg_select="Select a disk"
     msg_speed_write="Write speed:"
@@ -21,9 +22,10 @@ else
     msg_failed="Failed to measure speed"
     local_disk="local Disk"
     connected_disk="connected Disk"
+    msg_selected_disk="Selected disk:"
 fi
 
-disk_choices=("$HOME" "$local_disk")
+disk_choices=("$local_disk" "$HOME")
 for dir in "/mnt" "/media"; do
     if [ -d "$dir" ]; then
         for disk in "$dir"/*; do
@@ -34,22 +36,21 @@ for dir in "/mnt" "/media"; do
     fi
 done
 
-selected_disk=$(whiptail --title "$msg_select" --msgbox "" 15 60 4 "${disk_choices[@]}" 3>&1 1>&2 2>&3)
+selected_disk=$(whiptail --title "$msg_select" --menu "$msg_select" 15 60 4 "${disk_choices[@]}" 3>&1 1>&2 2>&3)
 
-if [ $? -eq 0 ]; then
-    temp_file="$selected_disk/testfile"
-    output=$(dd if=/dev/zero of="$temp_file" bs="$block_size" count=1 oflag=direct 2>&1)
-    write_time=$(echo "$output" | grep -o '[0-9.]* s' | head -n 1)
-    write_speed=$(echo "$output" | grep -o '[0-9.]* [MG]B/s' | head -n 1 || echo "$msg_failed")
-    output=$(dd if="$temp_file" of=/dev/null bs="$block_size" count=1 iflag=direct 2>&1)
-    read_time=$(echo "$output" | grep -o '[0-9.]* s' | head -n 1)
-    read_speed=$(echo "$output" | grep -o '[0-9.]* [MG]B/s' | head -n 1 || echo "$msg_failed")
-    echo ""
-    echo "$msg_speed_write $write_speed"
-    echo "$msg_time_write $write_time"
-    echo ""
-    echo "$msg_speed_read $read_speed"
-    echo "$msg_time_read $read_time"
-    echo ""
-    rm -f "$temp_file"
-fi
+echo "$msg_selected_disk $selected_disk"
+temp_file="$selected_disk/testfile"
+output=$(dd if=/dev/zero of="$temp_file" bs="$block_size" count=1 oflag=direct 2>&1)
+write_time=$(echo "$output" | grep -o '[0-9.]* s' | head -n 1)
+write_speed=$(echo "$output" | grep -o '[0-9.]* [MG]B/s' | head -n 1 || echo "$msg_failed")
+output=$(dd if="$temp_file" of=/dev/null bs="$block_size" count=1 iflag=direct 2>&1)
+read_time=$(echo "$output" | grep -o '[0-9.]* s' | head -n 1)
+read_speed=$(echo "$output" | grep -o '[0-9.]* [MG]B/s' | head -n 1 || echo "$msg_failed")
+echo ""
+echo "$msg_speed_write $write_speed"
+echo "$msg_time_write $write_time"
+echo ""
+echo "$msg_speed_read $read_speed"
+echo "$msg_time_read $read_time"
+echo ""
+rm -f "$temp_file"
