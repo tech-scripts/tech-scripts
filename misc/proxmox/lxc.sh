@@ -6,26 +6,20 @@ LANG_CONF=$(grep '^lang:' "$CONFIG_FILE" | cut -d' ' -f2)
 EDITOR=$(grep '^editor:' "$CONFIG_FILE" | cut -d ' ' -f 2)
 
 if [ "$LANG_CONF" = "Русский" ]; then
-    PCT_NOT_FOUND="Утилита pct не найдена. Убедитесь, что Proxmox установлен."
+    PCT_NOT_FOUND="Утилита pct не найдена. Убедитесь, что Proxmox установлен!"
     NO_CONTAINERS="Нет доступных LXC-контейнеров!"
     SELECT_CONTAINER="Выберите контейнер"
     SELECT_ACTION="Выберите действие"
     MSG_CONFIRM_DELETE="Вы уверены, что хотите удалить"
-    MSG_SUCCESS="Успешно выполнено"
     MSG_ERROR="Ошибка"
-    MSG_LOCK="Контейнер заблокирован"
-    MSG_UNLOCK="Контейнер разблокирован"
     CONTINUE="Продолжить работу с текущим контейнером?"
 else
-    PCT_NOT_FOUND="Utility pct not found. Make sure Proxmox is installed."
+    PCT_NOT_FOUND="Utility pct not found. Make sure Proxmox is installed!"
     NO_CONTAINERS="No available LXC containers!"
     SELECT_CONTAINER="Select container"
     SELECT_ACTION="Select action"
     MSG_CONFIRM_DELETE="Are you sure you want to delete"
-    MSG_SUCCESS="Successfully executed"
     MSG_ERROR="Error"
-    MSG_LOCK="Container locked"
-    MSG_UNLOCK="Container unlocked"
     CONTINUE="Continue working with the current container?"
 fi
 
@@ -81,7 +75,7 @@ while true; do
                 2 "Stop" \
                 3 "Reboot" \
                 4 "Open configuration file" \
-                5 "Destroy" \
+                5 "Terminate" \
                 6 "Unlock" \
                 7 "Suspend" \
                 8 "Resume" \
@@ -105,7 +99,7 @@ while true; do
                 fi
                 ;;
             6) pct unlock "$selected_container_id" ;;
-            7) pct suspend "$selected_container_id" ;;
+            7) pct enter "$selected_container_id" ;;
             8) pct resume "$selected_container_id" ;;
             9) pct console "$selected_container_id" ;;
             10) break ;;
