@@ -3,8 +3,11 @@
 SUDO=$(command -v sudo)
 SCRIPT_DIR="/usr/local/tech-scripts"
 CONFIG_FILE="/etc/tech-scripts/alert.conf"
-LANG_CONF=$(grep '^lang:' /etc/tech-scripts/choose.conf | cut -d' ' -f2)
+LANG_CONF=$(grep '^lang:' /etc/tech-scripts/choose.conf 2>/dev/null | cut -d' ' -f2)
 CONTINUE="true"
+
+export TERM=xterm
+export NCURSES_NO_UTF8_ACS=1
 
 if [[ "$LANG_CONF" == "Русский" ]]; then
     MSG_INSTALL_JQ="Установка jq..."
@@ -61,33 +64,31 @@ else
 fi
 
 show_message() {
-    local msg="$1"
-    whiptail --msgbox "$msg" 10 50
+    whiptail --msgbox "$1" 10 50
 }
 
 input_box() {
-    local title="$1"
-    local prompt="$2"
-    whiptail --inputbox "$prompt" 10 50 2> /tmp/input.txt
-    cat /tmp/input.txt
+    exec 3>&1
+    local result=$(whiptail --title "$1" --inputbox "$2" 10 60 3>&1 1>&2 2>&3)
+    exec 3>&-
+    echo "$result"
 }
 
 yes_no_box() {
-    local title="$1"
-    local prompt="$2"
-    whiptail --yesno "$prompt" 10 50
+    whiptail --yesno "$2" 10 50
     return $?
 }
 
 create_ssh_alert_service() {
-    if [ ! -f "/etc/systemd/system/ssh.alert.service" ]; then
-        $SUDO bash -c "cat > /etc/systemd/system/ssh.alert.service" <<EOF
+    [ -f "/etc/systemd/system/ssh.alert.service" ] && return
+    
+    $SUDO tee "/etc/systemd/system/ssh.alert.service" >/dev/null <<EOF
 [Unit]
 Description=SSH Alert
 After=network.target
 
 [Service]
-ExecStart=/usr/local/tech-scripts/alert.sh
+ExecStart=$SCRIPT_DIR/alert.sh
 Restart=always
 User=root
 RestartSec=5
@@ -98,20 +99,22 @@ SyslogIdentifier=ssh-alert-monitor
 [Install]
 WantedBy=multi-user.target
 EOF
-        $SUDO systemctl daemon-reload
-        $SUDO systemctl enable ssh.alert.service
-        $SUDO systemctl start ssh.alert.service
-    fi
+
+    $SUDO systemctl daemon-reload
+    $SUDO systemctl enable --now ssh.alert.service
 }
 
 create_ssh_alert_script() {
-    if [ ! -f "$SCRIPT_DIR/alert.sh" ]; then
-        $SUDO mkdir -p "$SCRIPT_DIR"
-        $SUDO bash -c "cat > $SCRIPT_DIR/alert.sh" <<'EOF'
+    [ -f "$SCRIPT_DIR/alert.sh" ] && return
+    
+    $SUDO mkdir -p "$SCRIPT_DIR"
+    $SUDO tee "$SCRIPT_DIR/alert.sh" >/dev/null <<'EOF'
 #!/bin/bash
 
-LANG_CONF=$(grep '^lang:' /etc/tech-scripts/choose.conf | cut -d' ' -f2)
-source "$CONFIG_FILE"
+CONFIG_FILE="/etc/tech-scripts/alert.conf"
+[ -f "$CONFIG_FILE" ] && source "$CONFIG_FILE"
+
+LANG_CONF=$(grep '^lang:' /etc/tech-scripts/choose.conf 2>/dev/null | cut -d' ' -f2)
 
 if [[ "$LANG_CONF" == "Русский" ]]; then
     MSG_FAILED="🚨 Неудачная попытка входа 🚨"
@@ -139,7 +142,7 @@ send_telegram_message() {
     if echo "$response" | grep -q '"ok":true'; then
         echo "$MSG_SENT"
     else
-        echo "$MSG_ERROR: $response"
+        echo "$MSG_ERROR: $response" >&2
     fi
 }
 
@@ -172,116 +175,99 @@ journalctl -f -u ssh | while read -r line; do
     fi
 done
 EOF
-        $SUDO chmod +x "$SCRIPT_DIR/alert.sh"
+
+    $SUDO chmod +x "$SCRIPT_DIR/alert.sh"
+}
+
+install_jq() {
+    command -v jq &>/dev/null && return
+    
+    if command -v apt &>/dev/null; then
+        $SUDO apt update && $SUDO apt install -y jq
+    elif command -v yum &>/dev/null; then
+        $SUDO yum install -y jq
+    elif command -v dnf &>/dev/null; then
+        $SUDO dnf install -y jq
+    elif command -v zypper &>/dev/null; then
+        $SUDO zypper install -y jq
+    elif command -v pacman &>/dev/null; then
+        $SUDO pacman -S --noconfirm jq
+    elif command -v apk &>/dev/null; then
+        $SUDO apk add jq
+    elif command -v brew &>/dev/null; then
+        brew install jq
+    else
+        echo "Не удалось определить пакетный менеджер. Установите jq вручную." >&2
+        exit 1
     fi
 }
 
 if [ -f "$CONFIG_FILE" ]; then
-    yes_no_box "Обновление скрипта" "$MSG_UPDATE_SCRIPT"
-    response=$?
-    if [ $response -eq 0 ]; then
-        $SUDO rm "$SCRIPT_DIR/alert.sh"
+    yes_no_box "Обновление скрипта" "$MSG_UPDATE_SCRIPT" && {
+        $SUDO rm -f "$SCRIPT_DIR/alert.sh"
         create_ssh_alert_script
         $SUDO systemctl daemon-reload
         show_message "$MSG_UPDATE_SUCCESS"
         exit 0
-    else
+    } || {
         show_message "$MSG_UPDATE_CANCELED"
-    fi
+    }
 fi
 
 if [ -f "$CONFIG_FILE" ]; then
-    yes_no_box "Удаление конфигурации" "$MSG_REMOVE_CONFIG"
-    response=$?
-    if [ $response -eq 0 ]; then
-        $SUDO rm "$CONFIG_FILE"
+    yes_no_box "Удаление конфигурации" "$MSG_REMOVE_CONFIG" && {
+        $SUDO rm -f "$CONFIG_FILE"
         echo "$MSG_REMOVED"
         CONTINUE="false"
-    else
+    } || {
         echo "$MSG_CANCELED"
-    fi
+    }
 fi
 
 if [ -f "$SCRIPT_DIR/alert.sh" ]; then
-    yes_no_box "Удаление скрипта" "$MSG_REMOVE_SCRIPT"
-    response=$?
-    if [ $response -eq 0 ]; then
-        $SUDO rm "$SCRIPT_DIR/alert.sh"
+    yes_no_box "Удаление скрипта" "$MSG_REMOVE_SCRIPT" && {
+        $SUDO rm -f "$SCRIPT_DIR/alert.sh"
         echo "$MSG_REMOVED"
         CONTINUE="false"
-    else
+    } || {
         echo "$MSG_CANCELED"
-    fi
+    }
 fi
 
 if [ -f "/etc/systemd/system/ssh.alert.service" ]; then
-    yes_no_box "Удаление сервиса" "$MSG_REMOVE_CHOICE"
-    response=$?
-    if [ $response -eq 0 ]; then
+    yes_no_box "Удаление сервиса" "$MSG_REMOVE_CHOICE" && {
         $SUDO systemctl stop ssh.alert.service
         $SUDO systemctl disable ssh.alert.service
-        $SUDO rm /etc/systemd/system/ssh.alert.service
+        $SUDO rm -f /etc/systemd/system/ssh.alert.service
         $SUDO systemctl daemon-reload
         echo "$MSG_REMOVED"
         CONTINUE="false"
-    else
+    } || {
         echo "$MSG_CANCELED"
-    fi
+    }
 fi
 
-if ! command -v jq &> /dev/null; then
-    yes_no_box "$MSG_INSTALL_JQ" ""
-    response=$?
-    if [[ $response -eq 0 ]]; then
-        if command -v apt &> /dev/null; then
-            $SUDO apt update && $SUDO apt install -y jq
-        elif command -v yum &> /dev/null; then
-            $SUDO yum install -y jq
-        elif command -v dnf &> /dev/null; then
-            $SUDO dnf install -y jq
-        elif command -v zypper &> /dev/null; then
-            $SUDO zypper install -y jq
-        elif command -v pacman &> /dev/null; then
-            $SUDO pacman -S --noconfirm jq
-        elif command -v apk &> /dev/null; then
-            $SUDO apk add jq
-        elif command -v brew &> /dev/null; then
-            brew install jq
-        else
-            echo "Не удалось определить пакетный менеджер. Установите jq вручную."
-            exit 1
-        fi
-    else
-        echo "Установка jq отменена."
-    fi
-fi
+install_jq
 
-if [ "$CONTINUE" = "false" ]; then
-    exit 1
-fi
+[ "$CONTINUE" = "false" ] && exit 1
 
-yes_no_box "Создание оповещения" "$MSG_CREATE_ALERT"
-response=$?
-
-if [ $response -eq 0 ]; then
+if yes_no_box "Создание оповещения" "$MSG_CREATE_ALERT"; then
     if [ -f "$CONFIG_FILE" ]; then
-        CONTINUE="false"
+        echo "$MSG_CONFIG_EXISTS"
     else
         TELEGRAM_BOT_TOKEN=$(input_box "Telegram Bot Token" "$MSG_BOT_TOKEN")
         TELEGRAM_CHAT_ID=$(input_box "Telegram Chat ID" "$MSG_CHAT_ID")
-        echo "TELEGRAM_BOT_TOKEN=$TELEGRAM_BOT_TOKEN" > "$CONFIG_FILE"
-        echo "TELEGRAM_CHAT_ID=$TELEGRAM_CHAT_ID" >> "$CONFIG_FILE"
-        chmod 600 "$CONFIG_FILE"
-    fi
-
-    if [ "$CONTINUE" = "false" ]; then
-        echo "$MSG_CONFIG_EXISTS"
-    else
+        
+        $SUDO mkdir -p "/etc/tech-scripts"
+        $SUDO tee "$CONFIG_FILE" >/dev/null <<EOF
+TELEGRAM_BOT_TOKEN=$TELEGRAM_BOT_TOKEN
+TELEGRAM_CHAT_ID=$TELEGRAM_CHAT_ID
+EOF
+        
+        $SUDO chmod 600 "$CONFIG_FILE"
         create_ssh_alert_script
         create_ssh_alert_service
         echo "$MSG_SUCCESS_INSTALL"
         echo "$MSG_SCRIPT_LOCATION"
     fi
-else
-    echo ""
 fi
