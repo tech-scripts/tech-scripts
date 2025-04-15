@@ -3,16 +3,24 @@
 measure_write_speed() {
     local disk=$1
     echo "Измерение скорости записи на диск $disk..."
-    write_speed=$(dd if=/dev/zero of=$disk/testfile bs=1G count=1 oflag=direct 2>&1 | grep -oP '\d+\.\d+ [GM]B/s')
-    echo "Скорость записи: $write_speed"
-    rm -f $disk/testfile
+    write_speed=$(dd if=/dev/zero of="$disk/testfile" bs=1G count=1 oflag=direct 2>&1 | grep -oP '\d+\.\d+ [GM]B/s')
+    if [ -z "$write_speed" ]; then
+        echo "Ошибка при измерении скорости записи."
+    else
+        echo "Скорость записи: $write_speed"
+    fi
+    rm -f "$disk/testfile"
 }
 
 measure_read_speed() {
     local disk=$1
     echo "Измерение скорости чтения с диска $disk..."
-    read_speed=$(dd if=$disk/testfile of=/dev/null bs=1G iflag=direct 2>&1 | grep -oP '\d+\.\d+ [GM]B/s')
-    echo "Скорость чтения: $read_speed"
+    read_speed=$(dd if="$disk/testfile" of=/dev/null bs=1G iflag=direct 2>&1 | grep -oP '\d+\.\d+ [GM]B/s')
+    if [ -z "$read_speed" ]; then
+        echo "Ошибка при измерении скорости чтения."
+    else
+        echo "Скорость чтения: $read_speed"
+    fi
 }
 
 if whiptail --title "Замер диска" --yesno "Хотите сделать замер диска?" 10 60; then
