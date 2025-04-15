@@ -1,19 +1,17 @@
 #!/bin/bash
 
 measure_write_speed() {
-    local disk=$1
     local temp_file="/tmp/testfile"
-    echo "Измерение скорости записи на $disk..."
+    echo "Измерение скорости записи..."
     write_speed=$(dd if=/dev/zero of="$temp_file" bs=1G count=1 oflag=direct 2>&1 | grep -o '[0-9.]* [A-Z]*' | head -n 1)
     rm -f "$temp_file"
     echo "Скорость записи: $write_speed"
 }
 
 measure_read_speed() {
-    local disk=$1
     local temp_file="/tmp/testfile"
     dd if=/dev/zero of="$temp_file" bs=1G count=1 oflag=direct > /dev/null 2>&1
-    echo "Измерение скорости чтения на $disk..."
+    echo "Измерение скорости чтения..."
     read_speed=$(dd if="$temp_file" of=/dev/null bs=1G count=1 iflag=direct 2>&1 | grep -o '[0-9.]* [A-Z]*' | head -n 1)
     rm -f "$temp_file"
     echo "Скорость чтения: $read_speed"
