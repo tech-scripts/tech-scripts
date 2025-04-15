@@ -33,16 +33,29 @@ EDITOR=$(whiptail --title "$TITLE_EDITOR" --menu "$MSG_EDITOR" 12 40 3 \
     3 "Custom" \
     3>&1 1>&2 2>&3)
 
-[ $? -ne  ] && { echo " "; echo "$MSG_CANCEL"; echo " "; exit 1; }
+if [ $? -ne 0 ]; then
+    echo " "
+    echo "$MSG_CANCEL"
+    echo " "
+    exit 1
+fi
 
 case $EDITOR in
     1) editor="nano" ;;
     2) editor="vim" ;;
     3)
         editor=$(whiptail --title "$TITLE_CUSTOM" --inputbox "$MSG_CUSTOM" 10 40 3>&1 1>&2 2>&3)
-        [ $? -ne 0 ] && { echo "$MSG_CUSTOM_CANCEL"; exit 1; }
+        if [ $? -ne 0 ]; then
+            echo "$MSG_CUSTOM_CANCEL"
+            exit 1
+        fi
         ;;
-    *) echo " "; echo "$MSG_INVALID"; echo " "; exit 1 ;;
+    *) 
+        echo " "
+        echo "$MSG_INVALID"
+        echo " "
+        exit 1
+        ;;
 esac
 
 $SUDO sed -i '2s/.*/editor: '"$editor"'/' /etc/tech-scripts/choose.conf
