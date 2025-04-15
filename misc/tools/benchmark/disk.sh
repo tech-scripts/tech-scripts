@@ -62,10 +62,20 @@ if whiptail --title "Замер диска" --yesno "Хотите сделать
 
     echo "Выбранный диск: $selected_disk"  # Отладочное сообщение
 
+    # Проверка доступности диска
+    if [ ! -d "$selected_disk" ]; then
+        whiptail --title "Ошибка" --msgbox "Директория $selected_disk недоступна." 10 60
+        exit 1
+    fi
+
+    # Проверка прав доступа
+    if ! touch "$selected_disk/testfile" 2>/dev/null; then
+        whiptail --title "Ошибка" --msgbox "Нет прав на запись в $selected_disk." 10 60
+        exit 1
+    fi
+    rm -f "$selected_disk/testfile"
+
     measure_write_speed "$selected_disk"
     measure_read_speed "$selected_disk"
 
-    whiptail --title "Результаты" --msgbox "Скорость записи: $write_speed\nСкорость чтения: $read_speed" 12 60
-else
-    whiptail --title "Отмена" --msgbox "Замер диска отменен." 10 60
-fi
+    whiptail --title "Результаты" --msgbox "С
