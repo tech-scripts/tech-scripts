@@ -58,7 +58,18 @@ case $EDITOR in
         ;;
 esac
 
-$SUDO sed -i '2s/.*/editor: '"$editor"'/' /etc/tech-scripts/choose.conf
+# Убедимся, что файл содержит хотя бы одну строку
+if ! grep -q '^lang:' /etc/tech-scripts/choose.conf; then
+    echo "lang: English" | $SUDO tee /etc/tech-scripts/choose.conf > /dev/null
+fi
+
+# Заменяем или добавляем строку с editor
+if grep -q '^editor:' /etc/tech-scripts/choose.conf; then
+    $SUDO sed -i "s/^editor:.*/editor: $editor/" /etc/tech-scripts/choose.conf
+else
+    $SUDO sed -i "1a editor: $editor" /etc/tech-scripts/choose.conf
+fi
+
 echo " "
 echo "$MSG_SUCCESS $editor"
 echo " "
