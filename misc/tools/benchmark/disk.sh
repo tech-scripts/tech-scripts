@@ -31,11 +31,6 @@ if whiptail --title "Disk Measurement" --yesno "$msg_measure" 10 60; then
         if [ -d "$dir" ]; then
             disk_choices+=("$dir" "$dir")
         fi
-        for disk in "$dir"/*; do
-            if [ -d "$disk" ]; then
-                disk_choices+=("$disk" "$disk")
-            fi
-        done
     done
 
     selected_disk=$(whiptail --title "Disk Selection" --menu "$msg_select" 15 60 4 "${disk_choices[@]}" 3>&1 1>&2 2>&3)
