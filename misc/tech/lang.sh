@@ -37,16 +37,12 @@ case $LANGUAGE in
         ;;
 esac
 
-# Создаем временный файл
 temp_file=$(mktemp)
 
-# Добавляем строку с lang: в первую строку
 echo "lang: $lang" > "$temp_file"
 
-# Добавляем остальное содержимое файла, если оно есть
 $SUDO grep -v "^lang:" /etc/tech-scripts/choose.conf >> "$temp_file"
 
-# Перемещаем временный файл в основной
 $SUDO mv "$temp_file" /etc/tech-scripts/choose.conf
 
 if [ "$lang" = "Русский" ]; then
