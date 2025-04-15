@@ -112,9 +112,6 @@ create_ssh_alert_script() {
         $SUDO bash -c "cat > $SCRIPT_DIR/alert.sh" <<'EOF'
 #!/bin/bash
 
-CONFIG_FILE="/etc/tech-scripts/alert.conf"
-LANG_FILE="/etc/tech-scripts/choose.conf"
-
 LANG_CONF=$(grep '^lang:' "$CONFIG_FILE" | cut -d' ' -f2)
 source "$CONFIG_FILE"
 
@@ -241,7 +238,6 @@ fi
 
 if ! command -v jq &> /dev/null; then
     show_message "$MSG_INSTALL_JQ"
-    yes_no_box "Установка jq" "Хотите установить jq?"
     response=$?
     if [[ $response -eq 0 ]]; then
         $SUDO apt update && $SUDO apt install -y jq
