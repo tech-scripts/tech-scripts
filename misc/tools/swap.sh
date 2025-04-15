@@ -3,9 +3,7 @@
 SUDO=$(command -v sudo || echo "")
 CONFIG_FILE="/etc/tech-scripts/choose.conf"
 ZRAM_CONFIG="/etc/tech-scripts/swap.conf"
-
 LANG_CONF=$(grep '^lang:' /etc/tech-scripts/choose.conf 2>/dev/null | cut -d' ' -f2)
-
 
 if [ "$LANG_CONF" = "Русский" ]; then
     CANCEL_MSG="Вы прервали выполнение скрипта."
