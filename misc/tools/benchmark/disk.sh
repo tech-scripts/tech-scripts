@@ -36,7 +36,7 @@ for dir in "/mnt" "/media"; do
     fi
 done
 
-selected_disk=$(whiptail --title "$msg_select" --menu "$msg_select" 15 60 4 "${disk_choices[@]}" 3>&1 1>&2 2>&3)
+selected_disk=$(whiptail --title "$msg_select" --menu "" 15 60 4 "${disk_choices[@]}" 3>&1 1>&2 2>&3)
 
 temp_file="$selected_disk/testfile"
 output=$(dd if=/dev/zero of="$temp_file" bs="$block_size" count=1 oflag=direct 2>&1)
