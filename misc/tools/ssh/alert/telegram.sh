@@ -72,7 +72,7 @@ else
 fi
 
 show_message() {
-    whiptail --msgbox "$1" 10 50
+    whiptail --msgbox "$2" 10 50
 }
 
 input_box() {
