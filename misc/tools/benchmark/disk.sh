@@ -24,14 +24,28 @@ else
 fi
 
 if whiptail --title "Disk Measurement" --yesno "$msg_measure" 10 60; then
-    disks=("$HOME" "/mnt" "/media")
     disk_choices=()
 
-    for dir in "${disks[@]}"; do
-        if [ -d "$dir" ]; then
-            disk_choices+=("$dir" "$dir")
-        fi
-    done
+    # Всегда добавляем домашнюю директорию первой
+    disk_choices+=("$HOME" "Домашняя директория ($HOME)")
+
+    # Добавляем диски из /mnt
+    if [ -d "/mnt" ]; then
+        for disk in /mnt/*; do
+            if [ -d "$disk" ]; then
+                disk_choices+=("$disk" "$disk")
+            fi
+        done
+    fi
+
+    # Добавляем диски из /media
+    if [ -d "/media" ]; then
+        for disk in /media/*; do
+            if [ -d "$disk" ]; then
+                disk_choices+=("$disk" "$disk")
+            fi
+        done
+    fi
 
     selected_disk=$(whiptail --title "Disk Selection" --menu "$msg_select" 15 60 4 "${disk_choices[@]}" 3>&1 1>&2 2>&3)
 
@@ -43,7 +57,7 @@ if whiptail --title "Disk Measurement" --yesno "$msg_measure" 10 60; then
         write_time=$(echo "$output" | grep -o '[0-9.]* s' | head -n 1)
         if echo "$output" | grep -q 'MB/s'; then
             write_speed=$(echo "$output" | grep -o '[0-9.]* MB/s' | head -n 1)
-        elif echo "$output" | grep -q 'GB/s'; then
+        elif echo "$output" | grep -q 'GB/s"; then
             write_speed=$(echo "$output" | grep -o '[0-9.]* GB/s' | head -n 1)
         else
             write_speed="$msg_failed"
@@ -53,7 +67,7 @@ if whiptail --title "Disk Measurement" --yesno "$msg_measure" 10 60; then
         read_time=$(echo "$output" | grep -o '[0-9.]* s' | head -n 1)
         if echo "$output" | grep -q 'MB/s'; then
             read_speed=$(echo "$output" | grep -o '[0-9.]* MB/s' | head -n 1)
-        elif echo "$output" | grep -q 'GB/s'; then
+        elif echo "$output" | grep -q 'GB/s"; then
             read_speed=$(echo "$output" | grep -o '[0-9.]* GB/s' | head -n 1)
         else
             read_speed="$msg_failed"
