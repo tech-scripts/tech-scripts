@@ -1,10 +1,8 @@
 #!/bin/bash
 
 SUDO=$(command -v sudo)
-
-CONFIG_DIR="/etc/tech-scripts"
 SCRIPT_DIR="/usr/local/tech-scripts"
-CONFIG_FILE="$CONFIG_DIR/alert.conf"
+CONFIG_FILE="/etc/tech-scripts/alert.conf"
 LANG_CONF=$(grep '^lang:' "$CONFIG_FILE" | cut -d' ' -f2)
 CONTINUE="true"
 
