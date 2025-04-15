@@ -47,6 +47,8 @@ if whiptail --title "Замер диска" --yesno "Хотите сделать
         selected_disk="$current_disk"
     fi
 
+    echo "Выбранный диск: $selected_disk"  # Отладочное сообщение
+
     measure_write_speed "$selected_disk"
     measure_read_speed "$selected_disk"
 
