@@ -13,23 +13,53 @@ if [[ "$LANG_CONF" == "Русский" ]]; then
     MSG_INSTALL_JQ="Установка jq..."
     MSG_BOT_TOKEN="Введите токен вашего Telegram-бота: "
     MSG_CHAT_ID="Введите ваш chat_id в Telegram: "
-    MSG_TEST_SENDING="Отправка тестового сообщения..."
-    MSG_TEST_SUCCESS="✅ Тестовое сообщение успешно отправлено!"
-    MSG_TEST_FAILED="❌ Ошибка отправки сообщения! Проверьте токен и chat_id"
-    MSG_RETRY="Повторить ввод данных?"
+    MSG_CREATE_SCRIPT="Создание скрипта в $SCRIPT_DIR/alert.sh..."
+    MSG_ADD_AUTOSTART="Добавление в автозапуск..."
     MSG_SUCCESS_INSTALL="Скрипт успешно установлен и добавлен в автозапуск."
     MSG_SCRIPT_LOCATION="Скрипт расположен в $SCRIPT_DIR/alert.sh"
+    MSG_ALREADY_INSTALLED="Скрипт уже установлен и запущен."
+    MSG_REMOVE_CHOICE="Хотите удалить ssh.alert из автозапуска? (y/n): "
+    MSG_REMOVED="ssh.alert удален из автозапуска."
+    MSG_CANCELED="Удаление отменено."
+    MSG_START_CHOICE="Скрипт уже установлен. Хотите запустить его сейчас? (y/n): "
+    MSG_STARTED="Скрипт запущен."
+    MSG_NOT_STARTED="Скрипт не запущен."
+    MSG_SERVICE_MISSING="Скрипт уже установлен, но сервис ssh.alert.service не найден."
+    MSG_CREATE_CHOICE="Хотите создать и запустить сервис? (y/n): "
+    MSG_SERVICE_CREATED="Сервис создан и запущен."
+    MSG_SERVICE_CANCELED="Создание сервиса отменено."
+    MSG_REMOVE_CONFIG="Хотите удалить конфигурационный файл $CONFIG_FILE? (y/n): "
+    MSG_REMOVE_SCRIPT="Хотите удалить скрипт $SCRIPT_DIR/alert.sh? (y/n): "
+    MSG_UPDATE_SCRIPT="Вы хотите обновить скрипт?"
+    MSG_UPDATE_CANCELED="Обновление конфигурации отменено!"
+    MSG_UPDATE_SUCCESS="Скрипт успешно обновлен!"
+    MSG_CREATE_ALERT="Хотите ли вы создать оповещение о входах по SSH через Telegram?"
     MSG_CONFIG_EXISTS="Конфигурационный файл уже существует. Пропускаем создание."
 else
     MSG_INSTALL_JQ="Installing jq..."
     MSG_BOT_TOKEN="Enter your Telegram bot token: "
     MSG_CHAT_ID="Enter your Telegram chat_id: "
-    MSG_TEST_SENDING="Sending test message..."
-    MSG_TEST_SUCCESS="✅ Test message sent successfully!"
-    MSG_TEST_FAILED="❌ Failed to send message! Check token and chat_id"
-    MSG_RETRY="Retry entering data?"
+    MSG_CREATE_SCRIPT="Creating script in $SCRIPT_DIR/alert.sh..."
+    MSG_ADD_AUTOSTART="Adding to autostart..."
     MSG_SUCCESS_INSTALL="Script successfully installed and added to autostart."
     MSG_SCRIPT_LOCATION="Script is located in $SCRIPT_DIR/alert.sh"
+    MSG_ALREADY_INSTALLED="Script is already installed and running."
+    MSG_REMOVE_CHOICE="Do you want to remove ssh.alert from autostart? (y/n): "
+    MSG_REMOVED="ssh.alert removed from autostart."
+    MSG_CANCELED="Removal canceled."
+    MSG_START_CHOICE="Script is already installed. Do you want to start it now? (y/n): "
+    MSG_STARTED="Script started."
+    MSG_NOT_STARTED="Script not started."
+    MSG_SERVICE_MISSING="Script is already installed, but ssh.alert.service is missing."
+    MSG_CREATE_CHOICE="Do you want to create and start the service? (y/n): "
+    MSG_SERVICE_CREATED="Service created and started."
+    MSG_SERVICE_CANCELED="Service creation canceled."
+    MSG_REMOVE_CONFIG="Do you want to remove the configuration file $CONFIG_FILE? (y/n): "
+    MSG_REMOVE_SCRIPT="Do you want to remove the script $SCRIPT_DIR/alert.sh? (y/n): "
+    MSG_UPDATE_SCRIPT="Do you want to update the script?"
+    MSG_UPDATE_CANCELED="Configuration update canceled!"
+    MSG_UPDATE_SUCCESS="Script successfully updated!"
+    MSG_CREATE_ALERT="Do you want to create an SSH login alert via Telegram?"
     MSG_CONFIG_EXISTS="Configuration file already exists. Skipping creation."
 fi
 
@@ -47,40 +77,6 @@ input_box() {
 yes_no_box() {
     whiptail --yesno "$2" 10 50
     return $?
-}
-
-send_test_message() {
-    local token="$1"
-    local chat_id="$2"
-    
-    show_message "$MSG_TEST_SENDING"
-    
-    local response=$(curl -s -X POST "https://api.telegram.org/bot${token}/sendMessage" \
-        -d chat_id="${chat_id}" \
-        -d text="Test message from setup script" 2>/dev/null)
-        
-    if echo "$response" | grep -q '"ok":true'; then
-        show_message "$MSG_TEST_SUCCESS"
-        return 0
-    else
-        show_message "$MSG_TEST_FAILED"
-        return 1
-    fi
-}
-
-get_telegram_credentials() {
-    while true; do
-        local token=$(input_box "Telegram Bot Token" "$MSG_BOT_TOKEN")
-        local chat_id=$(input_box "Telegram Chat ID" "$MSG_CHAT_ID")
-        
-        if send_test_message "$token" "$chat_id"; then
-            echo "$token"
-            echo "$chat_id"
-            return 0
-        fi
-        
-        yes_no_box "$MSG_RETRY" "$MSG_RETRY" || return 1
-    done
 }
 
 create_ssh_alert_service() {
@@ -215,33 +211,63 @@ if [ -f "$CONFIG_FILE" ]; then
         exit 0
     } || {
         show_message "$MSG_UPDATE_CANCELED"
-        exit 0
+    }
+fi
+
+if [ -f "$CONFIG_FILE" ]; then
+    yes_no_box "Удаление конфигурации" "$MSG_REMOVE_CONFIG" && {
+        $SUDO rm -f "$CONFIG_FILE"
+        echo "$MSG_REMOVED"
+        CONTINUE="false"
+    } || {
+        echo "$MSG_CANCELED"
+    }
+fi
+
+if [ -f "$SCRIPT_DIR/alert.sh" ]; then
+    yes_no_box "Удаление скрипта" "$MSG_REMOVE_SCRIPT" && {
+        $SUDO rm -f "$SCRIPT_DIR/alert.sh"
+        echo "$MSG_REMOVED"
+        CONTINUE="false"
+    } || {
+        echo "$MSG_CANCELED"
+    }
+fi
+
+if [ -f "/etc/systemd/system/ssh.alert.service" ]; then
+    yes_no_box "Удаление сервиса" "$MSG_REMOVE_CHOICE" && {
+        $SUDO systemctl stop ssh.alert.service
+        $SUDO systemctl disable ssh.alert.service
+        $SUDO rm -f /etc/systemd/system/ssh.alert.service
+        $SUDO systemctl daemon-reload
+        echo "$MSG_REMOVED"
+        CONTINUE="false"
+    } || {
+        echo "$MSG_CANCELED"
     }
 fi
 
 install_jq
 
-if [ -f "$CONFIG_FILE" ]; then
-    show_message "$MSG_CONFIG_EXISTS"
-else
-    credentials=$(get_telegram_credentials)
-    if [ $? -eq 0 ]; then
-        token=$(echo "$credentials" | head -n 1)
-        chat_id=$(echo "$credentials" | tail -n 1)
+[ "$CONTINUE" = "false" ] && exit 1
+
+if yes_no_box "Создание оповещения" "$MSG_CREATE_ALERT"; then
+    if [ -f "$CONFIG_FILE" ]; then
+        echo "$MSG_CONFIG_EXISTS"
+    else
+        TELEGRAM_BOT_TOKEN=$(input_box "Telegram Bot Token" "$MSG_BOT_TOKEN")
+        TELEGRAM_CHAT_ID=$(input_box "Telegram Chat ID" "$MSG_CHAT_ID")
         
         $SUDO mkdir -p "/etc/tech-scripts"
         $SUDO tee "$CONFIG_FILE" >/dev/null <<EOF
-TELEGRAM_BOT_TOKEN=$token
-TELEGRAM_CHAT_ID=$chat_id
+TELEGRAM_BOT_TOKEN=$TELEGRAM_BOT_TOKEN
+TELEGRAM_CHAT_ID=$TELEGRAM_CHAT_ID
 EOF
         
         $SUDO chmod 600 "$CONFIG_FILE"
         create_ssh_alert_script
         create_ssh_alert_service
-        show_message "$MSG_SUCCESS_INSTALL"
+        echo "$MSG_SUCCESS_INSTALL"
         echo "$MSG_SCRIPT_LOCATION"
-    else
-        show_message "Настройка отменена"
-        exit 1
     fi
 fi
