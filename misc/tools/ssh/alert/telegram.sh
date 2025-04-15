@@ -181,12 +181,9 @@ if [ -f "$CONFIG_FILE" ]; then
     response=$?
     if [ $response -eq 0 ]; then
         $SUDO rm "$SCRIPT_DIR/alert.sh"
-        $SUDO systemctl stop ssh.alert.service
-        $SUDO systemctl disable ssh.alert.service
-        $SUDO rm /etc/systemd/system/ssh.alert.service
-        $SUDO systemctl daemon-reload
         create_ssh_alert_script
-        create_ssh_alert_service
+        $SUDO systemctl daemon-reload
+        $SUDO systemctl reload ssh.alert.service
         show_message "$MSG_UPDATE_SUCCESS"
         exit 0
     else
@@ -235,7 +232,7 @@ if [ -f "/etc/systemd/system/ssh.alert.service" ]; then
 fi
 
 if ! command -v jq &> /dev/null; then
-    show_message "$MSG_INSTALL_JQ"
+    yes_no_box "$MSG_INSTALL_JQ" ""
     response=$?
     if [[ $response -eq 0 ]]; then
         if command -v apt &> /dev/null; then
