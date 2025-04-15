@@ -3,6 +3,10 @@
 measure_write_speed() {
     local disk=$1
     echo "Измерение скорости записи на диск $disk..."
+    if ! touch "$disk/testfile" 2>/dev/null; then
+        echo "Ошибка: Невозможно создать файл в $disk. Проверьте права доступа."
+        return
+    fi
     write_speed=$(dd if=/dev/zero of="$disk/testfile" bs=1G count=1 oflag=direct 2>&1 | grep -oP '\d+\.\d+ [GM]B/s')
     if [ -z "$write_speed" ]; then
         echo "Ошибка при измерении скорости записи."
@@ -15,6 +19,10 @@ measure_write_speed() {
 measure_read_speed() {
     local disk=$1
     echo "Измерение скорости чтения с диска $disk..."
+    if [ ! -f "$disk/testfile" ]; then
+        echo "Ошибка: Тестовый файл не найден в $disk."
+        return
+    fi
     read_speed=$(dd if="$disk/testfile" of=/dev/null bs=1G iflag=direct 2>&1 | grep -oP '\d+\.\d+ [GM]B/s')
     if [ -z "$read_speed" ]; then
         echo "Ошибка при измерении скорости чтения."
