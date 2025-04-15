@@ -24,7 +24,9 @@ else
 fi
 
 if ! command -v pct &> /dev/null; then
+    echo ""
     echo "$PCT_NOT_FOUND"
+    echo ""
     exit 1
 fi
 
@@ -47,7 +49,9 @@ while true; do
     get_containers
 
     if [ ${#CONTAINERS_CACHE[@]} -eq 0 ]; then
-        show_message "$NO_CONTAINERS"
+        echo ""
+        echo "$NO_CONTAINERS"
+        echo ""
         exit 1
     fi
 
