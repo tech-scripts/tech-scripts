@@ -4,23 +4,21 @@ block_size="1G"
 lang=$(grep 'lang:' /etc/tech-scripts/choose.conf | awk '{print $2}')
 
 if [ "$lang" == "Русский" ]; then
-    msg_select="Выберите диск для замера:"
+    msg_select="Выберите диск"
     msg_speed_write="Скорость записи:"
     msg_speed_read="Скорость чтения:"
     msg_time_write="Время записи:"
     msg_time_read="Время чтения:"
     msg_failed="Не удалось измерить скорость"
-    title_disk_selection="Выбор диска"
     local_disk="локальный диск"
     connected_disk="подключенный диск"
 else
-    msg_select="Select a disk to measure:"
+    msg_select="Select a disk"
     msg_speed_write="Write speed:"
     msg_speed_read="Read speed:"
     msg_time_write="Write time:"
     msg_time_read="Read time:"
     msg_failed="Failed to measure speed"
-    title_disk_selection="Disk Selection"
     local_disk="local Disk"
     connected_disk="connected Disk"
 fi
@@ -36,7 +34,7 @@ for dir in "/mnt" "/media"; do
     fi
 done
 
-selected_disk=$(whiptail --title "$title_disk_selection" --menu "$msg_select" 15 60 4 "${disk_choices[@]}" 3>&1 1>&2 2>&3)
+selected_disk=$(whiptail --title "$msg_select" 15 60 4 "${disk_choices[@]}" 3>&1 1>&2 2>&3)
 
 if [ $? -eq 0 ]; then
     temp_file="$selected_disk/testfile"
