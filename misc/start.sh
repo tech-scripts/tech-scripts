@@ -47,7 +47,8 @@ fi
 get_relative_path() {
     local full_path="$1"
     local base_path="$2"
-    echo "${full_path#$base_path/}"
+    local relative_path="${full_path#$base_path/}"
+    [ -z "$relative_path" ] && echo " " || echo "$relative_path"
 }
 
 show_menu() {
