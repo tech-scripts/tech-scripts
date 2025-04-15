@@ -16,7 +16,7 @@ measure_read_speed() {
 }
 
 if whiptail --title "Замер диска" --yesno "Хотите сделать замер диска?" 10 60; then
-    disks="$(ls -d /mnt/* /media/* 2>/dev/null)"
+    disks=$(df -h --output=target | tail -n +2 | grep -vE '^(/dev|/run|/sys|/proc|/tmp|/var)')
     if [ -z "$disks" ]; then
         whiptail --title "Ошибка" --msgbox "Не найдено доступных дисков." 10 60
         exit 1
