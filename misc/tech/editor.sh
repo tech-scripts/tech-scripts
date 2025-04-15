@@ -25,7 +25,7 @@ else
 fi
 
 [ ! -d "/etc/tech-scripts" ] && $SUDO mkdir -p /etc/tech-scripts
-[ ! -f "/etc/tech-scripts/editor.conf" ] && $SUDO touch /etc/tech-scripts/editor.conf
+[ ! -f "/etc/tech-scripts/choose.conf" ] && $SUDO touch /etc/tech-scripts/choose.conf
 
 EDITOR=$(whiptail --title "$TITLE_EDITOR" --menu "$MSG_EDITOR" 12 40 3 \
     1 "nano" \
@@ -33,7 +33,7 @@ EDITOR=$(whiptail --title "$TITLE_EDITOR" --menu "$MSG_EDITOR" 12 40 3 \
     3 "Custom" \
     3>&1 1>&2 2>&3)
 
-[ $? -ne 0 ] && { echo " "; echo "$MSG_CANCEL"; echo " "; exit 1; }
+[ $? -ne  ] && { echo " "; echo "$MSG_CANCEL"; echo " "; exit 1; }
 
 case $EDITOR in
     1) editor="nano" ;;
@@ -45,7 +45,7 @@ case $EDITOR in
     *) echo " "; echo "$MSG_INVALID"; echo " "; exit 1 ;;
 esac
 
-echo "editor: $editor" | $SUDO tee -a /etc/tech-scripts/choose.conf > /dev/null
+$SUDO sed -i '2s/.*/editor: '"$editor"'/' /etc/tech-scripts/choose.conf
 echo " "
 echo "$MSG_SUCCESS $editor"
 echo " "
