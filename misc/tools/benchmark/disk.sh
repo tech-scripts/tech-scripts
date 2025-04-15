@@ -5,7 +5,7 @@ measure_write_speed() {
     echo "Измерение скорости записи на $1..."
     output=$(dd if=/dev/zero of="$temp_file" bs=1G count=1 oflag=direct 2>&1)
     write_time=$(echo "$output" | grep -o '[0-9.]* s' | head -n 1)
-    write_speed=$(echo "$output" | grep -o '[0-9.]* bytes (.*)' | head -n 1)
+    write_speed=$(echo "$output" | grep -o '[0-9.]* MB/s' | head -n 1)
     echo "Скорость записи: $write_speed, Время записи: $write_time"
 }
 
