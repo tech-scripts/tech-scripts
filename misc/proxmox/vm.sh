@@ -24,7 +24,9 @@ else
 fi
 
 if ! command -v qm &> /dev/null; then
+    echo ""
     echo "$QM_NOT_FOUND"
+    echo ""
     exit 1
 fi
 
@@ -47,7 +49,9 @@ while true; do
     get_vms
 
     if [ ${#VMS_CACHE[@]} -eq 0 ]; then
-        show_message "$NO_VMS"
+        echo ""
+        echo "$NO_VMS"
+        echo ""
         exit 1
     fi
 
