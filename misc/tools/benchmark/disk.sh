@@ -25,7 +25,7 @@ else
     msg_selected_disk="Selected disk:"
 fi
 
-disk_choices=("$local_disk" "$HOME")
+disk_choices=("$HOME" "$local_disk")
 for dir in "/mnt" "/media"; do
     if [ -d "$dir" ]; then
         for disk in "$dir"/*; do
