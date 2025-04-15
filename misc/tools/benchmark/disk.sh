@@ -34,13 +34,13 @@ else
 fi
 
 if whiptail --title "$title_disk_measurement" --yesno "$msg_measure" 10 60; then
-    disk_choices=("$HOME" "$local_disk ($HOME)")
+    disk_choices=("$HOME" "$local_disk")
 
     for dir in "/mnt" "/media"; do
         if [ -d "$dir" ]; then
             for disk in "$dir"/*; do
                 if [ -d "$disk" ]; then
-                    disk_choices+=("$disk" "$connected_disk ($disk)")
+                    disk_choices+=("$disk" "$connected_disk")
                 fi
             done
         fi
