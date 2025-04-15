@@ -1,6 +1,6 @@
 #!/bin/bash
 
-block_size="3G"
+block_size="1G"
 lang=$(grep 'lang:' /etc/tech-scripts/choose.conf | awk '{print $2}')
 
 if [ "$lang" == "Русский" ]; then
