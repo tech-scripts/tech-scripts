@@ -4,7 +4,7 @@ block_size="3G"
 lang=$(grep 'lang:' /etc/tech-scripts/choose.conf | awk '{print $2}')
 
 if [ "$lang" == "Русский" ]; then
-    msg_select="Выберите диск"
+    msg_select="Выберите директорию"
     msg_speed_write="Скорость записи:"
     msg_speed_read="Скорость чтения:"
     msg_time_write="Время записи:"
@@ -12,9 +12,9 @@ if [ "$lang" == "Русский" ]; then
     msg_failed="Не удалось измерить скорость"
     local_disk="локальный диск"
     connected_disk="подключенный диск"
-    msg_selected_disk="Выбранный диск:"
+    msg_selected_dir="Выбранная директория:"
 else
-    msg_select="Select a disk"
+    msg_select="Select a directory"
     msg_speed_write="Write speed:"
     msg_speed_read="Read speed:"
     msg_time_write="Write time:"
@@ -22,7 +22,7 @@ else
     msg_failed="Failed to measure speed"
     local_disk="local Disk"
     connected_disk="connected Disk"
-    msg_selected_disk="Selected disk:"
+    msg_selected_dir="Selected directory:"
 fi
 
 disk_choices=("$HOME" "$local_disk")
@@ -46,7 +46,7 @@ output=$(dd if="$temp_file" of=/dev/null bs="$block_size" count=1 iflag=direct 2
 read_time=$(echo "$output" | grep -o '[0-9.]* s' | head -n 1)
 read_speed=$(echo "$output" | grep -o '[0-9.]* [MG]B/s' | head -n 1 || echo "$msg_failed")
 echo ""
-echo "$msg_selected_disk $selected_disk"
+echo "$msg_selected_dir $selected_disk"
 echo ""
 echo "$msg_speed_write $write_speed"
 echo "$msg_time_write $write_time"
