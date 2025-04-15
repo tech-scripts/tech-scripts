@@ -44,7 +44,7 @@ if whiptail --title "Disk Measurement" --yesno "$msg_measure" 10 60; then
 
     if [ $? -eq 0 ]; then
         temp_file="$selected_disk/testfile"
-
+        echo ""
         echo "$msg_write $selected_disk..."
         output=$(dd if=/dev/zero of="$temp_file" bs=1G count=1 oflag=direct 2>&1)
         write_time=$(echo "$output" | grep -o '[0-9.]* s' | head -n 1)
@@ -55,7 +55,6 @@ if whiptail --title "Disk Measurement" --yesno "$msg_measure" 10 60; then
         else
             write_speed="$msg_failed"
         fi
-
         echo "$msg_read $selected_disk..."
         output=$(dd if="$temp_file" of=/dev/null bs=1G count=1 iflag=direct 2>&1)
         read_time=$(echo "$output" | grep -o '[0-9.]* s' | head -n 1)
@@ -66,14 +65,13 @@ if whiptail --title "Disk Measurement" --yesno "$msg_measure" 10 60; then
         else
             read_speed="$msg_failed"
         fi
-
         echo ""
         echo "$msg_speed_write $write_speed"
         echo "$msg_time_write $write_time"
         echo ""
         echo "$msg_speed_read $read_speed"
         echo "$msg_time_read $read_time"
-
+        echo ""
         rm -f "$temp_file"
     else
         echo "$msg_exit"
