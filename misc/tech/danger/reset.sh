@@ -1,41 +1,31 @@
 #!/bin/bash
 
-delete_directories() {
-    echo "Удаление директорий..."
-    sudo rm -rf /tmp/tech-scripts /etc/tech-scripts /usr/local/tech-scripts /usr/local/bin/tech
-    echo "Директории успешно удалены."
-}
+LANG=$(grep -oP 'lang:\s*\K\w+' /etc/tech-scripts/choose.conf 2>/dev/null)
 
-cleanup() {
-    echo "Скрипт прерван! Удаление отменено."
-    exit 1
-}
-
-trap cleanup SIGINT SIGTSTP SIGTERM
-
-if whiptail --title "Подтверждение удаления" --yesno "Вы точно хотите удалить все файлы tech-scripts?" 10 50; then
-    {
-        for i in {0..100}; do
-            echo "XXX"
-            echo "$i"
-            echo "XXX"
-            sleep 0.1
-        done
-    } | whiptail --title "Подтверждение удаления" --gauge "Вы еще можете отменить это (Ctrl + C)" 10 50 0 &
-    
-    GAUGE_PID=$!
-
-    # Ожидание завершения прогресс-бара или отмены
-    while kill -0 $GAUGE_PID 2>/dev/null; do
-        sleep 0.1
-    done
-
-    # Если прогресс-бар завершился успешно (не отменен), удаляем директории
-    if [ $? -eq 0 ]; then
-        delete_directories
-    else
-        cleanup
-    fi
+if [[ $LANG == "Русский" ]]; then
+    TITLE="Подтверждение удаления"
+    MESSAGE="Вы точно хотите удалить все файлы tech-scripts?"
+    YES="Да"
+    NO="Нет"
+    DELETING="Удаление файлов..."
+    DELETED="Файлы успешно удалены."
+    CANCELLED="Удаление отменено."
 else
-    echo "Удаление отменено."
+    TITLE="Delete Confirmation"
+    MESSAGE="Are you sure you want to delete all tech-scripts files?"
+    YES="Yes"
+    NO="No"
+    DELETING="Deleting files..."
+    DELETED="Files deleted successfully."
+    CANCELLED="Deletion cancelled."
+fi
+
+whiptail --title "$TITLE" --yesno "$MESSAGE" --yes-button "$YES" --no-button "$NO" 10 60
+
+if [ $? -eq 0 ]; then
+    echo "$DELETING"
+    rm -rf /tmp/tech-scripts /etc/tech-scripts /usr/local/tech-scripts /usr/local/bin/tech
+    echo "$DELETED"
+else
+    echo "$CANCELLED"
 fi
