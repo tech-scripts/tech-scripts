@@ -34,7 +34,7 @@ for dir in "/mnt" "/media"; do
     fi
 done
 
-selected_disk=$(whiptail --title "$msg_select" --msg "" 15 60 4 "${disk_choices[@]}" 3>&1 1>&2 2>&3)
+selected_disk=$(whiptail --title "$msg_select" --msgbox "" 15 60 4 "${disk_choices[@]}" 3>&1 1>&2 2>&3)
 
 if [ $? -eq 0 ]; then
     temp_file="$selected_disk/testfile"
