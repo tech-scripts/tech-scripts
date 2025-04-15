@@ -4,9 +4,8 @@ lang=$(grep 'lang:' /etc/tech-scripts/choose.conf | awk '{print $2}')
 if [ "$lang" == "Русский" ]; then
     msg_measure="Вы хотите сделать замер диска?"
     msg_select="Выберите диск для замера:"
-    msg_exit="Выход из программы."
-    msg_write="Измерение скорости записи на"
-    msg_read="Измерение скорости чтения на"
+    msg_write="Измерение скорости записи в"
+    msg_read="Измерение скорости чтения в"
     msg_speed_write="Скорость записи:"
     msg_speed_read="Скорость чтения:"
     msg_time_write="Время записи:"
@@ -15,9 +14,8 @@ if [ "$lang" == "Русский" ]; then
 else
     msg_measure="Do you want to measure disk speed?"
     msg_select="Select a disk to measure:"
-    msg_exit="Exiting the program."
-    msg_write="Measuring write speed on"
-    msg_read="Measuring read speed on"
+    msg_write="Measuring write speed in"
+    msg_read="Measuring read speed in"
     msg_speed_write="Write speed:"
     msg_speed_read="Read speed:"
     msg_time_write="Write time:"
@@ -73,9 +71,5 @@ if whiptail --title "Disk Measurement" --yesno "$msg_measure" 10 60; then
         echo "$msg_time_read $read_time"
         echo ""
         rm -f "$temp_file"
-    else
-        echo "$msg_exit"
     fi
-else
-    echo "$msg_exit"
 fi
