@@ -9,16 +9,14 @@ if [[ $LANG_CONF == "Русский" ]]; then
     YES="Да"
     NO="Нет"
     DELETING="Удаление файлов..."
-    DELETED="Файлы успешно удалены."
-    CANCELLED="Удаление отменено."
+    DELETED="Файлы успешно удалены!"
 else
     TITLE="Delete Confirmation"
     MESSAGE="Are you sure you want to delete all tech-scripts files?"
     YES="Yes"
     NO="No"
     DELETING="Deleting files..."
-    DELETED="Files deleted successfully."
-    CANCELLED="Deletion cancelled."
+    DELETED="Files deleted successfully!"
 fi
 
 whiptail --title "$TITLE" --yesno "$MESSAGE" --yes-button "$YES" --no-button "$NO" 10 60
@@ -28,5 +26,5 @@ if [ $? -eq 0 ]; then
     $SUDO rm -rf /tmp/tech-scripts /etc/tech-scripts /usr/local/tech-scripts /usr/local/bin/tech
     echo "$DELETED"
 else
-    echo "$CANCELLED"
+    exit 0
 fi
