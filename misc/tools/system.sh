@@ -105,3 +105,6 @@ main_menu() {
             3) show_disk_info ;;
             4) show_security_info ;;
             *) exit 0 ;;
+        esac
+    done
+}
