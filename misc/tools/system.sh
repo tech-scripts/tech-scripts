@@ -84,6 +84,22 @@ show_security_info() {
         APPARMOR_STATUS="AppArmor не установлен"
     fi
 
+    if command -v clamscan &>/dev/null; then
+        ANTIVIRUS_STATUS="ClamAV установлен"
+    else
+        ANTIVIRUS_STATUS="Антивирус не установлен"
+    fi
+
+    if lsblk -o NAME,FSTYPE | grep -q "crypt"; then
+        DISK_ENCRYPTION="Шифрование дисков включено"
+    else
+        DISK_ENCRYPTION="Шифрование дисков отключено"
+    fi
+
+    INACTIVE_USERS=$(lastlog -b 90 | grep -v "Never logged in" || echo "Неактивные учетные записи не найдены.")
+
+    SUID_FILES=$(find / -perm -4000 -o -perm -2000 2>/dev/null || echo "Файлы с SUID/SGID не найдены.")
+
     MESSAGE="
 Статус UEFI:
 $UEFI_STATUS
@@ -99,9 +115,21 @@ $SELINUX_STATUS
 
 Статус AppArmor:
 $APPARMOR_STATUS
+
+Статус антивируса:
+$ANTIVIRUS_STATUS
+
+Статус шифрования дисков:
+$DISK_ENCRYPTION
+
+Неактивные учетные записи:
+$INACTIVE_USERS
+
+Файлы с SUID/SGID:
+$SUID_FILES
 "
 
-    whiptail --title "Информация о безопасности" --scrolltext --msgbox "$MESSAGE" 15 60
+    whiptail --title "Информация о безопасности" --scrolltext --msgbox "$MESSAGE" 20 70
 }
 
 main_menu() {
