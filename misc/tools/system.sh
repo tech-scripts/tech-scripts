@@ -58,15 +58,20 @@ $DISK_INFO
 }
 
 show_network_info() {
-    NETWORK_INFO=$(ip -o addr show | awk '{print $2, $4}' | while read -r interface ip; do
+    NETWORK_INFO=""
+    INTERFACES=$(ip -o link show | awk '{print $2}')
+
+    for interface in $INTERFACES; do
+        IP=$(ip -o addr show dev "$interface" | awk '{print $4}' | tr '\n' ', ' | sed 's/, $//')
         MAC=$(ip -o link show dev "$interface" | awk '{print $17}')
-        echo "Интерфейс: $interface"
-        echo "IP: $ip"
+        
+        NETWORK_INFO+="Интерфейс: $interface\n"
+        NETWORK_INFO+="IP: $IP\n"
         if [ -n "$MAC" ]; then
-            echo "MAC: $MAC"
+            NETWORK_INFO+="MAC: $MAC\n"
         fi
-        echo ""
-    done)
+        NETWORK_INFO+="\n"
+    done
 
     if [ -z "$NETWORK_INFO" ]; then
         NETWORK_INFO="Информация о сетевых адаптерах недоступна."
