@@ -17,7 +17,7 @@ show_system_info() {
     GPU=$(lspci | grep -i vga | cut -d':' -f3 | xargs)
 
     MESSAGE="
-$HOSTNAME
+"$USER@$HOSTNAME"
 ------------
 OS: $OS
 Host: $(cat /sys/devices/virtual/dmi/id/product_name 2>/dev/null || echo "Недоступно")
