@@ -254,10 +254,10 @@ if yes_no_box "Создание оповещения" "$MSG_CREATE_ALERT"; then
     else
         while true; do
             TELEGRAM_BOT_TOKEN=$(input_box "Telegram Bot Token" "$MSG_BOT_TOKEN")
-            [ -z "$TELEGRAM_BOT_TOKEN" ] && { echo "Отмена. Ввод токена прерван."; exit; }
+            [ -z "$TELEGRAM_BOT_TOKEN" ] && { exit; }
 
             TELEGRAM_CHAT_ID=$(input_box "Telegram Chat ID" "$MSG_CHAT_ID")
-            [ -z "$TELEGRAM_CHAT_ID" ] && { echo "Отмена. Ввод chat_id прерван."; exit; }
+            [ -z "$TELEGRAM_CHAT_ID" ] && { exit; }
 
             if send_test_message "$TELEGRAM_BOT_TOKEN" "$TELEGRAM_CHAT_ID" "$MSG_TEST_MESSAGE"; then
                 break
