@@ -278,9 +278,9 @@ EOF
         create_ssh_alert_service
         show_message "$MSG_SUCCESS_INSTALL"
         echo ""
-        echo "$MSG_SCRIPT_LOCATION"
         echo "$MSG_SERVICE_LOCATION"
         echo "$MSG_CONFIG_LOCATION"
+        echo "$MSG_SCRIPT_LOCATION"
         echo ""
     fi
 fi
