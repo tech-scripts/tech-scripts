@@ -59,12 +59,12 @@ $DISK_INFO
 
 show_network_info() {
     NETWORK_INFO=""
-    INTERFACES=$(ip -o link show | awk '{print $2}')
+    INTERFACES=$(ip -o link show | awk '{print $2}' | sed 's/://')
 
     for interface in $INTERFACES; do
         IP=$(ip -o addr show dev "$interface" | awk '{print $4}' | tr '\n' ', ' | sed 's/, $//')
         MAC=$(ip -o link show dev "$interface" | awk '{print $17}')
-        
+
         NETWORK_INFO+="Интерфейс: $interface\n"
         NETWORK_INFO+="IP: $IP\n"
         if [ -n "$MAC" ]; then
