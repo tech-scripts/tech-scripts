@@ -23,7 +23,7 @@ show_system_info() {
 IP-адрес: $IP
 "
 
-    whiptail --title "Информация о системе" --msgbox "$MESSAGE" 20 60
+    whiptail --title "Информация о системе" --scrolltext --msgbox "$MESSAGE" 20 60
 }
 
 show_temperature_info() {
@@ -47,7 +47,7 @@ show_temperature_info() {
 $TEMP_INFO
 "
 
-    whiptail --title "Температура" --msgbox "$MESSAGE" 20 60
+    whiptail --title "Температура" --scrolltext --msgbox "$MESSAGE" 20 60
 }
 
 show_disk_info() {
@@ -58,7 +58,7 @@ show_disk_info() {
 $DISK_INFO
 "
 
-    whiptail --title "Информация о дисках" --msgbox "$MESSAGE" 20 60
+    whiptail --title "Информация о дисках" --scrolltext --msgbox "$MESSAGE" 20 60
 }
 
 show_security_info() {
@@ -68,19 +68,18 @@ show_security_info() {
     if command -v apparmor_status &>/dev/null; then
         APPARMOR_STATUS=$(apparmor_status | grep -E 'profiles|processes')
         if echo "$APPARMOR_STATUS" | grep -q "0 profiles are loaded"; then
-            APPARMOR_STATUS="\e[31mAppArmor неактивен\e[0m"
+            APPARMOR_STATUS="AppArmor неактивен"
         else
-            APPARMOR_STATUS="\e[32mAppArmor активен\e[0m"
+            APPARMOR_STATUS="AppArmor активен"
         fi
     else
-        APPARMOR_STATUS="\e[31mAppArmor не установлен\e[0m"
+        APPARMOR_STATUS="AppArmor не установлен"
     fi
 
     SECURITY_UPDATES=$(command -v apt &>/dev/null && apt list --upgradable 2>/dev/null | grep -i security || echo "Нет доступных обновлений безопасности.")
     ACTIVE_USERS=$(who)
 
-    echo -e "
-==========================================
+    MESSAGE="
 Информация о безопасности:
 
 Статус брандмауэра (UFW):
@@ -97,9 +96,9 @@ $SECURITY_UPDATES
 
 Активные пользователи:
 $ACTIVE_USERS
-==========================================
 "
-    read -p "Нажмите Enter, чтобы продолжить..."
+
+    whiptail --title "Информация о безопасности" --scrolltext --msgbox "$MESSAGE" 20 80
 }
 
 main_menu() {
@@ -117,7 +116,7 @@ main_menu() {
             3) show_disk_info ;;
             4) show_security_info ;;
             5) exit 0 ;;
-            *) whiptail --title "Ошибка" --msgbox "Неверный выбор. Пожалуйста, попробуйте снова." 8 45 ;;
+            *) whiptail --title "Ошибка" --msgbox "Неверный выбор. Пожалуйста, попробуйте снова." 8 
         esac
     done
 }
