@@ -232,14 +232,13 @@ fi
 
 if [ -f "$CONFIG_FILE" ] || [ -f "$SCRIPT_DIR/alert.sh" ] || [ -f "/etc/systemd/system/ssh.alert.service" ]; then
     if yes_no_box "Удаление" "Хотите удалить конфигурацию, скрипт и сервис ssh.alert?"; then
-        [ -f "$CONFIG_FILE" ] && $SUDO rm -f "$CONFIG_FILE" && echo "Конфигурация удалена: $CONFIG_FILE"
+        [ -f "$CONFIG_FILE" ] && $SUDO rm -f "$CONFIG_FILE" && echo "" && echo "Конфигурация удалена: $CONFIG_FILE"
         [ -f "$SCRIPT_DIR/alert.sh" ] && $SUDO rm -f "$SCRIPT_DIR/alert.sh" && echo "Скрипт удален: $SCRIPT_DIR/alert.sh"
         if [ -f "/etc/systemd/system/ssh.alert.service" ]; then
-            $SUDO systemctl stop ssh.alert.service
-            $SUDO systemctl disable ssh.alert.service
             $SUDO rm -f /etc/systemd/system/ssh.alert.service
             $SUDO systemctl daemon-reload
             echo "Сервис удален: /etc/systemd/system/ssh.alert.service"
+            echo ""
         fi
         CONTINUE="false"
     else
