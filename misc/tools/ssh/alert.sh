@@ -225,7 +225,9 @@ if [ -f "$CONFIG_FILE" ]; then
         $SUDO rm -f "$SCRIPT_DIR/alert.sh"
         create_ssh_alert_script
         $SUDO systemctl daemon-reload
-        show_message "$MSG_UPDATE_SUCCESS"
+        echo ""
+        echo "$MSG_UPDATE_SUCCESS"
+        echo ""
         exit 0
     } || {
         continue
