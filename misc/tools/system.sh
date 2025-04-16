@@ -7,17 +7,20 @@ show_system_info() {
     HOSTNAME=$(hostname)
     CPU=$(lscpu | grep "Model name" | cut -d':' -f2 | xargs)
     MEMORY=$(free -h | grep "Mem:" | awk '{print $2}')
+    DISK=$(df -h / | grep "/" | awk '{print $2}')
     IP=$(hostname -I | awk '{print $1}')
-    MESSAGE="
-ОС: $OS
-Ядро: $KERNEL
-Время работы: $UPTIME
-Имя хоста: $HOSTNAME
-Процессор: $CPU
-Оперативная память: $MEMORY
-IP-адрес: $IP
-"
-    whiptail --title "Информация о системе" --msgbox "$MESSAGE" 15 60
+
+    echo "=========================================="
+    echo "Информация о системе:"
+    echo "ОС: $OS"
+    echo "Ядро: $KERNEL"
+    echo "Время работы: $UPTIME"
+    echo "Имя хоста: $HOSTNAME"
+    echo "Процессор: $CPU"
+    echo "Оперативная память: $MEMORY"
+    echo "Диск: $DISK"
+    echo "IP-адрес: $IP"
+    echo "=========================================="
 }
 
 show_temperature_info() {
@@ -30,37 +33,39 @@ show_temperature_info() {
         TEMP_INFO="Информация о температуре недоступна (установите lm-sensors)"
     fi
 
-    MESSAGE="
-$TEMP_INFO
-"
-    whiptail --title "Температура" --msgbox "$MESSAGE" 15 60
+    echo "=========================================="
+    echo "Температура:"
+    echo "$TEMP_INFO"
+    echo "=========================================="
 }
 
 show_disk_info() {
     DISK_INFO=$(df -h)
-    MESSAGE="
-$DISK_INFO
-"
-    whiptail --title "Информация о дисках" --msgbox "$MESSAGE" 20 60
+    echo "=========================================="
+    echo "Информация о дисках:"
+    echo "$DISK_INFO"
+    echo "=========================================="
 }
 
 show_security_info() {
     SECURITY_INFO=$(sudo ufw status 2>/dev/null || echo "UFW не установлен или не настроен.")
-    MESSAGE="
-$SECURITY_INFO
-"
-
-    whiptail --title "Безопасность" --msgbox "$MESSAGE" 20 60
+    echo "=========================================="
+    echo "Информация о безопасности:"
+    echo "$SECURITY_INFO"
+    echo "=========================================="
 }
 
 main_menu() {
     while true; do
-        OPTION=$(whiptail --title "Главное меню" --menu "Выберите опцию:" 15 60 4 \
-            "1" "Система" \
-            "2" "Температура" \
-            "3" "Диски" \
-            "4" "Безопасность" \
-            "5" "Выход" 3>&1 1>&2 2>&3)
+        echo "=========================================="
+        echo "Главное меню:"
+        echo "1. Информация о системе"
+        echo "2. Температура"
+        echo "3. Информация о дисках"
+        echo "4. Безопасность"
+        echo "5. Выход"
+        echo "=========================================="
+        read -p "Выберите опцию (1-5): " OPTION
 
         case $OPTION in
             1) show_system_info ;;
@@ -68,8 +73,10 @@ main_menu() {
             3) show_disk_info ;;
             4) show_security_info ;;
             5) exit 0 ;;
-            *) whiptail --title "Ошибка" --msgbox "Неверный выбор. Пожалуйста, попробуйте снова." 8 45 ;;
+            *) echo "Неверный выбор. Пожалуйста, попробуйте снова." ;;
         esac
+
+        read -p "Нажмите Enter, чтобы продолжить..."
     done
 }
 
