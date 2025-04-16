@@ -9,10 +9,7 @@ show_system_info() {
     MEMORY=$(free -h | grep "Mem:" | awk '{print $2}')
     DISK=$(df -h / | grep "/" | awk '{print $2}')
     IP=$(hostname -I | awk '{print $1}')
-
     MESSAGE="
-Информация о системе:
-
 ОС: $OS
 Ядро: $KERNEL
 Время работы: $UPTIME
@@ -22,7 +19,6 @@ show_system_info() {
 Диск: $DISK
 IP-адрес: $IP
 "
-
     whiptail --title "Информация о системе" --msgbox "$MESSAGE" 20 60
 }
 
@@ -37,30 +33,22 @@ show_temperature_info() {
     fi
 
     MESSAGE="
-Температура:
-
 $TEMP_INFO
 "
-
     whiptail --title "Температура" --msgbox "$MESSAGE" 20 60
 }
 
 show_disk_info() {
     DISK_INFO=$(df -h)
     MESSAGE="
-Информация о дисках:
-
 $DISK_INFO
 "
-
     whiptail --title "Информация о дисках" --msgbox "$MESSAGE" 20 60
 }
 
 show_security_info() {
     SECURITY_INFO=$(sudo ufw status 2>/dev/null || echo "UFW не установлен или не настроен.")
     MESSAGE="
-Информация о безопасности:
-
 $SECURITY_INFO
 "
 
@@ -70,9 +58,9 @@ $SECURITY_INFO
 main_menu() {
     while true; do
         OPTION=$(whiptail --title "Главное меню" --menu "Выберите опцию:" 15 60 4 \
-            "1" "Информация о системе" \
+            "1" "Система" \
             "2" "Температура" \
-            "3" "Информация о дисках" \
+            "3" "Диски" \
             "4" "Безопасность" \
             "5" "Выход" 3>&1 1>&2 2>&3)
 
