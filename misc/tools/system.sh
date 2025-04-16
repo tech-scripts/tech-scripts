@@ -57,6 +57,21 @@ $DISK_INFO
     whiptail --title "Информация о дисках" --scrolltext --msgbox "$MESSAGE" 20 70
 }
 
+show_network_info() {
+    NETWORK_INFO=$(ip addr show | awk '/^[0-9]+: /{print $2} {getline; print "IP: " $2; getline; print "MAC: " $2; print ""}' | sed 's/:$//')
+    if [ -z "$NETWORK_INFO" ]; then
+        NETWORK_INFO="Информация о сетевых адаптерах недоступна."
+    fi
+
+    MESSAGE="
+Информация о сетевых адаптерах:
+
+$NETWORK_INFO
+"
+
+    whiptail --title "Сеть" --scrolltext --msgbox "$MESSAGE" 20 70
+}
+
 show_security_info() {
     if [ -d /sys/firmware/efi ]; then
         UEFI_STATUS="UEFI включен"
@@ -90,8 +105,6 @@ show_security_info() {
     fi
 
     if command -v clamscan &>/dev/null; then
-        ANTIVIRUS_STATUS="ClamAV установлен"
-    else
         ANTIVIRUS_STATUS="Антивирус не установлен"
     fi
 
@@ -119,17 +132,19 @@ show_security_info() {
 
 main_menu() {
     while true; do
-        OPTION=$(whiptail --title "Главное меню" --menu "Выберите опцию:" 15 60 4 \
+        OPTION=$(whiptail --title "Главное меню" --menu "Выберите опцию:" 15 60 5 \
             "1" "Информация о системе" \
             "2" "Температура" \
             "3" "Информация о дисках" \
-            "4" "Безопасность" 3>&1 1>&2 2>&3)
+            "4" "Сеть" \
+            "5" "Безопасность" 3>&1 1>&2 2>&3)
 
         case $OPTION in
             1) show_system_info ;;
             2) show_temperature_info ;;
             3) show_disk_info ;;
-            4) show_security_info ;;
+            4) show_network_info ;;
+            5) show_security_info ;;
             *) exit 0 ;;
         esac
     done
