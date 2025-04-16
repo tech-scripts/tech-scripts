@@ -6,8 +6,6 @@ show_system_info() {
     else
         OS="Недоступно"
     fi
-
-    HOSTNAME=$(hostname)
     KERNEL=$(uname -r)
     UPTIME=$(uptime -p | sed 's/up //')
     PACKAGES=$(dpkg --list 2>/dev/null | wc -l)
