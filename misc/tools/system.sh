@@ -104,4 +104,4 @@ main_menu() {
             2) show_temperature_info ;;
             3) show_disk_info ;;
             4) show_security_info ;;
-            *) exit 0
+            *) exit 0 ;;
