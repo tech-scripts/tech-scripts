@@ -172,7 +172,7 @@ journalctl -f -u ssh | while read -r line; do
     elif echo "$line" | grep -q "sshd.*Connection closed"; then
         ip=$(echo "$line" | grep -oP 'from \K[0-9.]+')
         user=$(echo "$line" | grep -oP 'user \K\w+')
-        message=$(echo -e "${MSG_CLOSED}\nПользователь: ${user}\nIP: ${ip}")
+        message=$(echo -e "${MSG_CLOSED}\nПользователь: ${user}")
         send_telegram_message "$message"
     elif echo "$line" | grep -q "sshd.*Invalid user"; then
         ip=$(echo "$line" | grep -oP 'from \K[0-9.]+')
