@@ -5,9 +5,6 @@ SCRIPT_DIR="/usr/local/tech-scripts"
 CONFIG_FILE="/etc/tech-scripts/alert.conf"
 LANG_CONF=$(grep '^lang:' /etc/tech-scripts/choose.conf 2>/dev/null | cut -d' ' -f2)
 
-export TERM=xterm
-export NCURSES_NO_UTF8_ACS=1
-
 if [[ "$LANG_CONF" == "Русский" ]]; then
     MSG_INSTALL_JQ="Установка jq..."
     MSG_BOT_TOKEN="Введите токен вашего Telegram-бота: "
