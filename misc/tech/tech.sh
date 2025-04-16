@@ -68,6 +68,9 @@ case "\$combined_args" in
     "test")
         run_script "tools" "test.sh"
         ;;
+    "system")
+        run_script "tools" "system.sh"
+        ;;
     *)
         echo " "
         echo "\$unknown_command"
