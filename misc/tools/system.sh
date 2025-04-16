@@ -28,6 +28,11 @@ show_temperature_info() {
         TEMP_INFO=$(sensors | grep -E 'Composite|edge|Tctl' | awk '{print $1 ": " $2}')
         if [ -z "$TEMP_INFO" ]; then
             TEMP_INFO="Информация о температуре недоступна (датчики не обнаружены)"
+        else
+            TEMP_INFO=$(echo "$TEMP_INFO" | sed \
+                -e 's/Composite/Температура NVMe/' \
+                -e 's/edge/Температура GPU/' \
+                -e 's/Tctl/Температура процессора/')
         fi
     else
         TEMP_INFO="Информация о температуре недоступна (установите lm-sensors)"
@@ -48,10 +53,51 @@ show_disk_info() {
 }
 
 show_security_info() {
-    SECURITY_INFO=$(sudo ufw status 2>/dev/null || echo "UFW не установлен или не настроен.")
     echo "=========================================="
     echo "Информация о безопасности:"
-    echo "$SECURITY_INFO"
+
+    UFW_STATUS=$(sudo ufw status 2>/dev/null || echo "UFW не установлен или не настроен.")
+    echo "Статус брандмауэра (UFW):"
+    echo "$UFW_STATUS"
+    echo ""
+
+    if command -v sestatus &>/dev/null; then
+        SELINUX_STATUS=$(sestatus | grep "SELinux status")
+    else
+        SELINUX_STATUS="SELinux не установлен."
+    fi
+    echo "Статус SELinux:"
+    echo "$SELINUX_STATUS"
+    echo ""
+
+    if command -v apparmor_status &>/dev/null; then
+        APPARMOR_STATUS=$(apparmor_status)
+    else
+        APPARMOR_STATUS="AppArmor не установлен."
+    fi
+    echo "Статус AppArmor:"
+    echo "$APPARMOR_STATUS"
+    echo ""
+
+    echo "Проверка обновлений безопасности:"
+    if command -v apt &>/dev/null; then
+        SECURITY_UPDATES=$(apt list --upgradable 2>/dev/null | grep -i security)
+        if [ -z "$SECURITY_UPDATES" ]; then
+            echo "Нет доступных обновлений безопасности."
+        else
+            echo "Доступные обновления безопасности:"
+            echo "$SECURITY_UPDATES"
+        fi
+    elif command -v yum &>/dev/null; then
+        SECURITY_UPDATES=$(yum check-update --security)
+        echo "$SECURITY_UPDATES"
+    else
+        echo "Не удалось проверить обновления безопасности."
+    fi
+    echo ""
+
+    echo "Активные пользователи:"
+    who
     echo "=========================================="
 }
 
