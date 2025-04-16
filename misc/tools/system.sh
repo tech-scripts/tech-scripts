@@ -84,21 +84,22 @@ show_security_info() {
         APPARMOR_STATUS="AppArmor не установлен"
     fi
 
+    # Проверка наличия антивируса
     if command -v clamscan &>/dev/null; then
         ANTIVIRUS_STATUS="ClamAV установлен"
     else
         ANTIVIRUS_STATUS="Антивирус не установлен"
     fi
 
+    # Проверка наличия шифрования дисков
     if lsblk -o NAME,FSTYPE | grep -q "crypt"; then
         DISK_ENCRYPTION="Шифрование дисков включено"
     else
         DISK_ENCRYPTION="Шифрование дисков отключено"
     fi
 
+    # Проверка наличия неактивных учетных записей
     INACTIVE_USERS=$(lastlog -b 90 | grep -v "Never logged in" || echo "Неактивные учетные записи не найдены.")
-
-    SUID_FILES=$(find / -perm -4000 -o -perm -2000 2>/dev/null || echo "Файлы с SUID/SGID не найдены.")
 
     MESSAGE="
 Статус UEFI:
@@ -124,9 +125,6 @@ $DISK_ENCRYPTION
 
 Неактивные учетные записи:
 $INACTIVE_USERS
-
-Файлы с SUID/SGID:
-$SUID_FILES
 "
 
     whiptail --title "Информация о безопасности" --scrolltext --msgbox "$MESSAGE" 20 70
