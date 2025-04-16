@@ -21,7 +21,7 @@ show_system_info() {
 IP-адрес:               $IP
 "
 
-    whiptail --title "Информация о системе" --scrolltext --msgbox "$MESSAGE" 20 70
+    whiptail --title "Информация о системе" --scrolltext --msgbox "$MESSAGE" 15 60
 }
 
 show_temperature_info() {
@@ -43,7 +43,7 @@ show_temperature_info() {
 $TEMP_INFO
 "
 
-    whiptail --title "Температура" --scrolltext --msgbox "$MESSAGE" 15 50
+    whiptail --title "Температура" --scrolltext --msgbox "$MESSAGE" 15 60
 }
 
 show_disk_info() {
@@ -54,7 +54,7 @@ show_disk_info() {
 $DISK_INFO
 "
 
-    whiptail --title "Информация о дисках" --scrolltext --msgbox "$MESSAGE" 20 70
+    whiptail --title "Информация о дисках" --scrolltext --msgbox "$MESSAGE" 15 60
 }
 
 show_network_info() {
@@ -69,7 +69,7 @@ show_network_info() {
 $NETWORK_INFO
 "
 
-    whiptail --title "Сеть" --scrolltext --msgbox "$MESSAGE" 20 70
+    whiptail --title "Сеть" --scrolltext --msgbox "$MESSAGE" 15 60
 }
 
 show_security_info() {
@@ -105,6 +105,8 @@ show_security_info() {
     fi
 
     if command -v clamscan &>/dev/null; then
+        ANTIVIRUS_STATUS="ClamAV установлен"
+    else
         ANTIVIRUS_STATUS="Антивирус не установлен"
     fi
 
@@ -114,8 +116,6 @@ show_security_info() {
         DISK_ENCRYPTION="Шифрование дисков отключено"
     fi
 
-    INACTIVE_USERS=$(lastlog -b 90 | grep -v "Never logged in" || echo "Неактивные учетные записи не найдены.")
-
     MESSAGE="
 Статус UEFI:                $UEFI_STATUS
 Статус TPM 2.0:             $TPM_STATUS
@@ -124,10 +124,9 @@ show_security_info() {
 Статус AppArmor:            $APPARMOR_STATUS
 Статус антивируса:          $ANTIVIRUS_STATUS
 Статус шифрования дисков:    $DISK_ENCRYPTION
-Неактивные учетные записи:   $INACTIVE_USERS
 "
 
-    whiptail --title "Информация о безопасности" --scrolltext --msgbox "$MESSAGE" 20 70
+    whiptail --title "Информация о безопасности" --scrolltext --msgbox "$MESSAGE" 15 60
 }
 
 main_menu() {
