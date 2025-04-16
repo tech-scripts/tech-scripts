@@ -1,7 +1,12 @@
 #!/bin/bash
 
 show_system_info() {
-    OS=$(lsb_release -d | cut -f2 2>/dev/null)
+    if [ -f /etc/os-release ]; then
+        OS=$(grep '^PRETTY_NAME=' /etc/os-release | cut -d'=' -f2 | tr -d '"')
+    else
+        OS="Недоступно"
+    fi
+
     HOSTNAME=$(hostname)
     KERNEL=$(uname -r)
     UPTIME=$(uptime -p | sed 's/up //')
