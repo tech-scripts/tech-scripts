@@ -7,7 +7,6 @@ show_system_info() {
     HOSTNAME=$(hostname)
     CPU=$(lscpu | grep "Model name" | cut -d':' -f2 | xargs)
     MEMORY=$(free -h | grep "Mem:" | awk '{print $2}')
-    DISK=$(df -h / | grep "/" | awk '{print $2}')
     IP=$(hostname -I | awk '{print $1}')
     MESSAGE="
 ОС: $OS
@@ -16,7 +15,6 @@ show_system_info() {
 Имя хоста: $HOSTNAME
 Процессор: $CPU
 Оперативная память: $MEMORY
-Диск: $DISK
 IP-адрес: $IP
 "
     whiptail --title "Информация о системе" --msgbox "$MESSAGE" 15 60
