@@ -62,15 +62,14 @@ show_network_info() {
     INTERFACES=$(ip -o link show | awk '{print $2}' | sed 's/://')
 
     for interface in $INTERFACES; do
-        IP=$(ip -o addr show dev "$interface" | awk '{print $4}' | tr '\n' ', ' | sed 's/, $//')
         MAC=$(ip -o link show dev "$interface" | awk '{print $17}')
-
-        NETWORK_INFO+="Интерфейс: $interface\n"
-        NETWORK_INFO+="IP: $IP\n"
         if [ -n "$MAC" ]; then
+            IP=$(ip -o addr show dev "$interface" | awk '{print $4}' | tr '\n' ', ' | sed 's/, $//')
+            NETWORK_INFO+="Интерфейс: $interface\n"
+            NETWORK_INFO+="IP: $IP\n"
             NETWORK_INFO+="MAC: $MAC\n"
+            NETWORK_INFO+="\n"
         fi
-        NETWORK_INFO+="\n"
     done
 
     if [ -z "$NETWORK_INFO" ]; then
