@@ -215,7 +215,7 @@ install_jq() {
     elif command -v brew &>/dev/null; then
         brew install jq
     else
-        echo "Не удалось определить пакетный менеджер. Установите jq вручную." >&2
+        echo "Не удалось определить пакетный менеджер. Установите jq вручную!" >&2
         exit 1
     fi
 }
@@ -234,37 +234,21 @@ if [ -f "$CONFIG_FILE" ]; then
     }
 fi
 
-if [ -f "$CONFIG_FILE" ]; then
-    yes_no_box "Удаление конфигурации" "$MSG_REMOVE_CONFIG" && {
-        $SUDO rm -f "$CONFIG_FILE"
-        echo "$MSG_REMOVED"
+if [ -f "$CONFIG_FILE" ] || [ -f "$SCRIPT_DIR/alert.sh" ] || [ -f "/etc/systemd/system/ssh.alert.service" ]; then
+    if yes_no_box "Удаление" "Хотите удалить конфигурацию, скрипт и сервис ssh.alert?"; then
+        [ -f "$CONFIG_FILE" ] && $SUDO rm -f "$CONFIG_FILE" && echo "Конфигурация удалена: $CONFIG_FILE"
+        [ -f "$SCRIPT_DIR/alert.sh" ] && $SUDO rm -f "$SCRIPT_DIR/alert.sh" && echo "Скрипт удален: $SCRIPT_DIR/alert.sh"
+        if [ -f "/etc/systemd/system/ssh.alert.service" ]; then
+            $SUDO systemctl stop ssh.alert.service
+            $SUDO systemctl disable ssh.alert.service
+            $SUDO rm -f /etc/systemd/system/ssh.alert.service
+            $SUDO systemctl daemon-reload
+            echo "Сервис удален: /etc/systemd/system/ssh.alert.service"
+        fi
         CONTINUE="false"
-    } || {
-        echo "$MSG_CANCELED"
-    }
-fi
-
-if [ -f "$SCRIPT_DIR/alert.sh" ]; then
-    yes_no_box "Удаление скрипта" "$MSG_REMOVE_SCRIPT" && {
-        $SUDO rm -f "$SCRIPT_DIR/alert.sh"
-        echo "$MSG_REMOVED"
-        CONTINUE="false"
-    } || {
-        echo "$MSG_CANCELED"
-    }
-fi
-
-if [ -f "/etc/systemd/system/ssh.alert.service" ]; then
-    yes_no_box "Удаление сервиса" "$MSG_REMOVE_CHOICE" && {
-        $SUDO systemctl stop ssh.alert.service
-        $SUDO systemctl disable ssh.alert.service
-        $SUDO rm -f /etc/systemd/system/ssh.alert.service
-        $SUDO systemctl daemon-reload
-        echo "$MSG_REMOVED"
-        CONTINUE="false"
-    } || {
-        echo "$MSG_CANCELED"
-    }
+    else
+        echo "Удаление отменено."
+    fi
 fi
 
 install_jq
