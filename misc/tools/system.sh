@@ -1,7 +1,12 @@
 #!/bin/bash
 
 get_system_info() {
-    OS=$(lsb_release -d | cut -f2)
+    if command -v lsb_release &>/dev/null; then
+        OS=$(lsb_release -d | cut -f2)
+    else
+        OS=$(cat /etc/os-release | grep "PRETTY_NAME" | cut -d'"' -f2)
+    fi
+
     KERNEL=$(uname -r)
     UPTIME=$(uptime -p)
     HOSTNAME=$(hostname)
@@ -10,8 +15,12 @@ get_system_info() {
     DISK=$(df -h / | grep "/" | awk '{print $2}')
     IP=$(hostname -I | awk '{print $1}')
 
-    TEMP_INFO=$(sensors | grep -E 'Core|Package|temp' | awk '{print $1 ": " $2}')
-    
+    if command -v sensors &>/dev/null; then
+        TEMP_INFO=$(sensors | grep -E 'Core|Package|temp' | awk '{print $1 ": " $2}')
+    else
+        TEMP_INFO="Информация о температуре недоступна (установите lm-sensors)"
+    fi
+
     MESSAGE="
 Информация о системе:
 
