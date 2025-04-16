@@ -53,9 +53,26 @@ $DISK_INFO
 }
 
 show_security_info() {
+    if [ -d /sys/firmware/efi ]; then
+        UEFI_STATUS="UEFI включен"
+    else
+        UEFI_STATUS="UEFI отключен (используется Legacy BIOS)"
+    fi
+
+    if command -v tpm2_getcap &>/dev/null; then
+        TPM_STATUS=$(tpm2_getcap properties-fixed 2>/dev/null | grep "TPM2_PT_FAMILY_INDICATOR" | awk '{print $2}')
+        if [ "$TPM_STATUS" = "TPM2" ]; then
+            TPM_STATUS="TPM 2.0 доступен"
+        else
+            TPM_STATUS="TPM 2.0 недоступен"
+        fi
+    else
+        TPM_STATUS="TPM 2.0 недоступен (установите tpm2-tools)"
+    fi
+
     UFW_STATUS=$(sudo ufw status 2>/dev/null || echo "UFW не установлен или не настроен.")
     SELINUX_STATUS=$(command -v sestatus &>/dev/null && sestatus | grep "SELinux status" || echo "SELinux не установлен.")
-    
+
     if command -v apparmor_status &>/dev/null; then
         APPARMOR_STATUS=$(apparmor_status | grep -E 'profiles|processes')
         if echo "$APPARMOR_STATUS" | grep -q "0 profiles are loaded"; then
@@ -67,10 +84,13 @@ show_security_info() {
         APPARMOR_STATUS="AppArmor не установлен"
     fi
 
-    SECURITY_UPDATES=$(command -v apt &>/dev/null && apt list --upgradable 2>/dev/null | grep -i security || echo "Нет доступных обновлений безопасности.")
-    ACTIVE_USERS=$(who)
-
     MESSAGE="
+Статус UEFI:
+$UEFI_STATUS
+
+Статус TPM 2.0:
+$TPM_STATUS
+
 Статус брандмауэра (UFW):
 $UFW_STATUS
 
@@ -79,12 +99,9 @@ $SELINUX_STATUS
 
 Статус AppArmor:
 $APPARMOR_STATUS
-
-Проверка обновлений безопасности:
-$SECURITY_UPDATES
 "
 
-    whiptail --title "Информация о безопасности" --scrolltext --msgbox "$MESSAGE" 15 50
+    whiptail --title "Информация о безопасности" --scrolltext --msgbox "$MESSAGE" 20 70
 }
 
 main_menu() {
