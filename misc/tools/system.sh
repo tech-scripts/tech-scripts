@@ -9,18 +9,19 @@ show_system_info() {
     MEMORY=$(free -h | grep "Mem:" | awk '{print $2}')
     DISK=$(df -h / | grep "/" | awk '{print $2}')
     IP=$(hostname -I | awk '{print $1}')
+
     MESSAGE="
-ОС: $OS
-Ядро: $KERNEL
-Время работы: $UPTIME
-Имя хоста: $HOSTNAME
-Процессор: $CPU
-Оперативная память: $MEMORY
-Диск: $DISK
-IP-адрес: $IP
+ОС:                     $OS
+Ядро:                   $KERNEL
+Время работы:           $UPTIME
+Имя хоста:              $HOSTNAME
+Процессор:              $CPU
+Оперативная память:     $MEMORY
+Диск:                   $DISK
+IP-адрес:               $IP
 "
 
-    whiptail --title "Информация о системе" --scrolltext --msgbox "$MESSAGE" 15 60
+    whiptail --title "Информация о системе" --scrolltext --msgbox "$MESSAGE" 20 70
 }
 
 show_temperature_info() {
@@ -41,15 +42,19 @@ show_temperature_info() {
     MESSAGE="
 $TEMP_INFO
 "
-    whiptail --title "Температура" --scrolltext --msgbox "$MESSAGE" 15 60
+
+    whiptail --title "Температура" --scrolltext --msgbox "$MESSAGE" 15 50
 }
 
 show_disk_info() {
     DISK_INFO=$(df -h)
     MESSAGE="
+Информация о дисках:
+
 $DISK_INFO
 "
-    whiptail --title "Информация о дисках" --scrolltext --msgbox "$MESSAGE" 15 60
+
+    whiptail --title "Информация о дисках" --scrolltext --msgbox "$MESSAGE" 20 70
 }
 
 show_security_info() {
@@ -84,50 +89,32 @@ show_security_info() {
         APPARMOR_STATUS="AppArmor не установлен"
     fi
 
-    # Проверка наличия антивируса
     if command -v clamscan &>/dev/null; then
         ANTIVIRUS_STATUS="ClamAV установлен"
     else
         ANTIVIRUS_STATUS="Антивирус не установлен"
     fi
 
-    # Проверка наличия шифрования дисков
     if lsblk -o NAME,FSTYPE | grep -q "crypt"; then
         DISK_ENCRYPTION="Шифрование дисков включено"
     else
         DISK_ENCRYPTION="Шифрование дисков отключено"
     fi
 
-    # Проверка наличия неактивных учетных записей
     INACTIVE_USERS=$(lastlog -b 90 | grep -v "Never logged in" || echo "Неактивные учетные записи не найдены.")
 
     MESSAGE="
-Статус UEFI:
-$UEFI_STATUS
-
-Статус TPM 2.0:
-$TPM_STATUS
-
-Статус брандмауэра (UFW):
-$UFW_STATUS
-
-Статус SELinux:
-$SELINUX_STATUS
-
-Статус AppArmor:
-$APPARMOR_STATUS
-
-Статус антивируса:
-$ANTIVIRUS_STATUS
-
-Статус шифрования дисков:
-$DISK_ENCRYPTION
-
-Неактивные учетные записи:
-$INACTIVE_USERS
+Статус UEFI:                $UEFI_STATUS
+Статус TPM 2.0:             $TPM_STATUS
+Статус брандмауэра (UFW):    $UFW_STATUS
+Статус SELinux:             $SELINUX_STATUS
+Статус AppArmor:            $APPARMOR_STATUS
+Статус антивируса:          $ANTIVIRUS_STATUS
+Статус шифрования дисков:    $DISK_ENCRYPTION
+Неактивные учетные записи:   $INACTIVE_USERS
 "
 
-    whiptail --title "Информация о безопасности" --scrolltext --msgbox "$MESSAGE" 15 60
+    whiptail --title "Информация о безопасности" --scrolltext --msgbox "$MESSAGE" 20 70
 }
 
 main_menu() {
