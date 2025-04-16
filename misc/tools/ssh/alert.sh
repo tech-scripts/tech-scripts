@@ -31,7 +31,6 @@ if [[ "$LANG_CONF" == "Русский" ]]; then
     MSG_REMOVE_CONFIG="Хотите удалить конфигурационный файл $CONFIG_FILE?"
     MSG_REMOVE_SCRIPT="Хотите удалить скрипт $SCRIPT_DIR/alert.sh?"
     MSG_UPDATE_SCRIPT="Вы хотите обновить скрипт?"
-    MSG_UPDATE_CANCELED="Обновление конфигурации отменено!"
     MSG_UPDATE_SUCCESS="Скрипт успешно обновлен!"
     MSG_CREATE_ALERT="Хотите ли вы создать оповещение о входах по SSH через Telegram?"
     MSG_CONFIG_EXISTS="Конфигурационный файл уже существует. Пропускаем создание!"
@@ -59,7 +58,6 @@ else
     MSG_REMOVE_CONFIG="Do you want to remove the configuration file $CONFIG_FILE?"
     MSG_REMOVE_SCRIPT="Do you want to remove the script $SCRIPT_DIR/alert.sh?"
     MSG_UPDATE_SCRIPT="Do you want to update the script?"
-    MSG_UPDATE_CANCELED="Configuration update canceled!"
     MSG_UPDATE_SUCCESS="Script successfully updated!"
     MSG_CREATE_ALERT="Do you want to create an SSH login alert via Telegram?"
     MSG_CONFIG_EXISTS="Configuration file already exists. Skipping creation!"
@@ -230,7 +228,7 @@ if [ -f "$CONFIG_FILE" ]; then
         show_message "$MSG_UPDATE_SUCCESS"
         exit 0
     } || {
-        show_message "$MSG_UPDATE_CANCELED"
+        continue
     }
 fi
 
