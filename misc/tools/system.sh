@@ -20,7 +20,7 @@ show_system_info() {
 IP-адрес: $IP
 "
 
-    whiptail --title "Информация о системе" --scrolltext --msgbox "$MESSAGE" 15 50
+    whiptail --title "Информация о системе" --scrolltext --msgbox "$MESSAGE" 15 60
 }
 
 show_temperature_info() {
@@ -41,19 +41,15 @@ show_temperature_info() {
     MESSAGE="
 $TEMP_INFO
 "
-
-    whiptail --title "Температура" --scrolltext --msgbox "$MESSAGE" 15 50
+    whiptail --title "Температура" --scrolltext --msgbox "$MESSAGE" 15 60
 }
 
 show_disk_info() {
     DISK_INFO=$(df -h)
     MESSAGE="
-Информация о дисках:
-
 $DISK_INFO
 "
-
-    whiptail --title "Информация о дисках" --scrolltext --msgbox "$MESSAGE" 15 50
+    whiptail --title "Информация о дисках" --scrolltext --msgbox "$MESSAGE" 15 60
 }
 
 show_security_info() {
