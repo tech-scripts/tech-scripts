@@ -101,7 +101,7 @@ $SELINUX_STATUS
 $APPARMOR_STATUS
 "
 
-    whiptail --title "Информация о безопасности" --scrolltext --msgbox "$MESSAGE" 20 70
+    whiptail --title "Информация о безопасности" --scrolltext --msgbox "$MESSAGE" 15 60
 }
 
 main_menu() {
