@@ -10,6 +10,8 @@ get_system_info() {
     DISK=$(df -h / | grep "/" | awk '{print $2}')
     IP=$(hostname -I | awk '{print $1}')
 
+    TEMP_INFO=$(sensors | grep -E 'Core|Package|temp' | awk '{print $1 ": " $2}')
+    
     MESSAGE="
 Информация о системе:
 
@@ -21,6 +23,8 @@ get_system_info() {
 Оперативная память: $MEMORY
 Диск: $DISK
 IP-адрес: $IP
+Температура:
+$TEMP_INFO
 "
 
     whiptail --title "Информация о системе" --msgbox "$MESSAGE" 20 60
