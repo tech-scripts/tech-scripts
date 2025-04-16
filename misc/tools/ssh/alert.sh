@@ -226,7 +226,7 @@ if [ -f "$CONFIG_FILE" ]; then
         echo ""
         exit 0
     } || {
-        continue
+        :
     }
 fi
 
@@ -243,7 +243,7 @@ if [ -f "$CONFIG_FILE" ] || [ -f "$SCRIPT_DIR/alert.sh" ] || [ -f "/etc/systemd/
         fi
         CONTINUE="false"
     else
-        echo "Удаление отменено."
+        :
     fi
 fi
 
