@@ -62,8 +62,8 @@ case "\$combined_args" in
     vm)
         run_script "proxmox" "vm.sh"
         ;;
-    "ssh alert")
-        run_script "ssh" "alert.sh"
+    "ssh")
+        run_script "tools/ssh" "alert.sh"
         ;;
     *)
         echo " "
