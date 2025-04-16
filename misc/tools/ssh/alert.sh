@@ -243,7 +243,7 @@ if [ -f "$CONFIG_FILE" ] || [ -f "$SCRIPT_DIR/alert.sh" ] || [ -f "/etc/systemd/
         fi
         CONTINUE="false"
     else
-        :
+        exit 0
     fi
 fi
 
