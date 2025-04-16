@@ -4,7 +4,6 @@ SUDO=$(command -v sudo)
 SCRIPT_DIR="/usr/local/tech-scripts"
 CONFIG_FILE="/etc/tech-scripts/alert.conf"
 LANG_CONF=$(grep '^lang:' /etc/tech-scripts/choose.conf 2>/dev/null | cut -d' ' -f2)
-CONTINUE="true"
 
 export TERM=xterm
 export NCURSES_NO_UTF8_ACS=1
@@ -17,6 +16,7 @@ if [[ "$LANG_CONF" == "Русский" ]]; then
     MSG_ADD_AUTOSTART="Добавление в автозапуск..."
     MSG_SUCCESS_INSTALL="Скрипт успешно установлен и добавлен в автозапуск!"
     MSG_SCRIPT_LOCATION="Скрипт расположен в: $SCRIPT_DIR/alert.sh"
+    MSG_SERVICE_LOCATION="Сервис скрипта расположен в: /etc/systemd/system/ssh.alert.service"
     MSG_CONFIG_LOCATION="Конфигурация скрипта расположена в: $CONFIG_FILE"
     MSG_ALREADY_INSTALLED="Скрипт уже установлен и запущен!"
     MSG_REMOVE_CHOICE="Хотите удалить ssh.alert из автозапуска?"
@@ -43,6 +43,7 @@ else
     MSG_ADD_AUTOSTART="Adding to autostart..."
     MSG_SUCCESS_INSTALL="Script successfully installed and added to autostart!"
     MSG_SCRIPT_LOCATION="The script is located in: $SCRIPT_DIR/alert.sh"
+    MSG_SERVICE_LOCATION="The script service is located in: /etc/systemd/system/ssh.alert.service"
     MSG_CONFIG_LOCATION="The script configuration is located in: $CONFIG_FILE"
     MSG_ALREADY_INSTALLED="Script is already installed and running!"
     MSG_REMOVE_CHOICE="Do you want to remove ssh.alert from autostart?"
@@ -239,8 +240,9 @@ if [ -f "$CONFIG_FILE" ] || [ -f "$SCRIPT_DIR/alert.sh" ] || [ -f "/etc/systemd/
             $SUDO systemctl daemon-reload
             echo "Сервис удален: /etc/systemd/system/ssh.alert.service"
             echo ""
+            exit 0
         fi
-        CONTINUE="false"
+        :
     else
         exit 0
     fi
@@ -271,13 +273,13 @@ if yes_no_box "Создание оповещения" "$MSG_CREATE_ALERT"; then
 TELEGRAM_BOT_TOKEN=$TELEGRAM_BOT_TOKEN
 TELEGRAM_CHAT_ID=$TELEGRAM_CHAT_ID
 EOF
-
         $SUDO chmod 600 "$CONFIG_FILE"
         create_ssh_alert_script
         create_ssh_alert_service
         show_message "$MSG_SUCCESS_INSTALL"
         echo ""
         echo "$MSG_SCRIPT_LOCATION"
+        echo "$MSG_SERVICE_LOCATION"
         echo "$MSG_CONFIG_LOCATION"
         echo ""
     fi
