@@ -27,12 +27,16 @@ Kernel: $KERNEL
 Uptime: $UPTIME
 Packages: $PACKAGES (dpkg)
 Shell: $SHELL $BASH_VERSION
-Resolution: $RESOLUTION
-Terminal: $TERMINAL
-CPU: $CPU
-GPU: $GPU
-Memory: $MEMORY
-    "
+"
+
+    if [ -n "$RESOLUTION" ]; then
+        MESSAGE+="Resolution: $RESOLUTION\n"
+    fi
+
+    MESSAGE+="Terminal: $TERMINAL\n"
+    MESSAGE+="CPU: $CPU\n"
+    MESSAGE+="GPU: $GPU\n"
+    MESSAGE+="Memory: $MEMORY\n"
 
     MESSAGE=$(echo "$MESSAGE" | sed '/^[[:space:]]*$/d')
 
