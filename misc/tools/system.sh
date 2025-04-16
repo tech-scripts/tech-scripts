@@ -26,14 +26,9 @@ IP-адрес:               $IP
 
 show_temperature_info() {
     if command -v sensors &>/dev/null; then
-        TEMP_INFO=$(sensors | grep -E 'Composite|edge|Tctl' | awk '{print $1 ": " $2}')
+        TEMP_INFO=$(sensors | awk '/^Sensor/ {print $1 ": " $2} /^temp/ {print $1 ": " $2}')
         if [ -z "$TEMP_INFO" ]; then
             TEMP_INFO="Информация о температуре недоступна (датчики не обнаружены)"
-        else
-            TEMP_INFO=$(echo "$TEMP_INFO" | sed \
-                -e 's/Composite/Температура NVMe/' \
-                -e 's/edge/Температура GPU/' \
-                -e 's/Tctl/Температура процессора/')
         fi
     else
         TEMP_INFO="Информация о температуре недоступна (установите lm-sensors)"
@@ -58,7 +53,18 @@ $DISK_INFO
 }
 
 show_network_info() {
-    NETWORK_INFO=$(ip addr show | awk '/^[0-9]+: /{print $2} {getline; print "IP: " $2; getline; print "MAC: " $2; print ""}' | sed 's/:$//')
+    NETWORK_INFO=$(ip -o link show | awk '{print $2, $9}' | while read -r interface state; do
+        IP=$(ip -o addr show dev "$interface" | awk '/inet / {print $4}')
+        MAC=$(ip -o link show dev "$interface" | awk '{print $17}')
+        SPEED=$(cat /sys/class/net/"$interface"/speed 2>/dev/null || echo "Недоступно")
+        echo "Интерфейс: $interface"
+        echo "Состояние: $state"
+        echo "IP: $IP"
+        echo "MAC: $MAC"
+        echo "Скорость: $SPEED Мбит/с"
+        echo ""
+    done)
+
     if [ -z "$NETWORK_INFO" ]; then
         NETWORK_INFO="Информация о сетевых адаптерах недоступна."
     fi
