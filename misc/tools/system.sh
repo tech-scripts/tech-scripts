@@ -6,6 +6,7 @@ get_system_info() {
     else
         OS=$(cat /etc/os-release | grep "PRETTY_NAME" | cut -d'"' -f2)
     fi
+
     KERNEL=$(uname -r)
     UPTIME=$(uptime -p)
     HOSTNAME=$(hostname)
@@ -15,7 +16,10 @@ get_system_info() {
     IP=$(hostname -I | awk '{print $1}')
 
     if command -v sensors &>/dev/null; then
-        TEMP_INFO=$(sensors | grep -E 'Core|Package|temp' | awk '{print $1 ": " $2}')
+        TEMP_INFO=$(sensors | grep -E 'Composite|edge|Tctl' | awk '{print $1 ": " $2}')
+        if [ -z "$TEMP_INFO" ]; then
+            TEMP_INFO="Информация о температуре недоступна (датчики не обнаружены)"
+        fi
     else
         TEMP_INFO="Информация о температуре недоступна (установите lm-sensors)"
     fi
@@ -32,6 +36,7 @@ IP-адрес: $IP
 Температура:
 $TEMP_INFO
 "
+
     whiptail --title "Информация о системе" --msgbox "$MESSAGE" 20 60
 }
 
