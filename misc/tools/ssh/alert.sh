@@ -16,7 +16,8 @@ if [[ "$LANG_CONF" == "Русский" ]]; then
     MSG_CREATE_SCRIPT="Создание скрипта в $SCRIPT_DIR/alert.sh..."
     MSG_ADD_AUTOSTART="Добавление в автозапуск..."
     MSG_SUCCESS_INSTALL="Скрипт успешно установлен и добавлен в автозапуск."
-    MSG_SCRIPT_LOCATION="Скрипт расположен в $SCRIPT_DIR/alert.sh"
+    MSG_SCRIPT_LOCATION="Скрипт расположен в: $SCRIPT_DIR/alert.sh"
+    MSG_CONFIG_LOCATION="Конфигурация скрипта расположена в: $CONFIG_FILE"
     MSG_ALREADY_INSTALLED="Скрипт уже установлен и запущен."
     MSG_REMOVE_CHOICE="Хотите удалить ssh.alert из автозапуска?"
     MSG_REMOVED="ssh.alert удален из автозапуска."
@@ -43,7 +44,8 @@ else
     MSG_CREATE_SCRIPT="Creating script in $SCRIPT_DIR/alert.sh..."
     MSG_ADD_AUTOSTART="Adding to autostart..."
     MSG_SUCCESS_INSTALL="Script successfully installed and added to autostart."
-    MSG_SCRIPT_LOCATION="Script is located in $SCRIPT_DIR/alert.sh"
+    MSG_SCRIPT_LOCATION="The script is located in: $SCRIPT_DIR/alert.sh"
+    MSG_CONFIG_LOCATION="The script configuration is located in: $CONFIG_FILE"
     MSG_ALREADY_INSTALLED="Script is already installed and running."
     MSG_REMOVE_CHOICE="Do you want to remove ssh.alert from autostart?"
     MSG_REMOVED="ssh.alert removed from autostart."
@@ -278,6 +280,9 @@ EOF
         create_ssh_alert_script
         create_ssh_alert_service
         show_message "$MSG_SUCCESS_INSTALL"
+        echo ""
         echo "$MSG_SCRIPT_LOCATION"
+        echo "$MSG_CONFIG_LOCATION"
+        echo ""
     fi
 fi
