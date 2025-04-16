@@ -31,7 +31,7 @@ show_system_info() {
 
     MESSAGE=$(echo "$MESSAGE" | sed '/^[[:space:]]*$/d')
 
-    whiptail --title "Информация о системе" --scrolltext --msgbox "$MESSAGE" 20 60
+    whiptail --title "Информация о системе" --scrolltext --msgbox "$MESSAGE" 15 60
 }
 
 show_temperature_info() {
