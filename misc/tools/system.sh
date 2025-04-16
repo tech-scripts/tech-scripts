@@ -6,7 +6,6 @@ get_system_info() {
     else
         OS=$(cat /etc/os-release | grep "PRETTY_NAME" | cut -d'"' -f2)
     fi
-
     KERNEL=$(uname -r)
     UPTIME=$(uptime -p)
     HOSTNAME=$(hostname)
@@ -22,8 +21,6 @@ get_system_info() {
     fi
 
     MESSAGE="
-Информация о системе:
-
 ОС: $OS
 Ядро: $KERNEL
 Время работы: $UPTIME
@@ -35,7 +32,6 @@ IP-адрес: $IP
 Температура:
 $TEMP_INFO
 "
-
     whiptail --title "Информация о системе" --msgbox "$MESSAGE" 20 60
 }
 
