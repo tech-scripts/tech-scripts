@@ -64,11 +64,23 @@ $DISK_INFO
 show_security_info() {
     UFW_STATUS=$(sudo ufw status 2>/dev/null || echo "UFW не установлен или не настроен.")
     SELINUX_STATUS=$(command -v sestatus &>/dev/null && sestatus | grep "SELinux status" || echo "SELinux не установлен.")
-    APPARMOR_STATUS=$(command -v apparmor_status &>/dev/null && apparmor_status | grep -E 'profiles|processes' || echo "AppArmor не установлен.")
+    
+    if command -v apparmor_status &>/dev/null; then
+        APPARMOR_STATUS=$(apparmor_status | grep -E 'profiles|processes')
+        if echo "$APPARMOR_STATUS" | grep -q "0 profiles are loaded"; then
+            APPARMOR_STATUS="\e[31mAppArmor неактивен\e[0m"
+        else
+            APPARMOR_STATUS="\e[32mAppArmor активен\e[0m"
+        fi
+    else
+        APPARMOR_STATUS="\e[31mAppArmor не установлен\e[0m"
+    fi
+
     SECURITY_UPDATES=$(command -v apt &>/dev/null && apt list --upgradable 2>/dev/null | grep -i security || echo "Нет доступных обновлений безопасности.")
     ACTIVE_USERS=$(who)
 
-    MESSAGE="
+    echo -e "
+==========================================
 Информация о безопасности:
 
 Статус брандмауэра (UFW):
@@ -85,9 +97,9 @@ $SECURITY_UPDATES
 
 Активные пользователи:
 $ACTIVE_USERS
+==========================================
 "
-
-    whiptail --title "Информация о безопасности" --msgbox "$MESSAGE" 20 80
+    read -p "Нажмите Enter, чтобы продолжить..."
 }
 
 main_menu() {
