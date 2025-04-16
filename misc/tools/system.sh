@@ -19,7 +19,7 @@ show_system_info() {
 Диск: $DISK
 IP-адрес: $IP
 "
-    whiptail --title "Информация о системе" --msgbox "$MESSAGE" 20 60
+    whiptail --title "Информация о системе" --msgbox "$MESSAGE" 15 40
 }
 
 show_temperature_info() {
@@ -35,7 +35,7 @@ show_temperature_info() {
     MESSAGE="
 $TEMP_INFO
 "
-    whiptail --title "Температура" --msgbox "$MESSAGE" 20 60
+    whiptail --title "Температура" --msgbox "$MESSAGE" 15 40
 }
 
 show_disk_info() {
