@@ -65,9 +65,6 @@ case "\$combined_args" in
     "ssh")
         run_script "tools/ssh" "alert.sh"
         ;;
-    "test")
-        run_script "tools" "test.sh"
-        ;;
     "system")
         run_script "tools" "system.sh"
         ;;
