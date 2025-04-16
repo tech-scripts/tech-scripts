@@ -117,8 +117,3 @@ main_menu() {
             4) show_security_info ;;
             5) exit 0 ;;
             *) whiptail --title "Ошибка" --msgbox "Неверный выбор. Пожалуйста, попробуйте снова." 8 
-        esac
-    done
-}
-
-main_menu
