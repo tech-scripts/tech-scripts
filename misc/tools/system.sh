@@ -65,11 +65,9 @@ show_network_info() {
         IP=$(ip -o addr show dev "$interface" | awk '/inet / {print $4}' | cut -d'/' -f1 | tr '\n' ', ' | sed 's/, $//')
         MAC=$(ip -o link show dev "$interface" | awk '{print $17}')
 
-        if [ -n "$IP" ] || [ -n "$MAC" ]; then
+        if [ -n "$IP" ]; then
             NETWORK_INFO+="Интерфейс: $interface\n"
-            if [ -n "$IP" ]; then
-                NETWORK_INFO+="IP: $IP\n"
-            fi
+            NETWORK_INFO+="IP: $IP\n"
             if [ -n "$MAC" ]; then
                 NETWORK_INFO+="MAC: $MAC\n"
             fi
