@@ -14,19 +14,19 @@ show_system_info() {
     GPU=$(lspci | grep -i vga | cut -d':' -f3 | xargs)
 
     MESSAGE="
-        $HOSTNAME
-        ------------
-        OS: $OS
-        Host: $(cat /sys/devices/virtual/dmi/id/product_name 2>/dev/null || echo "Недоступно")
-        Kernel: $KERNEL
-        Uptime: $UPTIME
-        Packages: $PACKAGES (dpkg)
-        Shell: $SHELL $BASH_VERSION
-        Resolution: $RESOLUTION
-        Terminal: $TERMINAL
-        CPU: $CPU
-        GPU: $GPU
-        Memory: $MEMORY
+$HOSTNAME
+------------
+OS: $OS
+Host: $(cat /sys/devices/virtual/dmi/id/product_name 2>/dev/null || echo "Недоступно")
+Kernel: $KERNEL
+Uptime: $UPTIME
+Packages: $PACKAGES (dpkg)
+Shell: $SHELL $BASH_VERSION
+Resolution: $RESOLUTION
+Terminal: $TERMINAL
+CPU: $CPU
+GPU: $GPU
+Memory: $MEMORY
     "
 
     MESSAGE=$(echo "$MESSAGE" | sed '/^[[:space:]]*$/d')
