@@ -1,27 +1,37 @@
 #!/bin/bash
 
 show_system_info() {
-    OS=$(lsb_release -d | cut -f2)
-    KERNEL=$(uname -r)
-    UPTIME=$(uptime -p)
+    OS=$(lsb_release -d | cut -f2 2>/dev/null)
     HOSTNAME=$(hostname)
+    KERNEL=$(uname -r)
+    UPTIME=$(uptime -p | sed 's/up //')
+    PACKAGES=$(dpkg --list 2>/dev/null | wc -l)
+    SHELL=$(basename "$SHELL")
+    RESOLUTION=$(xrandr --current 2>/dev/null | grep '*' | awk '{print $1}')
+    TERMINAL=$(basename "$(ps -o comm= -p "$(($(ps -o ppid= -p "$(($(ps -o sid= -p "$$")))")))")")
     CPU=$(lscpu | grep "Model name" | cut -d':' -f2 | xargs)
-    MEMORY=$(free -h | grep "Mem:" | awk '{print $2}')
-    DISK=$(df -h / | grep "/" | awk '{print $2}')
-    IP=$(hostname -I | awk '{print $1}')
+    MEMORY=$(free -h | grep "Mem:" | awk '{print $3 "/" $2}')
+    GPU=$(lspci | grep -i vga | cut -d':' -f3 | xargs)
 
     MESSAGE="
-ОС:                     $OS
-Ядро:                   $KERNEL
-Время работы:           $UPTIME
-Имя хоста:              $HOSTNAME
-Процессор:              $CPU
-Оперативная память:     $MEMORY
-Диск:                   $DISK
-IP-адрес:               $IP
-"
+        $HOSTNAME
+        ------------
+        OS: $OS
+        Host: $(cat /sys/devices/virtual/dmi/id/product_name 2>/dev/null || echo "Недоступно")
+        Kernel: $KERNEL
+        Uptime: $UPTIME
+        Packages: $PACKAGES (dpkg)
+        Shell: $SHELL $BASH_VERSION
+        Resolution: $RESOLUTION
+        Terminal: $TERMINAL
+        CPU: $CPU
+        GPU: $GPU
+        Memory: $MEMORY
+    "
 
-    whiptail --title "Информация о системе" --scrolltext --msgbox "$MESSAGE" 15 60
+    MESSAGE=$(echo "$MESSAGE" | sed '/^[[:space:]]*$/d')
+
+    whiptail --title "Информация о системе" --scrolltext --msgbox "$MESSAGE" 20 60
 }
 
 show_temperature_info() {
