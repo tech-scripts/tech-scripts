@@ -35,6 +35,9 @@ if [[ "$LANG_CONF" == "Русский" ]]; then
     MSG_UPDATE_SUCCESS="Скрипт успешно обновлен!"
     MSG_CREATE_ALERT="Хотите ли вы создать оповещение о входах по SSH через Telegram?"
     MSG_CONFIG_EXISTS="Конфигурационный файл уже существует. Пропускаем создание."
+    MSG_TEST_MESSAGE="Тестовое сообщение: Вы успешно настроили оповещения SSH!"
+    MSG_TEST_SUCCESS="Тестовое сообщение успешно отправлено."
+    MSG_TEST_FAILED="Не удалось отправить тестовое сообщение. Проверьте токен и chat_id."
 else
     MSG_INSTALL_JQ="Installing jq..."
     MSG_BOT_TOKEN="Enter your Telegram bot token: "
@@ -61,6 +64,9 @@ else
     MSG_UPDATE_SUCCESS="Script successfully updated!"
     MSG_CREATE_ALERT="Do you want to create an SSH login alert via Telegram?"
     MSG_CONFIG_EXISTS="Configuration file already exists. Skipping creation."
+    MSG_TEST_MESSAGE="Test message: You have successfully configured SSH alerts!"
+    MSG_TEST_SUCCESS="Test message sent successfully."
+    MSG_TEST_FAILED="Failed to send test message. Please check your token and chat_id."
 fi
 
 show_message() {
@@ -77,6 +83,22 @@ input_box() {
 yes_no_box() {
     whiptail --yesno "$2" 10 50
     return $?
+}
+
+send_test_message() {
+    local token=$1
+    local chat_id=$2
+    local message=$3
+    local response
+    response=$(curl -s -X POST "https://api.telegram.org/bot${token}/sendMessage" \
+        -d chat_id="${chat_id}" \
+        --data-urlencode "text=${message}" 2>&1)
+
+    if echo "$response" | grep -q '"ok":true'; then
+        return 0
+    else
+        return 1
+    fi
 }
 
 create_ssh_alert_service() {
@@ -255,19 +277,28 @@ if yes_no_box "Создание оповещения" "$MSG_CREATE_ALERT"; then
     if [ -f "$CONFIG_FILE" ]; then
         echo "$MSG_CONFIG_EXISTS"
     else
-        TELEGRAM_BOT_TOKEN=$(input_box "Telegram Bot Token" "$MSG_BOT_TOKEN")
-        TELEGRAM_CHAT_ID=$(input_box "Telegram Chat ID" "$MSG_CHAT_ID")
-        
+        while true; do
+            TELEGRAM_BOT_TOKEN=$(input_box "Telegram Bot Token" "$MSG_BOT_TOKEN")
+            TELEGRAM_CHAT_ID=$(input_box "Telegram Chat ID" "$MSG_CHAT_ID")
+
+            if send_test_message "$TELEGRAM_BOT_TOKEN" "$TELEGRAM_CHAT_ID" "$MSG_TEST_MESSAGE"; then
+                show_message "$MSG_TEST_SUCCESS"
+                break
+            else
+                show_message "$MSG_TEST_FAILED"
+            fi
+        done
+
         $SUDO mkdir -p "/etc/tech-scripts"
         $SUDO tee "$CONFIG_FILE" >/dev/null <<EOF
 TELEGRAM_BOT_TOKEN=$TELEGRAM_BOT_TOKEN
 TELEGRAM_CHAT_ID=$TELEGRAM_CHAT_ID
 EOF
-        
+
         $SUDO chmod 600 "$CONFIG_FILE"
         create_ssh_alert_script
         create_ssh_alert_service
-        echo "$MSG_SUCCESS_INSTALL"
+        show_message "$MSG_SUCCESS_INSTALL"
         echo "$MSG_SCRIPT_LOCATION"
     fi
 fi
