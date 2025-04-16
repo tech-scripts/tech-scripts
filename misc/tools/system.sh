@@ -127,7 +127,7 @@ $DISK_ENCRYPTION
 $INACTIVE_USERS
 "
 
-    whiptail --title "Информация о безопасности" --scrolltext --msgbox "$MESSAGE" 20 70
+    whiptail --title "Информация о безопасности" --scrolltext --msgbox "$MESSAGE" 15 60
 }
 
 main_menu() {
