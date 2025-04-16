@@ -10,17 +10,20 @@ show_system_info() {
     DISK=$(df -h / | grep "/" | awk '{print $2}')
     IP=$(hostname -I | awk '{print $1}')
 
-    echo "=========================================="
-    echo "Информация о системе:"
-    echo "ОС: $OS"
-    echo "Ядро: $KERNEL"
-    echo "Время работы: $UPTIME"
-    echo "Имя хоста: $HOSTNAME"
-    echo "Процессор: $CPU"
-    echo "Оперативная память: $MEMORY"
-    echo "Диск: $DISK"
-    echo "IP-адрес: $IP"
-    echo "=========================================="
+    MESSAGE="
+Информация о системе:
+
+ОС: $OS
+Ядро: $KERNEL
+Время работы: $UPTIME
+Имя хоста: $HOSTNAME
+Процессор: $CPU
+Оперативная память: $MEMORY
+Диск: $DISK
+IP-адрес: $IP
+"
+
+    whiptail --title "Информация о системе" --msgbox "$MESSAGE" 20 60
 }
 
 show_temperature_info() {
@@ -38,80 +41,63 @@ show_temperature_info() {
         TEMP_INFO="Информация о температуре недоступна (установите lm-sensors)"
     fi
 
-    echo "=========================================="
-    echo "Температура:"
-    echo "$TEMP_INFO"
-    echo "=========================================="
+    MESSAGE="
+Температура:
+
+$TEMP_INFO
+"
+
+    whiptail --title "Температура" --msgbox "$MESSAGE" 20 60
 }
 
 show_disk_info() {
     DISK_INFO=$(df -h)
-    echo "=========================================="
-    echo "Информация о дисках:"
-    echo "$DISK_INFO"
-    echo "=========================================="
+    MESSAGE="
+Информация о дисках:
+
+$DISK_INFO
+"
+
+    whiptail --title "Информация о дисках" --msgbox "$MESSAGE" 20 60
 }
 
 show_security_info() {
-    echo "=========================================="
-    echo "Информация о безопасности:"
-
     UFW_STATUS=$(sudo ufw status 2>/dev/null || echo "UFW не установлен или не настроен.")
-    echo "Статус брандмауэра (UFW):"
-    echo "$UFW_STATUS"
-    echo ""
+    SELINUX_STATUS=$(command -v sestatus &>/dev/null && sestatus | grep "SELinux status" || echo "SELinux не установлен.")
+    APPARMOR_STATUS=$(command -v apparmor_status &>/dev/null && apparmor_status | grep -E 'profiles|processes' || echo "AppArmor не установлен.")
+    SECURITY_UPDATES=$(command -v apt &>/dev/null && apt list --upgradable 2>/dev/null | grep -i security || echo "Нет доступных обновлений безопасности.")
+    ACTIVE_USERS=$(who)
 
-    if command -v sestatus &>/dev/null; then
-        SELINUX_STATUS=$(sestatus | grep "SELinux status")
-    else
-        SELINUX_STATUS="SELinux не установлен."
-    fi
-    echo "Статус SELinux:"
-    echo "$SELINUX_STATUS"
-    echo ""
+    MESSAGE="
+Информация о безопасности:
 
-    if command -v apparmor_status &>/dev/null; then
-        APPARMOR_STATUS=$(apparmor_status)
-    else
-        APPARMOR_STATUS="AppArmor не установлен."
-    fi
-    echo "Статус AppArmor:"
-    echo "$APPARMOR_STATUS"
-    echo ""
+Статус брандмауэра (UFW):
+$UFW_STATUS
 
-    echo "Проверка обновлений безопасности:"
-    if command -v apt &>/dev/null; then
-        SECURITY_UPDATES=$(apt list --upgradable 2>/dev/null | grep -i security)
-        if [ -z "$SECURITY_UPDATES" ]; then
-            echo "Нет доступных обновлений безопасности."
-        else
-            echo "Доступные обновления безопасности:"
-            echo "$SECURITY_UPDATES"
-        fi
-    elif command -v yum &>/dev/null; then
-        SECURITY_UPDATES=$(yum check-update --security)
-        echo "$SECURITY_UPDATES"
-    else
-        echo "Не удалось проверить обновления безопасности."
-    fi
-    echo ""
+Статус SELinux:
+$SELINUX_STATUS
 
-    echo "Активные пользователи:"
-    who
-    echo "=========================================="
+Статус AppArmor:
+$APPARMOR_STATUS
+
+Проверка обновлений безопасности:
+$SECURITY_UPDATES
+
+Активные пользователи:
+$ACTIVE_USERS
+"
+
+    whiptail --title "Информация о безопасности" --msgbox "$MESSAGE" 20 80
 }
 
 main_menu() {
     while true; do
-        echo "=========================================="
-        echo "Главное меню:"
-        echo "1. Информация о системе"
-        echo "2. Температура"
-        echo "3. Информация о дисках"
-        echo "4. Безопасность"
-        echo "5. Выход"
-        echo "=========================================="
-        read -p "Выберите опцию (1-5): " OPTION
+        OPTION=$(whiptail --title "Главное меню" --menu "Выберите опцию:" 15 60 4 \
+            "1" "Информация о системе" \
+            "2" "Температура" \
+            "3" "Информация о дисках" \
+            "4" "Безопасность" \
+            "5" "Выход" 3>&1 1>&2 2>&3)
 
         case $OPTION in
             1) show_system_info ;;
@@ -119,10 +105,8 @@ main_menu() {
             3) show_disk_info ;;
             4) show_security_info ;;
             5) exit 0 ;;
-            *) echo "Неверный выбор. Пожалуйста, попробуйте снова." ;;
+            *) whiptail --title "Ошибка" --msgbox "Неверный выбор. Пожалуйста, попробуйте снова." 8 45 ;;
         esac
-
-        read -p "Нажмите Enter, чтобы продолжить..."
     done
 }
 
