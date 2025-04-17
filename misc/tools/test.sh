@@ -273,7 +273,7 @@ if yes_no_box "Создание оповещения" "$MSG_CREATE_ALERT"; then
                     SEND_SILENT=false
                 fi
                 
-                if yes_no_box "Запретить пересылку?" "Хотите запретить пересылку сообщения?"; then
+                if yes_no_box "Запретить пересылку?" "Хотите запретить пересылку сообщений?"; then
                     PROTECT_CONTENT=true
                 else
                     PROTECT_CONTENT=false
