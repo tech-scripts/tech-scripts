@@ -267,16 +267,16 @@ if yes_no_box "Создание оповещения" "$MSG_CREATE_ALERT"; then
             TELEGRAM_THREAD_ID=$(input_box "Telegram Thread ID" "Введите ID цепочки сообщений (необязательно):")
             
             if send_test_message "$TELEGRAM_BOT_TOKEN" "$TELEGRAM_CHAT_ID" "$TELEGRAM_THREAD_ID" "$MSG_TEST_MESSAGE"; then
-                if yes_no_box "Отправить без звука?" "Хотите отправить сообщение без звука?"; then
+                if yes_no_box "Отправлять без звука?" "Хотите отправлять сообщения без звука?"; then
                     SEND_SILENT=true
                 else
                     SEND_SILENT=false
                 fi
                 
-                if yes_no_box "Разрешить пересылку?" "Хотите разрешить пересылку сообщения?"; then
-                    ALLOW_FORWARDING=true
+                if yes_no_box "Запретить пересылку?" "Хотите запретить пересылку сообщения?"; then
+                    PROTECT_CONTENT=true
                 else
-                    ALLOW_FORWARDING=false
+                    PROTECT_CONTENT=false
                 fi
                 
                 break
@@ -291,7 +291,7 @@ TELEGRAM_BOT_TOKEN=$TELEGRAM_BOT_TOKEN
 TELEGRAM_CHAT_ID=$TELEGRAM_CHAT_ID
 TELEGRAM_THREAD_ID=$TELEGRAM_THREAD_ID
 SEND_SILENT=$SEND_SILENT
-ALLOW_FORWARDING=$ALLOW_FORWARDING
+PROTECT_CONTENT=$PROTECT_CONTENT
 EOF
         $SUDO chmod 600 "$CONFIG_FILE"
         create_ssh_alert_script
