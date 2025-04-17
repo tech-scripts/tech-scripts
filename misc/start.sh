@@ -1,6 +1,7 @@
 #!/bin/bash
 
 SUDO=$(command -v sudo)
+CLONE_DIR="/tmp/tech-scripts/misc"
 
 [ ! -d "/tmp/tech-scripts" ] && git clone --depth 1 "https://github.com/tech-scripts/linux.git" "/tmp/tech-scripts"
 
