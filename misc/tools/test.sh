@@ -155,7 +155,7 @@ send_telegram_message() {
         -d disable_notification="${SEND_SILENT}" \
         -d allow_sending_without_reply="${ALLOW_FORWARDING}" \
         --data-urlencode "text=${message}" 2>&1)
-
+        
     if echo "$response" | grep -q '"ok":true'; then
         echo "$MSG_SENT"
     else
@@ -266,8 +266,18 @@ if yes_no_box "Создание оповещения" "$MSG_CREATE_ALERT"; then
             TELEGRAM_THREAD_ID=$(input_box "Telegram Thread ID" "Введите ID цепочки сообщений (необязательно):")
             
             if send_test_message "$TELEGRAM_BOT_TOKEN" "$TELEGRAM_CHAT_ID" "$TELEGRAM_THREAD_ID" "$MSG_TEST_MESSAGE"; then
-                SEND_SILENT=$(yes_no_box "Отправить без звука?" "Хотите отправить сообщение без звука?")
-                ALLOW_FORWARDING=$(yes_no_box "Разрешить пересылку?" "Хотите разрешить пересылку сообщения?")
+                if yes_no_box "Отправить без звука?" "Хотите отправить сообщение без звука?"; then
+                    SEND_SILENT=true
+                else
+                    SEND_SILENT=false
+                fi
+                
+                if yes_no_box "Разрешить пересылку?" "Хотите разрешить пересылку сообщения?"; then
+                    ALLOW_FORWARDING=true
+                else
+                    ALLOW_FORWARDING=false
+                fi
+                
                 break
             else
                 show_message "$MSG_TEST_FAILED"
@@ -278,6 +288,8 @@ if yes_no_box "Создание оповещения" "$MSG_CREATE_ALERT"; then
         $SUDO tee "$CONFIG_FILE" >/dev/null <<EOF
 TELEGRAM_BOT_TOKEN=$TELEGRAM_BOT_TOKEN
 TELEGRAM_CHAT_ID=$TELEGRAM_CHAT_ID
+SEND_SILENT=$SEND_SILENT
+ALLOW_FORWARDING=$ALLOW_FORWARDING
 EOF
         $SUDO chmod 600 "$CONFIG_FILE"
         create_ssh_alert_script
