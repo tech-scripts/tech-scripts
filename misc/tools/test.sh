@@ -80,13 +80,15 @@ yes_no_box() {
 send_test_message() {
     local token=$1
     local chat_id=$2
-    local message=$3
-    local message_thread_id="${4:-}"
-    local data="chat_id=${chat_id}&text=${message}"
-    [ -n "$message_thread_id" ] && data+="&message_thread_id=${message_thread_id}"
-
+    local thread_id=$3
+    local message=$4
     local response
-    response=$(curl -s -X POST "https://api.telegram.org/bot${token}/sendMessage" -d "$data" 2>&1)
+    response=$(curl -s -X POST "https://api.telegram.org/bot${token}/sendMessage" \
+        -d chat_id="${chat_id}" \
+        -d reply_to_message_id="${thread_id}" \
+        -d disable_notification=true \
+        -d disable_web_page_preview=true \
+        --data-urlencode "text=${message}" 2>&1)
 
     if echo "$response" | grep -q '"ok":true'; then
         return 0
@@ -97,7 +99,7 @@ send_test_message() {
 
 create_ssh_alert_service() {
     [ -f "/etc/systemd/system/ssh.alert.service" ] && return
-
+    
     $SUDO tee "/etc/systemd/system/ssh.alert.service" >/dev/null <<EOF
 [Unit]
 Description=SSH Alert
@@ -106,7 +108,7 @@ After=network.target
 [Service]
 ExecStart=$SCRIPT_DIR/alert.sh
 Restart=always
-User =root
+User=root
 RestartSec=5
 StandardOutput=syslog
 StandardError=syslog
@@ -122,7 +124,7 @@ EOF
 
 create_ssh_alert_script() {
     [ -f "$SCRIPT_DIR/alert.sh" ] && return
-
+    
     $SUDO mkdir -p "$SCRIPT_DIR"
     $SUDO tee "$SCRIPT_DIR/alert.sh" >/dev/null <<'EOF'
 #!/bin/bash
@@ -148,15 +150,10 @@ fi
 
 send_telegram_message() {
     local message="$1"
-    local disable_notification="${TELEGRAM_DISABLE_NOTIFICATION:-false}"
-    local protect_content="${TELEGRAM_PROTECT_CONTENT:-false}"
-    local message_thread_id="${TELEGRAM_MESSAGE_THREAD_ID:-}"
-
-    local data="chat_id=${TELEGRAM_CHAT_ID}&text=${message}&disable_notification=${disable_notification}&protect_content=${protect_content}"
-    [ -n "$message_thread_id" ] && data+="&message_thread_id=${message_thread_id}"
-
     local response
-    response=$(curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" -d "$data" 2>&1)
+    response=$(curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+        -d chat_id="${TELEGRAM_CHAT_ID}" \
+        --data-urlencode "text=${message}" 2>&1)
 
     if echo "$response" | grep -q '"ok":true'; then
         echo "$MSG_SENT"
@@ -179,7 +176,7 @@ journalctl -f -u ssh | while read -r line; do
     elif echo "$line" | grep -q "sshd.*Connection closed"; then
         ip=$(echo "$line" | grep -oP 'from \K[0-9.]+')
         user=$(echo "$line" | grep -oP 'user \K\w+')
-        message=$(echo -e "${MSG_CLOSED}\nПользователь: ${user}\nIP: ${ip}")
+        message=$(echo -e "${MSG_CLOSED}\nПользователь: ${user}")
         send_telegram_message "$message"
     elif echo "$line" | grep -q "sshd.*Invalid user"; then
         ip=$(echo "$line" | grep -oP 'from \K[0-9.]+')
@@ -200,7 +197,7 @@ EOF
 
 install_jq() {
     command -v jq &>/dev/null && return
-
+    
     if command -v apt &>/dev/null; then
         $SUDO apt update && $SUDO apt install -y jq
     elif command -v yum &>/dev/null; then
@@ -264,35 +261,20 @@ if yes_no_box "Создание оповещения" "$MSG_CREATE_ALERT"; then
 
             TELEGRAM_CHAT_ID=$(input_box "Telegram Chat ID" "$MSG_CHAT_ID")
             [ -z "$TELEGRAM_CHAT_ID" ] && { exit; }
-
-            TELEGRAM_MESSAGE_THREAD_ID=$(input_box "ID цепочки сообщений" "Введите ID цепочки сообщений (если нужно):")
-
-            if send_test_message "$TELEGRAM_BOT_TOKEN" "$TELEGRAM_CHAT_ID" "$MSG_TEST_MESSAGE" "$TELEGRAM_MESSAGE_THREAD_ID"; then
+            
+            TELEGRAM_THREAD_ID=$(input_box "Telegram Thread ID" "Введите ID цепочки сообщений (необязательно):")
+            
+            if send_test_message "$TELEGRAM_BOT_TOKEN" "$TELEGRAM_CHAT_ID" "$TELEGRAM_THREAD_ID" "$MSG_TEST_MESSAGE"; then
                 break
             else
                 show_message "$MSG_TEST_FAILED"
             fi
         done
 
-        if yes_no_box "Отправка без звука" "Хотите, чтобы уведомления приходили без звука?"; then
-            TELEGRAM_DISABLE_NOTIFICATION="true"
-        else
-            TELEGRAM_DISABLE_NOTIFICATION="false"
-        fi
-
-        if yes_no_box "Запрет пересылки/сохранения" "Хотите запретить пересылку и сохранение сообщений?"; then
-            TELEGRAM_PROTECT_CONTENT="true"
-        else
-            TELEGRAM_PROTECT_CONTENT="false"
-        fi
-
         $SUDO mkdir -p "/etc/tech-scripts"
         $SUDO tee "$CONFIG_FILE" >/dev/null <<EOF
 TELEGRAM_BOT_TOKEN=$TELEGRAM_BOT_TOKEN
 TELEGRAM_CHAT_ID=$TELEGRAM_CHAT_ID
-TELEGRAM_DISABLE_NOTIFICATION=$TELEGRAM_DISABLE_NOTIFICATION
-TELEGRAM_PROTECT_CONTENT=$TELEGRAM_PROTECT_CONTENT
-TELEGRAM_MESSAGE_THREAD_ID=$TELEGRAM_MESSAGE_THREAD_ID
 EOF
         $SUDO chmod 600 "$CONFIG_FILE"
         create_ssh_alert_script
