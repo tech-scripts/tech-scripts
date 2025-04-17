@@ -41,15 +41,15 @@ usage="$usage"
 run_script() {
     local script_dir="\$1"
     local script_name="\$2"
-    rm -rf "/tmp/tech-scripts"
-    git clone --depth 1 "\$REPO_URL" "\$CLONE_DIR"
     cd "\$CLONE_DIR/misc/\$script_dir"
     chmod +x "\$script_name"
     ./"\$script_name"
 }
 
 if [ \$# -eq 0 ]; then
-    bash -c "\$(curl -sL https://raw.githubusercontent.com/tech-scripts/linux/refs/heads/main/misc/start.sh)"
+    cd /tmp/tech-scripts/misc
+    chmod +x start.sh
+    ./start.sh
     exit 0
 fi
 
@@ -112,14 +112,9 @@ if [ -f /usr/local/bin/tech ]; then
         fi
     fi
 else
-    whiptail --title "$title_add" --yesno "$msg_add" 10 40
-    if [ $? -eq 0 ]; then
-        $SUDO tee /usr/local/bin/tech > /dev/null <<< "$TECH_SCRIPT"
-        $SUDO chmod +x /usr/local/bin/tech
-        echo " "
-        echo "$msg_add_complete"
-        echo " "
-    else
-        exit 0
-    fi
+    $SUDO tee /usr/local/bin/tech > /dev/null <<< "$TECH_SCRIPT"
+    $SUDO chmod +x /usr/local/bin/tech
+    echo " "
+    echo "$msg_add_complete"
+    echo " "
 fi
