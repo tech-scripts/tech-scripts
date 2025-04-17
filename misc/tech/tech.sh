@@ -56,10 +56,13 @@ fi
 combined_args="\$*"
 
 case "\$combined_args" in
-    lxc)
+    "update")
+        run_script "tech" "tech.sh"
+        ;;
+    "lxc")
         run_script "proxmox" "lxc.sh"
         ;;
-    vm)
+    "vm")
         run_script "proxmox" "vm.sh"
         ;;
     "ssh")
