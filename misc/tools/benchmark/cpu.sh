@@ -11,18 +11,18 @@ if [[ $? -eq 0 ]]; then
     echo "Single core"
     echo ""
     echo -e "CPU speed:"
-    echo "$single_core_result" | grep "events per second:" | sed -E 's/([0-9]+\.[0-9]+)/\\e[38;2;128;128;128m\1\\e[0m/g'
+    echo "$single_core_result" | grep "events per second:" | sed -E 's/([0-9]+\.[0-9]+)/\\e[38;2;128;128;128m\1\\e[0m/g' | xargs -I{} echo -e {}
     echo ""
     echo -e "General statistics:"
-    echo "$single_core_result" | grep -E "total time:|total number of events:" | sed -E 's/([0-9]+\.[0-9]+|[0-9]+)/\\e[38;2;160;160;160m\1\\e[0m/g'
+    echo "$single_core_result" | grep -E "total time:|total number of events:" | sed -E 's/([0-9]+\.[0-9]+|[0-9]+)/\\e[38;2;160;160;160m\1\\e[0m/g' | xargs -I{} echo -e {}
     echo ""
     echo "Multi core"
     echo ""
     echo -e "CPU speed:"
-    echo "$multi_core_result" | grep "events per second:" | sed -E 's/([0-9]+\.[0-9]+)/\\e[38;2;192;192;192m\1\\e[0m/g'
+    echo "$multi_core_result" | grep "events per second:" | sed -E 's/([0-9]+\.[0-9]+)/\\e[38;2;192;192;192m\1\\e[0m/g' | xargs -I{} echo -e {}
     echo ""
     echo -e "General statistics:"
-    echo "$multi_core_result" | grep -E "total time:|total number of events:" | sed -E 's/([0-9]+\.[0-9]+|[0-9]+)/\\e[38;2;224;224;224m\1\\e[0m/g'
+    echo "$multi_core_result" | grep -E "total time:|total number of events:" | sed -E 's/([0-9]+\.[0-9]+|[0-9]+)/\\e[38;2;224;224;224m\1\\e[0m/g' | xargs -I{} echo -e {}
     echo ""
 else
     echo "Стресс-тест отменен."
