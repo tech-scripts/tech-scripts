@@ -41,7 +41,7 @@ done
 selected_disk=$(whiptail --title "$msg_select" --menu "" 15 60 4 "${disk_choices[@]}" 3>&1 1>&2 2>&3)
 
 temp_file="$selected_disk/testfile"
-output=$($SUDO dd if=/dev/zero of="$temp_file" bs="$FILE_SIZE" count=1 oflag=direct 2>&1)
+output=$(dd if=/dev/zero of="$temp_file" bs="$FILE_SIZE" count=1 oflag=direct 2>&1)
 write_time=$(echo "$output" | grep -o '[0-9.]* s' | head -n 1)
 write_speed=$(echo "$output" | grep -o '[0-9.]* [MG]B/s' | head -n 1 || echo "$msg_failed")
 output=$($SUDO dd if="$temp_file" of=/dev/null bs="$FILE_SIZE" count=1 iflag=direct 2>&1)
