@@ -216,10 +216,6 @@ create_settings_menu() {
         [{"text": "Уведомления о закрытых соединениях", "callback_data": "toggle_closed"}]
     ]
 }
-EOF
-    )
-    send_telegram_menu "$chat_id" "$MSG_SETTINGS" "$keyboard"
-}
 
 journalctl -f -u ssh | while read -r line; do
     if echo "$line" | grep -q "sshd.*Failed password"; then
