@@ -2,11 +2,20 @@
 
 whiptail --title "Стресс-тест процессора" --yesno "Вы хотите выполнить стресс-тест процессора?" 10 60
 
+show_progress() {
+    ( 
+        for i in {1..100}; do
+            sleep 0.1
+            echo $i
+        done
+    ) | whiptail --title "Прогресс" --gauge "Пожалуйста, подождите..." 6 60 0
+}
+
 if [[ $? -eq 0 ]]; then
-    echo "Запуск теста на одно ядро..."
+    show_progress &
     single_core_result=$(sysbench cpu --time=5 --threads=1 run)
-    echo "Запуск теста на все ядра..."
     multi_core_result=$(sysbench cpu --time=5 --threads=$(nproc) run)
+    wait
     echo ""
     echo "Single core"
     echo ""
