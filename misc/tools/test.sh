@@ -153,6 +153,10 @@ else
     MSG_DISABLE="❌ Disable"
 fi
 
+NOTIFY_FAILED=true
+NOTIFY_SUCCESS=true
+NOTIFY_CLOSED=true
+
 send_telegram_message() {
     local message="$1"
     local response
@@ -171,31 +175,86 @@ send_telegram_message() {
     fi
 }
 
+send_telegram_menu() {
+    local chat_id="$1"
+    local message="$2"
+    local keyboard="$3"
+    local response
+    response=$(curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+        -d chat_id="${chat_id}" \
+        --data-urlencode "text=${message}" \
+        -d reply_markup="${keyboard}" 2>&1)
+        
+    if echo "$response" | grep -q '"ok":true'; then
+        echo "$MSG_SENT"
+    else
+        echo "$MSG_ERROR: $response" >&2
+    fi
+}
+
+handle_callback_query() {
+    local callback_data="$1"
+    local chat_id="$2"
+
+    case "$callback_data" in
+        "toggle_failed")
+            NOTIFY_FAILED=$([ "$NOTIFY_FAILED" = true ] && echo false || echo true)
+            send_telegram_message "$chat_id" "Уведомления о неудачных попытках: $([ "$NOTIFY_FAILED" = true ] && echo "включены" || echo "отключены")."
+            ;;
+        "toggle_success")
+            NOTIFY_SUCCESS=$([ "$NOTIFY_SUCCESS" = true ] && echo false || echo true)
+            send_telegram_message "$chat_id" "Уведомления об успешных попытках: $([ "$NOTIFY_SUCCESS" = true ] && echo "включены" || echo "отключены")."
+            ;;
+        "toggle_closed")
+            NOTIFY_CLOSED=$([ "$NOTIFY_CLOSED" = true ] && echo false || echo true)
+            send_telegram_message "$chat_id" "Уведомления о закрытых соединениях: $([ "$NOTIFY_CLOSED" = true ] && echo "включены" || echo "отключены")."
+            ;;
+        *)
+            send_telegram_message "$chat_id" "Неизвестная команда."
+            ;;
+    esac
+}
+
+create_settings_menu() {
+    local chat_id="$1"
+    local keyboard=$(cat <<EOF
+{
+    "inline_keyboard": [
+        [{"text": "Уведомления о неудачных попытках: $([ "$NOTIFY_FAILED" = true ] && echo "✅" || echo "❌")", "callback_data": "toggle_failed"}],
+        [{"text": "Уведомления об успешных попытках: $([ "$NOTIFY_SUCCESS" = true ] && echo "✅" || echo "❌")", "callback_data": "toggle_success"}],
+        [{"text": "Уведомления о закрытых соединениях: $([ "$NOTIFY_CLOSED" = true ] && echo "✅" || echo "❌")", "callback_data": "toggle_closed"}]
+    ]
+}
+EOF
+    )
+    send_telegram_menu "$chat_id" "$MSG_SETTINGS" "$keyboard"
+}
+
 parse_ssh_line() {
     local line="$1"
     local ip user message
 
-    if echo "$line" | grep -q "sshd.*Failed password"; then
+    if echo "$line" | grep -q "sshd.*Failed password" && [ "$NOTIFY_FAILED" = true ]; then
         ip=$(echo "$line" | awk -F'from ' '{print $2}' | awk '{print $1}')
         user=$(echo "$line" | awk -F'for ' '{print $2}' | awk '{print $1}')
         message=$(echo -e "${MSG_FAILED}\nТип подключения: пароль\nПользователь: ${user}\nIP: ${ip}")
         send_telegram_message "$message"
-    elif echo "$line" | grep -q "sshd.*Accepted password"; then
+    elif echo "$line" | grep -q "sshd.*Accepted password" && [ "$NOTIFY_SUCCESS" = true ]; then
         ip=$(echo "$line" | awk -F'from ' '{print $2}' | awk '{print $1}')
         user=$(echo "$line" | awk -F'for ' '{print $2}' | awk '{print $1}')
         message=$(echo -e "${MSG_SUCCESS}\nТип подключения: пароль\nПользователь: ${user}\nIP: ${ip}")
         send_telegram_message "$message"
-    elif echo "$line" | grep -q "sshd.*Connection closed"; then
+    elif echo "$line" | grep -q "sshd.*Connection closed" && [ "$NOTIFY_CLOSED" = true ]; then
         ip=$(echo "$line" | awk -F'from ' '{print $2}' | awk '{print $1}')
         user=$(echo "$line" | awk -F'user ' '{print $2}' | awk '{print $1}')
-        message=$(echo -e "${MSG_CLOSED}\nПользователь: ${user}")
+        message=$(echo -e "${MSG_CLOSED}\nПользователь: ${user}\nIP: ${ip}")
         send_telegram_message "$message"
-    elif echo "$line" | grep -q "sshd.*Invalid user"; then
+    elif echo "$line" | grep -q "sshd.*Invalid user" && [ "$NOTIFY_FAILED" = true ]; then
         ip=$(echo "$line" | awk -F'from ' '{print $2}' | awk '{print $1}')
         user=$(echo "$line" | awk -F'Invalid user ' '{print $2}' | awk '{print $1}')
         message=$(echo -e "${MSG_FAILED}\nТип подключения: пароль\nПользователь: ${user}\nIP: ${ip}")
         send_telegram_message "$message"
-    elif echo "$line" | grep -q "sshd.*Accepted publickey"; then
+    elif echo "$line" | grep -q "sshd.*Accepted publickey" && [ "$NOTIFY_SUCCESS" = true ]; then
         ip=$(echo "$line" | awk -F'from ' '{print $2}' | awk '{print $1}')
         user=$(echo "$line" | awk -F'for ' '{print $2}' | awk '{print $1}')
         message=$(echo -e "${MSG_SUCCESS}\nТип подключения: ключ ssh\nПользователь: ${user}\nIP: ${ip}")
