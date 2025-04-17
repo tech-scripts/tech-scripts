@@ -71,6 +71,12 @@ case "\$combined_args" in
     "system")
         run_script "tools" "system.sh"
         ;;
+    "disk")
+        run_script "tools/benchmark" "disk.sh"
+        ;;
+    "cpu")
+        run_script "tools/benchmark" "cpu.sh"
+        ;;
     *)
         echo " "
         echo "\$unknown_command"
