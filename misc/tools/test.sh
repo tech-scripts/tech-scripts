@@ -171,85 +171,39 @@ send_telegram_message() {
     fi
 }
 
-send_telegram_menu() {
-    local chat_id="$1"
-    local message="$2"
-    local keyboard="$3"
-    local response
-    response=$(curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
-        -d chat_id="${chat_id}" \
-        -d text="${message}" \
-        -d reply_markup="${keyboard}" 2>&1)
-        
-    if echo "$response" | grep -q '"ok":true'; then
-        echo "$MSG_SENT"
+parse_ssh_line() {
+    local line="$1"
+    local ip user message
+
+    if echo "$line" | grep -q "sshd.*Failed password"; then
+        ip=$(echo "$line" | awk -F'from ' '{print $2}' | awk '{print $1}')
+        user=$(echo "$line" | awk -F'for ' '{print $2}' | awk '{print $1}')
+        message=$(echo -e "${MSG_FAILED}\nТип подключения: пароль\nПользователь: ${user}\nIP: ${ip}")
+    elif echo "$line" | grep -q "sshd.*Accepted password"; then
+        ip=$(echo "$line" | awk -F'from ' '{print $2}' | awk '{print $1}')
+        user=$(echo "$line" | awk -F'for ' '{print $2}' | awk '{print $1}')
+        message=$(echo -e "${MSG_SUCCESS}\nТип подключения: пароль\nПользователь: ${user}\nIP: ${ip}")
+    elif echo "$line" | grep -q "sshd.*Connection closed"; then
+        ip=$(echo "$line" | awk -F'from ' '{print $2}' | awk '{print $1}')
+        user=$(echo "$line" | awk -F'user ' '{print $2}' | awk '{print $1}')
+        message=$(echo -e "${MSG_CLOSED}\nПользователь: ${user}")
+    elif echo "$line" | grep -q "sshd.*Invalid user"; then
+        ip=$(echo "$line" | awk -F'from ' '{print $2}' | awk '{print $1}')
+        user=$(echo "$line" | awk -F'Invalid user ' '{print $2}' | awk '{print $1}')
+        message=$(echo -e "${MSG_FAILED}\nТип подключения: пароль\nПользователь: ${user}\nIP: ${ip}")
+    elif echo "$line" | grep -q "sshd.*Accepted publickey"; then
+        ip=$(echo "$line" | awk -F'from ' '{print $2}' | awk '{print $1}')
+        user=$(echo "$line" | awk -F'for ' '{print $2}' | awk '{print $1}')
+        message=$(echo -e "${MSG_SUCCESS}\nТип подключения: ключ ssh\nПользователь: ${user}\nIP: ${ip}")
     else
-        echo "$MSG_ERROR: $response" >&2
+        return
     fi
-}
 
-handle_callback_query() {
-    local callback_data="$1"
-    local chat_id="$2"
-    local message_id="$3"
-
-    case "$callback_data" in
-        "toggle_failed")
-            send_telegram_message "$chat_id" "Уведомления о неудачных попытках входа включены."
-            ;;
-        "toggle_success")
-            send_telegram_message "$chat_id" "Уведомления об успешных попытках входа включены."
-            ;;
-        "toggle_closed")
-            send_telegram_message "$chat_id" "Уведомления о закрытых соединениях включены."
-            ;;
-        *)
-            send_telegram_message "$chat_id" "Неизвестная команда."
-            ;;
-    esac
-}
-
-create_settings_menu() {
-    local chat_id="$1"
-    local keyboard=$(cat <<EOF
-{
-    "inline_keyboard": [
-        [{"text": "Уведомления о неудачных попытках", "callback_data": "toggle_failed"}],
-        [{"text": "Уведомления об успешных попытках", "callback_data": "toggle_success"}],
-        [{"text": "Уведомления о закрытых соединениях", "callback_data": "toggle_closed"}]
-    ]
-}
-    )
-    send_telegram_menu "$chat_id" "$MSG_SETTINGS" "$keyboard"
+    send_telegram_message "$message"
 }
 
 journalctl -f -u ssh | while read -r line; do
-    if echo "$line" | grep -q "sshd.*Failed password"; then
-        ip=$(echo "$line" | grep -oP 'from \K[0-9.]+')
-        user=$(echo "$line" | grep -oP 'for \K\w+')
-        message=$(echo -e "${MSG_FAILED}\nТип подключения: пароль\nПользователь: ${user}\nIP: ${ip}")
-        send_telegram_message "$message"
-    elif echo "$line" | grep -q "sshd.*Accepted password"; then
-        ip=$(echo "$line" | grep -oP 'from \K[0-9.]+')
-        user=$(echo "$line" | grep -oP 'for \K\w+')
-        message=$(echo -e "${MSG_SUCCESS}\nТип подключения: пароль\nПользователь: ${user}\nIP: ${ip}")
-        send_telegram_message "$message"
-    elif echo "$line" | grep -q "sshd.*Connection closed"; then
-        ip=$(echo "$line" | grep -oP 'from \K[0-9.]+')
-        user=$(echo "$line" | grep -oP 'user \K\w+')
-        message=$(echo -e "${MSG_CLOSED}\nПользователь: ${user}")
-        send_telegram_message "$message"
-    elif echo "$line" | grep -q "sshd.*Invalid user"; then
-        ip=$(echo "$line" | grep -oP 'from \K[0-9.]+')
-        user=$(echo "$line" | grep -oP 'Invalid user \K\w+')
-        message=$(echo -e "${MSG_FAILED}\nТип подключения: пароль\nПользователь: ${user}\nIP: ${ip}")
-        send_telegram_message "$message"
-    elif echo "$line" | grep -q "sshd.*Accepted publickey"; then
-        ip=$(echo "$line" | grep -oP 'from \K[0-9.]+')
-        user=$(echo "$line" | grep -oP 'for \K\w+')
-        message=$(echo -e "${MSG_SUCCESS}\nТип подключения: ключ ssh\nПользователь: ${user}\nIP: ${ip}")
-        send_telegram_message "$message"
-    fi
+    parse_ssh_line "$line"
 done
 EOF
 
