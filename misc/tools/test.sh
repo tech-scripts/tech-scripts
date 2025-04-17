@@ -152,6 +152,8 @@ send_telegram_message() {
     local response
     response=$(curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
         -d chat_id="${TELEGRAM_CHAT_ID}" \
+        -d disable_notification="${SEND_SILENT}" \
+        -d allow_sending_without_reply="${ALLOW_FORWARDING}" \
         --data-urlencode "text=${message}" 2>&1)
 
     if echo "$response" | grep -q '"ok":true'; then
@@ -264,6 +266,8 @@ if yes_no_box "Создание оповещения" "$MSG_CREATE_ALERT"; then
             TELEGRAM_THREAD_ID=$(input_box "Telegram Thread ID" "Введите ID цепочки сообщений (необязательно):")
             
             if send_test_message "$TELEGRAM_BOT_TOKEN" "$TELEGRAM_CHAT_ID" "$TELEGRAM_THREAD_ID" "$MSG_TEST_MESSAGE"; then
+                SEND_SILENT=$(yes_no_box "Отправить без звука?" "Хотите отправить сообщение без звука?")
+                ALLOW_FORWARDING=$(yes_no_box "Разрешить пересылку?" "Хотите разрешить пересылку сообщения?")
                 break
             else
                 show_message "$MSG_TEST_FAILED"
