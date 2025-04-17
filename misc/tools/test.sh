@@ -225,7 +225,6 @@ create_settings_menu() {
         [{"text": "Уведомления о закрытых соединениях: $([ "$NOTIFY_CLOSED" = true ] && echo "✅" || echo "❌")", "callback_data": "toggle_closed"}]
     ]
 }
-EOF
     )
     send_telegram_menu "$chat_id" "$MSG_SETTINGS" "$keyboard"
 }
