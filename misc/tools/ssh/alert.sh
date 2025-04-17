@@ -215,7 +215,7 @@ install_jq() {
     elif command -v brew &>/dev/null; then
         brew install jq
     else
-        echo "Не удалось определить пакетный менеджер. Установите jq вручную!" >&2
+        echo "Не удалось определить пакетный менеджер. Установите jq вручную!"
         exit 1
     fi
 }
