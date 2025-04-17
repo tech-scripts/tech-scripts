@@ -4,9 +4,7 @@ SUDO=$(command -v sudo)
 REPO_URL="https://github.com/tech-scripts/linux.git"
 CLONE_DIR="/tmp/tech-scripts/misc"
 
-rm -rf /tmp/tech-scripts
-git clone --depth 1 "$REPO_URL" "/tmp/tech-scripts"
-cd "$CLONE_DIR"
+[ ! -d "/tmp/tech-scripts" ] && git clone --depth 1 "$REPO_URL" "/tmp/tech-scripts" && cd "$CLONE_DIR"
 
 DIR_STACK=()
 CURRENT_DIR="$CLONE_DIR"
