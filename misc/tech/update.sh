@@ -2,4 +2,9 @@
 
 rm -rf /tmp/tech-scripts
 git clone --depth 1 "https://github.com/tech-scripts/linux.git" "/tmp/tech-scripts"
-cd "/tmp/tech-scripts/misc"
+rm -rf /usr/local/bin/tech
+cd "/tmp/tech-scripts/misc/tech"
+./update.sh
+echo ""
+echo "Обновление завершено!"
+echo ""
