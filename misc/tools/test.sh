@@ -159,6 +159,7 @@ send_telegram_message() {
         
     if echo "$response" | grep -q '"ok":true'; then
         echo "$MSG_SENT"
+        sleep 0.5
     else
         echo "$MSG_ERROR: $response" >&2
     fi
