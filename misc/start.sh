@@ -8,7 +8,7 @@ CLONE_DIR="/tmp/tech-scripts/misc"
 cd "/tmp/tech-scripts/misc"
 
 DIR_STACK=()
-CURRENT_DIR="/tmp/tech-scripts/misc"
+CURRENT_DIR="$CLONE_DIR"
 EXCLUDE_FILES=("start.sh" "choose.sh" "*.tmp")
 CONFIG_FILE="/etc/tech-scripts/choose.conf"
 
