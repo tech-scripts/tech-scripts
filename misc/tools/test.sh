@@ -152,11 +152,11 @@ send_telegram_message() {
     local response
     response=$(curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
         -d chat_id="${TELEGRAM_CHAT_ID}" \
-        ${thread_id:+-d reply_to_message_id="${TELEGRAM_THREAD_ID}"} \
+        ${TELEGRAM_THREAD_ID:+-d reply_to_message_id="${TELEGRAM_THREAD_ID}"} \
         -d disable_notification="${SEND_SILENT}" \
         -d allow_sending_without_reply="${ALLOW_FORWARDING}" \
         --data-urlencode "text=${message}" 2>&1)
-
+        
     if echo "$response" | grep -q '"ok":true'; then
         echo "$MSG_SENT"
     else
