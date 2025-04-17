@@ -87,8 +87,8 @@ send_test_message() {
         -d chat_id="${chat_id}" \
         ${thread_id:+-d reply_to_message_id="${thread_id}"} \
         -d disable_notification=true \
+        -d protect_content=true \
         --data-urlencode "text=${message}" 2>&1)
-
     if echo "$response" | grep -q '"ok":true'; then
         return 0
     else
