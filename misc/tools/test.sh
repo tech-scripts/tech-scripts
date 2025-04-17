@@ -179,27 +179,28 @@ parse_ssh_line() {
         ip=$(echo "$line" | awk -F'from ' '{print $2}' | awk '{print $1}')
         user=$(echo "$line" | awk -F'for ' '{print $2}' | awk '{print $1}')
         message=$(echo -e "${MSG_FAILED}\nТип подключения: пароль\nПользователь: ${user}\nIP: ${ip}")
+        send_telegram_message "$message"
     elif echo "$line" | grep -q "sshd.*Accepted password"; then
         ip=$(echo "$line" | awk -F'from ' '{print $2}' | awk '{print $1}')
         user=$(echo "$line" | awk -F'for ' '{print $2}' | awk '{print $1}')
         message=$(echo -e "${MSG_SUCCESS}\nТип подключения: пароль\nПользователь: ${user}\nIP: ${ip}")
+        send_telegram_message "$message"
     elif echo "$line" | grep -q "sshd.*Connection closed"; then
         ip=$(echo "$line" | awk -F'from ' '{print $2}' | awk '{print $1}')
         user=$(echo "$line" | awk -F'user ' '{print $2}' | awk '{print $1}')
         message=$(echo -e "${MSG_CLOSED}\nПользователь: ${user}")
+        send_telegram_message "$message"
     elif echo "$line" | grep -q "sshd.*Invalid user"; then
         ip=$(echo "$line" | awk -F'from ' '{print $2}' | awk '{print $1}')
         user=$(echo "$line" | awk -F'Invalid user ' '{print $2}' | awk '{print $1}')
         message=$(echo -e "${MSG_FAILED}\nТип подключения: пароль\nПользователь: ${user}\nIP: ${ip}")
+        send_telegram_message "$message"
     elif echo "$line" | grep -q "sshd.*Accepted publickey"; then
         ip=$(echo "$line" | awk -F'from ' '{print $2}' | awk '{print $1}')
         user=$(echo "$line" | awk -F'for ' '{print $2}' | awk '{print $1}')
         message=$(echo -e "${MSG_SUCCESS}\nТип подключения: ключ ssh\nПользователь: ${user}\nIP: ${ip}")
-    else
-        return
+        send_telegram_message "$message"
     fi
-
-    send_telegram_message "$message"
 }
 
 journalctl -f -u ssh | while read -r line; do
