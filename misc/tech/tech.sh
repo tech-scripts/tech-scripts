@@ -114,7 +114,4 @@ if [ -f /usr/local/bin/tech ]; then
 else
     $SUDO tee /usr/local/bin/tech > /dev/null <<< "$TECH_SCRIPT"
     $SUDO chmod +x /usr/local/bin/tech
-    echo " "
-    echo "$msg_add_complete"
-    echo " "
 fi
