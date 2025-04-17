@@ -80,12 +80,15 @@ yes_no_box() {
 send_test_message() {
     local token=$1
     local chat_id=$2
-    local message=$3
+    local thread_id=$3
+    local message=$4
     local response
     response=$(curl -s -X POST "https://api.telegram.org/bot${token}/sendMessage" \
         -d chat_id="${chat_id}" \
+        ${thread_id:+-d reply_to_message_id="${thread_id}"} \
+        -d disable_notification=true \
+        -d protect_content=true \
         --data-urlencode "text=${message}" 2>&1)
-
     if echo "$response" | grep -q '"ok":true'; then
         return 0
     else
@@ -149,10 +152,14 @@ send_telegram_message() {
     local response
     response=$(curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
         -d chat_id="${TELEGRAM_CHAT_ID}" \
+        ${TELEGRAM_THREAD_ID:+-d reply_to_message_id="${TELEGRAM_THREAD_ID}"} \
+        -d disable_notification="${SEND_SILENT}" \
+        ${PROTECT_CONTENT:+-d protect_content=true} \
         --data-urlencode "text=${message}" 2>&1)
-
+        
     if echo "$response" | grep -q '"ok":true'; then
         echo "$MSG_SENT"
+        sleep 0.5
     else
         echo "$MSG_ERROR: $response" >&2
     fi
@@ -257,8 +264,22 @@ if yes_no_box "Создание оповещения" "$MSG_CREATE_ALERT"; then
 
             TELEGRAM_CHAT_ID=$(input_box "Telegram Chat ID" "$MSG_CHAT_ID")
             [ -z "$TELEGRAM_CHAT_ID" ] && { exit; }
-
-            if send_test_message "$TELEGRAM_BOT_TOKEN" "$TELEGRAM_CHAT_ID" "$MSG_TEST_MESSAGE"; then
+            
+            TELEGRAM_THREAD_ID=$(input_box "Telegram Thread ID" "Введите ID цепочки сообщений (необязательно):")
+            
+            if send_test_message "$TELEGRAM_BOT_TOKEN" "$TELEGRAM_CHAT_ID" "$TELEGRAM_THREAD_ID" "$MSG_TEST_MESSAGE"; then
+                if yes_no_box "Отправлять без звука?" "Хотите отправлять сообщения без звука?"; then
+                    SEND_SILENT=true
+                else
+                    SEND_SILENT=false
+                fi
+                
+                if yes_no_box "Запретить пересылку?" "Хотите запретить пересылку сообщений?"; then
+                    PROTECT_CONTENT=true
+                else
+                    PROTECT_CONTENT=false
+                fi
+                
                 break
             else
                 show_message "$MSG_TEST_FAILED"
@@ -269,6 +290,9 @@ if yes_no_box "Создание оповещения" "$MSG_CREATE_ALERT"; then
         $SUDO tee "$CONFIG_FILE" >/dev/null <<EOF
 TELEGRAM_BOT_TOKEN=$TELEGRAM_BOT_TOKEN
 TELEGRAM_CHAT_ID=$TELEGRAM_CHAT_ID
+TELEGRAM_THREAD_ID=$TELEGRAM_THREAD_ID
+SEND_SILENT=$SEND_SILENT
+PROTECT_CONTENT=$PROTECT_CONTENT
 EOF
         $SUDO chmod 600 "$CONFIG_FILE"
         create_ssh_alert_script
