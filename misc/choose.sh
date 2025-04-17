@@ -10,6 +10,7 @@ fi
 
 for SCRIPT in *.sh; do
     [ "$SCRIPT" = "lang.sh" ] && continue
+    [ "$SCRIPT" = "update.sh" ] && continue
     [ -f "$SCRIPT" ] || continue
     chmod +x "$SCRIPT"
     ./"$SCRIPT"
