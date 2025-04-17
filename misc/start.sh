@@ -1,15 +1,13 @@
 #!/bin/bash
 
 SUDO=$(command -v sudo)
-REPO_URL="https://github.com/tech-scripts/linux.git"
-CLONE_DIR="/tmp/tech-scripts/misc"
 
-[ ! -d "/tmp/tech-scripts" ] && git clone --depth 1 "$REPO_URL" "/tmp/tech-scripts"
+[ ! -d "/tmp/tech-scripts" ] && git clone --depth 1 "https://github.com/tech-scripts/linux.git" "/tmp/tech-scripts"
 
-cd "$CLONE_DIR"
+cd "/tmp/tech-scripts/misc"
 
 DIR_STACK=()
-CURRENT_DIR="$CLONE_DIR"
+CURRENT_DIR="/tmp/tech-scripts/misc"
 EXCLUDE_FILES=("start.sh" "choose.sh" "*.tmp")
 CONFIG_FILE="/etc/tech-scripts/choose.conf"
 
