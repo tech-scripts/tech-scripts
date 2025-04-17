@@ -194,11 +194,14 @@ handle_callback_query() {
     local message_id="$3"
 
     case "$callback_data" in
-        "enable_failed")
+        "toggle_failed")
             send_telegram_message "$chat_id" "Уведомления о неудачных попытках входа включены."
             ;;
-        "disable_failed")
-            send_telegram_message "$chat_id" "Уведомления о неудачных попытках входа отключены."
+        "toggle_success")
+            send_telegram_message "$chat_id" "Уведомления об успешных попытках входа включены."
+            ;;
+        "toggle_closed")
+            send_telegram_message "$chat_id" "Уведомления о закрытых соединениях включены."
             ;;
         *)
             send_telegram_message "$chat_id" "Неизвестная команда."
@@ -215,6 +218,10 @@ create_settings_menu() {
         [{"text": "Уведомления об успешных попытках", "callback_data": "toggle_success"}],
         [{"text": "Уведомления о закрытых соединениях", "callback_data": "toggle_closed"}]
     ]
+}
+EOF
+    )
+    send_telegram_menu "$chat_id" "$MSG_SETTINGS" "$keyboard"
 }
 
 journalctl -f -u ssh | while read -r line; do
