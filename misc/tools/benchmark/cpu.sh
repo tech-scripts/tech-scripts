@@ -4,9 +4,9 @@ whiptail --title "Стресс-тест процессора" --yesno "Вы хо
 
 if [[ $? -eq 0 ]]; then
     echo "Запуск теста на одно ядро..."
-    single_core_result=$(sysbench cpu --threads=1 run)
+    single_core_result=$(sysbench cpu --time=5 --threads=1 run)
     echo "Запуск теста на все ядра..."
-    multi_core_result=$(sysbench cpu --threads=$(nproc) run)
+    multi_core_result=$(sysbench cpu --time=5 --threads=$(nproc) run)
     echo ""
     echo "Single core"
     echo ""
