@@ -139,12 +139,18 @@ if [[ "$LANG_CONF" == "Русский" ]]; then
     MSG_CLOSED="❌ Отмененная попытка входа ❌"
     MSG_ERROR="Ошибка при отправке сообщения"
     MSG_SENT="Сообщение успешно отправлено."
+    MSG_SETTINGS="⚙️ Настройки уведомлений ⚙️"
+    MSG_ENABLE="✅ Включить"
+    MSG_DISABLE="❌ Отключить"
 else
     MSG_FAILED="🚨 Failed login attempt 🚨"
     MSG_SUCCESS="✅ Successful login ✅"
     MSG_CLOSED="❌ Cancelled login attempt ❌"
     MSG_ERROR="Error sending message"
     MSG_SENT="Message sent successfully."
+    MSG_SETTINGS="⚙️ Notification Settings ⚙️"
+    MSG_ENABLE="✅ Enable"
+    MSG_DISABLE="❌ Disable"
 fi
 
 send_telegram_message() {
@@ -163,6 +169,56 @@ send_telegram_message() {
     else
         echo "$MSG_ERROR: $response" >&2
     fi
+}
+
+send_telegram_menu() {
+    local chat_id="$1"
+    local message="$2"
+    local keyboard="$3"
+    local response
+    response=$(curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+        -d chat_id="${chat_id}" \
+        -d text="${message}" \
+        -d reply_markup="${keyboard}" 2>&1)
+        
+    if echo "$response" | grep -q '"ok":true'; then
+        echo "$MSG_SENT"
+    else
+        echo "$MSG_ERROR: $response" >&2
+    fi
+}
+
+handle_callback_query() {
+    local callback_data="$1"
+    local chat_id="$2"
+    local message_id="$3"
+
+    case "$callback_data" in
+        "enable_failed")
+            send_telegram_message "$chat_id" "Уведомления о неудачных попытках входа включены."
+            ;;
+        "disable_failed")
+            send_telegram_message "$chat_id" "Уведомления о неудачных попытках входа отключены."
+            ;;
+        *)
+            send_telegram_message "$chat_id" "Неизвестная команда."
+            ;;
+    esac
+}
+
+create_settings_menu() {
+    local chat_id="$1"
+    local keyboard=$(cat <<EOF
+{
+    "inline_keyboard": [
+        [{"text": "Уведомления о неудачных попытках", "callback_data": "toggle_failed"}],
+        [{"text": "Уведомления об успешных попытках", "callback_data": "toggle_success"}],
+        [{"text": "Уведомления о закрытых соединениях", "callback_data": "toggle_closed"}]
+    ]
+}
+EOF
+    )
+    send_telegram_menu "$chat_id" "$MSG_SETTINGS" "$keyboard"
 }
 
 journalctl -f -u ssh | while read -r line; do
