@@ -1,7 +1,5 @@
 #!/bin/bash
 
-SUDO=$(command -v sudo)
-
 FILE_SIZE="1G"
 LANG_FILE=$(grep 'lang:' /etc/tech-scripts/choose.conf | awk '{print $2}')
 
@@ -56,4 +54,4 @@ echo ""
 echo "$msg_speed_read $read_speed"
 echo "$msg_time_read $read_time"
 echo ""
-$SUDO rm -f "$temp_file"
+rm -f "$temp_file"
