@@ -3,6 +3,32 @@
 SUDO=$(command -v sudo)
 CLONE_DIR="/tmp/tech-scripts/misc"
 
+install_packages() {
+    for package in git whiptail; do
+        command -v $package &>/dev/null && continue
+        if command -v apt &>/dev/null; then
+            $SUDO apt update && $SUDO apt install -y $package
+        elif command -v yum &>/dev/null; then
+            $SUDO yum install -y $package
+        elif command -v dnf &>/dev/null; then
+            $SUDO dnf install -y $package
+        elif command -v zypper &>/dev/null; then
+            $SUDO zypper install -y $package
+        elif command -v pacman &>/dev/null; then
+            $SUDO pacman -S --noconfirm $package
+        elif command -v apk &>/dev/null; then
+            $SUDO apk add $package
+        elif command -v brew &>/dev/null; then
+            brew install $package
+        else
+            echo "Не удалось определить пакетный менеджер. Установите $package вручную!"
+            exit 1
+        fi
+    done
+}
+
+install_packages
+
 [ ! -d "/tmp/tech-scripts" ] && cd /tmp && git clone --depth 1 https://github.com/tech-scripts/linux.git /tmp/tech-scripts
 
 cd /tmp/tech-scripts/misc
