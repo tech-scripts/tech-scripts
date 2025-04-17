@@ -154,6 +154,7 @@ send_telegram_message() {
         -d chat_id="${TELEGRAM_CHAT_ID}" \
         ${TELEGRAM_THREAD_ID:+-d reply_to_message_id="${TELEGRAM_THREAD_ID}"} \
         -d disable_notification="${SEND_SILENT}" \
+        ${PROTECT_CONTENT:+-d protect_content=true} \
         --data-urlencode "text=${message}" 2>&1)
         
     if echo "$response" | grep -q '"ok":true'; then
