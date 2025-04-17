@@ -9,9 +9,9 @@ if [ $? -eq 0 ]; then
     multi_core_result=$(sysbench cpu --threads=$(nproc) run)
 
     echo "Single Core Results:"
-    echo "$single_core_result"
+    echo "$single_core_result" | grep -E "CPU speed:|General statistics:"
     echo "Multi Core Results:"
-    echo "$multi_core_result"
+    echo "$multi_core_result" | grep -E "CPU speed:|General statistics:"
 else
     echo "Стресс-тест отменен."
 fi
