@@ -3,9 +3,9 @@
 SUDO=$(command -v sudo)
 CLONE_DIR="/tmp/tech-scripts/misc"
 
-[ ! -d "/tmp/tech-scripts" ] && git clone --depth 1 "https://github.com/tech-scripts/linux.git" "/tmp/tech-scripts"
+[ ! -d "/tmp/tech-scripts" ] && cd /tmp && git clone --depth 1 https://github.com/tech-scripts/linux.git /tmp/tech-scripts
 
-cd "/tmp/tech-scripts/misc"
+cd /tmp/tech-scripts/misc
 
 DIR_STACK=()
 CURRENT_DIR="$CLONE_DIR"
