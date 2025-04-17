@@ -57,7 +57,7 @@ combined_args="\$*"
 
 case "\$combined_args" in
     "update")
-        run_script "tech" "tech.sh"
+        run_script "tech" "update.sh"
         ;;
     "lxc")
         run_script "proxmox" "lxc.sh"
