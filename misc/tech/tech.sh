@@ -65,21 +65,33 @@ case "\$combined_args" in
     "vm")
         run_script "proxmox" "vm.sh"
         ;;
-    "ssh")
-        run_script "tools" "ssh.sh"
-        ;;
-    "test")
-         run_script "tools" "test.sh"
-         ;;
-    "system")
-        run_script "tools" "system.sh"
-        ;;
     "disk")
         run_script "tools/benchmark" "disk.sh"
         ;;
     "cpu")
         run_script "tools/benchmark" "cpu.sh"
         ;;
+    "autoupdate")
+        run_script "tools" "autoupdate.sh"
+        ;;
+    "grub")
+        run_script "tools" "grub.sh"
+        ;;
+    "ssh")
+        run_script "tools" "ssh.sh"
+        ;;
+    "startup")
+        run_script "tools" "startup.sh"
+        ;;
+    "swap")
+        run_script "tools" "swap.sh"
+        ;;
+    "system")
+        run_script "tools" "system.sh"
+        ;;
+    "test")
+         run_script "tools" "test.sh"
+         ;;
     *)
         echo " "
         echo "\$unknown_command"
