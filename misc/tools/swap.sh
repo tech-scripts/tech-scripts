@@ -17,8 +17,8 @@ if [ "$LANGUAGE" = "Русский" ]; then
     SWAP_OPTION="SWAP"
     ZSWAP_OPTION="ZSWAP (автоматически)"
     ZSWAP_NOT_SUPPORTED="ZSWAP не поддерживается вашим ядром."
-    DISABLE_SWAP_PROMPT="Хотите отключить активную подкачку?"
-    SWAP_SIZE_PROMPT="Введите размер SWAP (например, 2G):"
+    DISABLE_SWAP_PROMPT="Отключить активную подкачку для продолжения?"
+    SWAP_SIZE_PROMPT="Введите размер SWAP (например, 8G):"
     ZRAM_SETUP="ZRAM настроен на размер $ZRAM_SIZE."
     ADD_AUTOSTART="Добавить настройки в автозапуск через systemd?"
     AUTOSTART_ADDED="Настройки добавлены в автозапуск."
@@ -37,8 +37,8 @@ else
     SWAP_OPTION="SWAP"
     ZSWAP_OPTION="ZSWAP (automatic)"
     ZSWAP_NOT_SUPPORTED="ZSWAP is not supported by your kernel."
-    DISABLE_SWAP_PROMPT="Do you want to disable active swap?"
-    SWAP_SIZE_PROMPT="Enter SWAP size (e.g., 2G):"
+    DISABLE_SWAP_PROMPT="Disable active paging to continue?"
+    SWAP_SIZE_PROMPT="Enter SWAP size (e.g., 8G):"
     ZRAM_SETUP="ZRAM set up with size $ZRAM_SIZE."
     ADD_AUTOSTART="Add settings to autostart via systemd?"
     AUTOSTART_ADDED="Settings added to autostart."
@@ -143,7 +143,6 @@ if [ $ACTIVE_SWAP -eq 1 ] || [ $ACTIVE_ZRAM -eq 1 ] || [ $ACTIVE_ZSWAP -eq 1 ]; 
     fi
 fi
 
-# Проверка и удаление автозапуска
 remove_autostart "zram-setup"
 remove_autostart "swap-setup"
 remove_autostart "zswap-setup"
