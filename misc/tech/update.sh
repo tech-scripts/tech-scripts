@@ -3,6 +3,8 @@
 cat << 'EOF' > /tmp/update.sh
 #!/bin/bash
 
+LANGUAGE=$(grep '^lang:' /etc/tech-scripts/choose.conf | cut -d' ' -f2)
+
 cd /tmp
 rm -rf /tmp/tech-scripts
 git clone --depth 1 https://github.com/tech-scripts/linux.git /tmp/tech-scripts
@@ -11,7 +13,7 @@ cd "/tmp/tech-scripts/misc/tech"
 chmod +x tech.sh
 ./tech.sh
 echo ""
-if [ "grep -E '^lang:' /etc/tech-scripts/choose.conf | cut -d' ' -f2" = "Русский" ]; then
+if [ "LANGUAGE" ]; then
 echo "Обновление завершено!"
 else
 echo "Update completed!"
