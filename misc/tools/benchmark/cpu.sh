@@ -34,7 +34,7 @@ show_progress() {
             sleep 0.1
             echo $i
         done
-    ) | whiptail --title "Прогресс" --gauge "Пожалуйста, подождите..." 6 60 0
+    ) | whiptail --title "Прогресс выполнения" --gauge "" 6 60 0
 }
 
 if [[ $? -eq 0 ]]; then
@@ -43,7 +43,7 @@ if [[ $? -eq 0 ]]; then
     multi_core_result=$(sysbench cpu --time=5 --threads=$(nproc) run)
     wait
     echo ""
-    echo "Single core"
+    echo "Single core ---"
     echo ""
     echo -e "CPU speed:"
     echo -e "$(echo "$single_core_result" | grep "events per second:" | sed -E 's/([0-9]+\.[0-9]+)/\\e[38;2;160;160;160m\1\\e[0m/g')"
@@ -51,7 +51,7 @@ if [[ $? -eq 0 ]]; then
     echo -e "General statistics:"
     echo -e "$(echo "$single_core_result" | grep -E "total time:|total number of events:" | sed -E 's/([0-9]+\.[0-9]+|[0-9]+)/\\e[38;2;160;160;160m\1\\e[0m/g')"
     echo ""
-    echo "Multi core"
+    echo "Multi core ---"
     echo ""
     echo -e "CPU speed:"
     echo -e "$(echo "$multi_core_result" | grep "events per second:" | sed -E 's/([0-9]+\.[0-9]+)/\\e[38;2;160;160;160m\1\\e[0m/g')"
@@ -60,5 +60,5 @@ if [[ $? -eq 0 ]]; then
     echo -e "$(echo "$multi_core_result" | grep -E "total time:|total number of events:" | sed -E 's/([0-9]+\.[0-9]+|[0-9]+)/\\e[38;2;160;160;160m\1\\e[0m/g')"
     echo ""
 else
-    echo "Стресс-тест отменен."
+    exit 0
 fi
