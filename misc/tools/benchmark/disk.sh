@@ -29,7 +29,8 @@ disk_choices=()
 while IFS= read -r line; do
     mount_point=$(echo "$line" | awk '{print $2}')
     device=$(echo "$line" | awk '{print $1}')
-    if [ -n "$mount_point" ] && [[ ! "$mount_point" =~ ^(\[SWAP\]|/|/boot/efi)$ ]]; then
+    # Фильтрация для исключения /boot, [SWAP] и /
+    if [ -n "$mount_point" ] && [[ ! "$mount_point" =~ ^(/boot|\[SWAP\]|/)$ ]]; then
         disk_choices+=("$mount_point" "$device")
     fi
 done < <(lsblk -o MOUNTPOINT,NAME -n -l | grep -v '^\s*$')
