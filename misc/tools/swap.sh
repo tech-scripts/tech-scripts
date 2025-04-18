@@ -100,7 +100,7 @@ case $MEMORY_CHOICE in
         while true; do
             ZRAM_SIZE=$(whiptail --inputbox "$ENTER_SIZE" 10 40 3>&1 1>&2 2>&3)
             [ $? -ne 0 ] && close
-            if is_valid_size "$ZRAM_SIZE"; then break; else whiptail --msgbox "$INVALID_SIZE" 6 50; fi
+            if is_valid_size "$ZRAM_SIZE"; then break; else whiptail --title "" --msgbox "$INVALID_SIZE" 6 50; fi
         done
 
         if [ -f "$ZRAM_CONFIG" ]; then
