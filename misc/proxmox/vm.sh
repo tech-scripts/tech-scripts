@@ -12,7 +12,7 @@ if [ "$LANGUAGE" = "Русский" ]; then
     SELECT_ACTION="Выберите действие"
     MSG_CONFIRM_DELETE="Вы уверены, что хотите удалить"
     MSG_ERROR="Ошибка"
-    CONTINUE="Продолжить работу с текущей виртуальной машиной?"
+    CONTINUE_VM="Продолжить работу с текущей виртуальной машиной?"
 else
     QM_NOT_FOUND="Utility qm not found. Make sure Proxmox is installed!"
     NO_VMS="No available virtual machines!"
@@ -20,7 +20,7 @@ else
     SELECT_ACTION="Select action"
     MSG_CONFIRM_DELETE="Are you sure you want to delete"
     MSG_ERROR="Error"
-    CONTINUE="Continue working with the current virtual machine?"
+    CONTINUE_VM="Continue working with the current virtual machine?"
 fi
 
 if ! command -v qm &> /dev/null; then
