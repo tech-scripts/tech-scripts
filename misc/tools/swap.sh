@@ -205,10 +205,27 @@ case $MEMORY_CHOICE in
     3)
         if check_zswap_support; then
             echo 1 | $SUDO tee /sys/module/zswap/parameters/enabled > /dev/null
-            echo "z3fold" | $SUDO tee /sys/module/zswap/parameters/zpool > /dev/null
-            echo "lzo" | $SUDO tee /sys/module/zswap/parameters/compressor > /dev/null
+            
+            if [ -f /sys/module/zswap/parameters/zpool ]; then
+                echo "z3fold" | $SUDO tee /sys/module/zswap/parameters/zpool > /dev/null
+            fi
+            
+            if [ -f /sys/module/zswap/parameters/compressor ]; then
+                echo "lzo" | $SUDO tee /sys/module/zswap/parameters/compressor > /dev/null
+            fi
+            
             echo "$ZSWAP_ENABLED"
-            add_to_autostart "zswap-setup" "/bin/bash -c 'echo 1 > /sys/module/zswap/parameters/enabled && echo lzo > /sys/module/zswap/parameters/compressor && echo z3fold > /sys/module/zswap/parameters/zpool'"
+            add_to_autostart "zswap-setup" "/bin/bash -c 'echo 1 > /sys/module/zswap/parameters/enabled"
+            
+            if [ -f /sys/module/zswap/parameters/zpool ]; then
+                echo " && echo z3fold > /sys/module/zswap/parameters/zpool"
+            fi
+            
+            if [ -f /sys/module/zswap/parameters/compressor ]; then
+                echo " && echo lzo > /sys/module/zswap/parameters/compressor"
+            fi
+            
+            echo "'"
         else
             echo "$ZSWAP_NOT_SUPPORTED"
         fi
