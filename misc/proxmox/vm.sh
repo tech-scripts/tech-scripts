@@ -2,10 +2,10 @@
 
 CONFIG_FILE="/etc/tech-scripts/choose.conf"
 
-LANG_CONF=$(grep '^lang:' "$CONFIG_FILE" | cut -d' ' -f2)
+LANGUAGE=$(grep '^lang:' /etc/tech-scripts/choose.conf | cut -d' ' -f2)
 EDITOR=$(grep '^editor:' "$CONFIG_FILE" | cut -d ' ' -f 2)
 
-if [ "$LANG_CONF" = "Русский" ]; then
+if [ "$LANGUAGE" = "Русский" ]; then
     QM_NOT_FOUND="Утилита qm не найдена. Убедитесь, что Proxmox установлен!"
     NO_VMS="Нет доступных виртуальных машин!"
     SELECT_VM="Выберите виртуальную машину"
