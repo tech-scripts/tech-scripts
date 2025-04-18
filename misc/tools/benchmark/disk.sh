@@ -30,9 +30,9 @@ while IFS= read -r line; do
     mount_point=$(echo "$line" | awk '{print $1}')
     device=$(echo "$line" | awk '{print $2}')
     
-    if [[ "$mount_point" != "/boot" && "$mount_point" != "/" && "$mount_point" != "[SWAP]" && -n "$mount_point" ]]; then
+    if [[ -n "$mount_point" && "$mount_point" != "/boot" && "$mount_point" != "/" && "$mount_point" != "[SWAP]" ]]; then
         if [[ "$mount_point" == "$HOME" ]]; then
-            disk_choices+=("$device" "$local_dir")
+            disk_choices=("$device" "$local_dir" "${disk_choices[@]}")
         else
             disk_choices+=("$device" "$mount_point")
         fi
@@ -46,8 +46,8 @@ fi
 
 formatted_choices=()
 for ((i=0; i<${#disk_choices[@]}; i+=2)); do
-    formatted_choices+=("${disk_choices[i]}")  
-    formatted_choices+=("${disk_choices[i+1]}")  
+    formatted_choices+=("${disk_choices[i]}")
+    formatted_choices+=("${disk_choices[i+1]}")
 done
 
 menu_items=()
