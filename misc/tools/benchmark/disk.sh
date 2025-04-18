@@ -1,9 +1,9 @@
 #!/bin/bash
 
 FILE_SIZE="1G"
-LANG_FILE=$(grep 'lang:' /etc/tech-scripts/choose.conf | awk '{print $2}')
+LANGUAGE=$(grep '^lang:' /etc/tech-scripts/choose.conf | cut -d' ' -f2)
 
-if [ "$LANG_FILE" == "Русский" ]; then
+if [ "$LANGUAGE" == "Русский" ]; then
     msg_select="Выберите директорию"
     msg_speed_write="Скорость записи:"
     msg_speed_read="Скорость чтения:"
