@@ -1,9 +1,9 @@
 #!/bin/bash
 
 SUDO=$(command -v sudo)
-LANG_CONF=$(grep '^lang:' /etc/tech-scripts/choose.conf | cut -d' ' -f2)
+LANGUAGE=$(grep '^lang:' /etc/tech-scripts/choose.conf | cut -d' ' -f2)
 
-if [ "$LANG_CONF" = "Русский" ]; then
+if [ "$LANGUAGE" = "Русский" ]; then
     INPUT_MSG="Введите количество секунд для задержки перед запуском:"
     CONFIRM_PROMPT="Вы ввели: %s секунд. Это правильно?"
     ERROR_MSG="Ошибка: Введите целое число."
