@@ -37,7 +37,7 @@ else
     SWAP_OPTION="SWAP"
     ZSWAP_OPTION="ZSWAP (automatic)"
     ZSWAP_NOT_SUPPORTED="ZSWAP is not supported by your kernel."
-    z="Disable active paging to continue?"
+    DISABLE_SWAP_PROMPT="Disable active paging to continue?"
     SWAP_SIZE_PROMPT="Enter SWAP size (e.g., 8G):"
     ZRAM_SETUP="ZRAM set up with size $ZRAM_SIZE."
     ADD_AUTOSTART="Add settings to autostart via systemd?"
