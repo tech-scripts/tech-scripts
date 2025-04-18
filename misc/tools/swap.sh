@@ -147,7 +147,7 @@ remove_autostart "zram-setup"
 remove_autostart "swap-setup"
 remove_autostart "zswap-setup"
 
-whiptail --title "$CHOOSE_MEMORY" --menu "$CHOOSE_MEMORY" 8 40 3 \
+whiptail --title "$CHOOSE_MEMORY" --menu "$CHOOSE_MEMORY" 10 40 3 \
 1 "$ZRAM_OPTION" \
 2 "$SWAP_OPTION" \
 3 "$ZSWAP_OPTION" 2> /tmp/memory_choice
