@@ -35,7 +35,7 @@ show_progress() {
             sleep 0.1
             echo $i
         done
-    ) | whiptail --title "Прогресс выполнения" --gauge "" 6 60 0
+    ) | whiptail --title "Прогресс выполнения" --gauge " " 6 60 0
 }
 
 if whiptail --title "Стресс-тест процессора" --yesno "Вы хотите выполнить стресс-тест процессора?" 10 60; then
