@@ -20,6 +20,9 @@ if [ "$LANGUAGE" = "Русский" ]; then
     DISABLE_SWAP_PROMPT="Хотите отключить активную подкачку?"
     SWAP_SIZE_PROMPT="Введите размер SWAP (например, 2G):"
     ZRAM_SETUP="ZRAM настроен на размер $ZRAM_SIZE."
+    ADD_AUTOSTART="Добавить настройки в автозапуск через systemd?"
+    AUTOSTART_ADDED="Настройки добавлены в автозапуск."
+    AUTOSTART_SKIPPED="Автозапуск не настроен."
 else
     INVALID_SIZE="Invalid input. Please enter size in format like 8G or 512M."
     ENTER_SIZE="Enter ZRAM size (e.g., 8G, 512M):"
@@ -35,6 +38,9 @@ else
     DISABLE_SWAP_PROMPT="Do you want to disable active swap?"
     SWAP_SIZE_PROMPT="Enter SWAP size (e.g., 2G):"
     ZRAM_SETUP="ZRAM set up with size $ZRAM_SIZE."
+    ADD_AUTOSTART="Add settings to autostart via systemd?"
+    AUTOSTART_ADDED="Settings added to autostart."
+    AUTOSTART_SKIPPED="Autostart not configured."
 fi
 
 is_valid_size() {
@@ -70,6 +76,34 @@ check_zswap_support() {
         return 0
     else
         return 1
+    fi
+}
+
+add_to_autostart() {
+    local service_name=$1
+    local exec_start=$2
+
+    if whiptail --yesno "$ADD_AUTOSTART" 7 40; then
+        SERVICE_FILE="/etc/systemd/system/$service_name.service"
+        $SUDO tee "$SERVICE_FILE" > /dev/null <<EOF
+[Unit]
+Description=$service_name Setup Script
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=$exec_start
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
+EOF
+        $SUDO systemctl daemon-reload
+        $SUDO systemctl enable "$service_name.service"
+        $SUDO systemctl start "$service_name.service"
+        echo "$AUTOSTART_ADDED"
+    else
+        echo "$AUTOSTART_SKIPPED"
     fi
 }
 
@@ -124,6 +158,7 @@ case $MEMORY_CHOICE in
         $SUDO swapon /dev/zram0
         echo "$ZRAM_SETUP"
         echo "ZRAM_SIZE=$ZRAM_SIZE" | $SUDO tee "$ZRAM_CONFIG" > /dev/null
+        add_to_autostart "zram-setup" "/bin/bash -c 'modprobe zram && echo $ZRAM_SIZE > /sys/block/zram0/disksize && mkswap /dev/zram0 && swapon /dev/zram0'"
         ;;
 
     2)
@@ -135,6 +170,7 @@ case $MEMORY_CHOICE in
             $SUDO swapon /swapfile
             echo "/swapfile none swap sw 0 0" | $SUDO tee -a /etc/fstab > /dev/null
             echo "$SWAP_SETUP"
+            add_to_autostart "swap-setup" "/bin/bash -c 'swapon /swapfile'"
         else
             whiptail --msgbox "$INVALID_SIZE" 6 50
         fi
@@ -154,6 +190,7 @@ case $MEMORY_CHOICE in
                 echo "Параметр compressor не поддерживается."
             fi
             echo "$ZSWAP_ENABLED"
+            add_to_autostart "zswap-setup" "/bin/bash -c 'echo 1 > /sys/module/zswap/parameters/enabled && echo lzo > /sys/module/zswap/parameters/compressor && echo z3fold > /sys/module/zswap/parameters/zpool'"
         else
             echo "$ZSWAP_NOT_SUPPORTED"
         fi
