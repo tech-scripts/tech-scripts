@@ -32,12 +32,14 @@ while IFS= read -r line; do
     
     # Фильтрация для исключения /boot, [SWAP] и /
     if [[ "$mount_point" != "/boot" && "$mount_point" != "/" && "$mount_point" != "[SWAP]" && -n "$mount_point" ]]; then
-        disk_choices+=("$mount_point" "$device")
+        # Определяем тип директории
+        if [[ "$mount_point" == "$HOME" ]]; then
+            disk_choices+=("$mount_point" "$local_dir")
+        else
+            disk_choices+=("$mount_point" "$remote_dir")
+        fi
     fi
 done < <(lsblk -o MOUNTPOINT,NAME -n -l | grep -v '^\s*$')
-
-# Добавляем локальную директорию
-disk_choices+=("$HOME" "$local_dir")
 
 # Проверяем, что в списке есть элементы
 if [ ${#disk_choices[@]} -eq 0 ]; then
