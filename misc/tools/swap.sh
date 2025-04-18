@@ -188,18 +188,28 @@ case $MEMORY_CHOICE in
         ;;
 
     2)
-        SWAP_SIZE=$(whiptail --inputbox "$SWAP_SIZE_PROMPT" 10 40 3>&1 1>&2 2>&3)
-        if is_valid_size "$SWAP_SIZE"; then
-            $SUDO fallocate -l "$SWAP_SIZE" /swapfile
-            $SUDO chmod 600 /swapfile
-            $SUDO mkswap /swapfile
-            $SUDO swapon /swapfile
-            echo "/swapfile none swap sw 0 0" | $SUDO tee -a /etc/fstab > /dev/null
-            echo "$SWAP_SETUP"
-            add_to_autostart "swap-setup" "/bin/bash -c 'swapon /swapfile'"
-        else
-            whiptail --msgbox "$INVALID_SIZE" 8 50
+        if [ -f /swapfile ]; then
+            $SUDO swapoff /swapfile
+            $SUDO rm -f /swapfile
         fi
+
+        while true; do
+            SWAP_SIZE=$(whiptail --inputbox "$SWAP_SIZE_PROMPT" 10 40 3>&1 1>&2 2>&3)
+            [ $? -ne 0 ] && close
+            if is_valid_size "$SWAP_SIZE"; then
+                break
+            else
+                whiptail --msgbox "$INVALID_SIZE" 8 50
+            fi
+        done
+
+        $SUDO fallocate -l "$SWAP_SIZE" /swapfile
+        $SUDO chmod 600 /swapfile
+        $SUDO mkswap /swapfile
+        $SUDO swapon /swapfile
+        echo "/swapfile none swap sw 0 0" | $SUDO tee -a /etc/fstab > /dev/null
+        echo "$SWAP_SETUP"
+        add_to_autostart "swap-setup" "/bin/bash -c 'swapon /swapfile'"
         ;;
 
     3)
