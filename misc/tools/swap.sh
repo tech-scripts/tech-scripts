@@ -87,7 +87,7 @@ add_to_autostart() {
     local service_name=$1
     local exec_start=$2
 
-    if whiptail --yesno "$ADD_AUTOSTART" 10 40; then
+    if whiptail --yesno "$ADD_AUTOSTART" 8 40; then
         SERVICE_FILE="/etc/systemd/system/$service_name.service"
         $SUDO tee "$SERVICE_FILE" > /dev/null <<EOF
 [Unit]
@@ -115,7 +115,7 @@ remove_autostart() {
     local service_name=$1
 
     if systemctl is-enabled "$service_name.service" &>/dev/null; then
-        if whiptail --yesno "$REMOVE_AUTOSTART" 10 40; then
+        if whiptail --yesno "$REMOVE_AUTOSTART" 8 40; then
             $SUDO systemctl stop "$service_name.service"
             $SUDO systemctl disable "$service_name.service"
             $SUDO rm -f "/etc/systemd/system/$service_name.service"
@@ -147,7 +147,7 @@ remove_autostart "zram-setup"
 remove_autostart "swap-setup"
 remove_autostart "zswap-setup"
 
-whiptail --title "$CHOOSE_MEMORY" --menu "$CHOOSE_MEMORY" 10 40 3 \
+whiptail --title "$CHOOSE_MEMORY" --menu "$CHOOSE_MEMORY" 8 40 3 \
 1 "$ZRAM_OPTION" \
 2 "$SWAP_OPTION" \
 3 "$ZSWAP_OPTION" 2> /tmp/memory_choice
@@ -157,7 +157,7 @@ MEMORY_CHOICE=$(< /tmp/memory_choice)
 case $MEMORY_CHOICE in
     1)
         while true; do
-            ZRAM_SIZE=$(whiptail --inputbox "$ENTER_SIZE" 10 40 3>&1 1>&2 2>&3)
+            ZRAM_SIZE=$(whiptail --inputbox "$ENTER_SIZE" 8 40 3>&1 1>&2 2>&3)
             [ $? -ne 0 ] && close
             if is_valid_size "$ZRAM_SIZE"; then
                 break
@@ -168,7 +168,7 @@ case $MEMORY_CHOICE in
 
         if [ -f "$ZRAM_CONFIG" ]; then
             source "$ZRAM_CONFIG"
-            if whiptail --yesno "$REMOVE_ZRAM" 10 40; then
+            if whiptail --yesno "$REMOVE_ZRAM" 8 40; then
                 $SUDO rm -f "$ZRAM_CONFIG"
                 echo "$ZRAM_REMOVED"
                 $SUDO swapoff /dev/zram0 2>/dev/null
@@ -188,7 +188,7 @@ case $MEMORY_CHOICE in
         ;;
 
     2)
-        SWAP_SIZE=$(whiptail --inputbox "$SWAP_SIZE_PROMPT" 10 40 3>&1 1>&2 2>&3)
+        SWAP_SIZE=$(whiptail --inputbox "$SWAP_SIZE_PROMPT" 8 40 3>&1 1>&2 2>&3)
         if is_valid_size "$SWAP_SIZE"; then
             $SUDO fallocate -l "$SWAP_SIZE" /swapfile
             $SUDO chmod 600 /swapfile
@@ -198,7 +198,7 @@ case $MEMORY_CHOICE in
             echo "$SWAP_SETUP"
             add_to_autostart "swap-setup" "/bin/bash -c 'swapon /swapfile'"
         else
-            whiptail --msgbox "$INVALID_SIZE" 10 50
+            whiptail --msgbox "$INVALID_SIZE" 8 50
         fi
         ;;
 
