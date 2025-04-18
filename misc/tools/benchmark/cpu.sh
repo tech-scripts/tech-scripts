@@ -42,6 +42,7 @@ if whiptail --title "Стресс-тест процессора" --yesno "Вы �
     show_progress &
     single_core_result=$(sysbench cpu --time=5 --threads=1 run)
     multi_core_result=$(sysbench cpu --time=5 --threads=$(nproc) run)
+    wait
     echo ""
     echo "Single core"
     echo ""
