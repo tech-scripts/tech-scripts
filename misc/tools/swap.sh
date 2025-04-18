@@ -37,7 +37,7 @@ else
     SWAP_OPTION="SWAP"
     ZSWAP_OPTION="ZSWAP (automatic)"
     ZSWAP_NOT_SUPPORTED="ZSWAP is not supported by your kernel."
-    DISABLE_SWAP_PROMPT="Disable active paging to continue?"
+    z="Disable active paging to continue?"
     SWAP_SIZE_PROMPT="Enter SWAP size (e.g., 8G):"
     ZRAM_SETUP="ZRAM set up with size $ZRAM_SIZE."
     ADD_AUTOSTART="Add settings to autostart via systemd?"
@@ -134,7 +134,7 @@ check_active_zram && ACTIVE_ZRAM=1
 check_active_zswap && ACTIVE_ZSWAP=1
 
 if [ $ACTIVE_SWAP -eq 1 ] || [ $ACTIVE_ZRAM -eq 1 ] || [ $ACTIVE_ZSWAP -eq 1 ]; then
-    if whiptail --yesno "$DISABLE_SWAP_PROMPT" 10 40; then
+    if whiptail --yesno "$DISABLE_SWAP_PROMPT" 8 40; then
         [ $ACTIVE_SWAP -eq 1 ] && { $SUDO swapoff -a; }
         [ $ACTIVE_ZRAM -eq 1 ] && { $SUDO swapoff /dev/zram0; $SUDO modprobe -r zram; }
         [ $ACTIVE_ZSWAP -eq 1 ] && { echo 0 | $SUDO tee /sys/module/zswap/parameters/enabled > /dev/null; }
