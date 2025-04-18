@@ -23,12 +23,18 @@ fi
 
 disk_choices=()
 
+system_disk=$(df / | awk 'NR==2 {print $1}' | sed 's|/dev/||' | sed 's/[0-9]*$//')
+home_path="$HOME"
+disk_choices+=("$system_disk" "$home_path")
+
 while IFS= read -r line; do
-    device=$(echo "$line" | awk '{print $1}' | sed 's|/dev/||')
+    device=$(echo "$line" | awk '{print $1}' | sed 's|/dev/||' | sed 's/[0-9]*$//')
     mount_point=$(echo "$line" | awk '{print $2}')
     
-    if [[ -n "$mount_point" && "$mount_point" != "/boot/efi" && "$mount_point" != "[SWAP]" ]]; then
-        disk_choices+=("$device" "$mount_point")
+    if [[ -n "$mount_point" && "$mount_point" != "/boot" && "$mount_point" != "/boot/efi" && "$mount_point" != "[SWAP]" && "$mount_point" != "/" && ! "$device" =~ zram ]]; then
+        if [[ "$device" != "$system_disk" ]]; then
+            disk_choices+=("$device" "$mount_point")
+        fi
     fi
 done < <(lsblk -o NAME,MOUNTPOINT -n -l | grep -v '^\s*$')
 
