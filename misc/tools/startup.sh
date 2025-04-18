@@ -4,10 +4,10 @@ SUDO=$(command -v sudo || echo "")
 AUTOSTART_SCRIPT="/usr/local/tech-scripts/autostart.sh"
 SERVICE_FILE="/etc/systemd/system/autostart.service"
 SERVICE_NAME="autostart.service"
-LANG_CONF=$(grep '^lang:' /etc/tech-scripts/choose.conf 2>/dev/null | cut -d' ' -f2)
+LANGUAGE=$(grep '^lang:' /etc/tech-scripts/choose.conf | cut -d' ' -f2)
 EDITOR=$(grep '^editor:' /etc/tech-scripts/choose.conf | cut -d ' ' -f 2)
 
-if [ "$LANG_CONF" = "Русский" ]; then
+if [ "$LANGUAGE" = "Русский" ]; then
     INSTALL_MSG="Хотите установить скрипт автозапуска?"
     EDIT_MSG="Хотите открыть $AUTOSTART_SCRIPT для редактирования?"
     INVALID_EDITOR="Неверный выбор редактора. Пожалуйста, выберите nano или vim."
