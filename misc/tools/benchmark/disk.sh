@@ -32,11 +32,12 @@ while IFS= read -r line; do
     device=$(echo "$line" | awk '{print $1}' | sed 's|/dev/||' | sed 's/[0-9]*$//')
     mount_point=$(echo "$line" | awk '{print $2}')
     
-    if [[ -n "$mount_point" && "$mount_point" != "/" && "$mount_point" != "/boot" && "$mount_point" != "/boot/efi" && "$mount_point" != "[SWAP]" && ! "$device" =~ zram ]]; then
-        disk_choices+=("$device" "$mount_point")
+    if [[ -n "$mount_point" && "$mount_point" != "/boot" && "$mount_point" != "/boot/efi" && "$mount_point" != "[SWAP]" && "$mount_point" != "/" && ! "$device" =~ zram ]]; then
+        if [[ "$device" != "$root_disk" ]]; then
+            disk_choices+=("$device" "$mount_point")
+        fi
     fi
 done < <(lsblk -o NAME,MOUNTPOINT -n -l | grep -v '^\s*$')
-
 
 if [ ${#disk_choices[@]} -eq 0 ]; then
     echo "Нет доступных точек монтирования для выбора."
@@ -45,7 +46,7 @@ fi
 
 menu_items=()
 for ((i=0; i<${#disk_choices[@]}; i+=2)); do
-    echo "${disk_choices[i]} ${disk_choices[i+1]}"
+    menu_items+=("${disk_choices[i]}" "${disk_choices[i+1]}")
 done
 
 selected_disk=$(whiptail --title "$msg_select" --menu "" 15 60 4 "${menu_items[@]}" 3>&1 1>&2 2>&3)
