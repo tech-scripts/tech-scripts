@@ -40,13 +40,8 @@ show_progress() {
 
 if whiptail --title "Стресс-тест процессора" --yesno "Вы хотите выполнить стресс-тест процессора?" 10 60; then
     show_progress &
-    progress_pid=$!
-
     single_core_result=$(sysbench cpu --time=5 --threads=1 run)
     multi_core_result=$(sysbench cpu --time=5 --threads=$(nproc) run)
-
-    kill $progress_pid 2>/dev/null
-
     echo ""
     echo "Single core ---"
     echo ""
