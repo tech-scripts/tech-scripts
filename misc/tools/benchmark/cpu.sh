@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if ! command -v sysbench &>/dev/null; then
-    whiptail --title "Установка sysbench" --yesno "sysbench не установлен. Хотите установить его?" 10 60
+    whiptail --title "Установка необходимых компонентов" --yesno "sysbench не установлен. Хотите установить его?" 10 60
     if [ $? -eq 0 ]; then
         if command -v apt &>/dev/null; then
             sudo apt update && sudo apt install -y sysbench
