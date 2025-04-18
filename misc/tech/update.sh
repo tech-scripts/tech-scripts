@@ -11,7 +11,11 @@ cd "/tmp/tech-scripts/misc/tech"
 chmod +x tech.sh
 ./tech.sh
 echo ""
+if [ "grep -E '^lang:' /etc/tech-scripts/choose.conf | cut -d' ' -f2" = "Русский" ]; then
 echo "Обновление завершено!"
+else
+echo "Update completed!"
+fi
 echo ""
 EOF
 
