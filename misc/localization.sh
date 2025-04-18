@@ -24,6 +24,13 @@ if [[ "$LANGUAGE" == "Русский" ]]; then
     NO_CONTAINERS_LXC="Нет доступных LXC-контейнеров!"
     SELECT_CONTAINER="Выберите контейнер"
     CONTINUE_LXC="Продолжить работу с текущим контейнером?"
+
+    TITLE_DANGER="Подтверждение удаления"
+    MESSAGE_DANGER="Вы точно хотите удалить все файлы tech-scripts?"
+    YES="Да"
+    NO="Нет"
+    DELETING="Удаление файлов..."
+    DELETED="Файлы успешно удалены!"
 else
     MSG_NO_SCRIPTS="No available scripts or directories!"
     MSG_CANCELLED="Selection cancelled!"
@@ -46,4 +53,11 @@ else
     NO_CONTAINERS_LXC="No available LXC containers!"
     SELECT_CONTAINER="Select container"
     CONTINUE_LXC="Continue working with the current container?"
+
+    TITLE_DANGER="Delete Confirmation"
+    MESSAGE_DANGER="Are you sure you want to delete all tech-scripts files?"
+    YES="Yes"
+    NO="No"
+    DELETING="Deleting files..."
+    DELETED="Files deleted successfully!"
 fi
