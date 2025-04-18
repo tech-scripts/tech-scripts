@@ -32,7 +32,7 @@ while IFS= read -r line; do
     if [ -n "$mount_point" ] && [ "$mount_point" != "[SWAP]" ] && [ "$mount_point" != "[BIOS]" ] && [ "$mount_point" != "[EFI]" ]; then
         disk_choices+=("$mount_point" "$device")
     fi
-done < <(lsblk -o MOUNTPOINT,NAME -n | grep -v '^\s*$')
+done < <(lsblk -o MOUNTPOINT,NAME -n | grep -v '^\s*$' | grep -v '\[SWAP\]' | grep -v '\[BIOS\]' | grep -v '\[EFI\]')
 
 disk_choices+=("$HOME" "$local_dir")
 
