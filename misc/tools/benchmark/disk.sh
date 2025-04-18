@@ -73,13 +73,13 @@ read_time=$(echo "$output" | grep -o '[0-9.]* s' | head -n 1)
 read_speed=$(echo "$output" | grep -o '[0-9.]* [MG]B/s' | head -n 1 || echo "$msg_failed")
 
 echo ""
-echo "$msg_selected_dir $selected_mount_point"
+echo -e "$msg_selected_dir \e[38;2;160;160;160m$selected_mount_point\e[0m"
 echo ""
-echo "$msg_speed_write $write_speed"
-echo "$msg_time_write $write_time"
+echo -e "$msg_speed_write \e[38;2;160;160;160m$write_speed\e[0m"
+echo -e "$msg_time_write \e[38;2;160;160;160m$write_time\e[0m"
 echo ""
-echo "$msg_speed_read $read_speed"
-echo "$msg_time_read $read_time"
+echo -e "$msg_speed_read \e[38;2;160;160;160m$read_speed\e[0m"
+echo -e "$msg_time_read \e[38;2;160;160;160m$read_time\e[0m"
 echo ""
 
 rm -f "$temp_file"
