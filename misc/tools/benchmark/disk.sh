@@ -1,6 +1,7 @@
 #!/bin/bash
 
 FILE_SIZE="1G"
+SUDO=$(command -v sudo)
 LANGUAGE=$(grep '^lang:' /etc/tech-scripts/choose.conf | cut -d' ' -f2)
 
 if [ "$LANGUAGE" == "Русский" ]; then
@@ -48,7 +49,7 @@ selected_disk=$(whiptail --title "$msg_select" --menu "" 15 60 4 "${disk_choices
 
 if [ -b "$selected_disk" ]; then
     mount_point=$(mktemp -d)
-    mount "$selected_disk" "$mount_point"
+    $SUDO mount "$selected_disk" "$mount_point"
     temp_file="$mount_point/testfile"
 else
     temp_file="$selected_disk/testfile"
@@ -73,7 +74,8 @@ echo "$msg_time_read $read_time"
 echo ""
 
 rm -f "$temp_file"
+
 if [ -b "$selected_disk" ]; then
-    umount "$mount_point"
-    rmdir "$mount_point"
+    $SUDO umount "$mount_point"
+    $SUDO rmdir "$mount_point"
 fi
