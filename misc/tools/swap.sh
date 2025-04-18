@@ -59,7 +59,15 @@ check_active_zram() {
 }
 
 check_active_zswap() {
-    [ -d /sys/module/zswap ] && [ "$(cat /sys/module/zswap/parameters/enabled 2>/dev/null)" -eq 1 ]
+    if [ -d /sys/module/zswap ]; then
+        if [ -f /sys/module/zswap/parameters/enabled ]; then
+            ZSWAP_ENABLED=$(cat /sys/module/zswap/parameters/enabled 2>/dev/null)
+            if [[ "$ZSWAP_ENABLED" =~ ^[0-1]$ ]]; then
+                return 0
+            fi
+        fi
+    fi
+    return 1
 }
 
 ACTIVE_SWAP=0
@@ -132,7 +140,9 @@ case $MEMORY_CHOICE in
     3)
         if [ -d /sys/module/zswap ]; then
             echo 1 | $SUDO tee /sys/module/zswap/parameters/enabled > /dev/null
-            echo "z3fold" | $SUDO tee /sys/module/zswap/parameters/zpool > /dev/null
+            if [ -f /sys/module/zswap/parameters/zpool ]; then
+                echo "z3fold" | $SUDO tee /sys/module/zswap/parameters/zpool > /dev/null
+            fi
             echo "lzo" | $SUDO tee /sys/module/zswap/parameters/compressor > /dev/null
             echo "$ZSWAP_ENABLED"
         else
