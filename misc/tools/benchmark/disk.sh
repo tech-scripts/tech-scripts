@@ -35,7 +35,14 @@ while IFS= read -r line; do
     fi
 done < <(lsblk -o MOUNTPOINT,NAME -n -l | grep -v '^\s*$')
 
+# Добавляем локальную директорию
 disk_choices+=("$HOME" "$local_dir")
+
+# Проверяем, что в списке есть элементы
+if [ ${#disk_choices[@]} -eq 0 ]; then
+    echo "Нет доступных точек монтирования для выбора."
+    exit 1
+fi
 
 selected_disk=$(whiptail --title "$msg_select" --menu "" 15 60 4 "${disk_choices[@]}" 3>&1 1>&2 2>&3)
 
