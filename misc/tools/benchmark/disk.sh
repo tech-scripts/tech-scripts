@@ -45,7 +45,7 @@ fi
 
 menu_items=()
 for ((i=0; i<${#disk_choices[@]}; i+=2)); do
-    menu_items+=("${disk_choices[i]}" "${disk_choices[i+1]}")
+    echo "${disk_choices[i]} ${disk_choices[i+1]}"
 done
 
 selected_disk=$(whiptail --title "$msg_select" --menu "" 15 60 4 "${menu_items[@]}" 3>&1 1>&2 2>&3)
