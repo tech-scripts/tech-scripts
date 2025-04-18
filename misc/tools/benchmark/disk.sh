@@ -27,16 +27,13 @@ fi
 
 disk_choices=()
 
-# Получаем имя диска системы (например, sda) и путь к домашней директории
-system_disk=$(df / | awk 'NR==2 {print $1}' | sed 's/[0-9]*$//')
+system_disk=$(df / | awk 'NR==2 {print $1}' | sed 's|/dev/||' | sed 's/[0-9]*$//')
 home_path="$HOME"
 
-# Добавляем системный диск и домашнюю директорию в начало списка
 disk_choices+=("$system_disk" "$home_path")
 
-# Получаем список примонтированных дисков
 while IFS= read -r line; do
-    device=$(echo "$line" | awk '{print $1}' | sed 's/[0-9]*$//')
+    device=$(echo "$line" | awk '{print $1}' | sed 's|/dev/||' | sed 's/[0-9]*$//')
     mount_point=$(echo "$line" | awk '{print $2}')
     
     if [[ -n "$mount_point" && "$mount_point" != "/boot" && "$mount_point" != "/" && "$mount_point" != "[SWAP]" ]]; then
@@ -85,4 +82,7 @@ echo "$msg_speed_write $write_speed"
 echo "$msg_time_write $write_time"
 echo ""
 echo "$msg_speed_read $read_speed"
-echo "$msg_time_read $read
+echo "$msg_time_read $read_time"
+echo ""
+
+rm -f "$temp_file"
