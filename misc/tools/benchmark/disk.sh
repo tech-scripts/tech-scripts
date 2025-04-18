@@ -10,7 +10,7 @@ if [ "$LANGUAGE" == "Русский" ]; then
     msg_time_write="Время записи:"
     msg_time_read="Время чтения:"
     msg_failed="Не удалось измерить скорость"
-    local_dir="локальная директория"
+    local_dir="домашняя директория"
     remote_dir="удаленная директория"
     msg_selected_dir="Выбранная директория:"
 else
@@ -30,9 +30,7 @@ while IFS= read -r line; do
     mount_point=$(echo "$line" | awk '{print $1}')
     device=$(echo "$line" | awk '{print $2}')
     
-    # Фильтрация для исключения /boot, [SWAP] и /
     if [[ "$mount_point" != "/boot" && "$mount_point" != "/" && "$mount_point" != "[SWAP]" && -n "$mount_point" ]]; then
-        # Определяем имя диска и путь
         if [[ "$mount_point" == "$HOME" ]]; then
             disk_choices+=("$device" "$local_dir")
         else
@@ -41,19 +39,24 @@ while IFS= read -r line; do
     fi
 done < <(lsblk -o MOUNTPOINT,NAME -n -l | grep -v '^\s*$')
 
-# Проверяем, что в списке есть элементы
 if [ ${#disk_choices[@]} -eq 0 ]; then
     echo "Нет доступных точек монтирования для выбора."
     exit 1
 fi
 
-# Форматируем вывод для whiptail
 formatted_choices=()
 for ((i=0; i<${#disk_choices[@]}; i+=2)); do
-    formatted_choices+=("${disk_choices[i]} ${disk_choices[i+1]}")
+    formatted_choices+=("${disk_choices[i]}")  
+    formatted_choices+=("${disk_choices[i+1]}")  
 done
 
-selected_disk=$(whiptail --title "$msg_select" --menu "" 15 60 4 "${formatted_choices[@]}" 3>&1 1>&2 2>&3)
+menu_items=()
+for ((i=0; i<${#formatted_choices[@]}; i+=2)); do
+    menu_items+=("${formatted_choices[i]}")
+    menu_items+=("${formatted_choices[i+1]}")
+done
+
+selected_disk=$(whiptail --title "$msg_select" --menu "" 15 60 4 "${menu_items[@]}" 3>&1 1>&2 2>&3)
 
 if [ -z "$selected_disk" ]; then
     exit 0
