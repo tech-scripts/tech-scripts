@@ -1,7 +1,6 @@
 #!/bin/bash
 
 FILE_SIZE="1G"
-SUDO=$(command -v sudo)
 LANGUAGE=$(grep '^lang:' /etc/tech-scripts/choose.conf | cut -d' ' -f2)
 
 if [ "$LANGUAGE" == "Русский" ]; then
@@ -38,22 +37,9 @@ for dir in "/mnt" "/media"; do
     fi
 done
 
-for dev in $(lsblk -nd --output NAME); do
-    dev_path="/dev/$dev"
-    if [ -b "$dev_path" ]; then
-        disk_choices+=("$dev_path" "block device")
-    fi
-done
-
 selected_disk=$(whiptail --title "$msg_select" --menu "" 15 60 4 "${disk_choices[@]}" 3>&1 1>&2 2>&3)
 
-if [ -b "$selected_disk" ]; then
-    mount_point=$(mktemp -d)
-    $SUDO mount "$selected_disk" "$mount_point"
-    temp_file="$mount_point/testfile"
-else
-    temp_file="$selected_disk/testfile"
-fi
+temp_file="$selected_disk/testfile"
 
 output=$(dd if=/dev/zero of="$temp_file" bs="$FILE_SIZE" count=1 oflag=direct 2>&1)
 write_time=$(echo "$output" | grep -o '[0-9.]* s' | head -n 1)
@@ -74,8 +60,3 @@ echo "$msg_time_read $read_time"
 echo ""
 
 rm -f "$temp_file"
-
-if [ -b "$selected_disk" ]; then
-    $SUDO umount "$mount_point"
-    $SUDO rmdir "$mount_point"
-fi
