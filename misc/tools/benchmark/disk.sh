@@ -27,33 +27,26 @@ fi
 
 disk_choices=()
 while IFS= read -r line; do
-    mount_point=$(echo "$line" | awk '{print $1}')
-    device=$(echo "$line" | awk '{print $2}')
+    device=$(echo "$line" | awk '{print $1}')
+    mount_point=$(echo "$line" | awk '{print $2}')
     
     if [[ -n "$mount_point" && "$mount_point" != "/boot" && "$mount_point" != "/" && "$mount_point" != "[SWAP]" ]]; then
         if [[ "$mount_point" == "$HOME" ]]; then
-            disk_choices=("$device" "$local_dir" "${disk_choices[@]}")
+            disk_choices+=("$device" "$local_dir")
         else
             disk_choices+=("$device" "$mount_point")
         fi
     fi
-done < <(lsblk -o MOUNTPOINT,NAME -n -l | grep -v '^\s*$')
+done < <(lsblk -o NAME,MOUNTPOINT -n -l | grep -v '^\s*$' | grep -v '^/')
 
 if [ ${#disk_choices[@]} -eq 0 ]; then
     echo "Нет доступных точек монтирования для выбора."
     exit 1
 fi
 
-formatted_choices=()
-for ((i=0; i<${#disk_choices[@]}; i+=2)); do
-    formatted_choices+=("${disk_choices[i]}")
-    formatted_choices+=("${disk_choices[i+1]}")
-done
-
 menu_items=()
-for ((i=0; i<${#formatted_choices[@]}; i+=2)); do
-    menu_items+=("${formatted_choices[i]}")
-    menu_items+=("${formatted_choices[i+1]}")
+for ((i=0; i<${#disk_choices[@]}; i+=2)); do
+    menu_items+=("${disk_choices[i]}" "${disk_choices[i+1]}")
 done
 
 selected_disk=$(whiptail --title "$msg_select" --menu "" 15 60 4 "${menu_items[@]}" 3>&1 1>&2 2>&3)
@@ -62,7 +55,19 @@ if [ -z "$selected_disk" ]; then
     exit 0
 fi
 
-temp_file="$selected_disk/testfile"
+selected_mount_point=""
+for ((i=0; i<${#disk_choices[@]}; i+=2)); do
+    if [[ "${disk_choices[i]}" == "$selected_disk" ]]; then
+        selected_mount_point="${disk_choices[i+1]}"
+        break
+    fi
+done
+
+if [[ "$selected_mount_point" == "$local_dir" ]]; then
+    selected_mount_point="$HOME"
+fi
+
+temp_file="$selected_mount_point/testfile"
 
 output=$(dd if=/dev/zero of="$temp_file" bs="$FILE_SIZE" count=1 oflag=direct 2>&1)
 write_time=$(echo "$output" | grep -o '[0-9.]* s' | head -n 1)
@@ -73,7 +78,7 @@ read_time=$(echo "$output" | grep -o '[0-9.]* s' | head -n 1)
 read_speed=$(echo "$output" | grep -o '[0-9.]* [MG]B/s' | head -n 1 || echo "$msg_failed")
 
 echo ""
-echo "$msg_selected_dir $selected_disk"
+echo "$msg_selected_dir $selected_mount_point"
 echo ""
 echo "$msg_speed_write $write_speed"
 echo "$msg_time_write $write_time"
