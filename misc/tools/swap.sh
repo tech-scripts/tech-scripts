@@ -3,7 +3,7 @@
 SUDO=$(command -v sudo || echo "")
 CONFIG_FILE="/etc/tech-scripts/choose.conf"
 ZRAM_CONFIG="/etc/tech-scripts/swap.conf"
-LANGUAGE=$(grep '^lang:' /etc/tech-scripts/choose.conf | cut -d' ' -f2)
+LANGUAGE=$(grep '^lang:' "$CONFIG_FILE" | cut -d' ' -f2)
 
 if [ "$LANGUAGE" = "Русский" ]; then
     CANCEL_MSG="Вы прервали выполнение скрипта."
@@ -51,29 +51,15 @@ close() {
 }
 
 check_active_swap() {
-    if swapon --show | grep -q '/'; then
-        echo "$ACTIVE_SWAP_FOUND"
-        return 0
-    fi
-    return 1
+    swapon --show | grep -q '/'
 }
 
 check_active_zram() {
-    if lsblk | grep -q zram; then
-        echo "$ACTIVE_ZRAM_FOUND"
-        return 0
-    fi
-    return 1
+    lsblk | grep -q zram
 }
 
 check_active_zswap() {
-    if [ -d /sys/module/zswap ]; then
-        if [ "$(cat /sys/module/zswap/parameters/enabled)" -eq 1 ]; then
-            echo "$ACTIVE_ZSWAP_FOUND"
-            return 0
-        fi
-    fi
-    return 1
+    [ -d /sys/module/zswap ] && [ "$(cat /sys/module/zswap/parameters/enabled 2>/dev/null)" -eq 1 ]
 }
 
 ACTIVE_SWAP=0
@@ -86,24 +72,9 @@ check_active_zswap && ACTIVE_ZSWAP=1
 
 if [ $ACTIVE_SWAP -eq 1 ] || [ $ACTIVE_ZRAM -eq 1 ] || [ $ACTIVE_ZSWAP -eq 1 ]; then
     if whiptail --yesno "$DISABLE_SWAP_PROMPT" 7 40; then
-        if [ $ACTIVE_SWAP -eq 1 ]; then
-            echo "Отключение SWAP..."
-            $SUDO swapoff -a
-            echo "SWAP отключен."
-        fi
-
-        if [ $ACTIVE_ZRAM -eq 1 ]; then
-            echo "Отключение ZRAM..."
-            $SUDO swapoff /dev/zram0
-            $SUDO modprobe -r zram
-            echo "ZRAM отключен."
-        fi
-
-        if [ $ACTIVE_ZSWAP -eq 1 ]; then
-            echo "Отключение ZSWAP..."
-            echo 0 | $SUDO tee /sys/module/zswap/parameters/enabled > /dev/null
-            echo "ZSWAP отключен."
-        fi
+        [ $ACTIVE_SWAP -eq 1 ] && { $SUDO swapoff -a; echo "SWAP отключен."; }
+        [ $ACTIVE_ZRAM -eq 1 ] && { $SUDO swapoff /dev/zram0; $SUDO modprobe -r zram; echo "ZRAM отключен."; }
+        [ $ACTIVE_ZSWAP -eq 1 ] && { echo 0 | $SUDO tee /sys/module/zswap/parameters/enabled > /dev/null; echo "ZSWAP отключен."; }
     else
         echo "Отключение подкачки отменено."
     fi
@@ -120,7 +91,7 @@ case $MEMORY_CHOICE in
     1)
         while true; do
             ZRAM_SIZE=$(whiptail --inputbox "$ENTER_SIZE" 10 40 3>&1 1>&2 2>&3)
-            if [ $? -ne 0 ]; then close; fi
+            [ $? -ne 0 ] && close
             if is_valid_size "$ZRAM_SIZE"; then break; else whiptail --msgbox "$INVALID_SIZE" 6 50; fi
         done
 
@@ -137,17 +108,17 @@ case $MEMORY_CHOICE in
         fi
 
         $SUDO modprobe zram
-        echo $ZRAM_SIZE | $SUDO tee /sys/block/zram0/disksize > /dev/null
+        echo "$ZRAM_SIZE" | $SUDO tee /sys/block/zram0/disksize > /dev/null
         $SUDO mkswap /dev/zram0
         $SUDO swapon /dev/zram0
         echo "ZRAM настроен на размер $ZRAM_SIZE."
-        echo "ZRAM_SIZE=$ZRAM_SIZE" | $SUDO tee $ZRAM_CONFIG > /dev/null
+        echo "ZRAM_SIZE=$ZRAM_SIZE" | $SUDO tee "$ZRAM_CONFIG" > /dev/null
         ;;
 
     2)
         SWAP_SIZE=$(whiptail --inputbox "Введите размер SWAP (например, 2G):" 10 40 3>&1 1>&2 2>&3)
         if is_valid_size "$SWAP_SIZE"; then
-            $SUDO fallocate -l $SWAP_SIZE /swapfile
+            $SUDO fallocate -l "$SWAP_SIZE" /swapfile
             $SUDO chmod 600 /swapfile
             $SUDO mkswap /swapfile
             $SUDO swapon /swapfile
