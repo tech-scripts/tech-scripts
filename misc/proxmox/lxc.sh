@@ -7,20 +7,20 @@ EDITOR=$(grep '^editor:' "$CONFIG_FILE" | cut -d ' ' -f 2)
 
 if [ "$LANGUAGE" = "Русский" ]; then
     PCT_NOT_FOUND="Утилита pct не найдена. Убедитесь, что Proxmox установлен!"
-    NO_CONTAINERS="Нет доступных LXC-контейнеров!"
+    NO_CONTAINERS_LXC="Нет доступных LXC-контейнеров!"
     SELECT_CONTAINER="Выберите контейнер"
     SELECT_ACTION="Выберите действие"
     MSG_CONFIRM_DELETE="Вы уверены, что хотите удалить"
     MSG_ERROR="Ошибка"
-    CONTINUE="Продолжить работу с текущим контейнером?"
+    CONTINUE_LXC="Продолжить работу с текущим контейнером?"
 else
     PCT_NOT_FOUND="Utility pct not found. Make sure Proxmox is installed!"
-    NO_CONTAINERS="No available LXC containers!"
+    NO_CONTAINERS_LXC="No available LXC containers!"
     SELECT_CONTAINER="Select container"
     SELECT_ACTION="Select action"
     MSG_CONFIRM_DELETE="Are you sure you want to delete"
     MSG_ERROR="Error"
-    CONTINUE="Continue working with the current container?"
+    CONTINUE_LXC="CONTINUE_LXC working with the current container?"
 fi
 
 if ! command -v pct &> /dev/null; then
@@ -50,7 +50,7 @@ while true; do
 
     if [ ${#CONTAINERS_CACHE[@]} -eq 0 ]; then
         echo ""
-        echo "$NO_CONTAINERS"
+        echo "$NO_CONTAINERS_LXC"
         echo ""
         exit 1
     fi
@@ -110,7 +110,7 @@ while true; do
             *) show_message "$MSG_ERROR" ;;
         esac
 
-        if ! whiptail --title "$SELECT_ACTION" --yesno "$CONTINUE" 7 50; then
+        if ! whiptail --title "$SELECT_ACTION" --yesno "$CONTINUE_LXC" 7 50; then
             break
         fi
     done
