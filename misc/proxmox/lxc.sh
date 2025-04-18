@@ -45,7 +45,7 @@ while true; do
     fi
 
     while true; do
-        if [ "$LANG_CONF" = "Русский" ]; then
+        if [ "$LANGUAGE" = "Русский" ]; then
             ACTION=$(whiptail --title "$SELECT_ACTION" --menu "$SELECT_ACTION" 15 50 8 \
                 1 "Включить" \
                 2 "Выключить" \
