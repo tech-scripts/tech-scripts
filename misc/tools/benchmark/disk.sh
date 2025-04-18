@@ -26,22 +26,28 @@ else
 fi
 
 disk_choices=()
+home_disk=()
+
 while IFS= read -r line; do
     device=$(echo "$line" | awk '{print $1}')
     mount_point=$(echo "$line" | awk '{print $2}')
     
     if [[ -n "$mount_point" && "$mount_point" != "/boot" && "$mount_point" != "/" && "$mount_point" != "[SWAP]" ]]; then
         if [[ "$mount_point" == "$HOME" ]]; then
-            disk_choices+=("$device" "$local_dir")
+            home_disk=("$device" "$local_dir")
         else
             disk_choices+=("$device" "$mount_point")
         fi
     fi
 done < <(lsblk -o NAME,MOUNTPOINT -n -l | grep -v '^\s*$' | grep -v '^/')
 
-if [ ${#disk_choices[@]} -eq 0 ]; then
+if [ ${#disk_choices[@]} -eq 0 ] && [ ${#home_disk[@]} -eq 0 ]; then
     echo "Нет доступных точек монтирования для выбора."
     exit 1
+fi
+
+if [ ${#home_disk[@]} -gt 0 ]; then
+    disk_choices=("${home_disk[@]}" "${disk_choices[@]}")
 fi
 
 menu_items=()
@@ -85,6 +91,4 @@ echo "$msg_time_write $write_time"
 echo ""
 echo "$msg_speed_read $read_speed"
 echo "$msg_time_read $read_time"
-echo ""
-
-rm -f "$temp_file"
+echo "
