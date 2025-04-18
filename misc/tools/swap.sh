@@ -145,9 +145,13 @@ case $MEMORY_CHOICE in
             echo 1 | $SUDO tee /sys/module/zswap/parameters/enabled > /dev/null
             if [ -f /sys/module/zswap/parameters/zpool ]; then
                 echo "z3fold" | $SUDO tee /sys/module/zswap/parameters/zpool > /dev/null
+            else
+                echo "Параметр zpool не поддерживается."
             fi
             if [ -f /sys/module/zswap/parameters/compressor ]; then
                 echo "lzo" | $SUDO tee /sys/module/zswap/parameters/compressor > /dev/null
+            else
+                echo "Параметр compressor не поддерживается."
             fi
             echo "$ZSWAP_ENABLED"
         else
