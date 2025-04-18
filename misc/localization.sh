@@ -31,6 +31,13 @@ if [[ "$LANGUAGE" == "Русский" ]]; then
     NO="Нет"
     DELETING="Удаление файлов..."
     DELETED="Файлы успешно удалены!"
+
+    TITLE_EDITOR="Выбор текстового редактора"
+    MSG_EDITOR="Выберите текстовый редактор:"
+    TITLE_CUSTOM_EDITOR="Пользовательский редактор"
+    MSG_CUSTOM_EDITOR="Введите команду вашего текстового редактора:"
+    MSG_INVALID_EDITOR="Неверный выбор!"
+    MSG_SUCCESS_EDITOR="Текстовый редактор установлен:"
 else
     MSG_NO_SCRIPTS="No available scripts or directories!"
     MSG_CANCELLED="Selection cancelled!"
@@ -60,4 +67,11 @@ else
     NO="No"
     DELETING="Deleting files..."
     DELETED="Files deleted successfully!"
+
+    TITLE_EDITOR="Text Editor Selection"
+    MSG_EDITOR="Choose your text editor:"
+    TITLE_CUSTOM_EDITOR="Custom Editor"
+    MSG_CUSTOM_EDITOR="Enter the command custom text editor:"
+    MSG_INVALID_EDITOR="Invalid choice!"
+    MSG_SUCCESS_EDITOR="Text editor set to:"
 fi
