@@ -32,12 +32,11 @@ while IFS= read -r line; do
     device=$(echo "$line" | awk '{print $1}' | sed 's|/dev/||' | sed 's/[0-9]*$//')
     mount_point=$(echo "$line" | awk '{print $2}')
     
-    if [[ -n "$mount_point" && "$mount_point" != "/boot" && "$mount_point" != "/boot/efi" && "$mount_point" != "[SWAP]" && "$mount_point" != "/" && ! "$device" =~ zram ]]; then
-        if [[ "$device" != "$root_disk" ]]; then
-            disk_choices+=("$device" "$mount_point")
-        fi
+    if [[ -n "$mount_point" && "$mount_point" != "/" && "$mount_point" != "/boot" && "$mount_point" != "/boot/efi" && "$mount_point" != "[SWAP]" && ! "$device" =~ zram ]]; then
+        disk_choices+=("$device" "$mount_point")
     fi
 done < <(lsblk -o NAME,MOUNTPOINT -n -l | grep -v '^\s*$')
+
 
 if [ ${#disk_choices[@]} -eq 0 ]; then
     echo "Нет доступных точек монтирования для выбора."
