@@ -1,5 +1,31 @@
 #!/bin/bash
 
+if ! command -v sysbench &>/dev/null; then
+    whiptail --title "Установка sysbench" --yesno "sysbench не установлен. Хотите установить его?" 10 60
+    if [ $? -eq 0 ]; then
+        if command -v apt &>/dev/null; then
+            sudo apt update && sudo apt install -y sysbench
+        elif command -v yum &>/dev/null; then
+            sudo yum install -y sysbench
+        elif command -v dnf &>/dev/null; then
+            sudo dnf install -y sysbench
+        elif command -v zypper &>/dev/null; then
+            sudo zypper install -y sysbench
+        elif command -v pacman &>/dev/null; then
+            sudo pacman -S --noconfirm sysbench
+        elif command -v apk &>/dev/null; then
+            sudo apk add sysbench
+        elif command -v brew &>/dev/null; then
+            brew install sysbench
+        else
+            echo "Не удалось определить пакетный менеджер. Установите sysbench вручную!"
+            exit 1
+        fi
+    else
+        exit 0
+    fi
+fi
+
 whiptail --title "Стресс-тест процессора" --yesno "Вы хотите выполнить стресс-тест процессора?" 10 60
 
 show_progress() {
