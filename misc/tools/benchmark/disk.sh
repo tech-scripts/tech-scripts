@@ -27,12 +27,12 @@ fi
 
 disk_choices=()
 while IFS= read -r line; do
+    mount_point=$(echo "$line" | awk '{print $2}')
     device=$(echo "$line" | awk '{print $1}')
-    mount_point=$(echo "$line" | awk '{print $7}')
     if [ -n "$mount_point" ]; then
         disk_choices+=("$mount_point" "$device")
     fi
-done < <(lsblk -o NAME,MOUNTPOINT | grep -v '^\s*NAME')
+done < <(lsblk -o MOUNTPOINT,NAME -n | grep -v '^\s*$')
 
 disk_choices+=("$HOME" "$local_dir")
 
