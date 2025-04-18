@@ -5,23 +5,7 @@ CONFIG_FILE="/etc/tech-scripts/choose.conf"
 LANGUAGE=$(grep '^lang:' /etc/tech-scripts/choose.conf | cut -d' ' -f2)
 EDITOR=$(grep '^editor:' "$CONFIG_FILE" | cut -d ' ' -f 2)
 
-if [ "$LANGUAGE" = "Русский" ]; then
-    PCT_NOT_FOUND="Утилита pct не найдена. Убедитесь, что Proxmox установлен!"
-    NO_CONTAINERS_LXC="Нет доступных LXC-контейнеров!"
-    SELECT_CONTAINER="Выберите контейнер"
-    SELECT_ACTION="Выберите действие"
-    MSG_CONFIRM_DELETE="Вы уверены, что хотите удалить"
-    MSG_ERROR="Ошибка"
-    CONTINUE_LXC="Продолжить работу с текущим контейнером?"
-else
-    PCT_NOT_FOUND="Utility pct not found. Make sure Proxmox is installed!"
-    NO_CONTAINERS_LXC="No available LXC containers!"
-    SELECT_CONTAINER="Select container"
-    SELECT_ACTION="Select action"
-    MSG_CONFIRM_DELETE="Are you sure you want to delete"
-    MSG_ERROR="Error"
-    CONTINUE_LXC="CONTINUE_LXC working with the current container?"
-fi
+source /tmp/tech-scripts/misc/localization.sh 
 
 if ! command -v pct &> /dev/null; then
     echo ""
