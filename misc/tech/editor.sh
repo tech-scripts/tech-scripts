@@ -1,23 +1,8 @@
 #!/bin/bash
 
 SUDO=$(command -v sudo)
-LANG_CONF=$(grep '^lang:' /etc/tech-scripts/choose.conf 2>/dev/null | cut -d' ' -f2)
 
-if [ "$LANG_CONF" = "Русский" ]; then
-    TITLE_EDITOR="Выбор текстового редактора"
-    MSG_EDITOR="Выберите текстовый редактор:"
-    TITLE_CUSTOM_EDITOR="Пользовательский редактор"
-    MSG_CUSTOM_EDITOR="Введите команду вашего текстового редактора:"
-    MSG_INVALID_EDITOR="Неверный выбор!"
-    MSG_SUCCESS_EDITOR="Текстовый редактор установлен:"
-else
-    TITLE_EDITOR="Text Editor Selection"
-    MSG_EDITOR="Choose your text editor:"
-    TITLE_CUSTOM_EDITOR="Custom Editor"
-    MSG_CUSTOM_EDITOR="Enter the command custom text editor:"
-    MSG_INVALID_EDITOR="Invalid choice!"
-    MSG_SUCCESS_EDITOR="Text editor set to:"
-fi
+source /tmp/tech-scripts/misc/localization.sh
 
 [ ! -d "/etc/tech-scripts" ] && $SUDO mkdir -p /etc/tech-scripts
 [ ! -f "/etc/tech-scripts/choose.conf" ] && $SUDO touch /etc/tech-scripts/choose.conf
