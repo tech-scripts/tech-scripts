@@ -23,6 +23,8 @@ if [ "$LANGUAGE" = "Русский" ]; then
     ADD_AUTOSTART="Добавить настройки в автозапуск через systemd?"
     AUTOSTART_ADDED="Настройки добавлены в автозапуск."
     AUTOSTART_SKIPPED="Автозапуск не настроен."
+    REMOVE_AUTOSTART="Обнаружены настройки автозапуска. Хотите удалить их?"
+    AUTOSTART_REMOVED="Настройки автозапуска удалены."
 else
     INVALID_SIZE="Invalid input. Please enter size in format like 8G or 512M."
     ENTER_SIZE="Enter ZRAM size (e.g., 8G, 512M):"
@@ -41,6 +43,8 @@ else
     ADD_AUTOSTART="Add settings to autostart via systemd?"
     AUTOSTART_ADDED="Settings added to autostart."
     AUTOSTART_SKIPPED="Autostart not configured."
+    REMOVE_AUTOSTART="Autostart settings found. Do you want to remove them?"
+    AUTOSTART_REMOVED="Autostart settings removed."
 fi
 
 is_valid_size() {
@@ -107,6 +111,20 @@ EOF
     fi
 }
 
+remove_autostart() {
+    local service_name=$1
+
+    if systemctl is-enabled "$service_name.service" &>/dev/null; then
+        if whiptail --yesno "$REMOVE_AUTOSTART" 7 40; then
+            $SUDO systemctl stop "$service_name.service"
+            $SUDO systemctl disable "$service_name.service"
+            $SUDO rm -f "/etc/systemd/system/$service_name.service"
+            $SUDO systemctl daemon-reload
+            echo "$AUTOSTART_REMOVED"
+        fi
+    fi
+}
+
 ACTIVE_SWAP=0
 ACTIVE_ZRAM=0
 ACTIVE_ZSWAP=0
@@ -125,6 +143,11 @@ if [ $ACTIVE_SWAP -eq 1 ] || [ $ACTIVE_ZRAM -eq 1 ] || [ $ACTIVE_ZSWAP -eq 1 ]; 
     fi
 fi
 
+# Проверка и удаление автозапуска
+remove_autostart "zram-setup"
+remove_autostart "swap-setup"
+remove_autostart "zswap-setup"
+
 whiptail --title "$CHOOSE_MEMORY" --menu "$CHOOSE_MEMORY" 10 40 3 \
 1 "$ZRAM_OPTION" \
 2 "$SWAP_OPTION" \
@@ -137,7 +160,11 @@ case $MEMORY_CHOICE in
         while true; do
             ZRAM_SIZE=$(whiptail --inputbox "$ENTER_SIZE" 10 40 3>&1 1>&2 2>&3)
             [ $? -ne 0 ] && close
-            if is_valid_size "$ZRAM_SIZE"; then break; else whiptail --msgbox "$INVALID_SIZE" 10 50; fi
+            if is_valid_size "$ZRAM_SIZE"; then
+                break
+            else
+                whiptail --msgbox "$INVALID_SIZE" 10 50
+            fi
         done
 
         if [ -f "$ZRAM_CONFIG" ]; then
