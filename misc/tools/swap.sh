@@ -157,7 +157,7 @@ MEMORY_CHOICE=$(< /tmp/memory_choice)
 case $MEMORY_CHOICE in
     1)
         while true; do
-            ZRAM_SIZE=$(whiptail --inputbox "$ENTER_SIZE" 8 40 3>&1 1>&2 2>&3)
+            ZRAM_SIZE=$(whiptail --inputbox "$ENTER_SIZE" 10 40 3>&1 1>&2 2>&3)
             [ $? -ne 0 ] && close
             if is_valid_size "$ZRAM_SIZE"; then
                 break
@@ -188,7 +188,7 @@ case $MEMORY_CHOICE in
         ;;
 
     2)
-        SWAP_SIZE=$(whiptail --inputbox "$SWAP_SIZE_PROMPT" 8 40 3>&1 1>&2 2>&3)
+        SWAP_SIZE=$(whiptail --inputbox "$SWAP_SIZE_PROMPT" 10 40 3>&1 1>&2 2>&3)
         if is_valid_size "$SWAP_SIZE"; then
             $SUDO fallocate -l "$SWAP_SIZE" /swapfile
             $SUDO chmod 600 /swapfile
