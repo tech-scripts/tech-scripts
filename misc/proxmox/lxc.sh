@@ -2,10 +2,10 @@
 
 CONFIG_FILE="/etc/tech-scripts/choose.conf"
 
-LANG_CONF=$(grep '^lang:' "$CONFIG_FILE" | cut -d' ' -f2)
+LANGUAGE=$(grep '^lang:' /etc/tech-scripts/choose.conf | cut -d' ' -f2)
 EDITOR=$(grep '^editor:' "$CONFIG_FILE" | cut -d ' ' -f 2)
 
-if [ "$LANG_CONF" = "Русский" ]; then
+if [ "$LANGUAGE" = "Русский" ]; then
     PCT_NOT_FOUND="Утилита pct не найдена. Убедитесь, что Proxmox установлен!"
     NO_CONTAINERS="Нет доступных LXC-контейнеров!"
     SELECT_CONTAINER="Выберите контейнер"
