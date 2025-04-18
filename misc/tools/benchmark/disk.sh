@@ -25,19 +25,22 @@ else
     msg_selected_dir="Selected directory:"
 fi
 
-disk_choices=("$HOME" "$local_dir")
-
-for dir in "/mnt" "/media"; do
-    if [ -d "$dir" ]; then
-        for disk in "$dir"/*; do
-            if [ -d "$disk" ]; then
-                disk_choices+=("$disk" "$remote_dir")
-            fi
-        done
+disk_choices=()
+while IFS= read -r line; do
+    device=$(echo "$line" | awk '{print $1}')
+    mount_point=$(echo "$line" | awk '{print $7}')
+    if [ -n "$mount_point" ]; then
+        disk_choices+=("$mount_point" "$device")
     fi
-done
+done < <(lsblk -o NAME,MOUNTPOINT | grep -v '^\s*NAME')
+
+disk_choices+=("$HOME" "$local_dir")
 
 selected_disk=$(whiptail --title "$msg_select" --menu "" 15 60 4 "${disk_choices[@]}" 3>&1 1>&2 2>&3)
+
+if [ -z "$selected_disk" ]; then
+    exit 0
+fi
 
 temp_file="$selected_disk/testfile"
 
