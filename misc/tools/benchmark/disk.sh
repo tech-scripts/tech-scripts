@@ -10,8 +10,6 @@ if [ "$LANGUAGE" == "Русский" ]; then
     msg_time_write="Время записи:"
     msg_time_read="Время чтения:"
     msg_failed="Не удалось измерить скорость"
-    local_dir="домашняя директория"
-    remote_dir="удаленная директория"
     msg_selected_dir="Выбранная директория:"
 else
     msg_select="Select a directory"
@@ -20,27 +18,19 @@ else
     msg_time_write="Write time:"
     msg_time_read="Read time:"
     msg_failed="Failed to measure speed"
-    local_dir="local directory"
-    remote_dir="remote directory"
     msg_selected_dir="Selected directory:"
 fi
 
 disk_choices=()
 
-root_device=$(df / | awk 'NR==2 {print $1}')
-root_disk=$(lsblk -no PKNAME "$root_device")
-disk_choices+=("$root_disk" "/")
-
 while IFS= read -r line; do
-    device=$(echo "$line" | awk '{print $1}' | sed 's|/dev/||' | sed 's/p[0-9]*$//')
+    device=$(echo "$line" | awk '{print $1}' | sed 's|/dev/||')
     mount_point=$(echo "$line" | awk '{print $2}')
     
     if [[ -n "$mount_point" && "$mount_point" != "/boot/efi" && "$mount_point" != "[SWAP]" ]]; then
-        if [[ "$device" != "$root_disk" ]]; then
-            disk_choices+=("$device" "$mount_point")
-        fi
+        disk_choices+=("$device" "$mount_point")
     fi
-done < <(lsblk -o NAME,MOUNTPOINT -n -l | grep -v '^\s*$' | grep -v '^/')
+done < <(lsblk -o NAME,MOUNTPOINT -n -l | grep -v '^\s*$')
 
 if [ ${#disk_choices[@]} -eq 0 ]; then
     echo "Нет доступных точек монтирования для выбора."
