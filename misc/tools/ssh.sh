@@ -3,9 +3,9 @@
 SUDO=$(command -v sudo)
 SCRIPT_DIR="/usr/local/tech-scripts"
 CONFIG_FILE="/etc/tech-scripts/alert.conf"
-LANG_CONF=$(grep '^lang:' /etc/tech-scripts/choose.conf 2>/dev/null | cut -d' ' -f2)
+LANGUAGE=$(grep '^lang:' /etc/tech-scripts/choose.conf | cut -d' ' -f2)
 
-if [[ "$LANG_CONF" == "Русский" ]]; then
+if [[ "$LANGUAGE" == "Русский" ]]; then
     MSG_INSTALL_JQ="Установка jq..."
     MSG_BOT_TOKEN="Введите токен вашего Telegram-бота: "
     MSG_CHAT_ID="Введите ваш chat_id в Telegram: "
@@ -128,12 +128,11 @@ create_ssh_alert_script() {
     $SUDO tee "$SCRIPT_DIR/alert.sh" >/dev/null <<'EOF'
 #!/bin/bash
 
+LANGUAGE=$(grep '^lang:' /etc/tech-scripts/choose.conf | cut -d' ' -f2)
 CONFIG_FILE="/etc/tech-scripts/alert.conf"
 [ -f "$CONFIG_FILE" ] && source "$CONFIG_FILE"
 
-LANG_CONF=$(grep '^lang:' /etc/tech-scripts/choose.conf 2>/dev/null | cut -d' ' -f2)
-
-if [[ "$LANG_CONF" == "Русский" ]]; then
+if [[ "$LANGUAGE" == "Русский" ]]; then
     MSG_FAILED="🚨 Неудачная попытка входа 🚨"
     MSG_SUCCESS="✅ Успешный вход ✅"
     MSG_CLOSED="❌ Отмененная попытка входа ❌"
