@@ -28,7 +28,7 @@ fi
 disk_choices=()
 
 root_device=$(df / | awk 'NR==2 {print $1}')
-root_disk=$(echo "$root_device" | sed 's|/dev/||' | sed 's/p[0-9]*$//')
+root_disk=$(lsblk -no PKNAME "$root_device")
 disk_choices+=("$root_disk" "/")
 
 while IFS= read -r line; do
