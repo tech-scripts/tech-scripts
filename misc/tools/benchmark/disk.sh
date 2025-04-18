@@ -25,7 +25,7 @@ disk_choices=()
 
 system_disk=$(df / | awk 'NR==2 {print $1}' | sed 's|/dev/||' | sed 's/[0-9]*$//')
 home_path="$HOME"
-disk_choices+=("$system_disk" "$home_path")
+disk_choices+=("$system_disk" "$mount_point")
 
 while IFS= read -r line; do
     device=$(echo "$line" | awk '{print $1}' | sed 's|/dev/||' | sed 's/[0-9]*$//')
