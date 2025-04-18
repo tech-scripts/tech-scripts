@@ -169,9 +169,9 @@ case $MEMORY_CHOICE in
         if [ -f "$ZRAM_CONFIG" ]; then
             source "$ZRAM_CONFIG"
             if whiptail --yesno "$REMOVE_ZRAM" 10 40; then
+                $SUDO swapoff /dev/zram0 2>/dev/null
                 $SUDO rm -f "$ZRAM_CONFIG"
                 echo "$ZRAM_REMOVED"
-                $SUDO swapoff /dev/zram0 2>/dev/null
                 $SUDO modprobe -r zram 2>/dev/null
             else
                 close
