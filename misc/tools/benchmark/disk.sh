@@ -32,11 +32,11 @@ while IFS= read -r line; do
     
     # Фильтрация для исключения /boot, [SWAP] и /
     if [[ "$mount_point" != "/boot" && "$mount_point" != "/" && "$mount_point" != "[SWAP]" && -n "$mount_point" ]]; then
-        # Определяем тип директории
+        # Определяем имя диска и путь
         if [[ "$mount_point" == "$HOME" ]]; then
-            disk_choices+=("$mount_point" "$local_dir")
+            disk_choices+=("$device" "$local_dir")
         else
-            disk_choices+=("$mount_point" "$remote_dir")
+            disk_choices+=("$device" "$mount_point")
         fi
     fi
 done < <(lsblk -o MOUNTPOINT,NAME -n -l | grep -v '^\s*$')
@@ -47,7 +47,13 @@ if [ ${#disk_choices[@]} -eq 0 ]; then
     exit 1
 fi
 
-selected_disk=$(whiptail --title "$msg_select" --menu "" 15 60 4 "${disk_choices[@]}" 3>&1 1>&2 2>&3)
+# Форматируем вывод для whiptail
+formatted_choices=()
+for ((i=0; i<${#disk_choices[@]}; i+=2)); do
+    formatted_choices+=("${disk_choices[i]} ${disk_choices[i+1]}")
+done
+
+selected_disk=$(whiptail --title "$msg_select" --menu "" 15 60 4 "${formatted_choices[@]}" 3>&1 1>&2 2>&3)
 
 if [ -z "$selected_disk" ]; then
     exit 0
