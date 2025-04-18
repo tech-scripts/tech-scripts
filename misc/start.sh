@@ -48,7 +48,8 @@ if [ ! -f "$CONFIG_FILE" ]; then
     fi
 fi
 
-LANGUAGE=$(grep -E '^lang:' "$CONFIG_FILE" | cut -d':' -f2 | xargs)
+LANGUAGE=$(grep '^lang:' /etc/tech-scripts/choose.conf | cut -d' ' -f2)
+
 if [[ "$LANGUAGE" == "Русский" ]]; then
     MSG_NO_SCRIPTS="Нет доступных скриптов или директорий!"
     MSG_CANCELLED="Выбор отменен!"
