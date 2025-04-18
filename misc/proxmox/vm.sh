@@ -5,23 +5,7 @@ CONFIG_FILE="/etc/tech-scripts/choose.conf"
 LANGUAGE=$(grep '^lang:' /etc/tech-scripts/choose.conf | cut -d' ' -f2)
 EDITOR=$(grep '^editor:' "$CONFIG_FILE" | cut -d ' ' -f 2)
 
-if [ "$LANGUAGE" = "Русский" ]; then
-    QM_NOT_FOUND="Утилита qm не найдена. Убедитесь, что Proxmox установлен!"
-    NO_VMS="Нет доступных виртуальных машин!"
-    SELECT_VM="Выберите виртуальную машину"
-    SELECT_ACTION="Выберите действие"
-    MSG_CONFIRM_DELETE="Вы уверены, что хотите удалить"
-    MSG_ERROR="Ошибка"
-    CONTINUE_VM="Продолжить работу с текущей виртуальной машиной?"
-else
-    QM_NOT_FOUND="Utility qm not found. Make sure Proxmox is installed!"
-    NO_VMS="No available virtual machines!"
-    SELECT_VM="Select virtual machine"
-    SELECT_ACTION="Select action"
-    MSG_CONFIRM_DELETE="Are you sure you want to delete"
-    MSG_ERROR="Error"
-    CONTINUE_VM="Continue working with the current virtual machine?"
-fi
+source /tmp/tech-scripts/misc/localization.sh 
 
 if ! command -v qm &> /dev/null; then
     echo ""
