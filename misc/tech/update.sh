@@ -7,7 +7,7 @@ SUDO=$(command -v sudo)
 LANGUAGE=$(grep '^lang:' /etc/tech-scripts/choose.conf | cut -d' ' -f2)
 
 cd /tmp
-rm -rf /tmp/tech-scripts
+$SUDO rm -rf /tmp/tech-scripts
 git clone --depth 1 https://github.com/tech-scripts/linux.git /tmp/tech-scripts
 $SUDO rm -rf /usr/local/bin/tech
 cd "/tmp/tech-scripts/misc/tech"
