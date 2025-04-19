@@ -5,21 +5,25 @@ language=$(grep '^lang:' /etc/tech-scripts/choose.conf | cut -d' ' -f2)
 if [ "$language" == "Русский" ]; then
   title="стресс-тест памяти"
   question="вы хотите выполнить стресс-тест памяти?"
-  running="запуск стресс-теста памяти на 10 секунд..."
-  results="результаты теста памяти:"
 else
   title="memory stress test"
   question="do you want to perform a memory stress test?"
-  running="running memory stress test for 10 seconds..."
-  results="memory test results:"
 fi
+
+show_progress() {
+    (
+        for i in {1..100}; do
+            sleep 0.1
+            echo $i
+        done
+    ) | whiptail --title "Прогресс выполнения" --gauge " " 6 60 0
+}
 
 whiptail --title "$title" --yesno "$question" 10 60
 if [ $? -eq 0 ]; then
-  echo "$running"
-  
+  show_progress &
   sysbench --test=memory --memory-block-size=1K --memory-oper=write --time=10 run > /tmp/sysbench_memory_test.txt
-  
+  wait
   total_time=$(grep "total time:" /tmp/sysbench_memory_test.txt | awk '{print $3}')
   total_events=$(grep "total number of events:" /tmp/sysbench_memory_test.txt | awk '{print $5}')
   
