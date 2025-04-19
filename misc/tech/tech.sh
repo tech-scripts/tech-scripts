@@ -71,6 +71,9 @@ case "\$combined_args" in
     "cpu")
         run_script "tools/benchmark" "cpu.sh"
         ;;
+    "memory")
+        run_script "tools/benchmark" "memory.sh"
+        ;;
     "autoupdate")
         run_script "tools" "autoupdate.sh"
         ;;
