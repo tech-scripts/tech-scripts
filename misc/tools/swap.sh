@@ -71,49 +71,41 @@ init_language() {
 }
 
 is_valid_size() {
-    [[ $1 =~ ^[0-9]+[GgMmKk]$ ]] && return 0
-    return 1
+    [[ "$1" =~ ^[0-9]+[GgMmKk]$ ]]
 }
 
 to_bytes() {
-    local size=$1
+    local size=$(echo "$1" | tr '[:lower:]' '[:upper:]')
+    local num=${size%[A-Z]}
     local unit=${size: -1}
-    local num=${size%?}
 
     case "$unit" in
-        G|g) echo $((num * 1024 * 1024 * 1024));;
-        M|m) echo $((num * 1024 * 1024));;
-        K|k) echo $((num * 1024));;
-        *)   echo "$num";;
+        G) echo $((num * 1024 * 1024 * 1024));;
+        M) echo $((num * 1024 * 1024));;
+        K) echo $((num * 1024));;
+        *) echo "$num";;
     esac
 }
 
 check_active_swap() {
-    local count=0
-    if [ -f /proc/swaps ] && [ $(wc -l < /proc/swaps) -gt 1 ]; then
-        count=$(($(wc -l < /proc/swaps) - 1))
-    fi
-    [ $count -gt 0 ] && return 0 || return 1
+    [ -f /proc/swaps ] && [ "$(wc -l < /proc/swaps)" -gt 1 ]
 }
 
 check_active_zram() {
-    grep -q 'zram' /proc/swaps && return 0 || return 1
+    grep -q 'zram' /proc/swaps
 }
 
 check_zswap_support() {
-    [ -d /sys/module/zswap ] && return 0 || return 1
+    [ -d /sys/module/zswap ]
 }
 
 disable_all_swap() {
     log "Disabling all swap devices"
-    if check_active_swap; then
-        $SUDO swapoff -a && $SUDO sync
-        if check_active_zram; then
-            $SUDO modprobe -r zram
-        fi
-        return 0
-    fi
-    return 1
+    check_active_swap || return 0
+    
+    $SUDO swapoff -a && $SUDO sync
+    check_active_zram && $SUDO modprobe -r zram
+    return 0
 }
 
 show_current_settings() {
@@ -126,58 +118,34 @@ show_current_settings() {
 }
 
 setup_zram() {
-    local ZRAM_SIZE
-    local RAM_SIZE_BYTES=$(($(grep MemTotal /proc/meminfo | awk '{print $2}') * 1024))
-    
     while true; do
         ZRAM_SIZE=$(whiptail --inputbox "$ENTER_SIZE\n(Рекомендуется не более 50% от RAM)" 12 50 "4G" 3>&1 1>&2 2>&3)
         [ $? -ne 0 ] && return 1
         
-        if is_valid_size "$ZRAM_SIZE"; then
-            local zram_bytes=$(to_bytes "$ZRAM_SIZE")
-            if [ $zram_bytes -gt $((RAM_SIZE_BYTES + RAM_SIZE_BYTES / 4)) ]; then
-                whiptail --msgbox "Размер ZRAM слишком большой для вашей системы. Доступно RAM: $((RAM_SIZE_BYTES / 1024 / 1024))G" 10 50
-                continue
-            fi
-            break
-        else
-            whiptail --msgbox "$INVALID_SIZE" 8 50
-        fi
+        is_valid_size "$ZRAM_SIZE" && break
+        whiptail --msgbox "$INVALID_SIZE" 8 50
     done
 
     disable_all_swap
-    
-    $SUDO modprobe zram num_devices=1
-    if [ $? -ne 0 ]; then
-        whiptail --msgbox "Не удалось загрузить модуль zram" 8 50
-        return 1
-    fi
-    
-    echo "$ZRAM_SIZE" | $SUDO tee /sys/block/zram0/disksize > /dev/null || {
-        whiptail --msgbox "Не удалось установить размер ZRAM" 8 50
-        return 1
-    }
-    
-    $SUDO mkswap /dev/zram0 || {
-        whiptail --msgbox "Не удалось создать swap на ZRAM устройстве" 8 50
-        return 1
-    }
-    
+
+    $SUDO modprobe zram num_devices=1 && \
+    echo "$ZRAM_SIZE" | $SUDO tee /sys/block/zram0/disksize >/dev/null && \
+    $SUDO mkswap /dev/zram0 && \
     $SUDO swapon /dev/zram0 -p 32767 || {
-        whiptail --msgbox "Не удалось активировать ZRAM swap" 8 50
+        whiptail --msgbox "Ошибка настройки ZRAM" 8 50
         return 1
     }
-    
-    echo "ZRAM_SIZE=$ZRAM_SIZE" | $SUDO tee "$ZRAM_CONFIG" > /dev/null
-    
+
+    echo "ZRAM_SIZE=$ZRAM_SIZE" | $SUDO tee "$ZRAM_CONFIG" >/dev/null
+
     if whiptail --yesno "$ADD_AUTOSTART" 8 50; then
-        $SUDO tee /etc/systemd/system/zram-setup.service > /dev/null <<EOF
+        $SUDO tee /etc/systemd/system/zram-setup.service >/dev/null <<EOF
 [Unit]
 Description=ZRAM Setup
 Before=swap.target
 [Service]
 Type=oneshot
-ExecStart=/usr/bin/bash -c 'modprobe zram && echo $ZRAM_SIZE > /sys/block/zram0/disksize && mkswap /dev/zram0 && swapon /dev/zram0 -p 32767'
+ExecStart=/bin/bash -c 'modprobe zram && echo $ZRAM_SIZE > /sys/block/zram0/disksize && mkswap /dev/zram0 && swapon /dev/zram0 -p 32767'
 RemainAfterExit=true
 [Install]
 WantedBy=multi-user.target
@@ -185,97 +153,58 @@ EOF
         $SUDO systemctl daemon-reload
         $SUDO systemctl enable zram-setup.service
     fi
-    
+
     whiptail --msgbox "$ZRAM_SETUP" 8 50
-    return 0
 }
 
 setup_swapfile() {
-    local SWAP_SIZE
-    local DISK_SPACE_AVAIL=$($SUDO df -k --output=avail / | tail -1)
-    local DISK_SPACE_NEEDED
-    
     while true; do
         SWAP_SIZE=$(whiptail --inputbox "$SWAP_SIZE_PROMPT" 10 50 "4G" 3>&1 1>&2 2>&3)
         [ $? -ne 0 ] && return 1
         
-        if is_valid_size "$SWAP_SIZE"; then
-            DISK_SPACE_NEEDED=$(to_bytes "$SWAP_SIZE")
-            DISK_SPACE_NEEDED=$((DISK_SPACE_NEEDED / 1024))
-            
-            if [ $DISK_SPACE_NEEDED -gt $DISK_SPACE_AVAIL ]; then
-                whiptail --msgbox "Недостаточно места на диске. Доступно: $((DISK_SPACE_AVAIL / 1024 / 1024))G" 10 50
-                continue
-            fi
-            break
-        else
-            whiptail --msgbox "$INVALID_SIZE" 8 50
-        fi
+        is_valid_size "$SWAP_SIZE" && break
+        whiptail --msgbox "$INVALID_SIZE" 8 50
     done
 
     disable_all_swap
-    
-    $SUDO rm -f /swapfile
-    
-    if ! $SUDO fallocate -l "$SWAP_SIZE" /swapfile; then
-        whiptail --msgbox "Не удалось создать файл подкачки" 8 50
-        return 1
-    fi
-    
-    $SUDO chmod 600 /swapfile
-    $SUDO mkswap /swapfile || {
-        whiptail --msgbox "Не удалось создать swap на файле" 8 50
-        return 1
-    }
-    
+
+    $SUDO rm -f /swapfile && \
+    $SUDO fallocate -l "$SWAP_SIZE" /swapfile && \
+    $SUDO chmod 600 /swapfile && \
+    $SUDO mkswap /swapfile && \
     $SUDO swapon /swapfile || {
-        whiptail --msgbox "Не удалось активировать файл подкачки" 8 50
+        whiptail --msgbox "Ошибка настройки swap-файла" 8 50
         return 1
     }
-    
-    $SUDO grep -q "/swapfile" /etc/fstab || echo "/swapfile none swap sw 0 0" | $SUDO tee -a /etc/fstab > /dev/null
-    
-    if [ "$SWAP_SIZE" != "${SWAP_SIZE//G/}" ]; then
+
+    $SUDO grep -q "/swapfile" /etc/fstab || \
+    echo "/swapfile none swap sw 0 0" | $SUDO tee -a /etc/fstab >/dev/null
+
+    if [ "$SWAP_SIZE" != "${SWAP_SIZE/[Gg]}" ]; then
         $SUDO sysctl vm.swappiness=60
-        echo "vm.swappiness=60" | $SUDO tee /etc/sysctl.d/99-swap.conf > /dev/null
+        echo "vm.swappiness=60" | $SUDO tee /etc/sysctl.d/99-swap.conf >/dev/null
     fi
-    
+
     whiptail --msgbox "$SWAP_SETUP" 8 50
-    return 0
 }
 
 setup_zswap() {
-    if ! check_zswap_support; then
+    check_zswap_support || {
         whiptail --msgbox "$ZSWAP_NOT_SUPPORTED" 8 50
         return 1
-    fi
-    
+    }
+
     disable_all_swap
-    
-    echo 1 | $SUDO tee /sys/module/zswap/parameters/enabled > /dev/null
-    
-    if [ -f /sys/module/zswap/parameters/compressor ]; then
-        echo "lz4" | $SUDO tee /sys/module/zswap/parameters/compressor > /dev/null
-    fi
-    
-    if [ -f /sys/module/zswap/parameters/zpool ]; then
-        echo "z3fold" | $SUDO tee /sys/module/zswap/parameters/zpool > /dev/null
-    fi
-    
-    PERSISTENT_CONF="options zswap enabled=1"
-    
-    if [ -f /sys/module/zswap/parameters/compressor ]; then
-        PERSISTENT_CONF="$PERSISTENT_CONF\noptions zswap compressor=lz4"
-    fi
-    
-    if [ -f /sys/module/zswap/parameters/zpool ]; then
-        PERSISTENT_CONF="$PERSISTENT_CONF\noptions zswap zpool=z3fold"
-    fi
-    
-    echo -e "$PERSISTENT_CONF" | $SUDO tee /etc/modprobe.d/zswap.conf > /dev/null
-    
+
+    echo 1 | $SUDO tee /sys/module/zswap/parameters/enabled >/dev/null
+
+    [ -f /sys/module/zswap/parameters/compressor ] && \
+    echo "lz4" | $SUDO tee /sys/module/zswap/parameters/compressor >/dev/null
+
+    [ -f /sys/module/zswap/parameters/zpool ] && \
+    echo "z3fold" | $SUDO tee /sys/module/zswap/parameters/zpool >/dev/null
+
     whiptail --msgbox "$ZSWAP_ENABLED" 8 50
-    return 0
 }
 
 main_menu() {
@@ -286,13 +215,15 @@ main_menu() {
             3 "$ZSWAP_OPTION" \
             4 "Показать текущие настройки" 3>&1 1>&2 2>&3)
         
-        [ $? -ne 0 ] && exit 0
-        
-        case $choice in
-            1) setup_zram ;;
-            2) setup_swapfile ;;
-            3) setup_zswap ;;
-            4) show_current_settings ;;
+        case $? in
+            1) break ;;
+            0) case $choice in
+                  1) setup_zram ;;
+                  2) setup_swapfile ;;
+                  3) setup_zswap ;;
+                  4) show_current_settings ;;
+               esac
+               ;;
         esac
     done
 }
@@ -300,11 +231,7 @@ main_menu() {
 init_language
 
 if check_active_swap; then
-    if whiptail --yesno "$DISABLE_SWAP_PROMPT" 10 50; then
-        disable_all_swap
-    else
-        exit 0
-    fi
+    whiptail --yesno "$DISABLE_SWAP_PROMPT" 10 50 && disable_all_swap
 fi
 
 main_menu
