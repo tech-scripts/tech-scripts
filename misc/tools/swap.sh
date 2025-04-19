@@ -145,12 +145,13 @@ setup_zram() {
         fi
     done
 
-    disable_all_swap
-    
-    $SUDO modprobe zram num_devices=1
-    if [ $? -ne 0 ]; then
-        whiptail --msgbox "Не удалось загрузить модуль zram" 8 50
-        return 1
+    if check_active_zram; then
+        $SUDO swapoff /dev/zram0
+        $SUDO modprobe -r zram
+    fi
+
+    if [ ! -e /sys/block/zram0/disksize ]; then
+        $SUDO modprobe zram num_devices=1
     fi
     
     echo "$ZRAM_SIZE" | $SUDO tee /sys/block/zram0/disksize > /dev/null || {
@@ -260,6 +261,8 @@ setup_zswap() {
     
     if [ -f /sys/module/zswap/parameters/zpool ]; then
         echo "z3fold" | $SUDO tee /sys/module/zswap/parameters/zpool > /dev/null
+    else
+        log "Параметр zpool не поддерживается вашим ядром."
     fi
     
     $SUDO tee /etc/modprobe.d/zswap.conf > /dev/null <<EOF
