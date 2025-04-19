@@ -179,8 +179,39 @@ setup_zswap() {
         echo "options zswap zpool=zsmalloc"
     } | $SUDO tee /etc/modprobe.d/zswap.conf > /dev/null
 
-    whiptail --msgbox "ZSWAP успешно настроен." 8 50
+    if ! swapon --show | grep -q "/swapfile"; then
+        $SUDO fallocate -l 2G /swapfile || {
+            whiptail --msgbox "Не удалось создать swap-файл." 8 50
+            return 1
+        }
+        $SUDO chmod 600 /swapfile
+        $SUDO mkswap /swapfile || {
+            whiptail --msgbox "Не удалось настроить swap-файл." 8 50
+            return 1
+        }
+        $SUDO swapon /swapfile || {
+            whiptail --msgbox "Не удалось активировать swap-файл." 8 50
+            return 1
+        }
+        echo "/swapfile none swap sw 0 0" | $SUDO tee -a /etc/fstab > /dev/null
+    fi
+
+    whiptail --msgbox "ZSWAP успешно настроен и swap-файл создан." 8 50
+    check_zswap_status
     return 0
+}
+
+check_zswap_status() {
+    echo "Проверка активного swap:"
+    swapon --show
+
+    echo "Проверка параметров ZSWAP:"
+    echo "Enabled: $(cat /sys/module/zswap/parameters/enabled)"
+    echo "Compressor: $(cat /sys/module/zswap/parameters/compressor)"
+    echo "Zpool: $(cat /sys/module/zswap/parameters/zpool)"
+
+    echo "Проверка использования ZSWAP:"
+    grep -i zswap /proc/meminfo
 }
 
 main_menu() {
