@@ -266,7 +266,7 @@ setup_zswap() {
     $SUDO tee /etc/modprobe.d/zswap.conf > /dev/null <<EOF
 options zswap enabled=1
 options zswap compressor=lz4
-options zswap zpool=z3fold
+# options zswap zpool=z3fold  # Закомментировано, если не поддерживается
 EOF
     
     whiptail --msgbox "$ZSWAP_ENABLED" 8 50
