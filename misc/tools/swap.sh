@@ -150,9 +150,7 @@ setup_zram() {
         $SUDO modprobe -r zram
     fi
 
-    if [ ! -e /sys/block/zram0/disksize ]; then
-        $SUDO modprobe zram num_devices=1
-    fi
+    $SUDO modprobe zram num_devices=1
     
     echo "$ZRAM_SIZE" | $SUDO tee /sys/block/zram0/disksize > /dev/null || {
         whiptail --msgbox "Не удалось установить размер ZRAM" 8 50
