@@ -1,43 +1,89 @@
 #!/bin/bash
 
 show_temperature_info() {
-    TEMP_INFO=""
-    
-    if command -v sensors &>/dev/null; then
-        SENSORS_OUTPUT=$(sensors)
-        
-        # CPU Temperature (k10temp)
-        CPU_TEMP=$(echo "$SENSORS_OUTPUT" | grep -A1 "k10temp" | grep "temp1" | awk '{print $2}' | tr -d '+°C')
-        [ -n "$CPU_TEMP" ] && TEMP_INFO+="Температура CPU: ${CPU_TEMP}°C\n"
-        
-        # GPU Temperature (AMD)
-        GPU_TEMP=$(echo "$SENSORS_OUTPUT" | grep -A1 "radeon" | grep "temp1" | awk '{printf "%.1f", $2}' | tr -d '+°C')
-        if [ "$GPU_TEMP" != "N/A" ]; then
-            [ -n "$GPU_TEMP" ] && TEMP_INFO+="Температура GPU: ${GPU_TEMP}°C\n"
-        fi
-        
-        # System Temperature (acpitz)
-        SYS_TEMP=$(echo "$SENSORS_OUTPUT" | grep -A1 "acpitz" | grep "temp1" | awk '{print $2}' | tr -d '+°C')
-        [ -n "$SYS_TEMP" ] && TEMP_INFO+="Температура системы: ${SYS_TEMP}°C\n"
+    TEMP_INFO="\nТемпературные датчики:\n\n"
+    SENSORS_DATA=""
+
+    if ! command -v sensors &>/dev/null; then
+        TEMP_INFO+="Программа 'sensors' не найдена!\n\nУстановите lm-sensors:\n"
+        TEMP_INFO+="sudo apt install lm-sensors\n"
+        TEMP_INFO+="После установки выполните:\n"
+        TEMP_INFO+="sudo sensors-detect --auto\n"
+        whiptail --title "Ошибка" --msgbox "$TEMP_INFO" 20 70
+        return 1
     fi
+
+    # Получаем все устройства с температурами
+    SENSORS_DATA=$(sensors)
     
-    # Alternative CPU temperature from thermal zones
-    if [ -f /sys/class/thermal/thermal_zone*/temp ]; then
-        for temp_file in /sys/class/thermal/thermal_zone*/temp; do
-            temp=$(cat "$temp_file")
-            temp=$((temp/1000))
-            type=$(cat "${temp_file%/*}/type")
-            if [[ "$type" == "x86_pkg_temp" || "$type" == "k10temp" ]]; then
-                TEMP_INFO+="Температура CPU (ядро): ${temp}°C\n"
-            fi
-        done
+    # Определяем тип системы
+    if grep -q "k10temp" <<< "$SENSORS_DATA"; then
+        SYSTEM_TYPE="AMD"
+    elif grep -q "coretemp" <<< "$SENSORS_DATA"; then
+        SYSTEM_TYPE="Intel"
+    else
+        SYSTEM_TYPE="Unknown"
     fi
-    
-    if [ -z "$TEMP_INFO" ]; then
-        TEMP_INFO="Информация о температуре недоступна\nПопробуйте установить:\n- lm-sensors\n- nvidia-smi (для NVIDIA GPU)"
+
+    # Обработка CPU температур
+    case $SYSTEM_TYPE in
+        "AMD")
+            CPU_TEMP=$(grep -A1 "k10temp" <<< "$SENSORS_DATA" | grep "temp1" | awk '{print $2}' | tr -d '+')
+            [ -n "$CPU_TEMP" ] && TEMP_INFO+="🔹 CPU (AMD): $CPU_TEMP\n"
+            ;;
+        "Intel")
+            CPU_TEMP=$(grep "Package id" <<< "$SENSORS_DATA" | awk '{print $4}' | tr -d '+')
+            [ -z "$CPU_TEMP" ] && CPU_TEMP=$(grep "Core 0" <<< "$SENSORS_DATA" | awk '{print $3}' | tr -d '+')
+            [ -n "$CPU_TEMP" ] && TEMP_INFO+="🔹 CPU (Intel): $CPU_TEMP\n"
+            ;;
+        *)
+            CPU_TEMP=$(grep -E "CPU|Tdie" <<< "$SENSORS_DATA" | head -1 | awk '{print $2}' | tr -d '+')
+            [ -n "$CPU_TEMP" ] && TEMP_INFO+="🔹 CPU: $CPU_TEMP\n"
+            ;;
+    esac
+
+    # Обработка GPU температур
+    if grep -q "radeon" <<< "$SENSORS_DATA"; then
+        GPU_TEMP=$(grep -A1 "radeon" <<< "$SENSORS_DATA" | grep "temp1" | awk '{print $2}' | tr -d '+')
+        [ -n "$GPU_TEMP" ] && [ "$GPU_TEMP" != "N/A" ] && TEMP_INFO+="🎮 GPU (AMD): $GPU_TEMP\n"
     fi
-    
-    whiptail --title "Температура" --scrolltext --msgbox "$TEMP_INFO" 20 70
+
+    if grep -q "nouveau" <<< "$SENSORS_DATA"; then
+        GPU_TEMP=$(grep "temp1" <<< "$SENSORS_DATA" | awk '{print $2}' | tr -d '+')
+        [ -n "$GPU_TEMP" ] && TEMP_INFO+="🎮 GPU (NVIDIA): $GPU_TEMP\n"
+    fi
+
+    if command -v nvidia-smi &>/dev/null; then
+        GPU_TEMP=$(nvidia-smi --query-gpu=temperature.gpu --format=csv,noheader)
+        TEMP_INFO+="🎮 GPU (NVIDIA): ${GPU_TEMP}°C\n"
+    fi
+
+    # Обработка системных температур
+    if grep -q "acpitz" <<< "$SENSORS_DATA"; then
+        SYS_TEMP=$(grep -A1 "acpitz" <<< "$SENSORS_DATA" | grep "temp1" | awk '{print $2}' | tr -d '+')
+        [ -n "$SYS_TEMP" ] && TEMP_INFO+="🌡️ Системная: $SYS_TEMP\n"
+    fi
+
+    # Обработка температур NVMe
+    if grep -q "nvme" <<< "$SENSORS_DATA"; then
+        NVME_TEMP=$(grep "Composite" <<< "$SENSORS_DATA" | awk '{print $2}' | tr -d '+')
+        [ -n "$NVME_TEMP" ] && TEMP_INFO+="💾 NVMe: $NVME_TEMP\n"
+    fi
+
+    # Обработка температур материнской платы
+    if grep -q "asus" <<< "$SENSORS_DATA"; then
+        MB_TEMP=$(grep "motherboard" <<< "$SENSORS_DATA" | awk '{print $3}' | tr -d '+')
+        [ -n "$MB_TEMP" ] && TEMP_INFO+="🖥️ Материнская плата: $MB_TEMP\n"
+    fi
+
+    # Проверка пустого вывода
+    if [ $(echo -e "$TEMP_INFO" | wc -l) -le 4 ]; then
+        TEMP_INFO+="\nНе удалось получить данные о температуре.\n"
+        TEMP_INFO+="Попробуйте выполнить 'sudo sensors-detect --auto'\n"
+        TEMP_INFO+="и перезапустить скрипт."
+    fi
+
+    whiptail --title "Температуры системы" --scrolltext --msgbox "$TEMP_INFO" 25 80
 }
 
 show_system_info() {
