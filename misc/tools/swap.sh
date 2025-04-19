@@ -2,16 +2,10 @@
 
 CONFIG_DIR="/etc/tech-scripts"
 CONFIG_FILE="$CONFIG_DIR/choose.conf"
-ZRAM_CONFIG="$CONFIG_DIR/swap.conf"
-LOG_FILE="/var/log/tech-scripts.log"
+SWAP_CONFIG="$CONFIG_DIR/swap.conf"
 
 [ "$(id -u)" -eq 0 ] || SUDO=$(command -v sudo)
-
 $SUDO mkdir -p "$CONFIG_DIR"
-
-log() {
-    echo "$(date '+%Y-%m-%d %T') - $1" | $SUDO tee -a "$LOG_FILE" >/dev/null
-}
 
 init_language() {
     if [ -f "$CONFIG_FILE" ]; then
@@ -24,28 +18,21 @@ init_language() {
         "Русский")
             INVALID_SIZE="Некорректный ввод. Введите размер в формате, например, 8G или 512M."
             ENTER_SIZE="Введите размер ZRAM (например, 8G, 512M):"
-            REMOVE_ZRAM="Удалить текущие настройки ZRAM?"
-            ZRAM_REMOVED="Настройки ZRAM удалены."
-            ZSWAP_ENABLED="ZSWAP включен."
             SWAP_SETUP="SWAP настроен на размер $SWAP_SIZE."
             CHOOSE_MEMORY="Выберите тип памяти:"
             ZRAM_OPTION="ZRAM (сжатый swap в памяти)"
             SWAP_OPTION="Обычный SWAP (на диске)"
             ZSWAP_OPTION="ZSWAP (автоматическая компрессия)"
             ZSWAP_NOT_SUPPORTED="ZSWAP не поддерживается вашим ядром."
-            DISABLE_SWAP_PROMPT="Обнаружены активные swap-устройства. Нужно отключить их для продолжения. Продолжить?"
+            DISABLE_SWAP_PROMPT="Обнаружены активные swap-устройства. Отключить их перед настройкой?"
             SWAP_SIZE_PROMPT="Введите размер SWAP (например, 8G):"
             ZRAM_SETUP="ZRAM настроен на размер $ZRAM_SIZE."
             CURRENT_SETTINGS="Текущие настройки:"
             NO_ACTIVE_SWAP="Активные swap-устройства не обнаружены."
-            FUNCTION_NOT_AVAILABLE="Функция недоступна в текущей системе."
             ;;
         *)
             INVALID_SIZE="Invalid input. Please enter size in format like 8G or 512M."
             ENTER_SIZE="Enter ZRAM size (e.g., 8G, 512M):"
-            REMOVE_ZRAM="Remove current ZRAM settings?"
-            ZRAM_REMOVED="ZRAM settings removed."
-            ZSWAP_ENABLED="ZSWAP enabled."
             SWAP_SETUP="SWAP set with size $SWAP_SIZE."
             CHOOSE_MEMORY="Choose memory type:"
             ZRAM_OPTION="ZRAM (compressed in-memory swap)"
@@ -57,7 +44,6 @@ init_language() {
             ZRAM_SETUP="ZRAM set with size $ZRAM_SIZE."
             CURRENT_SETTINGS="Current settings:"
             NO_ACTIVE_SWAP="No active swap devices found."
-            FUNCTION_NOT_AVAILABLE="Function not available on this system."
             ;;
     esac
 }
@@ -70,21 +56,9 @@ check_active_swap() {
     [ -f /proc/swaps ] && [ "$(wc -l < /proc/swaps)" -gt 1 ]
 }
 
-check_active_zram() {
-    grep -q 'zram' /proc/swaps
-}
-
-check_zswap_support() {
-    [ -d /sys/module/zswap ] && [ -f /sys/module/zswap/parameters/enabled ]
-}
-
-disable_all_swap() {
-    log "Disabling all swap devices"
+disable_swap() {
     $SUDO swapoff -a 2>/dev/null
-    if check_active_zram; then
-        $SUDO modprobe -r zram 2>/dev/null
-    fi
-    return 0
+    $SUDO modprobe -r zram 2>/dev/null
 }
 
 show_current_settings() {
@@ -98,7 +72,7 @@ show_current_settings() {
 
 setup_zram() {
     if ! modprobe -n zram >/dev/null 2>&1; then
-        whiptail --msgbox "$FUNCTION_NOT_AVAILABLE" 8 50
+        whiptail --msgbox "ZRAM не поддерживается вашим ядром" 8 50
         return 1
     fi
 
@@ -110,31 +84,30 @@ setup_zram() {
         whiptail --msgbox "$INVALID_SIZE" 8 50
     done
 
-    disable_all_swap
+    disable_swap
 
     $SUDO modprobe zram num_devices=1 || {
-        whiptail --msgbox "Не удалось загрузить модуль zram" 8 50
+        whiptail --msgbox "Ошибка загрузки модуля zram" 8 50
         return 1
     }
 
     echo "$ZRAM_SIZE" | $SUDO tee /sys/block/zram0/disksize >/dev/null 2>&1 || {
-        whiptail --msgbox "Не удалось установить размер ZRAM" 8 50
+        whiptail --msgbox "Ошибка настройки размера ZRAM" 8 50
         return 1
     }
 
     $SUDO mkswap /dev/zram0 >/dev/null 2>&1 || {
-        whiptail --msgbox "Не удалось создать swap на ZRAM устройстве" 8 50
+        whiptail --msgbox "Ошибка создания swap на ZRAM" 8 50
         return 1
     }
 
     $SUDO swapon /dev/zram0 || {
-        whiptail --msgbox "Не удалось активировать ZRAM swap" 8 50
+        whiptail --msgbox "Ошибка активации ZRAM swap" 8 50
         return 1
     }
 
-    echo "ZRAM_SIZE=$ZRAM_SIZE" | $SUDO tee "$ZRAM_CONFIG" >/dev/null
+    echo "ZRAM_SIZE=$ZRAM_SIZE" | $SUDO tee "$SWAP_CONFIG" >/dev/null
     whiptail --msgbox "$ZRAM_SETUP" 8 50
-    return 0
 }
 
 setup_swapfile() {
@@ -146,51 +119,44 @@ setup_swapfile() {
         whiptail --msgbox "$INVALID_SIZE" 8 50
     done
 
-    disable_all_swap
+    disable_swap
     $SUDO rm -f /swapfile
 
     if ! $SUDO fallocate -l "$SWAP_SIZE" /swapfile; then
-        whiptail --msgbox "Не удалось создать swap-файл" 8 50
+        whiptail --msgbox "Ошибка создания swap-файла" 8 50
         return 1
     fi
 
     $SUDO chmod 600 /swapfile
     $SUDO mkswap /swapfile >/dev/null 2>&1 || {
-        whiptail --msgbox "Не удалось инициализировать swap" 8 50
+        whiptail --msgbox "Ошибка инициализации swap" 8 50
         return 1
     }
 
     $SUDO swapon /swapfile || {
-        whiptail --msgbox "Не удалось активировать swap" 8 50
+        whiptail --msgbox "Ошибка активации swap" 8 50
         return 1
     }
 
     grep -q "/swapfile" /etc/fstab || echo "/swapfile none swap sw 0 0" | $SUDO tee -a /etc/fstab >/dev/null
     whiptail --msgbox "$SWAP_SETUP" 8 50
-    return 0
 }
 
 setup_zswap() {
-    if ! check_zswap_support; then
+    if [ ! -d /sys/module/zswap ]; then
         whiptail --msgbox "$ZSWAP_NOT_SUPPORTED" 8 50
         return 1
     fi
 
-    disable_all_swap
+    disable_swap
     
     echo 1 | $SUDO tee /sys/module/zswap/parameters/enabled >/dev/null 2>&1
     
-    [ -f /sys/module/zswap/parameters/compressor ] && \
-    echo "lz4" | $SUDO tee /sys/module/zswap/parameters/compressor >/dev/null 2>&1
-    
-    if [ -f /sys/module/zswap/parameters/zpool ]; then
-        if ! echo "z3fold" | $SUDO tee /sys/module/zswap/parameters/zpool >/dev/null 2>&1; then
-            log "Не удалось установить zpool"
-        fi
+    if [ -f /sys/module/zswap/parameters/compressor ]; then
+        echo "lz4" | $SUDO tee /sys/module/zswap/parameters/compressor >/dev/null 2>&1
     fi
     
-    whiptail --msgbox "$ZSWAP_ENABLED" 8 50
-    return 0
+    whiptail --msgbox "ZSWAP включен" 8 50
 }
 
 main_menu() {
@@ -210,7 +176,7 @@ main_menu() {
                     4) show_current_settings ;;
                 esac
                 ;;
-            *) return ;;
+            *) exit 0 ;;
         esac
     done
 }
@@ -218,7 +184,7 @@ main_menu() {
 init_language
 
 if check_active_swap; then
-    whiptail --yesno "$DISABLE_SWAP_PROMPT" 10 50 && disable_all_swap
+    whiptail --yesno "$DISABLE_SWAP_PROMPT" 10 50 && disable_swap
 fi
 
 main_menu
