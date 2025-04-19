@@ -143,20 +143,33 @@ setup_swapfile() {
 }
 
 setup_zswap() {
-    if [ ! -d /sys/module/zswap ]; then
-        whiptail --msgbox "$ZSWAP_NOT_SUPPORTED" 8 50
+    if ! [ -d /sys/module/zswap ]; then
+        whiptail --msgbox "ZSWAP не поддерживается вашим ядром." 8 50
         return 1
     fi
 
     disable_swap
-    
-    echo 1 | $SUDO tee /sys/module/zswap/parameters/enabled >/dev/null 2>&1
-    
+
+    echo 1 | $SUDO tee /sys/module/zswap/parameters/enabled > /dev/null
+
     if [ -f /sys/module/zswap/parameters/compressor ]; then
-        echo "lz4" | $SUDO tee /sys/module/zswap/parameters/compressor >/dev/null 2>&1
+        echo "lz4" | $SUDO tee /sys/module/zswap/parameters/compressor > /dev/null
     fi
-    
-    whiptail --msgbox "ZSWAP включен" 8 50
+
+    if [ -f /sys/module/zswap/parameters/zpool ]; then
+        echo "z3fold" | $SUDO tee /sys/module/zswap/parameters/zpool > /dev/null
+    fi
+
+    {
+        echo "options zswap enabled=1"
+        echo "options zswap compressor=lz4"
+        if [ -f /sys/module/zswap/parameters/zpool ]; then
+            echo "options zswap zpool=z3fold"
+        fi
+    } | $SUDO tee /etc/modprobe.d/zswap.conf > /dev/null
+
+    whiptail --msgbox "ZSWAP успешно настроен." 8 50
+    return 0
 }
 
 main_menu() {
