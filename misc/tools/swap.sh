@@ -148,7 +148,7 @@ setup_zswap() {
         return 1
     fi
 
-    disable_all_swap
+    disable_swap
 
     echo 1 | $SUDO tee /sys/module/zswap/parameters/enabled > /dev/null
 
