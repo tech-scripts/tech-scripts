@@ -157,28 +157,36 @@ setup_zswap() {
         return 1
     fi
 
-    disable_all_swap
+    disable_swap
 
     echo 1 | $SUDO tee /sys/module/zswap/parameters/enabled > /dev/null
 
     if [ -f /sys/module/zswap/parameters/compressor ]; then
-        echo "lz4" | $SUDO tee /sys/module/zswap/parameters/compressor >/dev/null 2>&1 || {
+        if grep -q "lz4" /sys/module/zswap/parameters/compressor; then
+            echo "lz4" | $SUDO tee /sys/module/zswap/parameters/compressor >/dev/null 2>&1 || {
+                echo "zswap: не удалось установить lz4 compressor" >&2
+            }
+        else
             echo "zswap: lz4 compressor не поддерживается" >&2
-        }
+        fi
     fi
 
     if [ -f /sys/module/zswap/parameters/zpool ]; then
-        if echo "z3fold" | $SUDO tee /sys/module/zswap/parameters/zpool >/dev/null 2>&1; then
-            :
+        if grep -q "z3fold" /sys/module/zswap/parameters/zpool; then
+            echo "z3fold" | $SUDO tee /sys/module/zswap/parameters/zpool >/dev/null 2>&1 || {
+                echo "zswap: не удалось установить z3fold zpool" >&2
+            }
         else
-            echo "zswap: z3fold не поддерживается" >&2
+            echo "zswap: z3fold zpool не поддерживается" >&2
         fi
     fi
 
     {
         echo "options zswap enabled=1"
-        echo "options zswap compressor=lz4"
-        if [ -f /sys/module/zswap/parameters/zpool ]; then
+        if [ -f /sys/module/zswap/parameters/compressor ] && grep -q "lz4" /sys/module/zswap/parameters/compressor; then
+            echo "options zswap compressor=lz4"
+        fi
+        if [ -f /sys/module/zswap/parameters/zpool ] && grep -q "z3fold" /sys/module/zswap/parameters/zpool; then
             echo "options zswap zpool=z3fold"
         fi
     } | $SUDO tee /etc/modprobe.d/zswap.conf > /dev/null
