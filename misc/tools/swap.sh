@@ -255,19 +255,25 @@ setup_zswap() {
     
     if [ -f /sys/module/zswap/parameters/compressor ]; then
         echo "lz4" | $SUDO tee /sys/module/zswap/parameters/compressor > /dev/null
+    else
+        log "Параметр compressor не поддерживается вашим ядром."
     fi
-    
+
     if [ -f /sys/module/zswap/parameters/zpool ]; then
-        echo "z3fold" | $SUDO tee /sys/module/zswap/parameters/zpool > /dev/null
+        echo "z3fold" | $SUDO tee /sys/module/zswap/parameters/zpool > /dev/null || {
+            log "Не удалось установить zpool. Возможно, параметр не поддерживается."
+        }
     else
         log "Параметр zpool не поддерживается вашим ядром."
     fi
     
-    $SUDO tee /etc/modprobe.d/zswap.conf > /dev/null <<EOF
-options zswap enabled=1
-options zswap compressor=lz4
-# options zswap zpool=z3fold  # Закомментировано, если не поддерживается
-EOF
+    {
+        echo "options zswap enabled=1"
+        echo "options zswap compressor=lz4"
+        if [ -f /sys/module/zswap/parameters/zpool ]; then
+            echo "options zswap zpool=z3fold"
+        fi
+    } | $SUDO tee /etc/modprobe.d/zswap.conf > /dev/null
     
     whiptail --msgbox "$ZSWAP_ENABLED" 8 50
     return 0
