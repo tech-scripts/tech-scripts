@@ -2,6 +2,9 @@
   <h2 align="center">Tech Scripts</h2>
   <p align="center">Best scripts for configuring linux</p>
   <p align="center">
+    <a href="https://boosty.to/techscripts/donate">
+      <img src="https://img.shields.io/badge/Support-FF5F5F?style=for-the-badge&logo=boosty&logoColor=white" alt="Donate" />
+    </a>
     <a href="https://github.com/tech-scripts/linux/blob/main/CONTRIBUTING.md">
       <img src="https://img.shields.io/badge/Contribute-ff4785?style=for-the-badge&logo=git&logoColor=white" alt="Contribute" />
     </a> 
