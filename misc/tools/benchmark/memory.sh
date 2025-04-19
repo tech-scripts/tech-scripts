@@ -22,10 +22,12 @@ show_progress() {
 whiptail --title "$title" --yesno "$question" 10 60
 if [ $? -eq 0 ]; then
   show_progress &
-  sysbench --test=memory --memory-block-size=1K --memory-oper=write --time=10 run > /tmp/sysbench_memory_test.txt
+  
+  output=$(sysbench memory --memory-block-size=1K --memory-oper=write --time=10 run)
   wait
-  total_time=$(grep "total time:" /tmp/sysbench_memory_test.txt | awk '{print $3}')
-  total_events=$(grep "total number of events:" /tmp/sysbench_memory_test.txt | awk '{print $5}')
+  
+  total_time=$(echo "$output" | grep "total time:" | awk '{print $3}')
+  total_events=$(echo "$output" | grep "total number of events:" | awk '{print $5}')
   
   operations_per_second=$(awk "BEGIN {printf \"%.2f\", $total_events / $total_time}")
   total_data_transferred=$((total_events * 1))
@@ -41,8 +43,6 @@ if [ $? -eq 0 ]; then
   echo "    Total time:                          $total_time"
   echo "    Total number of events:              $total_events"
   echo ""
-  
-  rm -f /tmp/sysbench_memory_test.txt
 else
   exit 0
 fi
