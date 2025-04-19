@@ -17,7 +17,6 @@ show_system_info() {
     MEMORY=$(free -h | grep "Mem:" | awk '{print $3 "/" $2}')
     GPU=$(lspci | grep -i vga | cut -d':' -f3 | xargs)
     
-    # Battery info if available
     BATTERY_INFO=""
     if [ -d /sys/class/power_supply ]; then
         for battery in /sys/class/power_supply/*; do
@@ -39,17 +38,12 @@ Uptime: $UPTIME
 Packages: $PACKAGES
 Shell: $SHELL $BASH_VERSION
 "
-    if [ -n "$RESOLUTION" ]; then
-        MESSAGE+="Resolution: $RESOLUTION\n"
-    fi
+    [ -n "$RESOLUTION" ] && MESSAGE+="Resolution: $RESOLUTION\n"
     MESSAGE+="Terminal: $TERMINAL\n"
     MESSAGE+="CPU: $CPU\n"
     MESSAGE+="GPU: $GPU\n"
     MESSAGE+="Memory: $MEMORY\n"
-    if [ -n "$BATTERY_INFO" ]; then
-        MESSAGE+="\n$BATTERY_INFO"
-    fi
-    
+    [ -n "$BATTERY_INFO" ] && MESSAGE+="\n$BATTERY_INFO"
     MESSAGE=$(echo "$MESSAGE" | sed '/^[[:space:]]*$/d')
     whiptail --title "Информация о системе" --scrolltext --msgbox "$MESSAGE" 20 70
 }
@@ -57,37 +51,49 @@ Shell: $SHELL $BASH_VERSION
 show_temperature_info() {
     TEMP_INFO=""
     
-    # CPU temperature
     if [ -f /sys/class/thermal/thermal_zone*/temp ]; then
         for temp_file in /sys/class/thermal/thermal_zone*/temp; do
             temp=$(cat "$temp_file")
             temp=$((temp/1000))
             type=$(cat "${temp_file%/*}/type")
-            TEMP_INFO+="Температура $type: ${temp}°C\n"
+            if [[ "$type" == "x86_pkg_temp" || "$type" == "Tdie" || "$type" == "k10temp" ]]; then
+                TEMP_INFO+="Температура CPU: ${temp}°C\n"
+            else
+                TEMP_INFO+="Температура $type: ${temp}°C\n"
+            fi
         done
     fi
     
-    # GPU temperature (NVIDIA)
-    if command -v nvidia-smi &>/dev/null; then
-        gpu_temp=$(nvidia-smi --query-gpu=temperature.gpu --format=csv,noheader)
-        TEMP_INFO+="Температура GPU (NVIDIA): ${gpu_temp}°C\n"
+    if command -v sensors &>/dev/null; then
+        SENSORS_OUTPUT=$(sensors)
+        
+        if grep -q "k10temp" <<< "$SENSORS_OUTPUT"; then
+            CPU_TEMP=$(echo "$SENSORS_OUTPUT" | grep -A1 "k10temp" | grep "temp1" | awk '{print $2}' | tr -d '+°C')
+            TEMP_INFO+="Температура CPU (k10temp): ${CPU_TEMP}°C\n"
+        fi
+        
+        if grep -q "coretemp" <<< "$SENSORS_OUTPUT"; then
+            CPU_TEMP=$(echo "$SENSORS_OUTPUT" | grep "Package id" | awk '{print $4}' | tr -d '+°C')
+            [ -z "$CPU_TEMP" ] && CPU_TEMP=$(echo "$SENSORS_OUTPUT" | grep "Tdie" | awk '{print $2}' | tr -d '+°C')
+            TEMP_INFO+="Температура CPU (coretemp): ${CPU_TEMP}°C\n"
+        fi
+        
+        if grep -q "radeon" <<< "$SENSORS_OUTPUT"; then
+            GPU_TEMP=$(echo "$SENSORS_OUTPUT" | grep -A1 "radeon" | grep "temp1" | awk '{print $2}' | tr -d '+°C')
+            TEMP_INFO+="Температура GPU (AMD): ${GPU_TEMP}°C\n"
+        fi
+        
+        ACPI_TEMP=$(echo "$SENSORS_OUTPUT" | grep -A1 "acpitz" | grep "temp1" | awk '{print $2}' | tr -d '+°C')
+        [ -n "$ACPI_TEMP" ] && TEMP_INFO+="Температура ACPI: ${ACPI_TEMP}°C\n"
     fi
     
-    # lm-sensors
-    if command -v sensors &>/dev/null; then
-        sensors_output=$(sensors)
-        if [ -n "$sensors_output" ]; then
-            TEMP_INFO+="\nИнформация от sensors:\n"
-            TEMP_INFO+=$(echo "$sensors_output" | grep -E 'Composite|edge|Tctl|Core' | sed \
-                -e 's/Composite/Температура NVMe/' \
-                -e 's/edge/Температура GPU/' \
-                -e 's/Tctl/Температура процессора/' \
-                -e 's/Core [0-9]*/Температура ядра/')
-        fi
+    if command -v nvidia-smi &>/dev/null; then
+        GPU_TEMP=$(nvidia-smi --query-gpu=temperature.gpu --format=csv,noheader)
+        TEMP_INFO+="Температура GPU (NVIDIA): ${GPU_TEMP}°C\n"
     fi
     
     if [ -z "$TEMP_INFO" ]; then
-        TEMP_INFO="Информация о температуре недоступна\nПопробуйте установить lm-sensors и nvidia-smi"
+        TEMP_INFO="Информация о температуре недоступна\nПопробуйте установить:\n- lm-sensors\n- nvidia-smi (для NVIDIA GPU)"
     fi
     
     whiptail --title "Температура" --scrolltext --msgbox "$TEMP_INFO" 20 70
@@ -104,15 +110,10 @@ $DISK_INFO
 
 show_network_info() {
     NETWORK_INFO=""
-    
-    # Get active network interfaces
     INTERFACES=$(ip -o link show | awk '{print $2}' | sed 's/://')
     
     for interface in $INTERFACES; do
-        # Skip loopback
-        if [ "$interface" = "lo" ]; then
-            continue
-        fi
+        [ "$interface" = "lo" ] && continue
         
         IP=$(ip -o addr show dev "$interface" | awk '/inet / {print $4}' | cut -d'/' -f1 | tr '\n' ', ' | sed 's/, $//')
         MAC=$(ip -o link show dev "$interface" | awk '{print $17}')
@@ -122,15 +123,9 @@ show_network_info() {
         if [ -n "$IP" ] || [ -n "$MAC" ]; then
             NETWORK_INFO+="Интерфейс: $interface\n"
             NETWORK_INFO+="Статус: ${STATUS:-неизвестно}\n"
-            if [ -n "$SPEED" ]; then
-                NETWORK_INFO+="Скорость: ${SPEED}Mbps\n"
-            fi
-            if [ -n "$IP" ]; then
-                NETWORK_INFO+="IP: $IP\n"
-            fi
-            if [ -n "$MAC" ]; then
-                NETWORK_INFO+="MAC: $MAC\n"
-            fi
+            [ -n "$SPEED" ] && NETWORK_INFO+="Скорость: ${SPEED}Mbps\n"
+            [ -n "$IP" ] && NETWORK_INFO+="IP: $IP\n"
+            [ -n "$MAC" ] && NETWORK_INFO+="MAC: $MAC\n"
             NETWORK_INFO+="\n"
         fi
     done
@@ -139,26 +134,21 @@ show_network_info() {
         NETWORK_INFO="Активные сетевые адаптеры не обнаружены"
     fi
     
-    # Add public IP if available
     if command -v curl &>/dev/null; then
         PUBLIC_IP=$(curl -s ifconfig.me)
-        if [ -n "$PUBLIC_IP" ]; then
-            NETWORK_INFO+="\nПубличный IP: $PUBLIC_IP"
-        fi
+        [ -n "$PUBLIC_IP" ] && NETWORK_INFO+="\nПубличный IP: $PUBLIC_IP"
     fi
     
     whiptail --title "Сеть" --scrolltext --msgbox "$NETWORK_INFO" 20 70
 }
 
 show_security_info() {
-    # UEFI/BIOS
     if [ -d /sys/firmware/efi ]; then
         UEFI_STATUS="UEFI включен"
     else
         UEFI_STATUS="UEFI отключен (используется Legacy BIOS)"
     fi
     
-    # TPM
     if command -v tpm2_getcap &>/dev/null; then
         TPM_STATUS=$(tpm2_getcap properties-fixed 2>/dev/null | grep "TPM2_PT_FAMILY_INDICATOR" | awk '{print $2}')
         if [ "$TPM_STATUS" = "TPM2" ]; then
@@ -170,28 +160,21 @@ show_security_info() {
         TPM_STATUS="TPM 2.0 недоступен (установите tpm2-tools)"
     fi
     
-    # Firewall
     if command -v ufw &>/dev/null; then
         UFW_STATUS=$(sudo ufw status | grep -v 'Status: inactive')
-        if [ -z "$UFW_STATUS" ]; then
-            UFW_STATUS="UFW неактивен"
-        else
-            UFW_STATUS="UFW активен"
-        fi
+        [ -z "$UFW_STATUS" ] && UFW_STATUS="UFW неактивен" || UFW_STATUS="UFW активен"
     elif command -v firewall-cmd &>/dev/null; then
         UFW_STATUS=$(sudo firewall-cmd --state 2>/dev/null || echo "FirewallD неактивен")
     else
         UFW_STATUS="Брандмауэр не обнаружен"
     fi
     
-    # SELinux
     if command -v sestatus &>/dev/null; then
         SELINUX_STATUS=$(sestatus | grep "SELinux status" | cut -d':' -f2 | xargs)
     else
         SELINUX_STATUS="SELinux не установлен"
     fi
     
-    # AppArmor
     if command -v apparmor_status &>/dev/null; then
         APPARMOR_STATUS=$(apparmor_status | grep -E 'profiles|processes')
         if echo "$APPARMOR_STATUS" | grep -q "0 profiles are loaded"; then
@@ -203,7 +186,6 @@ show_security_info() {
         APPARMOR_STATUS="AppArmor не установлен"
     fi
     
-    # Antivirus
     if command -v clamscan &>/dev/null; then
         ANTIVIRUS_STATUS="ClamAV установлен"
     elif command -v sophos &>/dev/null; then
@@ -212,7 +194,6 @@ show_security_info() {
         ANTIVIRUS_STATUS="Антивирус не обнаружен"
     fi
     
-    # Disk encryption
     if lsblk -o NAME,FSTYPE | grep -q "crypt"; then
         DISK_ENCRYPTION="Шифрование дисков включено"
     else
