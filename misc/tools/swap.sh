@@ -56,9 +56,15 @@ check_active_swap() {
     [ -f /proc/swaps ] && [ "$(wc -l < /proc/swaps)" -gt 1 ]
 }
 
+check_zswap_support() {
+    [ -d /sys/module/zswap ] && [ -f /sys/module/zswap/parameters/enabled ]
+}
+
 disable_swap() {
     $SUDO swapoff -a 2>/dev/null
-    $SUDO modprobe -r zram 2>/dev/null
+    if lsmod | grep -q zram; then
+        $SUDO modprobe -r zram 2>/dev/null
+    fi
 }
 
 show_current_settings() {
@@ -93,16 +99,19 @@ setup_zram() {
 
     echo "$ZRAM_SIZE" | $SUDO tee /sys/block/zram0/disksize >/dev/null 2>&1 || {
         whiptail --msgbox "Ошибка настройки размера ZRAM" 8 50
+        $SUDO modprobe -r zram
         return 1
     }
 
     $SUDO mkswap /dev/zram0 >/dev/null 2>&1 || {
         whiptail --msgbox "Ошибка создания swap на ZRAM" 8 50
+        $SUDO modprobe -r zram
         return 1
     }
 
     $SUDO swapon /dev/zram0 || {
         whiptail --msgbox "Ошибка активации ZRAM swap" 8 50
+        $SUDO modprobe -r zram
         return 1
     }
 
@@ -150,17 +159,19 @@ setup_zswap() {
 
     disable_swap
     
+    # Включаем zswap
     echo 1 | $SUDO tee /sys/module/zswap/parameters/enabled >/dev/null 2>&1
     
-if [ -f /sys/module/zswap/parameters/compressor ]; then
-    if grep -q "lz4" /sys/module/zswap/parameters/compressor; then
-        echo "lz4" | $SUDO tee /sys/module/zswap/parameters/compressor >/dev/null 2>&1
-    else
-        echo "zswap: lz4 compressor не поддерживается" >&2
+    # Устанавливаем compressor (если доступен)
+    if [ -f /sys/module/zswap/parameters/compressor ]; then
+        if grep -q "lz4" /sys/module/zswap/parameters/compressor; then
+            echo "lz4" | $SUDO tee /sys/module/zswap/parameters/compressor >/dev/null 2>&1
+        else
+            echo "zswap: lz4 compressor не поддерживается" >&2
+        fi
     fi
-fi
     
-    whiptail --msgbox "$ZSWAP_ENABLED" 8 50
+    whiptail --msgbox "ZSWAP успешно настроен" 8 50
     return 0
 }
 
