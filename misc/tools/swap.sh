@@ -148,7 +148,7 @@ setup_zswap() {
         return 1
     fi
 
-    disable_swap
+    disable_all_swap
 
     echo 1 | $SUDO tee /sys/module/zswap/parameters/enabled > /dev/null
 
@@ -157,13 +157,17 @@ setup_zswap() {
     fi
 
     if [ -f /sys/module/zswap/parameters/zpool ]; then
-        echo "z3fold" | $SUDO tee /sys/module/zswap/parameters/zpool > /dev/null
+        if grep -q "z3fold" /sys/module/zswap/parameters/zpool; then
+            echo "z3fold" | $SUDO tee /sys/module/zswap/parameters/zpool > /dev/null
+        else
+            log "z3fold не поддерживается для zpool."
+        fi
     fi
 
     {
         echo "options zswap enabled=1"
         echo "options zswap compressor=lz4"
-        if [ -f /sys/module/zswap/parameters/zpool ]; then
+        if [ -f /sys/module/zswap/parameters/zpool ] && grep -q "z3fold" /sys/module/zswap/parameters/zpool; then
             echo "options zswap zpool=z3fold"
         fi
     } | $SUDO tee /etc/modprobe.d/zswap.conf > /dev/null
