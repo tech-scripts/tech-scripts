@@ -24,7 +24,7 @@ if [ $? -eq 0 ]; then
   total_events=$(grep "total number of events:" /tmp/sysbench_memory_test.txt | awk '{print $5}')
   
   operations_per_second=$(awk "BEGIN {printf \"%.2f\", $total_events / $total_time}")
-  total_data_transferred=$((total_events * 1)) # 1K = 1 MiB
+  total_data_transferred=$((total_events * 1))
   data_transferred_miB=$((total_data_transferred / 1024))
   data_transferred_rate=$(awk "BEGIN {printf \"%.2f\", $data_transferred_miB / $total_time}")
   
@@ -34,8 +34,8 @@ if [ $? -eq 0 ]; then
   echo "$data_transferred_miB MiB transferred ($data_transferred_rate MiB/sec)"
   echo ""
   echo "General statistics:"
-  echo "    Total time: $total_time"
-  echo "    Total number of events: $total_events"
+  echo "    Total time:                          $total_time"
+  echo "    Total number of events:              $total_events"
   echo ""
   
   rm -f /tmp/sysbench_memory_test.txt
