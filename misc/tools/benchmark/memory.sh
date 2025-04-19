@@ -1,8 +1,8 @@
 #!/bin/bash
 
-LANGUAGE=$(grep '^lang:' /etc/tech-scripts/choose.conf | cut -d' ' -f2)
+language=$(grep '^lang:' /etc/tech-scripts/choose.conf | cut -d' ' -f2)
 
-if [ "$LANGUAGE" == "Русский" ]; then
+if [ "$language" == "Русский" ]; then
   title="стресс-тест памяти"
   question="вы хотите выполнить стресс-тест памяти?"
   running="запуск стресс-теста памяти на 10 секунд..."
@@ -23,11 +23,10 @@ if [ $? -eq 0 ]; then
   total_time=$(grep "total time:" /tmp/sysbench_memory_test.txt | awk '{print $3}')
   total_events=$(grep "total number of events:" /tmp/sysbench_memory_test.txt | awk '{print $5}')
   
-  operations_per_second=$(echo "scale=2; $total_events / $total_time" | bc)
-  
-  total_data_transferred=$(echo "$total_events * 1" | bc)
-  data_transferred_miB=$(echo "scale=2; $total_data_transferred / 1024" | bc)
-  data_transferred_rate=$(echo "scale=2; $data_transferred_miB / $total_time" | bc)
+  operations_per_second=$(awk "BEGIN {printf \"%.2f\", $total_events / $total_time}")
+  total_data_transferred=$((total_events * 1)) # 1K = 1 MiB
+  data_transferred_miB=$((total_data_transferred / 1024))
+  data_transferred_rate=$(awk "BEGIN {printf \"%.2f\", $data_transferred_miB / $total_time}")
 
   echo "total operations: $total_events ($operations_per_second per second)"
   echo "$data_transferred_miB MiB transferred ($data_transferred_rate MiB/sec)"
