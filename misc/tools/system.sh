@@ -76,13 +76,11 @@ show_network_info() {
         
         IP=$(ip -o addr show dev "$interface" | awk '/inet / {print $4}' | cut -d'/' -f1 | tr '\n' ', ' | sed 's/, $//')
         MAC=$(ip -o link show dev "$interface" | awk '{print $17}')
-        SPEED=$(cat /sys/class/net/$interface/speed 2>/dev/null)
         STATUS=$(cat /sys/class/net/$interface/operstate 2>/dev/null)
         
         if [ -n "$IP" ] || [ -n "$MAC" ]; then
             NETWORK_INFO+="Интерфейс: $interface\n"
             NETWORK_INFO+="Статус: ${STATUS:-неизвестно}\n"
-            [ -n "$SPEED" ] && NETWORK_INFO+="Скорость: ${SPEED}Mbps\n"
             [ -n "$IP" ] && NETWORK_INFO+="IP: $IP\n"
             [ -n "$MAC" ] && NETWORK_INFO+="MAC: $MAC\n"
             NETWORK_INFO+="\n"
