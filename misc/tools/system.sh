@@ -6,30 +6,28 @@ show_temperature_info() {
     if command -v sensors &>/dev/null; then
         SENSORS_OUTPUT=$(sensors)
         
-        CPU_TEMP=$(echo "$SENSORS_OUTPUT" | grep -E "Tdie|Package|Core 0" | head -1 | awk '{print $2}' | tr -d '+°C')
+        # CPU Temperature (k10temp)
+        CPU_TEMP=$(echo "$SENSORS_OUTPUT" | grep -A1 "k10temp" | grep "temp1" | awk '{print $2}' | tr -d '+°C')
         [ -n "$CPU_TEMP" ] && TEMP_INFO+="Температура CPU: ${CPU_TEMP}°C\n"
         
-        AMD_TEMP=$(echo "$SENSORS_OUTPUT" | grep -A1 "k10temp" | grep "temp1" | awk '{print $2}' | tr -d '+°C')
-        [ -n "$AMD_TEMP" ] && TEMP_INFO+="Температура CPU (AMD): ${AMD_TEMP}°C\n"
+        # GPU Temperature (AMD)
+        GPU_TEMP=$(echo "$SENSORS_OUTPUT" | grep -A1 "radeon" | grep "temp1" | awk '{printf "%.1f", $2}' | tr -d '+°C')
+        if [ "$GPU_TEMP" != "N/A" ]; then
+            [ -n "$GPU_TEMP" ] && TEMP_INFO+="Температура GPU: ${GPU_TEMP}°C\n"
+        fi
         
-        GPU_TEMP=$(echo "$SENSORS_OUTPUT" | grep -A1 "radeon" | grep "temp1" | awk '{print $2}' | tr -d '+°C')
-        [ -n "$GPU_TEMP" ] && TEMP_INFO+="Температура GPU (AMD): ${GPU_TEMP}°C\n"
-        
-        ACPI_TEMP=$(echo "$SENSORS_OUTPUT" | grep -A1 "acpitz" | grep "temp1" | awk '{print $2}' | tr -d '+°C')
-        [ -n "$ACPI_TEMP" ] && TEMP_INFO+="Температура системы: ${ACPI_TEMP}°C\n"
+        # System Temperature (acpitz)
+        SYS_TEMP=$(echo "$SENSORS_OUTPUT" | grep -A1 "acpitz" | grep "temp1" | awk '{print $2}' | tr -d '+°C')
+        [ -n "$SYS_TEMP" ] && TEMP_INFO+="Температура системы: ${SYS_TEMP}°C\n"
     fi
     
-    if command -v nvidia-smi &>/dev/null; then
-        NVIDIA_TEMP=$(nvidia-smi --query-gpu=temperature.gpu --format=csv,noheader)
-        [ -n "$NVIDIA_TEMP" ] && TEMP_INFO+="Температура GPU (NVIDIA): ${NVIDIA_TEMP}°C\n"
-    fi
-    
+    # Alternative CPU temperature from thermal zones
     if [ -f /sys/class/thermal/thermal_zone*/temp ]; then
         for temp_file in /sys/class/thermal/thermal_zone*/temp; do
             temp=$(cat "$temp_file")
             temp=$((temp/1000))
             type=$(cat "${temp_file%/*}/type")
-            if [[ "$type" == "x86_pkg_temp" || "$type" == "Tdie" ]]; then
+            if [[ "$type" == "x86_pkg_temp" || "$type" == "k10temp" ]]; then
                 TEMP_INFO+="Температура CPU (ядро): ${temp}°C\n"
             fi
         done
