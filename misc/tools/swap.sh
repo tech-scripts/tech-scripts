@@ -128,11 +128,11 @@ show_current_settings() {
 setup_zram() {
     local ZRAM_SIZE
     local RAM_SIZE_BYTES=$(($(grep MemTotal /proc/meminfo | awk '{print $2}') * 1024))
-    
+
     while true; do
         ZRAM_SIZE=$(whiptail --inputbox "$ENTER_SIZE\n(Рекомендуется не более 50% от RAM)" 12 50 "4G" 3>&1 1>&2 2>&3)
         [ $? -ne 0 ] && return 1
-        
+
         if is_valid_size "$ZRAM_SIZE"; then
             local zram_bytes=$(to_bytes "$ZRAM_SIZE")
             if [ $zram_bytes -gt $((RAM_SIZE_BYTES + RAM_SIZE_BYTES / 4)) ]; then
@@ -151,24 +151,24 @@ setup_zram() {
     fi
 
     $SUDO modprobe zram num_devices=1
-    
+
     echo "$ZRAM_SIZE" | $SUDO tee /sys/block/zram0/disksize > /dev/null || {
         whiptail --msgbox "Не удалось установить размер ZRAM" 8 50
         return 1
     }
-    
+
     $SUDO mkswap /dev/zram0 || {
         whiptail --msgbox "Не удалось создать swap на ZRAM устройстве" 8 50
         return 1
     }
-    
+
     $SUDO swapon /dev/zram0 -p 32767 || {
         whiptail --msgbox "Не удалось активировать ZRAM swap" 8 50
         return 1
     }
-    
+
     echo "ZRAM_SIZE=$ZRAM_SIZE" | $SUDO tee "$ZRAM_CONFIG" > /dev/null
-    
+
     if whiptail --yesno "$ADD_AUTOSTART" 8 50; then
         $SUDO tee /etc/systemd/system/zram-setup.service > /dev/null <<EOF
 [Unit]
@@ -184,7 +184,7 @@ EOF
         $SUDO systemctl daemon-reload
         $SUDO systemctl enable zram-setup.service
     fi
-    
+
     whiptail --msgbox "$ZRAM_SETUP" 8 50
     return 0
 }
@@ -248,11 +248,11 @@ setup_zswap() {
         whiptail --msgbox "$ZSWAP_NOT_SUPPORTED" 8 50
         return 1
     fi
-    
+
     disable_all_swap
-    
+
     echo 1 | $SUDO tee /sys/module/zswap/parameters/enabled > /dev/null
-    
+
     if [ -f /sys/module/zswap/parameters/compressor ]; then
         echo "lz4" | $SUDO tee /sys/module/zswap/parameters/compressor > /dev/null
     else
@@ -266,7 +266,7 @@ setup_zswap() {
     else
         log "Параметр zpool не поддерживается вашим ядром."
     fi
-    
+
     {
         echo "options zswap enabled=1"
         echo "options zswap compressor=lz4"
@@ -274,7 +274,7 @@ setup_zswap() {
             echo "options zswap zpool=z3fold"
         fi
     } | $SUDO tee /etc/modprobe.d/zswap.conf > /dev/null
-    
+
     whiptail --msgbox "$ZSWAP_ENABLED" 8 50
     return 0
 }
