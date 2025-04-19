@@ -1,5 +1,47 @@
 #!/bin/bash
 
+show_temperature_info() {
+    TEMP_INFO=""
+    
+    if command -v sensors &>/dev/null; then
+        SENSORS_OUTPUT=$(sensors)
+        
+        CPU_TEMP=$(echo "$SENSORS_OUTPUT" | grep -E "Tdie|Package|Core 0" | head -1 | awk '{print $2}' | tr -d '+°C')
+        [ -n "$CPU_TEMP" ] && TEMP_INFO+="Температура CPU: ${CPU_TEMP}°C\n"
+        
+        AMD_TEMP=$(echo "$SENSORS_OUTPUT" | grep -A1 "k10temp" | grep "temp1" | awk '{print $2}' | tr -d '+°C')
+        [ -n "$AMD_TEMP" ] && TEMP_INFO+="Температура CPU (AMD): ${AMD_TEMP}°C\n"
+        
+        GPU_TEMP=$(echo "$SENSORS_OUTPUT" | grep -A1 "radeon" | grep "temp1" | awk '{print $2}' | tr -d '+°C')
+        [ -n "$GPU_TEMP" ] && TEMP_INFO+="Температура GPU (AMD): ${GPU_TEMP}°C\n"
+        
+        ACPI_TEMP=$(echo "$SENSORS_OUTPUT" | grep -A1 "acpitz" | grep "temp1" | awk '{print $2}' | tr -d '+°C')
+        [ -n "$ACPI_TEMP" ] && TEMP_INFO+="Температура системы: ${ACPI_TEMP}°C\n"
+    fi
+    
+    if command -v nvidia-smi &>/dev/null; then
+        NVIDIA_TEMP=$(nvidia-smi --query-gpu=temperature.gpu --format=csv,noheader)
+        [ -n "$NVIDIA_TEMP" ] && TEMP_INFO+="Температура GPU (NVIDIA): ${NVIDIA_TEMP}°C\n"
+    fi
+    
+    if [ -f /sys/class/thermal/thermal_zone*/temp ]; then
+        for temp_file in /sys/class/thermal/thermal_zone*/temp; do
+            temp=$(cat "$temp_file")
+            temp=$((temp/1000))
+            type=$(cat "${temp_file%/*}/type")
+            if [[ "$type" == "x86_pkg_temp" || "$type" == "Tdie" ]]; then
+                TEMP_INFO+="Температура CPU (ядро): ${temp}°C\n"
+            fi
+        done
+    fi
+    
+    if [ -z "$TEMP_INFO" ]; then
+        TEMP_INFO="Информация о температуре недоступна\nПопробуйте установить:\n- lm-sensors\n- nvidia-smi (для NVIDIA GPU)"
+    fi
+    
+    whiptail --title "Температура" --scrolltext --msgbox "$TEMP_INFO" 20 70
+}
+
 show_system_info() {
     if [ -f /etc/os-release ]; then
         OS=$(grep '^PRETTY_NAME=' /etc/os-release | cut -d'=' -f2 | tr -d '"')
@@ -46,57 +88,6 @@ Shell: $SHELL $BASH_VERSION
     [ -n "$BATTERY_INFO" ] && MESSAGE+="\n$BATTERY_INFO"
     MESSAGE=$(echo "$MESSAGE" | sed '/^[[:space:]]*$/d')
     whiptail --title "Информация о системе" --scrolltext --msgbox "$MESSAGE" 20 70
-}
-
-show_temperature_info() {
-    TEMP_INFO=""
-    
-    if [ -f /sys/class/thermal/thermal_zone*/temp ]; then
-        for temp_file in /sys/class/thermal/thermal_zone*/temp; do
-            temp=$(cat "$temp_file")
-            temp=$((temp/1000))
-            type=$(cat "${temp_file%/*}/type")
-            if [[ "$type" == "x86_pkg_temp" || "$type" == "Tdie" || "$type" == "k10temp" ]]; then
-                TEMP_INFO+="Температура CPU: ${temp}°C\n"
-            else
-                TEMP_INFO+="Температура $type: ${temp}°C\n"
-            fi
-        done
-    fi
-    
-    if command -v sensors &>/dev/null; then
-        SENSORS_OUTPUT=$(sensors)
-        
-        if grep -q "k10temp" <<< "$SENSORS_OUTPUT"; then
-            CPU_TEMP=$(echo "$SENSORS_OUTPUT" | grep -A1 "k10temp" | grep "temp1" | awk '{print $2}' | tr -d '+°C')
-            TEMP_INFO+="Температура CPU (k10temp): ${CPU_TEMP}°C\n"
-        fi
-        
-        if grep -q "coretemp" <<< "$SENSORS_OUTPUT"; then
-            CPU_TEMP=$(echo "$SENSORS_OUTPUT" | grep "Package id" | awk '{print $4}' | tr -d '+°C')
-            [ -z "$CPU_TEMP" ] && CPU_TEMP=$(echo "$SENSORS_OUTPUT" | grep "Tdie" | awk '{print $2}' | tr -d '+°C')
-            TEMP_INFO+="Температура CPU (coretemp): ${CPU_TEMP}°C\n"
-        fi
-        
-        if grep -q "radeon" <<< "$SENSORS_OUTPUT"; then
-            GPU_TEMP=$(echo "$SENSORS_OUTPUT" | grep -A1 "radeon" | grep "temp1" | awk '{print $2}' | tr -d '+°C')
-            TEMP_INFO+="Температура GPU (AMD): ${GPU_TEMP}°C\n"
-        fi
-        
-        ACPI_TEMP=$(echo "$SENSORS_OUTPUT" | grep -A1 "acpitz" | grep "temp1" | awk '{print $2}' | tr -d '+°C')
-        [ -n "$ACPI_TEMP" ] && TEMP_INFO+="Температура ACPI: ${ACPI_TEMP}°C\n"
-    fi
-    
-    if command -v nvidia-smi &>/dev/null; then
-        GPU_TEMP=$(nvidia-smi --query-gpu=temperature.gpu --format=csv,noheader)
-        TEMP_INFO+="Температура GPU (NVIDIA): ${GPU_TEMP}°C\n"
-    fi
-    
-    if [ -z "$TEMP_INFO" ]; then
-        TEMP_INFO="Информация о температуре недоступна\nПопробуйте установить:\n- lm-sensors\n- nvidia-smi (для NVIDIA GPU)"
-    fi
-    
-    whiptail --title "Температура" --scrolltext --msgbox "$TEMP_INFO" 20 70
 }
 
 show_disk_info() {
