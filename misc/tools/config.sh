@@ -31,11 +31,35 @@ show_menu() {
         DIRECTORIES=()
         CHOICES=()
 
-        if [[ "$CURRENT_DIR" == "/" ]]; then
-            DIRECTORIES=("/etc" "/opt" "/var" "/usr" "/home" "/root" "/tmp")
-        else
-            process_directory "$CURRENT_DIR"
-        fi
+        case "$CURRENT_DIR" in
+            /)
+                DIRECTORIES=("/etc" "/opt" "/var" "/usr" "/home" "/root" "/tmp")
+                ;;
+            /etc)
+                SCRIPTS=("/etc/fstab" "/etc/passwd" "/etc/ssh/sshd_config" "/etc/apt/sources.list")
+                ;;
+            /usr)
+                DIRECTORIES=("/usr/local" "/usr/share")
+                ;;
+            /usr/local)
+                DIRECTORIES=("/usr/local/etc")
+                ;;
+            /opt|/tmp|/home|/root)
+                process_directory "$CURRENT_DIR"
+                ;;
+            /var)
+                DIRECTORIES=("/var/lib/docker" "/var/www/html")
+                ;;
+            *)
+                if [ -f "$CURRENT_DIR" ]; then
+                    $EDITOR "$CURRENT_DIR"
+                    whiptail --yesno "Вы хотите продолжить?" 8 40
+                    if [ $? -ne 0 ]; then
+                        exit 0
+                    fi
+                fi
+                ;;
+        esac
 
         for DIR in "${DIRECTORIES[@]}"; do
             CHOICES+=("$DIR" "$DIRECTORY_FORMAT")
