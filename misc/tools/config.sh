@@ -23,7 +23,7 @@ show_menu() {
             /)
                 DIRECTORIES=("etc" "opt" "var" "usr" "home" "root" "tmp")
                 ;;
-            /tmp|/root|/home)
+            /opt|/tmp)
                 for FILE in "$CURRENT_DIR"/*; do
                     if [[ -e "$FILE" ]]; then
                         FILE_NAME=$(basename "$FILE")
@@ -37,6 +37,10 @@ show_menu() {
                 done
                 ;;
             *)
+                if [ -f "$CURRENT_DIR" ]; then
+                    $EDITOR "$CURRENT_DIR"
+                    exit 0
+                fi
                 ;;
         esac
 
