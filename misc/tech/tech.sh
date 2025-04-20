@@ -92,6 +92,9 @@ case "\$combined_args" in
     "system")
         run_script "tools" "system.sh"
         ;;
+    "config")
+         run_script "tools" "config.sh"
+         ;;
     "test")
          run_script "tools" "test.sh"
          ;;
