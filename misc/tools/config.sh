@@ -38,14 +38,12 @@ show_menu() {
         fi
 
         for DIR in "${DIRECTORIES[@]}"; do
-            DIR_NAME=$(basename "$DIR")
-            CHOICES+=("$DIR_NAME" "$DIRECTORY_FORMAT")
+            CHOICES+=("$DIR" "$DIRECTORY_FORMAT")
         done
 
         if [ ${#SCRIPTS[@]} -gt 0 ]; then
             for SCRIPT in "${SCRIPTS[@]}"; do
-                SCRIPT_NAME=$(basename "$SCRIPT")
-                CHOICES+=("$SCRIPT_NAME" "$SCRIPT_FORMAT")
+                CHOICES+=("$SCRIPT" "$SCRIPT_FORMAT")
             done
         fi
 
@@ -66,13 +64,13 @@ show_menu() {
                 CURRENT_DIR="${DIR_STACK[-1]}"
                 DIR_STACK=("${DIR_STACK[@]:0:${#DIR_STACK[@]}-1}")
             fi
-        elif [ -d "$CURRENT_DIR/$SELECTED_ITEM" ]; then
+        elif [ -d "$SELECTED_ITEM" ]; then
             DIR_STACK+=("$CURRENT_DIR")
-            CURRENT_DIR="$CURRENT_DIR/$SELECTED_ITEM"
+            CURRENT_DIR="$SELECTED_ITEM"
             cd "$CURRENT_DIR" || { echo "$MSG_CD_ERROR"; exit 1; }
         else
-            if [ -f "$CURRENT_DIR/$SELECTED_ITEM" ]; then
-                $EDITOR "$CURRENT_DIR/$SELECTED_ITEM"
+            if [ -f "$SELECTED_ITEM" ]; then
+                $EDITOR "$SELECTED_ITEM"
                 whiptail --yesno "Вы хотите продолжить?" 8 40
                 if [ $? -ne 0 ]; then
                     exit 0
