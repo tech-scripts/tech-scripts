@@ -45,6 +45,15 @@ if [[ "$LANGUAGE" == "Русский" ]]; then
     INSTALL_TITLE="Установка необходимых компонентов"
     INSTALL_QUESTION="sysbench не установлен. Хотите установить его?"
     PACKAGE_MANAGER_ERROR="Не удалось определить пакетный менеджер. Установите sysbench вручную!"
+
+    MSG_SELECT_DISK="Выберите директорию"
+    MSG_SPEED_WRITE_DISK="Скорость записи:"
+    MSG_SPEED_READ_DISK="Скорость чтения:"
+    MSG_TIME_WRITE_DISK="Время записи:"
+    MSG_TIME_READ_DISK="Время чтения:"
+    MSG_FAILED_DISK="Не удалось измерить скорость"
+    MSG_SELECTED_DIR_DISK="Выбранная директория:"
+    MSG_NO_MOUNTS_DISK="Нет доступных точек монтирования!"
 else
     MSG_NO_SCRIPTS="No available scripts or directories!"
     MSG_CANCELLED="Selection cancelled!"
@@ -88,4 +97,13 @@ else
     INSTALL_TITLE="Installing Required Components"
     INSTALL_QUESTION="sysbench is not installed. Do you want to install it?"
     PACKAGE_MANAGER_ERROR="Failed to detect package manager. Please install sysbench manually!"
+
+    MSG_SELECT_DISK="Select directory"
+    MSG_SPEED_WRITE_DISK="Write speed:"
+    MSG_SPEED_READ_DISK="Read speed:"
+    MSG_TIME_WRITE_DISK="Write time:"
+    MSG_TIME_READ_DISK="Read time:"
+    MSG_FAILED_DISK="Failed to measure speed"
+    MSG_SELECTED_DIR_DISK="Selected directory:"
+    MSG_NO_MOUNTS_DISK="No available mount points!"
 fi
