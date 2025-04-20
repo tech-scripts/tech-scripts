@@ -16,9 +16,6 @@ LANGUAGE=$(whiptail --title "Language Selection" --menu "Choose language:" 10 40
     3>&1 1>&2 2>&3)
 
 if [ $? -ne 0 ]; then
-    echo " "
-    echo "Selection canceled!"
-    echo " "
     exit 1
 fi
 
