@@ -13,6 +13,21 @@ get_relative_path() {
     [ -z "$relative_path" ] && echo " " || echo "$relative_path"
 }
 
+process_directory() {
+    local dir="$1"
+    for FILE in "$dir"/*; do
+        if [[ -e "$FILE" ]]; then
+            FILE_NAME=$(basename "$FILE")
+            [[ " ${EXCLUDE_FILES[@]} " =~ " $FILE_NAME " ]] && continue
+            if [ -f "$FILE" ]; then
+                SCRIPTS+=("$FILE")
+            elif [ -d "$FILE" ]; then
+                DIRECTORIES+=("$FILE")
+            fi
+        fi
+    done
+}
+
 show_menu() {
     while true; do
         SCRIPTS=()
@@ -23,18 +38,20 @@ show_menu() {
             /)
                 DIRECTORIES=("/etc" "/opt" "/var" "/usr" "/home" "/root" "/tmp")
                 ;;
-            /opt|/tmp)
-                for FILE in "$CURRENT_DIR"/*; do
-                    if [[ -e "$FILE" ]]; then
-                        FILE_NAME=$(basename "$FILE")
-                        [[ " ${EXCLUDE_FILES[@]} " =~ " $FILE_NAME " ]] && continue
-                        if [ -f "$FILE" ]; then
-                            SCRIPTS+=("$FILE")
-                        elif [ -d "$FILE" ]; then
-                            DIRECTORIES+=("$FILE")
-                        fi
-                    fi
-                done
+            /etc)
+                SCRIPTS=("/etc/fstab" "/etc/passwd" "/etc/ssh/sshd_config" "/etc/apt/sources.list")
+                ;;
+            /opt|/tmp|/home|/root)
+                process_directory "$CURRENT_DIR"
+                ;;
+            /var)
+                DIRECTORIES=("/var/lib/docker" "/var/www/html")
+                ;;
+            /usr)
+                DIRECTORIES=("/usr/local" "/usr/share")
+                ;;
+            /usr/local)
+                DIRECTORIES=("/usr/local/etc")
                 ;;
             *)
                 if [ -f "$CURRENT_DIR" ]; then
