@@ -53,14 +53,12 @@ show_menu() {
         esac
 
         for DIR in "${DIRECTORIES[@]}"; do
-            DIR_NAME=$(basename "$DIR")
-            CHOICES+=("$DIR_NAME" "$DIRECTORY_FORMAT")
+            CHOICES+=("$DIR" "$DIRECTORY_FORMAT")
         done
 
         if [ ${#SCRIPTS[@]} -gt 0 ]; then
             for SCRIPT in "${SCRIPTS[@]}"; do
-                SCRIPT_NAME=$(basename "$SCRIPT")
-                CHOICES+=("$SCRIPT_NAME" "$SCRIPT_FORMAT")
+                CHOICES+=("$SCRIPT" "$SCRIPT_FORMAT")
             done
         fi
 
@@ -69,7 +67,7 @@ show_menu() {
         [ ${#CHOICES[@]} -eq 0 ] && { echo "$MSG_NO_SCRIPTS"; exit 0; }
 
         RELATIVE_PATH=$(get_relative_path "$CURRENT_DIR" "/")
-        SELECTED_ITEM=$(whiptail --title "$CURRENT_DIR" --menu "$RELATIVE_PATH" 12 40 4 "${CHOICES[@]}" 3>&1 1>&2 2>&3)
+        SELECTED_ITEM=$(whiptail --title "$MSG_SELECT" --menu "$RELATIVE_PATH" 12 40 4 "${CHOICES[@]}" 3>&1 1>&2 2>&3)
 
         if [ $? -ne 0 ]; then
             exit 0
@@ -81,14 +79,13 @@ show_menu() {
                 CURRENT_DIR="${DIR_STACK[-1]}"
                 DIR_STACK=("${DIR_STACK[@]:0:${#DIR_STACK[@]}-1}")
             fi
+        elif [ -d "$SELECTED_ITEM" ]; then
+            DIR_STACK+=("$CURRENT_DIR")
+            CURRENT_DIR="$SELECTED_ITEM"
+            cd "$CURRENT_DIR" || { echo "$MSG_CD_ERROR"; exit 1; }
         else
-            FULL_PATH="$CURRENT_DIR/$SELECTED_ITEM"
-            if [ -d "$FULL_PATH" ]; then
-                DIR_STACK+=("$CURRENT_DIR")
-                CURRENT_DIR="$FULL_PATH"
-                cd "$CURRENT_DIR" || { echo "$MSG_CD_ERROR"; exit 1; }
-            elif [ -f "$FULL_PATH" ]; then
-                $EDITOR "$FULL_PATH"
+            if [ -f "$SELECTED_ITEM" ]; then
+                $EDITOR "$SELECTED_ITEM"
                 whiptail --yesno "Вы хотите продолжить?" 8 40
                 if [ $? -ne 0 ]; then
                     exit 0
