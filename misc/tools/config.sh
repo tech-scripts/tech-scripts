@@ -33,20 +33,16 @@ show_menu() {
                 DIRECTORIES=("lib/docker" "www/html")
                 ;;
             /etc)
-                # Добавляем файлы в массив SCRIPTS
                 SCRIPTS=("fstab" "passwd" "ssh/sshd_config" "apt/sources.list")
                 ;;
+            /usr/local/etc)
+                SCRIPTS=("some_config_file.conf")
+                ;;
+            /var/lib/docker)
+                ;;
+            /var/www/html)
+                ;;
             *)
-                # Получаем файлы и директории в текущей директории
-                for FILE in "$CURRENT_DIR"/*; do
-                    FILE_NAME=$(basename "$FILE")
-                    [[ " ${EXCLUDE_FILES[@]} " =~ " $FILE_NAME " ]] && continue
-                    if [ -f "$FILE" ] && [[ "$FILE_NAME" == *.sh ]]; then
-                        SCRIPTS+=("$FILE_NAME")
-                    elif [ -d "$FILE" ]; then
-                        DIRECTORIES+=("$FILE_NAME")
-                    fi
-                done
                 ;;
         esac
 
