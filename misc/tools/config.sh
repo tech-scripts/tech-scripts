@@ -74,7 +74,7 @@ show_menu() {
         # Формируем массив для whiptail без индексов
         WHIPTAIL_MENU=()
         for DISPLAY_NAME in "${DISPLAY_NAMES[@]}"; do
-            WHIPTAIL_MENU+=("$DISPLAY_NAME")
+            WHIPTAIL_MENU+=("$DISPLAY_NAME" "")
         done
 
         RELATIVE_PATH=$(get_relative_path "$CURRENT_DIR" "/")
