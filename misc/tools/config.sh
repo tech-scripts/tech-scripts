@@ -71,8 +71,14 @@ show_menu() {
 
         [ ${#CHOICES[@]} -eq 0 ] && { echo "$MSG_NO_SCRIPTS"; exit 0; }
 
+        # Формируем массив для whiptail
+        WHIPTAIL_MENU=()
+        for ((i = 0; i < ${#DISPLAY_NAMES[@]}; i++)); do
+            WHIPTAIL_MENU+=("$i" "${DISPLAY_NAMES[$i]}")
+        done
+
         RELATIVE_PATH=$(get_relative_path "$CURRENT_DIR" "/")
-        SELECTED_INDEX=$(whiptail --title "$MSG_SELECT" --menu "$RELATIVE_PATH" 12 40 4 "${DISPLAY_NAMES[@]}" 3>&1 1>&2 2>&3)
+        SELECTED_INDEX=$(whiptail --title "$MSG_SELECT" --menu "$RELATIVE_PATH" 12 40 4 "${WHIPTAIL_MENU[@]}" 3>&1 1>&2 2>&3)
 
         if [ $? -ne 0 ]; then
             exit 0
@@ -95,13 +101,8 @@ show_menu() {
                 $EDITOR "$SELECTED_ITEM"
                 whiptail --yesno "Вы хотите продолжить?" 8 40
                 if [ $? -ne 0 ]; then
-                    exit 0
-                fi
-            fi
+            exit 0
         fi
-    done
+    fi
+fi
 }
-
-CURRENT_DIR="/"
-cd "$CURRENT_DIR" || { echo "$MSG_CD_ERROR"; exit 1; }
-show_menu
