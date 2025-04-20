@@ -24,19 +24,15 @@ show_menu() {
                 DIRECTORIES=("etc" "opt" "var" "usr" "home" "root" "tmp")
                 ;;
             /tmp|/root|/home)
-                echo "Current directory: $CURRENT_DIR"  # Отладочное сообщение
                 for FILE in "$CURRENT_DIR"/*; do
                     if [[ -e "$FILE" ]]; then
                         FILE_NAME=$(basename "$FILE")
-                        echo "Found: $FILE_NAME"  # Отладочное сообщение
                         [[ " ${EXCLUDE_FILES[@]} " =~ " $FILE_NAME " ]] && continue
                         if [ -f "$FILE" ]; then
                             SCRIPTS+=("$FILE_NAME")
                         elif [ -d "$FILE" ]; then
                             DIRECTORIES+=("$FILE_NAME")
                         fi
-                    else
-                        echo "No files or directories found in $CURRENT_DIR"  # Отладочное сообщение
                     fi
                 done
                 ;;
