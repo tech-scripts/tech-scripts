@@ -67,7 +67,7 @@ show_menu() {
             done
         fi
 
-        [ "$CURRENT_DIR" != "/" ] && CHOICES+=("$MSG_BACK" "$OPTION_FORMAT")
+        [ "$CURRENT_DIR" != "/" ] && { CHOICES+=("$MSG_BACK"); DISPLAY_NAMES+=("$MSG_BACK"); }
 
         [ ${#CHOICES[@]} -eq 0 ] && { echo "$MSG_NO_SCRIPTS"; exit 0; }
 
