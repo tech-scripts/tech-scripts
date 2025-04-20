@@ -21,7 +21,7 @@ show_menu() {
 
         case "$CURRENT_DIR" in
             /)
-                DIRECTORIES=("etc" "opt" "var" "usr" "home" "root" "tmp")
+                DIRECTORIES=("/etc" "/opt" "/var" "/usr" "/home" "/root" "/tmp")
                 ;;
             /opt|/tmp)
                 for FILE in "$CURRENT_DIR"/*; do
@@ -29,9 +29,9 @@ show_menu() {
                         FILE_NAME=$(basename "$FILE")
                         [[ " ${EXCLUDE_FILES[@]} " =~ " $FILE_NAME " ]] && continue
                         if [ -f "$FILE" ]; then
-                            SCRIPTS+=("$FILE_NAME")
+                            SCRIPTS+=("$FILE")
                         elif [ -d "$FILE" ]; then
-                            DIRECTORIES+=("$FILE_NAME")
+                            DIRECTORIES+=("$FILE")
                         fi
                     fi
                 done
@@ -71,13 +71,13 @@ show_menu() {
                 CURRENT_DIR="${DIR_STACK[-1]}"
                 DIR_STACK=("${DIR_STACK[@]:0:${#DIR_STACK[@]}-1}")
             fi
-        elif [ -d "$CURRENT_DIR/$SELECTED_ITEM" ]; then
+        elif [ -d "$SELECTED_ITEM" ]; then
             DIR_STACK+=("$CURRENT_DIR")
-            CURRENT_DIR="$CURRENT_DIR/$SELECTED_ITEM"
+            CURRENT_DIR="$SELECTED_ITEM"
             cd "$CURRENT_DIR" || { echo "$MSG_CD_ERROR"; exit 1; }
         else
-            if [ -f "$CURRENT_DIR/$SELECTED_ITEM" ]; then
-                $EDITOR "$CURRENT_DIR/$SELECTED_ITEM"
+            if [ -f "$SELECTED_ITEM" ]; then
+                $EDITOR "$SELECTED_ITEM"
                 exit 0
             fi
         fi
