@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source /tmp/tech-scripts/misc/localization.sh
+
 install_sysbench() {
     if command -v apt &>/dev/null; then
         sudo apt update && sudo apt install -y sysbench
@@ -16,13 +18,13 @@ install_sysbench() {
     elif command -v brew &>/dev/null; then
         brew install sysbench
     else
-        echo "Не удалось определить пакетный менеджер. Установите sysbench вручную!"
+        echo "$PACKAGE_MANAGER_ERROR"
         exit 1
     fi
 }
 
 if ! command -v sysbench &>/dev/null; then
-    if whiptail --title "Установка необходимых компонентов" --yesno "sysbench не установлен. Хотите установить его?" 10 60; then
+    if whiptail --title "$INSTALL_TITLE" --yesno "$INSTALL_QUESTION" 10 60; then
         install_sysbench
     else
         exit 0
@@ -35,10 +37,10 @@ show_progress() {
             sleep 0.1
             echo $i
         done
-    ) | whiptail --title "Прогресс выполнения" --gauge " " 6 60 0
+    ) | whiptail --title "$PROGRESS_TITLE" --gauge " " 6 60 0
 }
 
-if whiptail --title "Стресс-тест процессора" --yesno "Вы хотите выполнить стресс-тест процессора?" 10 60; then
+if whiptail --title "$CPU_TEST_TITLE" --yesno "$CPU_TEST_QUESTION" 10 60; then
     show_progress &
     single_core_result=$(sysbench cpu --time=5 --threads=1 run)
     multi_core_result=$(sysbench cpu --time=5 --threads=$(nproc) run)
