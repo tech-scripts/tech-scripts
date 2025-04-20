@@ -44,20 +44,11 @@ show_menu() {
             /usr/local)
                 DIRECTORIES=("/usr/local/etc")
                 ;;
-            /opt|/tmp|/home|/root)
-                process_directory "$CURRENT_DIR"
-                ;;
             /var)
                 DIRECTORIES=("/var/lib/docker" "/var/www/html")
                 ;;
             *)
-                if [ -f "$CURRENT_DIR" ]; then
-                    $EDITOR "$CURRENT_DIR"
-                    whiptail --yesno "Вы хотите продолжить?" 8 40
-                    if [ $? -ne 0 ]; then
-                        exit 0
-                    fi
-                fi
+                process_directory "$CURRENT_DIR"
                 ;;
         esac
 
