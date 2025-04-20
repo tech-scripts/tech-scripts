@@ -37,6 +37,8 @@ install_packages() {
     done
 }
 
+install_packages
+
 [ ! -d "/tmp/tech-scripts" ] && cd /tmp && git clone --depth 1 https://github.com/tech-scripts/linux.git /tmp/tech-scripts
 
 cd /tmp/tech-scripts/misc
