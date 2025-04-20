@@ -57,7 +57,7 @@
 Ensure your system meets the following prerequisites:
 
 - **Linux**: Compatible with most distributions.
-- **Dependencies**: `bash`, `curl` and `git` should be installed.
+- **Dependencies**: `bash` and `wget` should be installed.
 
 ---
 
