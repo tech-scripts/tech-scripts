@@ -30,6 +30,7 @@ show_menu() {
         SCRIPTS=()
         DIRECTORIES=()
         CHOICES=()
+        DISPLAY_NAMES=()
 
         case "$CURRENT_DIR" in
             /)
@@ -53,12 +54,16 @@ show_menu() {
         esac
 
         for DIR in "${DIRECTORIES[@]}"; do
-            CHOICES+=("$DIR" "Директория")
+            DIR_NAME=$(basename "$DIR")
+            CHOICES+=("$DIR")
+            DISPLAY_NAMES+=("$DIR_NAME")
         done
 
         if [ ${#SCRIPTS[@]} -gt 0 ]; then
             for SCRIPT in "${SCRIPTS[@]}"; do
-                CHOICES+=("$SCRIPT" "Скрипт")
+                SCRIPT_NAME=$(basename "$SCRIPT")
+                CHOICES+=("$SCRIPT")
+                DISPLAY_NAMES+=("$SCRIPT_NAME")
             done
         fi
 
@@ -67,11 +72,13 @@ show_menu() {
         [ ${#CHOICES[@]} -eq 0 ] && { echo "$MSG_NO_SCRIPTS"; exit 0; }
 
         RELATIVE_PATH=$(get_relative_path "$CURRENT_DIR" "/")
-        SELECTED_ITEM=$(whiptail --title "$MSG_SELECT" --menu "$RELATIVE_PATH" 12 40 4 "${CHOICES[@]}" 3>&1 1>&2 2>&3)
+        SELECTED_INDEX=$(whiptail --title "$MSG_SELECT" --menu "$RELATIVE_PATH" 12 40 4 "${DISPLAY_NAMES[@]}" 3>&1 1>&2 2>&3)
 
         if [ $? -ne 0 ]; then
             exit 0
         fi
+
+        SELECTED_ITEM="${CHOICES[$SELECTED_INDEX]}"
 
         if [ "$SELECTED_ITEM" == "$MSG_BACK" ]; then
             if [ ${#DIR_STACK[@]} -gt 0 ]; then
