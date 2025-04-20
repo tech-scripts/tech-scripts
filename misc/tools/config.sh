@@ -39,7 +39,10 @@ show_menu() {
                 SCRIPTS=("/etc/fstab" "/etc/passwd" "/etc/ssh/sshd_config" "/etc/apt/sources.list")
                 ;;
             /usr)
-                DIRECTORIES=("/usr/local" "/usr/share" "/usr/local/etc")
+                DIRECTORIES=("/usr/local" "/usr/share")
+                ;;
+            /usr/local)
+                DIRECTORIES=("/usr/local/etc")
                 ;;
             /var)
                 DIRECTORIES=("/var/lib/docker" "/var/www/html")
@@ -80,11 +83,11 @@ show_menu() {
             fi
         else
             FULL_PATH="$CURRENT_DIR/$SELECTED_ITEM"
-            if [ -d "$FULL_PATH" ]; then
+            if [[ " ${DIRECTORIES[@]} " =~ " $FULL_PATH " ]]; then
                 DIR_STACK+=("$CURRENT_DIR")
                 CURRENT_DIR="$FULL_PATH"
                 cd "$CURRENT_DIR" || { echo "$MSG_CD_ERROR"; exit 1; }
-            elif [ -f "$FULL_PATH" ]; then
+            elif [[ " ${SCRIPTS[@]} " =~ " $FULL_PATH " ]]; then
                 $EDITOR "$FULL_PATH"
                 whiptail --yesno "Вы хотите продолжить?" 8 40
                 if [ $? -ne 0 ]; then
