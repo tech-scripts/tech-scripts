@@ -78,13 +78,14 @@ show_menu() {
                 CURRENT_DIR="${DIR_STACK[-1]}"
                 DIR_STACK=("${DIR_STACK[@]:0:${#DIR_STACK[@]}-1}")
             fi
-        elif [ -d "$CURRENT_DIR/$SELECTED_ITEM" ]; then
-            DIR_STACK+=("$CURRENT_DIR")
-            CURRENT_DIR="$CURRENT_DIR/$SELECTED_ITEM"
-            cd "$CURRENT_DIR" || { echo "$MSG_CD_ERROR"; exit 1; }
         else
-            if [ -f "$CURRENT_DIR/$SELECTED_ITEM" ]; then
-                $EDITOR "$CURRENT_DIR/$SELECTED_ITEM"
+            FULL_PATH="$CURRENT_DIR/$SELECTED_ITEM"
+            if [ -d "$FULL_PATH" ]; then
+                DIR_STACK+=("$CURRENT_DIR")
+                CURRENT_DIR="$FULL_PATH"
+                cd "$CURRENT_DIR" || { echo "$MSG_CD_ERROR"; exit 1; }
+            elif [ -f "$FULL_PATH" ]; then
+                $EDITOR "$FULL_PATH"
                 whiptail --yesno "Вы хотите продолжить?" 8 40
                 if [ $? -ne 0 ]; then
                     exit 0
