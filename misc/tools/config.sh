@@ -25,14 +25,12 @@ show_menu() {
                 ;;
             /tmp|/root|/home)
                 for FILE in "$CURRENT_DIR"/*; do
-                    if [[ -e "$FILE" ]]; then
-                        FILE_NAME=$(basename "$FILE")
-                        [[ " ${EXCLUDE_FILES[@]} " =~ " $FILE_NAME " ]] && continue
-                        if [ -f "$FILE" ]; then
-                            SCRIPTS+=("$FILE_NAME")
-                        elif [ -d "$FILE" ]; then
-                            DIRECTORIES+=("$FILE_NAME")
-                        fi
+                    FILE_NAME=$(basename "$FILE")
+                    [[ " ${EXCLUDE_FILES[@]} " =~ " $FILE_NAME " ]] && continue
+                    if [ -f "$FILE" ]; then
+                        SCRIPTS+=("$FILE_NAME")
+                    elif [ -d "$FILE" ]; then
+                        DIRECTORIES+=("$FILE_NAME")
                     fi
                 done
                 ;;
