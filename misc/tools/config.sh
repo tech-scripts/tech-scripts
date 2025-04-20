@@ -56,7 +56,10 @@ show_menu() {
             *)
                 if [ -f "$CURRENT_DIR" ]; then
                     $EDITOR "$CURRENT_DIR"
-                    exit 0
+                    whiptail --yesno "Вы хотите продолжить?" 8 40
+                    if [ $? -ne 0 ]; then
+                        exit 0
+                    fi
                 fi
                 ;;
         esac
@@ -95,7 +98,10 @@ show_menu() {
         else
             if [ -f "$SELECTED_ITEM" ]; then
                 $EDITOR "$SELECTED_ITEM"
-                exit 0
+                whiptail --yesno "Вы хотите продолжить?" 8 40
+                if [ $? -ne 0 ]; then
+                    exit 0
+                fi
             fi
         fi
     done
