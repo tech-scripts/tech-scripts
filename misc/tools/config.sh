@@ -56,14 +56,14 @@ show_menu() {
         for DIR in "${DIRECTORIES[@]}"; do
             DIR_NAME=$(basename "$DIR")
             CHOICES+=("$DIR")
-            DISPLAY_NAMES+=("$DIR_NAME")
+            DISPLAY_NAMES+=("$DIR_NAME директория")
         done
 
         if [ ${#SCRIPTS[@]} -gt 0 ]; then
             for SCRIPT in "${SCRIPTS[@]}"; do
                 SCRIPT_NAME=$(basename "$SCRIPT")
                 CHOICES+=("$SCRIPT")
-                DISPLAY_NAMES+=("$SCRIPT_NAME")
+                DISPLAY_NAMES+=("$SCRIPT_NAME конфиг")
             done
         fi
 
