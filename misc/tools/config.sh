@@ -36,9 +36,10 @@ show_menu() {
                 SCRIPTS=("fstab" "passwd" "ssh/sshd_config" "apt/sources.list")
                 ;;
             *)
-                for FILE in *; do
+                for FILE in "$CURRENT_DIR"/*; do
+                    FILE=$(basename "$FILE")
                     [[ " ${EXCLUDE_FILES[@]} " =~ " $FILE " ]] && continue
-                    if [ -f "$FILE" ] && [[ "$FILE" == *.sh ]]; then
+                    if [ -f "$CURRENT_DIR/$FILE" ] && [[ "$FILE" == *.sh ]]; then
                         SCRIPTS+=("$FILE")
                     fi
                 done
@@ -68,17 +69,17 @@ show_menu() {
 
         if [ "$SELECTED_ITEM" == "$MSG_BACK" ]; then
             if [ ${#DIR_STACK[@]} -gt 0 ]; then
-                cd "${DIR_STACK[-1]}"
+                cd "${DIR_STACK[-1]}" || { echo "$MSG_CD_ERROR"; exit 1; }
                 CURRENT_DIR="${DIR_STACK[-1]}"
                 DIR_STACK=("${DIR_STACK[@]:0:${#DIR_STACK[@]}-1}")
             fi
-        elif [ -d "$SELECTED_ITEM" ]; then
+        elif [ -d "$CURRENT_DIR/$SELECTED_ITEM" ]; then
             DIR_STACK+=("$CURRENT_DIR")
             CURRENT_DIR="$CURRENT_DIR/$SELECTED_ITEM"
             cd "$CURRENT_DIR" || { echo "$MSG_CD_ERROR"; exit 1; }
         else
-            if [ -f "$SELECTED_ITEM" ]; then
-                $EDITOR "$SELECTED_ITEM"
+            if [ -f "$CURRENT_DIR/$SELECTED_ITEM" ]; then
+                $EDITOR "$CURRENT_DIR/$SELECTED_ITEM"
                 exit 0
             fi
         fi
@@ -86,4 +87,5 @@ show_menu() {
 }
 
 CURRENT_DIR="/"
+cd "$CURRENT_DIR" || { echo "$MSG_CD_ERROR"; exit 1; }
 show_menu
