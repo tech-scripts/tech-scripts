@@ -1,5 +1,4 @@
 SUDO=$(command -v sudo)
-cd /
 DIR_STACK=()
 EDITOR=$(grep '^editor:' /etc/tech-scripts/choose.conf | cut -d ' ' -f 2)
 EXCLUDE_FILES=("start.sh" "choose.sh" "localization.sh" "*.tmp")
@@ -20,7 +19,7 @@ show_menu() {
         DIRECTORIES=()
         CHOICES=()
 
-        case "/" in
+        case "$CURRENT_DIR" in
             /)
                 DIRECTORIES=("etc" "opt" "var" "usr" "home" "root" "tmp")
                 ;;
@@ -56,11 +55,11 @@ show_menu() {
             done
         fi
 
-        [ "$CURRENT_DIR" != "$CLONE_DIR" ] && CHOICES+=("$MSG_BACK" "$OPTION_FORMAT")
+        [ "$CURRENT_DIR" != "/" ] && CHOICES+=("$MSG_BACK" "$OPTION_FORMAT")
 
         [ ${#CHOICES[@]} -eq 0 ] && { echo "$MSG_NO_SCRIPTS"; exit 0; }
 
-        RELATIVE_PATH=$(get_relative_path "$CURRENT_DIR" "$CLONE_DIR")
+        RELATIVE_PATH=$(get_relative_path "$CURRENT_DIR" "/")
         SELECTED_ITEM=$(whiptail --title "$MSG_SELECT" --menu "$RELATIVE_PATH" 12 40 4 "${CHOICES[@]}" 3>&1 1>&2 2>&3)
 
         if [ $? -ne 0 ]; then
@@ -86,4 +85,5 @@ show_menu() {
     done
 }
 
+CURRENT_DIR="/"
 show_menu
