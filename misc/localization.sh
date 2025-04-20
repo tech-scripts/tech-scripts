@@ -38,6 +38,13 @@ if [[ "$LANGUAGE" == "Русский" ]]; then
     MSG_CUSTOM_EDITOR="Введите команду вашего текстового редактора:"
     MSG_INVALID_EDITOR="Неверный выбор!"
     MSG_SUCCESS_EDITOR="Текстовый редактор установлен:"
+
+    CPU_TEST_TITLE="Стресс-тест процессора"
+    CPU_TEST_QUESTION="Вы хотите выполнить стресс-тест процессора?"
+    PROGRESS_TITLE="Прогресс выполнения"
+    INSTALL_TITLE="Установка необходимых компонентов"
+    INSTALL_QUESTION="sysbench не установлен. Хотите установить его?"
+    PACKAGE_MANAGER_ERROR="Не удалось определить пакетный менеджер. Установите sysbench вручную!"
 else
     MSG_NO_SCRIPTS="No available scripts or directories!"
     MSG_CANCELLED="Selection cancelled!"
@@ -74,4 +81,11 @@ else
     MSG_CUSTOM_EDITOR="Enter the command custom text editor:"
     MSG_INVALID_EDITOR="Invalid choice!"
     MSG_SUCCESS_EDITOR="Text editor set to:"
+
+    CPU_TEST_TITLE="CPU Stress Test"
+    CPU_TEST_QUESTION="Do you want to perform a CPU stress test?"
+    PROGRESS_TITLE="Progress"
+    INSTALL_TITLE="Installing Required Components"
+    INSTALL_QUESTION="sysbench is not installed. Do you want to install it?"
+    PACKAGE_MANAGER_ERROR="Failed to detect package manager. Please install sysbench manually!"
 fi
