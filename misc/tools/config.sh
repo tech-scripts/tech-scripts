@@ -67,11 +67,10 @@ show_menu() {
             done
         fi
 
-        [ "$CURRENT_DIR" != "/" ] && { CHOICES+=("$MSG_BACK"); DISPLAY_NAMES+=("$MSG_BACK"); }
+        [ "$CURRENT_DIR" != "/" ] && { CHOICES+=("$MSG_BACK"); DISPLAY_NAMES+=("назад опция"); }
 
         [ ${#CHOICES[@]} -eq 0 ] && { echo "$MSG_NO_SCRIPTS"; exit 0; }
 
-        # Формируем массив для whiptail без индексов
         WHIPTAIL_MENU=()
         for DISPLAY_NAME in "${DISPLAY_NAMES[@]}"; do
             WHIPTAIL_MENU+=("$DISPLAY_NAME" "")
@@ -84,9 +83,8 @@ show_menu() {
             exit 0
         fi
 
-        # Находим индекс выбранного элемента
         SELECTED_INDEX=$(printf '%s\n' "${DISPLAY_NAMES[@]}" | grep -n "^$SELECTED_ITEM" | cut -d: -f1)
-        SELECTED_INDEX=$((SELECTED_INDEX - 1))  # Приводим к нулевому индексу
+        SELECTED_INDEX=$((SELECTED_INDEX - 1))
 
         SELECTED_ITEM="${CHOICES[$SELECTED_INDEX]}"
 
