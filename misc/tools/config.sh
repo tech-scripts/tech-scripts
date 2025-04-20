@@ -101,8 +101,13 @@ show_menu() {
                 $EDITOR "$SELECTED_ITEM"
                 whiptail --yesno "Вы хотите продолжить?" 8 40
                 if [ $? -ne 0 ]; then
-            exit 0
+                    exit 0
+                fi
+            fi
         fi
-    fi
-fi
+    done
 }
+
+CURRENT_DIR="/"
+cd "$CURRENT_DIR" || { echo "$MSG_CD_ERROR"; exit 1; }
+show_menu
