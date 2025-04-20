@@ -37,7 +37,7 @@ show_menu() {
                 DIRECTORIES=("/etc" "/opt" "/var" "/usr" "/home" "/root" "/tmp")
                 ;;
             /etc)
-                SCRIPTS=("/etc/fstab" "/etc/passwd" "/etc/ssh/sshd_config" "/etc/apt/sources.list")
+                SCRIPTS=("/etc/fstab" "/etc/passwd" "/etc/ssh/sshd_config" "/etc/apt/sources.list" "tech-scripts")
                 ;;
             /usr)
                 DIRECTORIES=("/usr/local" "/usr/share")
