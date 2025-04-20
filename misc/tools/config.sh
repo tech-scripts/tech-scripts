@@ -1,18 +1,15 @@
-#!/bin/bash
-
 SUDO=$(command -v sudo)
 DIR_STACK=()
 EDITOR=$(grep '^editor:' /etc/tech-scripts/choose.conf | cut -d ' ' -f 2)
 CONFIG_FILE="/etc/tech-scripts/choose.conf"
+
 source /tmp/tech-scripts/misc/localization.sh
 
-get_display_name() {
+get_relative_path() {
     local full_path="$1"
-    if [ "$full_path" = "$MSG_BACK" ]; then
-        echo "$full_path"
-    else
-        echo "$(basename "$full_path")"
-    fi
+    local base_path="$2"
+    local relative_path="${full_path#$base_path/}"
+    [ -z "$relative_path" ] && echo " " || echo "$relative_path"
 }
 
 process_directory() {
@@ -33,7 +30,7 @@ show_menu() {
         SCRIPTS=()
         DIRECTORIES=()
         CHOICES=()
-        
+
         case "$CURRENT_DIR" in
             /)
                 DIRECTORIES=("/etc" "/opt" "/var" "/usr" "/home" "/root" "/tmp")
@@ -55,29 +52,23 @@ show_menu() {
                 ;;
         esac
 
-        # Add directories to choices with display names
         for DIR in "${DIRECTORIES[@]}"; do
-            DISPLAY_NAME=$(get_display_name "$DIR")
-            CHOICES+=("$DIR" "$DISPLAY_NAME")
+            CHOICES+=("$DIR" "$DIRECTORY_FORMAT")
         done
 
-        # Add scripts to choices with display names
         if [ ${#SCRIPTS[@]} -gt 0 ]; then
             for SCRIPT in "${SCRIPTS[@]}"; do
-                DISPLAY_NAME=$(get_display_name "$SCRIPT")
-                CHOICES+=("$SCRIPT" "$DISPLAY_NAME")
+                CHOICES+=("$SCRIPT" "$SCRIPT_FORMAT")
             done
         fi
 
-        # Add back option if not in root
         [ "$CURRENT_DIR" != "/" ] && CHOICES+=("$MSG_BACK" "$OPTION_FORMAT")
+
         [ ${#CHOICES[@]} -eq 0 ] && { echo "$MSG_NO_SCRIPTS"; exit 0; }
 
-        # Show current directory name as title
-        MENU_TITLE=$(basename "$CURRENT_DIR")
-        [ "$CURRENT_DIR" = "/" ] && MENU_TITLE="/"
+        RELATIVE_PATH=$(get_relative_path "$CURRENT_DIR" "/")
+        SELECTED_ITEM=$(whiptail --title "$MSG_SELECT" --menu "$RELATIVE_PATH" 12 40 4 "${CHOICES[@]}" 3>&1 1>&2 2>&3)
 
-        SELECTED_ITEM=$(whiptail --title "$MSG_SELECT" --menu "$MENU_TITLE" 12 40 4 "${CHOICES[@]}" 3>&1 1>&2 2>&3)
         if [ $? -ne 0 ]; then
             exit 0
         fi
