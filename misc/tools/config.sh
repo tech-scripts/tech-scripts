@@ -55,11 +55,13 @@ show_menu() {
                 ;;
         esac
 
+        # Add directories to choices with display names
         for DIR in "${DIRECTORIES[@]}"; do
             DISPLAY_NAME=$(get_display_name "$DIR")
             CHOICES+=("$DIR" "$DISPLAY_NAME")
         done
 
+        # Add scripts to choices with display names
         if [ ${#SCRIPTS[@]} -gt 0 ]; then
             for SCRIPT in "${SCRIPTS[@]}"; do
                 DISPLAY_NAME=$(get_display_name "$SCRIPT")
@@ -67,13 +69,15 @@ show_menu() {
             done
         fi
 
+        # Add back option if not in root
         [ "$CURRENT_DIR" != "/" ] && CHOICES+=("$MSG_BACK" "$OPTION_FORMAT")
         [ ${#CHOICES[@]} -eq 0 ] && { echo "$MSG_NO_SCRIPTS"; exit 0; }
 
-        RELATIVE_PATH=$(basename "$CURRENT_DIR")
-        [ "$CURRENT_DIR" = "/" ] && RELATIVE_PATH="/"
+        # Show current directory name as title
+        MENU_TITLE=$(basename "$CURRENT_DIR")
+        [ "$CURRENT_DIR" = "/" ] && MENU_TITLE="/"
 
-        SELECTED_ITEM=$(whiptail --title "$MSG_SELECT" --menu "$RELATIVE_PATH" 12 40 4 "${CHOICES[@]}" 3>&1 1>&2 2>&3)
+        SELECTED_ITEM=$(whiptail --title "$MSG_SELECT" --menu "$MENU_TITLE" 12 40 4 "${CHOICES[@]}" 3>&1 1>&2 2>&3)
         if [ $? -ne 0 ]; then
             exit 0
         fi
