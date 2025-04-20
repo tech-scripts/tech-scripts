@@ -1,10 +1,9 @@
 SUDO=$(command -v sudo)
 DIR_STACK=()
 EDITOR=$(grep '^editor:' /etc/tech-scripts/choose.conf | cut -d ' ' -f 2)
-EXCLUDE_FILES=("start.sh" "choose.sh" "localization.sh" "*.tmp")
 CONFIG_FILE="/etc/tech-scripts/choose.conf"
 
-source /tmp/tech-scripts/misc/localization.sh 
+source /tmp/tech-scripts/misc/localization.sh
 
 get_relative_path() {
     local full_path="$1"
@@ -17,8 +16,6 @@ process_directory() {
     local dir="$1"
     for FILE in "$dir"/*; do
         if [[ -e "$FILE" ]]; then
-            FILE_NAME=$(basename "$FILE")
-            [[ " ${EXCLUDE_FILES[@]} " =~ " $FILE_NAME " ]] && continue
             if [ -f "$FILE" ]; then
                 SCRIPTS+=("$FILE")
             elif [ -d "$FILE" ]; then
