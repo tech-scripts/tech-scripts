@@ -71,18 +71,22 @@ show_menu() {
 
         [ ${#CHOICES[@]} -eq 0 ] && { echo "$MSG_NO_SCRIPTS"; exit 0; }
 
-        # Формируем массив для whiptail
+        # Формируем массив для whiptail без индексов
         WHIPTAIL_MENU=()
-        for ((i = 0; i < ${#DISPLAY_NAMES[@]}; i++)); do
-            WHIPTAIL_MENU+=("$i" "${DISPLAY_NAMES[$i]}")
+        for DISPLAY_NAME in "${DISPLAY_NAMES[@]}"; do
+            WHIPTAIL_MENU+=("$DISPLAY_NAME")
         done
 
         RELATIVE_PATH=$(get_relative_path "$CURRENT_DIR" "/")
-        SELECTED_INDEX=$(whiptail --title "$MSG_SELECT" --menu "$RELATIVE_PATH" 12 40 4 "${WHIPTAIL_MENU[@]}" 3>&1 1>&2 2>&3)
+        SELECTED_ITEM=$(whiptail --title "$MSG_SELECT" --menu "$RELATIVE_PATH" 12 40 4 "${WHIPTAIL_MENU[@]}" 3>&1 1>&2 2>&3)
 
         if [ $? -ne 0 ]; then
             exit 0
         fi
+
+        # Находим индекс выбранного элемента
+        SELECTED_INDEX=$(printf '%s\n' "${DISPLAY_NAMES[@]}" | grep -n "^$SELECTED_ITEM" | cut -d: -f1)
+        SELECTED_INDEX=$((SELECTED_INDEX - 1))  # Приводим к нулевому индексу
 
         SELECTED_ITEM="${CHOICES[$SELECTED_INDEX]}"
 
