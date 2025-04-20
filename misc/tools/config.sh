@@ -53,12 +53,14 @@ show_menu() {
         esac
 
         for DIR in "${DIRECTORIES[@]}"; do
-            CHOICES+=("$DIR" "$DIRECTORY_FORMAT")
+            DIR_NAME=$(basename "$DIR")
+            CHOICES+=("$DIR" "$DIR_NAME")
         done
 
         if [ ${#SCRIPTS[@]} -gt 0 ]; then
             for SCRIPT in "${SCRIPTS[@]}"; do
-                CHOICES+=("$SCRIPT" "$SCRIPT_FORMAT")
+                SCRIPT_NAME=$(basename "$SCRIPT")
+                CHOICES+=("$SCRIPT" "$SCRIPT_NAME")
             done
         fi
 
