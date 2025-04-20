@@ -89,6 +89,7 @@ bash -c "$(wget -qO- https://raw.githubusercontent.com/tech-scripts/linux/refs/h
 
 If you find this project useful, consider supporting it:
 
+- **Support**: Donate to support [Boosty](https://boosty.to/techscripts/donate)
 - **Star on GitHub**: Leave a star on [GitHub](https://github.com/tech-scripts/linux)
 - **Feedback**: Share your ideas and suggestions in our: [GitHub discussions](https://github.com/tech-scripts/linux/discussions)
 
