@@ -1,19 +1,9 @@
 SUDO=$(command -v sudo)
 cd /
 DIR_STACK=()
-CURRENT_DIR="$CLONE_DIR"
+EDITOR=$(grep '^editor:' /etc/tech-scripts/choose.conf | cut -d ' ' -f 2)
 EXCLUDE_FILES=("start.sh" "choose.sh" "localization.sh" "*.tmp")
 CONFIG_FILE="/etc/tech-scripts/choose.conf"
-
-if [ ! -f "$CONFIG_FILE" ]; then
-    CHOOSE_SCRIPT="/tmp/tech-scripts/misc/choose.sh"
-    if [ -f "$CHOOSE_SCRIPT" ]; then
-        chmod +x "$CHOOSE_SCRIPT"
-        "$CHOOSE_SCRIPT"
-    else
-        exit 1
-    fi
-fi
 
 source /tmp/tech-scripts/misc/localization.sh 
 
@@ -30,7 +20,7 @@ show_menu() {
         DIRECTORIES=()
         CHOICES=()
 
-        case "$CURRENT_DIR" in
+        case "/" in
             /)
                 DIRECTORIES=("etc" "opt" "var" "usr" "home" "root" "tmp")
                 ;;
@@ -89,8 +79,7 @@ show_menu() {
             cd "$CURRENT_DIR" || { echo "$MSG_CD_ERROR"; exit 1; }
         else
             if [ -f "$SELECTED_ITEM" ]; then
-                chmod +x "$SELECTED_ITEM"
-                ./"$SELECTED_ITEM"
+                $EDITOR "$SELECTED_ITEM"
                 exit 0
             fi
         fi
