@@ -1,27 +1,8 @@
 #!/bin/bash
 
 FILE_SIZE="1G"
-LANGUAGE=$(grep '^lang:' /etc/tech-scripts/choose.conf | cut -d' ' -f2)
 
-if [ "$LANGUAGE" = "Русский" ]; then
-    MSG_SELECT_DISK="Выберите директорию"
-    MSG_SPEED_WRITE_DISK="Скорость записи:"
-    MSG_SPEED_READ_DISK="Скорость чтения:"
-    MSG_TIME_WRITE_DISK="Время записи:"
-    MSG_TIME_READ_DISK="Время чтения:"
-    MSG_FAILED_DISK="Не удалось измерить скорость"
-    MSG_SELECTED_DIR_DISK="Выбранная директория:"
-    MSG_NO_MOUNTS_DISK="Нет доступных точек монтирования!"
-else
-    MSG_SELECT_DISK="Select directory"
-    MSG_SPEED_WRITE_DISK="Write speed:"
-    MSG_SPEED_READ_DISK="Read speed:"
-    MSG_TIME_WRITE_DISK="Write time:"
-    MSG_TIME_READ_DISK="Read time:"
-    MSG_FAILED_DISK="Failed to measure speed"
-    MSG_SELECTED_DIR_DISK="Selected directory:"
-    MSG_NO_MOUNTS_DISK="No available mount points!"
-fi
+source /tmp/tech-scripts/misc/localization.sh
 
 disk_choices=()
 
