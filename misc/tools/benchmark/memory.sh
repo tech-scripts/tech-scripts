@@ -2,6 +2,35 @@
 
 source /tmp/tech-scripts/misc/localization.sh
 
+install_sysbench() {
+    if command -v apt &>/dev/null; then
+        sudo apt update && sudo apt install -y sysbench
+    elif command -v yum &>/dev/null; then
+        sudo yum install -y sysbench
+    elif command -v dnf &>/dev/null; then
+        sudo dnf install -y sysbench
+    elif command -v zypper &>/dev/null; then
+        sudo zypper install -y sysbench
+    elif command -v pacman &>/dev/null; then
+        sudo pacman -S --noconfirm sysbench
+    elif command -v apk &>/dev/null; then
+        sudo apk add sysbench
+    elif command -v brew &>/dev/null; then
+        brew install sysbench
+    else
+        echo "$PACKAGE_MANAGER_ERROR"
+        exit 1
+    fi
+}
+
+if ! command -v sysbench &>/dev/null; then
+    if whiptail --title "$INSTALL_TITLE" --yesno "$INSTALL_QUESTION" 10 60; then
+        install_sysbench
+    else
+        exit 0
+    fi
+fi
+
 show_progress() {
     (
         for i in {1..100}; do
