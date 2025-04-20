@@ -45,7 +45,10 @@ if [[ "$LANGUAGE" == "Русский" ]]; then
     INSTALL_TITLE="Установка необходимых компонентов"
     INSTALL_QUESTION="sysbench не установлен. Хотите установить его?"
     PACKAGE_MANAGER_ERROR="Не удалось определить пакетный менеджер. Установите sysbench вручную!"
-
+    
+    MEMORY_TEST_TITLE="Стресс-тест памяти"
+    MEMORY_TEST_QUESTION="Вы хотите выполнить стресс-тест памяти?"
+    
     MSG_SELECT_DISK="Выберите директорию"
     MSG_SPEED_WRITE_DISK="Скорость записи:"
     MSG_SPEED_READ_DISK="Скорость чтения:"
@@ -97,7 +100,10 @@ else
     INSTALL_TITLE="Installing Required Components"
     INSTALL_QUESTION="sysbench is not installed. Do you want to install it?"
     PACKAGE_MANAGER_ERROR="Failed to detect package manager. Please install sysbench manually!"
-
+    
+    MEMORY_TEST_TITLE="Memory stress test"
+    MEMORY_TEST_QUESTION="Do you want to perform a memory stress test?"
+    
     MSG_SELECT_DISK="Select directory"
     MSG_SPEED_WRITE_DISK="Write speed:"
     MSG_SPEED_READ_DISK="Read speed:"
