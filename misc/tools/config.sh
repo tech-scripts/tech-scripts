@@ -23,24 +23,16 @@ show_menu() {
             /)
                 DIRECTORIES=("etc" "opt" "var" "usr" "home" "root" "tmp")
                 ;;
-            /usr)
-                DIRECTORIES=("local" "share")
-                ;;
-            /usr/local)
-                DIRECTORIES=("etc")
-                ;;
-            /var)
-                DIRECTORIES=("lib/docker" "www/html")
-                ;;
-            /etc)
-                SCRIPTS=("fstab" "passwd" "ssh/sshd_config" "apt/sources.list")
-                ;;
-            /usr/local/etc)
-                SCRIPTS=("some_config_file.conf")
-                ;;
-            /var/lib/docker)
-                ;;
-            /var/www/html)
+            /tmp|/root|/home)
+                for FILE in "$CURRENT_DIR"/*; do
+                    FILE_NAME=$(basename "$FILE")
+                    [[ " ${EXCLUDE_FILES[@]} " =~ " $FILE_NAME " ]] && continue
+                    if [ -f "$FILE" ]; then
+                        SCRIPTS+=("$FILE_NAME")
+                    elif [ -d "$FILE" ]; then
+                        DIRECTORIES+=("$FILE_NAME")
+                    fi
+                done
                 ;;
             *)
                 ;;
