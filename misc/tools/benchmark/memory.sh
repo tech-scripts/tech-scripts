@@ -1,14 +1,6 @@
 #!/bin/bash
 
-language=$(grep '^lang:' /etc/tech-scripts/choose.conf | cut -d' ' -f2)
-
-if [ "$language" == "Русский" ]; then
-  title="стресс-тест памяти"
-  question="вы хотите выполнить стресс-тест памяти?"
-else
-  title="memory stress test"
-  question="do you want to perform a memory stress test?"
-fi
+source /tmp/tech-scripts/misc/localization.sh
 
 show_progress() {
     (
@@ -16,10 +8,10 @@ show_progress() {
             sleep 0.1
             echo $i
         done
-    ) | whiptail --title "Прогресс выполнения" --gauge " " 6 60 0
+    ) | whiptail --title "$PROGRESS_TITLE" --gauge " " 6 60 0
 }
 
-whiptail --title "$title" --yesno "$question" 10 60
+whiptail --title "$MEMORY_TEST_TITLE" --yesno "$MEMORY_TEST_QUESTION" 10 60
 if [ $? -eq 0 ]; then
   show_progress &
   
