@@ -60,13 +60,13 @@ if [ $? -eq 0 ]; then
   data_transferred_rate=$(awk "BEGIN {printf \"%.2f\", $data_transferred_miB / $total_time}")
   
   echo ""
-  echo "Total operations: $total_events ($operations_per_second per second)"
+  echo -e "Total operations: \e[38;2;160;160;160m$total_events\e[0m (\e[38;2;160;160;160m$operations_per_second\e[0m per second)"
   echo ""
-  echo "$data_transferred_miB MiB transferred ($data_transferred_rate MiB/sec)"
+  echo -e "\e[38;2;160;160;160m$data_transferred_miB\e[0m MiB transferred (\e[38;2;160;160;160m$data_transferred_rate\e[0m MiB/sec)"
   echo ""
   echo "General statistics:"
-  echo "    Total time:                          $total_time"
-  echo "    Total number of events:              $total_events"
+  echo -e "    Total time:                          \e[38;2;160;160;160m$total_time\e[0m"
+  echo -e "    Total number of events:              \e[38;2;160;160;160m$total_events\e[0m"
   echo ""
 else
   exit 0
