@@ -4,22 +4,22 @@ SUDO=$(command -v sudo || echo "")
 LANGUAGE=$(grep '^lang:' /etc/tech-scripts/choose.conf | cut -d' ' -f2)
 
 if [ "$LANGUAGE" == "Русский" ]; then
-    title="Обновление системы"
-    question="Вы хотите запустить обновление системы?"
-    updating="Обновление системы..."
-    completed="Обновление завершено!"
-    error="Пакетный менеджер не найден. Обновление отменено!"
+    TITLE_AUTOUPDATE="Обновление системы"
+    QUESTION_AUTOUPDATE="Вы хотите запустить обновление системы?"
+    UPDATING_AUTOUPDATE="Обновление системы..."
+    COMPLETE_AUTOUPDATE="Обновление завершено!"
+    ERROR_AUTOUPDATE="Пакетный менеджер не найден. Обновление отменено!"
 else
-    title="System Update"
-    question="Do you want to start the system update?"
-    updating="Updating the system..."
-    completed="Update completed!"
-    error="The package manager was not found. The update has been canceled!"
+    TITLE_AUTOUPDATE="System Update"
+    QUESTION_AUTOUPDATE="Do you want to start the system update?"
+    UPDATING_AUTOUPDATE="Updating the system..."
+    COMPLETE_AUTOUPDATE="Update completed!"
+    ERROR_AUTOUPDATE="The package manager was not found. The update has been canceled!"
 fi
 
-if (whiptail --title "$title" --yesno "$question" 10 60); then
+if (whiptail --title "$TITLE_AUTOUPDATE" --yesno "$QUESTION_AUTOUPDATE" 10 60); then
     echo " "
-    echo "$updating"
+    echo "$UPDATING_AUTOUPDATE"
     echo " "
     if command -v apt &> /dev/null; then
         $SUDO apt update && \
@@ -44,11 +44,11 @@ if (whiptail --title "$title" --yesno "$question" 10 60); then
         brew update && \
         brew upgrade
     else
-        echo "$error"
+        echo "$ERROR_AUTOUPDATE"
         exit 1
     fi
     echo " "
-    echo "$completed"
+    echo "$COMPLETE_AUTOUPDATE"
     echo " "
 else
     echo ""
