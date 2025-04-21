@@ -93,27 +93,27 @@ journalctl -f -u ssh | while read -r line; do
     if echo "$line" | grep -q "sshd.*Failed password"; then
         ip=$(echo "$line" | grep -oP 'from \K[0-9.]+')
         user=$(echo "$line" | grep -oP 'for \K\w+')
-        message=$(echo -e "${FAILED_SSH}\nТип подключения: пароль\nПользователь: ${user}\nIP: ${ip}")
+        message=$(echo -e "${FAILED_SSH}\n${CONNECTION_SSH} ${PASSWORD_SSH}\n${USER_SSH} ${user}\nIP: ${ip}")
         send_telegram_message "$message"
     elif echo "$line" | grep -q "sshd.*Accepted password"; then
         ip=$(echo "$line" | grep -oP 'from \K[0-9.]+')
         user=$(echo "$line" | grep -oP 'for \K\w+')
-        message=$(echo -e "${SUCCESS_SSH}\nТип подключения: пароль\nПользователь: ${user}\nIP: ${ip}")
+        message=$(echo -e "${SUCCESS_SSH}\n${CONNECTION_SSH} ${PASSWORD_SSH}\n${USER_SSH} ${user}\nIP: ${ip}")
         send_telegram_message "$message"
     elif echo "$line" | grep -q "sshd.*Connection closed"; then
         ip=$(echo "$line" | grep -oP 'from \K[0-9.]+')
         user=$(echo "$line" | grep -oP 'user \K\w+')
-        message=$(echo -e "${CLOSED_SSH}\nПользователь: ${user}")
+        message=$(echo -e "${CLOSED_SSH}\n${USER_SSH} ${user}")
         send_telegram_message "$message"
     elif echo "$line" | grep -q "sshd.*Invalid user"; then
         ip=$(echo "$line" | grep -oP 'from \K[0-9.]+')
         user=$(echo "$line" | grep -oP 'Invalid user \K\w+')
-        message=$(echo -e "${FAILED_SSH}\nТип подключения: пароль\nПользователь: ${user}\nIP: ${ip}")
+        message=$(echo -e "${FAILED_SSH}\n${CONNECTION_SSH} ${PASSWORD_SSH}\n${USER_SSH} ${user}\nIP: ${ip}")
         send_telegram_message "$message"
     elif echo "$line" | grep -q "sshd.*Accepted publickey"; then
         ip=$(echo "$line" | grep -oP 'from \K[0-9.]+')
         user=$(echo "$line" | grep -oP 'for \K\w+')
-        message=$(echo -e "${SUCCESS_SSH}\nТип подключения: ключ ssh\nПользователь: ${user}\nIP: ${ip}")
+        message=$(echo -e "${SUCCESS_SSH}\n${CONNECTION_SSH} ${KEY_SSH}\n${USER_SSH} ${user}\nIP: ${ip}")
         send_telegram_message "$message"
     fi
 done
