@@ -1,7 +1,7 @@
 #!/bin/bash
 
-source /tmp/tech-scripts/misc/localization.sh
-source /tmp/tech-scripts/misc/variables.sh
+source /etc/tech-scripts/localization.sh
+source /etc/tech-scripts/variables.sh
 
 is_valid_size() {
     [[ "$1" =~ ^[0-9]+[GgMmKk]$ ]]
