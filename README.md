@@ -8,7 +8,7 @@
     <a href="https://github.com/tech-scripts/linux/blob/main/CONTRIBUTING.md">
       <img src="https://img.shields.io/badge/Contribute-ff4785?style=for-the-badge&logo=git&logoColor=white" alt="Contribute" />
     </a> 
-    <a href="https://github.com/tech-scripts/linux/wiki">
+    <a href="#-usage">
       <img src="https://img.shields.io/badge/Guides-0077b5?style=for-the-badge&logo=read-the-docs&logoColor=white" alt="Guides" />
     </a> 
     <a href="https://github.com/tech-scripts/linux/blob/main/CHANGELOG.md">
