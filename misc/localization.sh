@@ -182,6 +182,17 @@ if [[ "$LANGUAGE" == "Русский" ]]; then
     PUBLIC_IP_SYSTEM="Публичный IP"
     MAIN_MENU_SYSTEM="Главное меню"
     CHOOSE_OPTION_SYSTEM="Выберите опцию"
+
+    TITLE_ADD_TECH="Быстрый доступ"
+    MSG_ADD_TECH="Хотите добавить команду tech для быстрого доступа?"
+    TITLE_REMOVE_TECH="Удаление команды"
+    MSG_REMOVE_TECH="Команда tech уже существует. Хотите удалить её?"
+    MSG_REMOVED_TECH="Команда tech успешно удалена!"
+    TITLE_UPDATE_TECH="Обновление команды"
+    MSG_UPDATE_TECH="Команда tech уже существует. Хотите обновить её?"
+    MSG_UPDATED_TECH="Команда tech успешно обновлена!"
+    UNKNOWN_COMMAND_TECH="Неизвестная команда:"
+    USAGE_TECH="Использование: tech [update|config|ssh|...]"
 else
     MSG_NO_SCRIPTS="No available scripts or directories!"
     MSG_CANCELLED="Selection cancelled!"
@@ -362,4 +373,15 @@ else
     PUBLIC_IP_SYSTEM="Public IP"
     MAIN_MENU_SYSTEM="Main Menu"
     CHOOSE_OPTION_SYSTEM="Choose an option"
+
+    TITLE_ADD_TECH="Quick access"
+    MSG_ADD_TECH="Do you want to add the tech command for quick access?"
+    TITLE_REMOVE_TECH="Remove command"
+    MSG_REMOVE_TECH="The tech command already exists. Do you want to remove it?"
+    MSG_REMOVED_TECH="The tech command has been successfully removed!"
+    TITLE_UPDATE_TECH="Update command"
+    MSG_UPDATE_TECH="The tech command already exists. Do you want to update it?"
+    MSG_UPDATED_TECH="The tech command has been successfully updated!"
+    UNKNOWN_COMMAND_TECH="Unknown command:"
+    USAGE_TECH="Usage: tech [update|config|ssh|...]"
 fi
