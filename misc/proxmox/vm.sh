@@ -1,11 +1,7 @@
 #!/bin/bash
 
-CONFIG_FILE="/etc/tech-scripts/choose.conf"
-
-LANGUAGE=$(grep '^lang:' /etc/tech-scripts/choose.conf | cut -d' ' -f2)
-EDITOR=$(grep '^editor:' "$CONFIG_FILE" | cut -d ' ' -f 2)
-
-source /tmp/tech-scripts/misc/localization.sh 
+source /tmp/tech-scripts/misc/localization.sh
+source /tmp/tech-scripts/misc/variables.sh
 
 if ! command -v qm &> /dev/null; then
     echo ""
