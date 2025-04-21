@@ -110,7 +110,7 @@ $SHELL_SYSTEM: $SHELL $BASH_VERSION
 
 show_disk_info_SYSTEM() {
     DISK_INFO=$(df -h)
-    MESSAGE="$DISK_INFO_SYSTEM:\n$DISK_INFO"
+    MESSAGE="$DISK_INFO"
     whiptail --title "$DISK_INFO_SYSTEM" --scrolltext --msgbox "$MESSAGE" 20 70
 }
 
