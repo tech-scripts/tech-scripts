@@ -1,21 +1,7 @@
 #!/bin/bash
 
-SUDO=$(command -v sudo || echo "")
-LANGUAGE=$(grep '^lang:' /etc/tech-scripts/choose.conf | cut -d' ' -f2)
-
-if [ "$LANGUAGE" == "Русский" ]; then
-    TITLE_AUTOUPDATE="Обновление системы"
-    QUESTION_AUTOUPDATE="Вы хотите запустить обновление системы?"
-    UPDATING_AUTOUPDATE="Обновление системы..."
-    COMPLETE_AUTOUPDATE="Обновление завершено!"
-    ERROR_AUTOUPDATE="Пакетный менеджер не найден. Обновление отменено!"
-else
-    TITLE_AUTOUPDATE="System Update"
-    QUESTION_AUTOUPDATE="Do you want to start the system update?"
-    UPDATING_AUTOUPDATE="Updating the system..."
-    COMPLETE_AUTOUPDATE="Update completed!"
-    ERROR_AUTOUPDATE="The package manager was not found. The update has been canceled!"
-fi
+source /tmp/tech-scripts/misc/localization.sh
+source /tmp/tech-scripts/misc/variables.sh
 
 if (whiptail --title "$TITLE_AUTOUPDATE" --yesno "$QUESTION_AUTOUPDATE" 10 60); then
     echo " "
