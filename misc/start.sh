@@ -43,6 +43,10 @@ install_packages
 
 cd /tmp/tech-scripts/misc
 
+if [ ! -d "/etc/tech-scripts" ]; then
+    $SUDO mkdir -p /etc/tech-scripts
+fi
+
 $SUDO cp -f /tmp/tech-scripts/misc/localization.sh /etc/tech-scripts/
 $SUDO cp -f /tmp/tech-scripts/misc/variables.sh /etc/tech-scripts/
 
