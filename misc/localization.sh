@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source /tmp/tech-scripts/misc/variables.sh
+source /etc/tech-scripts/variables.sh
 
 if [[ "$LANGUAGE" == "Русский" ]]; then
     MSG_NO_SCRIPTS="Нет доступных скриптов или директорий!"
