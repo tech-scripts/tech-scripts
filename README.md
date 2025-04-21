@@ -70,7 +70,7 @@ Ensure your system meets the following prerequisites:
 To install and run the project, use the following command:
 
 ```
-bash -c "$(wget -qO- https://raw.githubusercontent.com/tech-scripts/linux/refs/heads/main/misc/start.sh)"
+bash -c "$(wget -qO- https://raw.githubusercontent.com/tech-scripts/tech-scripts/refs/heads/main/misc/start.sh)"
 ```
 ## 📚 Usage
 
