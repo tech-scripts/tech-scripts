@@ -1,9 +1,9 @@
-SUDO=$(command -v sudo)
+#!/bin/bash
+
 DIR_STACK=()
-EDITOR=$(grep '^editor:' /etc/tech-scripts/choose.conf | cut -d ' ' -f 2)
-CONFIG_FILE="/etc/tech-scripts/choose.conf"
 
 source /tmp/tech-scripts/misc/localization.sh
+source /tmp/tech-scripts/misc/variables.sh
 
 get_relative_path() {
     local full_path="$1"
@@ -37,13 +37,10 @@ show_menu() {
                 DIRECTORIES=("/etc" "/opt" "/var" "/usr" "/home" "/root" "/tmp")
                 ;;
             /etc)
-                SCRIPTS=("/etc/fstab" "/etc/passwd" "/etc/ssh/sshd_config" "/etc/apt/sources.list" "tech-scripts")
+                SCRIPTS=("/etc/fstab" "/etc/passwd" "/etc/ssh/sshd_config" "/etc/apt/sources.list" "/etc/tech-scripts")
                 ;;
             /usr)
-                DIRECTORIES=("/usr/local" "/usr/share")
-                ;;
-            /usr/local)
-                DIRECTORIES=("/usr/local/etc")
+                DIRECTORIES=("/usr/local" "/usr/share" "/usr/local/etc")
                 ;;
             /var)
                 DIRECTORIES=("/var/lib/docker" "/var/www/html")
