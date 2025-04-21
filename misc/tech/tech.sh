@@ -14,7 +14,6 @@ if [ "$LANGUAGE" = "Русский" ]; then
     TITLE_UPDATE_TECH="Обновление команды"
     MSG_UPDATE_TECH="Команда tech уже существует. Хотите обновить её?"
     MSG_UPDATED_TECH="Команда tech успешно обновлена!"
-    MSG_ADD_COMPLETE_TECH="Команда tech успешно добавлена!"
     UNKNOWN_COMMAND_TECH="Неизвестная команда: \$1"
     USAGE_TECH="Использование: tech [lxc|vm|ssh alert|...]"
 else
@@ -26,7 +25,6 @@ else
     TITLE_UPDATE_TECH="Update command"
     MSG_UPDATE_TECH="The tech command already exists. Do you want to update it?"
     MSG_UPDATED_TECH="The tech command has been successfully updated!"
-    MSG_ADD_COMPLETE_TECH="The tech command has been successfully added!"
     UNKNOWN_COMMAND_TECH="Unknown command: \$1"
     USAGE_TECH="Usage: tech [lxc|vm|ssh alert|...]"
 fi
@@ -99,8 +97,5 @@ if [ -f /usr/local/bin/tech ]; then
 else
     $SUDO tee /usr/local/bin/tech > /dev/null <<< "$TECH_SCRIPT"
     $SUDO chmod +x /usr/local/bin/tech
-    echo " "
-    echo "$MSG_ADD_COMPLETE_TECH"
-    echo " "
 fi
    
