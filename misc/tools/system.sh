@@ -2,7 +2,7 @@
 
 show_temperature_info() {
     if ! command -v sensors &>/dev/null; then
-        whiptail --title "Ошибка" --msgbox "Программа 'sensors' не найдена!\n\nУстановите lm-sensors:\nsudo apt install lm-sensors\n\nЗатем выполните:\nsudo sensors-detect --auto" 15 60
+        whiptail --title "Ошибка" --msgbox "Программа 'sensors' не найдена!\n\nУстановите lm-sensors:\nsudo apt install lm-sensors" 15 60
         return 1
     fi
 
