@@ -11,7 +11,8 @@ if [[ "$LANGUAGE" == "Русский" ]]; then
     DIRECTORY_FORMAT="директория"
     SCRIPT_FORMAT="скрипт"
     OPTION_FORMAT="опция"
-
+    CONFIG_FORAMT="конфиг"
+    
     QM_NOT_FOUND="Утилита qm не найдена. Убедитесь, что Proxmox установлен!"
     NO_VMS="Нет доступных виртуальных машин!"
     SELECT_VM="Выберите виртуальную машину"
@@ -72,6 +73,7 @@ else
     DIRECTORY_FORMAT="directory"
     SCRIPT_FORMAT="script"
     OPTION_FORMAT="option"
+    CONFIG_FORAMT="config"
 
     QM_NOT_FOUND="Utility qm not found. Make sure Proxmox is installed!"
     NO_VMS="No available virtual machines!"
