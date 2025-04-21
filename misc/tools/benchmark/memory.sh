@@ -65,7 +65,7 @@ if [ $? -eq 0 ]; then
   echo -e "\e[38;2;160;160;160m$data_transferred_miB\e[0m MiB transferred (\e[38;2;160;160;160m$data_transferred_rate\e[0m MiB/sec)"
   echo ""
   echo "General statistics:"
-  echo -e "    Total time:                          \e[38;2;160;160;160m$total_time\e[0m" | sed -E 's/([0-9]+\.[0-9]+|[0-9]+)/\\e[38;2;160;160;160m\1\\e[0m/g')"
+  echo -e "    Total time:                          $total_time" | sed -E 's/([0-9]+\.[0-9]+|[0-9]+)/\\e[38;2;160;160;160m\1\\e[0m/g')"
   echo -e "    Total number of events:              \e[38;2;160;160;160m$total_events\e[0m"
   echo ""
 else
