@@ -35,7 +35,8 @@ TECH_SCRIPT=$(cat <<EOF
 REPO_URL_TECH="https://github.com/tech-scripts/linux.git"
 CLONE_DIR_TECH="/tmp/tech-scripts"
 
-source /tmp/tech-scripts/misc/tech/tech.sh
+source /tmp/tech-scripts/misc/localization.sh
+source /tmp/tech-scripts/misc/variables.sh
 
 run_script() {
     local script_dir="\$1"
