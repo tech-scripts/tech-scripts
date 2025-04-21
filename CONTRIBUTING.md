@@ -1,6 +1,6 @@
 # Contributing to Tech Scripts
 
-🎉 **Thank you for your interest in contributing to Tech Scripts (Linux)!** 🎉
+🎉 **Thank you for your interest in contributing to Tech Scripts!** 🎉
 
 We appreciate all contributions, big or small. Before you get started, please take a moment to review this guide to ensure the process is smooth and productive for everyone.
 
@@ -56,5 +56,5 @@ By contributing to this project, you agree to abide by the [project’s license]
 
 ---
 
-Thank you for contributing to Tech Scripts (Linux)! 🚀  
+Thank you for contributing to Tech Scripts! 🚀  
 We’re excited to have you on board and welcome your ideas and contributions!
