@@ -78,7 +78,7 @@ bash -c "$(wget -qO- https://raw.githubusercontent.com/tech-scripts/linux/refs/h
 - **Open Menu**: `tech`
 - **Update Scripts**: `tech update`
 - **Edit Config**: `tech config`
-- 
+
 ### Stress Testing
 - **CPU Stress Test**: `tech cpu`
 - **Disk Stress Test**: `tech disk`
