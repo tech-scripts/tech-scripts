@@ -1,7 +1,7 @@
 #!/bin/bash
 
-SUDO=$(command -v sudo)
-LANG_CONF=$(grep -E '^lang:' /etc/tech-scripts/choose.conf | cut -d' ' -f2)
+source /tmp/tech-scripts/misc/localization.sh
+source /tmp/tech-scripts/misc/variables.sh
 
 if [ "$LANG_CONF" == "Русский" ]; then
     title_add="Быстрый доступ"
@@ -32,7 +32,7 @@ fi
 TECH_SCRIPT=$(cat <<EOF
 #!/bin/bash
 
-REPO_URL="https://github.com/tech-scripts/linux.git"
+REPO_URL="https://github.com/tech-scripts/tech-scripts.git"
 CLONE_DIR="/tmp/tech-scripts"
 
 unknown_command="$unknown_command"
