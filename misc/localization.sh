@@ -66,6 +66,11 @@ if [[ "$LANGUAGE" == "Русский" ]]; then
     ERROR_AUTOUPDATE="Пакетный менеджер не найден. Обновление отменено!"
 
     CONTINUE_CONFIG="Вы хотите продолжить?"
+
+    ERROR_MSG_NUMBER_GRUB="Введите количество секунд для задержки перед запуском:"
+    CONFIRM_PROMPT_GRUB="Вы ввели: %s секунд. Это правильно?"
+    ERROR_MSG_GRUB="Ошибка: Введите целое число."
+    SUCCESS_MSG_GRUB="Задержка перед запуском установлена на %s секунд. Конфигурация GRUB обновлена!"
 else
     MSG_NO_SCRIPTS="No available scripts or directories!"
     MSG_CANCELLED="Selection cancelled!"
@@ -130,4 +135,9 @@ else
     ERROR_AUTOUPDATE="The package manager was not found. The update has been canceled!"
 
     CONTINUE_CONFIG="Do you want to continue?"
+
+    ERROR_MSG_NUMBER_GRUB="Enter the number of seconds for the boot delay:"
+    CONFIRM_PROMPT_GRUB="You entered: %s seconds. Is this correct?"
+    ERROR_MSG_GRUB="Error: Please enter a whole number."
+    SUCCESS_MSG_GRUB="Boot delay set to %s seconds. GRUB configuration updated!"
 fi
