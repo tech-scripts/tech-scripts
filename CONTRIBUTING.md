@@ -1,4 +1,4 @@
-# Contributing to Tech Scripts (Linux)
+# Contributing to Tech Scripts
 
 🎉 **Thank you for your interest in contributing to Tech Scripts (Linux)!** 🎉
 
