@@ -177,6 +177,7 @@ if [ -f "$CONFIG_FILE_SSH" ] || [ -f "$SCRIPT_DIR_SSH/alert.sh" ] || [ -f "/etc/
         echo "$CONFIG_LOCATION_SSH $CONFIG_FILE_SSH"
         echo "$SCRIPT_LOCATION_SSH $SCRIPT_DIR_SSH/alert.sh"
         echo ""
+        exit 0
     fi
 fi
 
