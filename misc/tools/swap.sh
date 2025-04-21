@@ -1,18 +1,13 @@
 #!/bin/bash
 
-CONFIG_DIR_SWAP="/etc/tech-scripts"
-CONFIG_FILE_SWAP="$CONFIG_DIR_SWAP/choose.conf"
-SWAP_CONFIG_SWAP="$CONFIG_DIR_SWAP/swap.conf"
 
-[ "$(id -u)" -eq 0 ] || SUDO_SWAP=$(command -v sudo)
-$SUDO_SWAP mkdir -p "$CONFIG_DIR_SWAP"
-
+$SUDO mkdir -p "$CONFIG_DIR_SWAP"
 LANGUAGE=$(grep '^lang:' "$CONFIG_FILE_SWAP" | cut -d' ' -f2)
 
 if [ "$LANGUAGE" = "Русский" ]; then
     INVALID_SIZE_SWAP="Некорректный ввод. Введите размер в формате, например, 8G или 512M."
     ENTER_SIZE_SWAP="Введите размер ZRAM (например, 4G, 512M):"
-    SWAP_SETUP_SWAP="SWAP настроен на размер $SWAP_SIZE_SWAP."
+    SWAP_SETUP_SWAP="SWAP настроен на размер:"
     CHOOSE_MEMORY_SWAP="Выберите тип памяти:"
     ZRAM_OPTION_SWAP="ZRAM (сжатый swap в памяти)"
     SWAP_OPTION_SWAP="Обычный SWAP (на диске)"
@@ -20,7 +15,7 @@ if [ "$LANGUAGE" = "Русский" ]; then
     ZSWAP_NOT_SUPPORTED_SWAP="ZSWAP не поддерживается вашим ядром."
     DISABLE_SWAP_PROMPT_SWAP="Обнаружены активные swap-устройства. Отключить их перед настройкой?"
     SWAP_SIZE_PROMPT_SWAP="Введите размер SWAP (например, 4G, 512M):"
-    ZRAM_SETUP_SWAP="ZRAM настроен на размер $ZRAM_SIZE_SWAP."
+    ZRAM_SETUP_SWAP="ZRAM настроен на размер:"
     CURRENT_SETTINGS_SWAP="Текущие настройки:"
     NO_ACTIVE_SWAP_SWAP="Активные swap-устройства не обнаружены."
     ERROR_LOAD_ZRAM_SWAP="Ошибка загрузки модуля zram"
@@ -40,7 +35,7 @@ if [ "$LANGUAGE" = "Русский" ]; then
 else
     INVALID_SIZE_SWAP="Invalid input. Please enter size in format like 8G or 512M."
     ENTER_SIZE_SWAP="Enter ZRAM size (e.g., 4G, 512M):"
-    SWAP_SETUP_SWAP="SWAP set with size $SWAP_SIZE_SWAP."
+    SWAP_SETUP_SWAP="SWAP set with size:"
     CHOOSE_MEMORY_SWAP="Choose memory type:"
     ZRAM_OPTION_SWAP="ZRAM (compressed in-memory swap)"
     SWAP_OPTION_SWAP="Regular SWAP (on disk)"
@@ -48,7 +43,7 @@ else
     ZSWAP_NOT_SUPPORTED_SWAP="ZSWAP is not supported by your kernel."
     DISABLE_SWAP_PROMPT_SWAP="Active swap devices found. Disable them before setup?"
     SWAP_SIZE_PROMPT_SWAP="Enter SWAP size (e.g., 4G, 512M):"
-    ZRAM_SETUP_SWAP="ZRAM set with size $ZRAM_SIZE_SWAP."
+    ZRAM_SETUP_SWAP="ZRAM set with size:"
     CURRENT_SETTINGS_SWAP="Current settings:"
     NO_ACTIVE_SWAP_SWAP="No active swap devices found."
     ERROR_LOAD_ZRAM_SWAP="Error loading zram module"
@@ -80,9 +75,9 @@ check_zswap_support() {
 }
 
 disable_swap() {
-    $SUDO_SWAP swapoff -a 2>/dev/null
+    $SUDO swapoff -a 2>/dev/null
     if lsmod | grep -q zram; then
-        $SUDO_SWAP modprobe -r zram 2>/dev/null
+        $SUDO modprobe -r zram 2>/dev/null
     fi
 }
 
@@ -111,31 +106,31 @@ setup_zram() {
 
     disable_swap
 
-    $SUDO_SWAP modprobe zram num_devices=1 || {
+    $SUDO modprobe zram num_devices=1 || {
         whiptail --msgbox "$ERROR_LOAD_ZRAM_SWAP" 8 50
         return 1
     }
 
-    echo "$ZRAM_SIZE_SWAP" | $SUDO_SWAP tee /sys/block/zram0/disksize >/dev/null 2>&1 || {
+    echo "$ZRAM_SIZE_SWAP" | $SUDO tee /sys/block/zram0/disksize >/dev/null 2>&1 || {
         whiptail --msgbox "$ERROR_CONFIG_ZRAM_SIZE_SWAP" 8 50
-        $SUDO_SWAP modprobe -r zram
+        $SUDO modprobe -r zram
         return 1
     }
 
-    $SUDO_SWAP mkswap /dev/zram0 >/dev/null 2>&1 || {
+    $SUDO mkswap /dev/zram0 >/dev/null 2>&1 || {
         whiptail --msgbox "$ERROR_CREATE_ZRAM_SWAP_SWAP" 8 50
-        $SUDO_SWAP modprobe -r zram
+        $SUDO modprobe -r zram
         return 1
     }
 
-    $SUDO_SWAP swapon /dev/zram0 || {
+    $SUDO swapon /dev/zram0 || {
         whiptail --msgbox "$ERROR_ACTIVATE_ZRAM_SWAP" 8 50
-        $SUDO_SWAP modprobe -r zram
+        $SUDO modprobe -r zram
         return 1
     }
 
-    echo "ZRAM_SIZE=$ZRAM_SIZE_SWAP" | $SUDO_SWAP tee "$SWAP_CONFIG_SWAP" >/dev/null
-    whiptail --msgbox "$ZRAM_SETUP_SWAP" 8 50
+    echo "ZRAM_SIZE=$ZRAM_SIZE_SWAP" | $SUDO tee "$SWAP_CONFIG_SWAP" >/dev/null
+    whiptail --msgbox "$ZRAM_SETUP_SWAP $ZRAM_SIZE_SWAP" 8 50
 }
 
 setup_swapfile() {
@@ -148,26 +143,26 @@ setup_swapfile() {
     done
 
     disable_swap
-    $SUDO_SWAP rm -f /swapfile
+    $SUDO rm -f /swapfile
 
-    if ! $SUDO_SWAP fallocate -l "$SWAP_SIZE_SWAP" /swapfile; then
+    if ! $SUDO fallocate -l "$SWAP_SIZE_SWAP" /swapfile; then
         whiptail --msgbox "$ERROR_CREATE_SWAPFILE_SWAP" 8 50
         return 1
     fi
 
-    $SUDO_SWAP chmod 600 /swapfile
-    $SUDO_SWAP mkswap /swapfile >/dev/null 2>&1 || {
+    $SUDO chmod 600 /swapfile
+    $SUDO mkswap /swapfile >/dev/null 2>&1 || {
         whiptail --msgbox "$ERROR_INIT_SWAP_SWAP" 8 50
         return 1
     }
 
-    $SUDO_SWAP swapon /swapfile || {
+    $SUDO swapon /swapfile || {
         whiptail --msgbox "$ERROR_ACTIVATE_SWAP_SWAP" 8 50
         return 1
     }
 
-    grep -q "/swapfile" /etc/fstab || echo "/swapfile none swap sw 0 0" | $SUDO_SWAP tee -a /etc/fstab >/dev/null
-    whiptail --msgbox "$SWAP_SETUP_SWAP" 8 50
+    grep -q "/swapfile" /etc/fstab || echo "/swapfile none swap sw 0 0" | $SUDO tee -a /etc/fstab >/dev/null
+    whiptail --msgbox "$SWAP_SETUP_SWAP $SWAP_SIZE_SWAP" 8 50
 }
 
 setup_zswap() {
@@ -178,16 +173,16 @@ setup_zswap() {
 
     disable_swap
 
-    echo 1 | $SUDO_SWAP tee /sys/module/zswap/parameters/enabled > /dev/null
+    echo 1 | $SUDO tee /sys/module/zswap/parameters/enabled > /dev/null
 
     if [ -f /sys/module/zswap/parameters/compressor ]; then
-        echo "lz4" | $SUDO_SWAP tee /sys/module/zswap/parameters/compressor >/dev/null 2>&1 || {
+        echo "lz4" | $SUDO tee /sys/module/zswap/parameters/compressor >/dev/null 2>&1 || {
             echo "$ZSWAP_COMPRESSOR_ERROR_SWAP" >&2
         }
     fi
 
     if [ -f /sys/module/zswap/parameters/zpool ]; then
-        echo "zsmalloc" | $SUDO_SWAP tee /sys/module/zswap/parameters/zpool >/dev/null 2>&1 || {
+        echo "zsmalloc" | $SUDO tee /sys/module/zswap/parameters/zpool >/dev/null 2>&1 || {
             echo "$ZSWAP_ZPOOL_ERROR_SWAP" >&2
         }
     fi
@@ -196,23 +191,23 @@ setup_zswap() {
         echo "options zswap enabled=1"
         echo "options zswap compressor=lz4"
         echo "options zswap zpool=zsmalloc"
-    } | $SUDO_SWAP tee /etc/modprobe.d/zswap.conf > /dev/null
+    } | $SUDO tee /etc/modprobe.d/zswap.conf > /dev/null
 
     if ! swapon --show | grep -q "/swapfile"; then
-        $SUDO_SWAP fallocate -l 2G /swapfile || {
+        $SUDO fallocate -l 2G /swapfile || {
             whiptail --msgbox "$ERROR_CREATE_SWAPFILE_SWAP" 8 50
             return 1
         }
-        $SUDO_SWAP chmod 600 /swapfile
-        $SUDO_SWAP mkswap /swapfile || {
+        $SUDO chmod 600 /swapfile
+        $SUDO mkswap /swapfile || {
             whiptail --msgbox "$ERROR_INIT_SWAP_SWAP" 8 50
             return 1
         }
-        $SUDO_SWAP swapon /swapfile || {
+        $SUDO swapon /swapfile || {
             whiptail --msgbox "$ERROR_ACTIVATE_SWAP_SWAP" 8 50
             return 1
         }
-        echo "/swapfile none swap sw 0 0" | $SUDO_SWAP tee -a /etc/fstab > /dev/null
+        echo "/swapfile none swap sw 0 0" | $SUDO tee -a /etc/fstab > /dev/null
     fi
 
     whiptail --msgbox "$ZSWAP_SUCCESS_SETUP_SWAP" 8 50
