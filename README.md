@@ -121,12 +121,6 @@ This project is licensed under the Apache License 2.0. For more details, see the
 
 ---
 
-<p align="center">
-  <i>© 2025 Tech Scripts. All rights reserved.</i>
-</p>
-
----
-
 ### 🛠️ Development
 
 If you'd like to contribute to the project, feel free to fork the repository and submit a pull request. Check out the [Contributing Guidelines](CONTRIBUTING.md) for more details.
