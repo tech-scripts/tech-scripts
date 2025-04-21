@@ -37,5 +37,5 @@ if (whiptail --title "$TITLE_AUTOUPDATE" --yesno "$QUESTION_AUTOUPDATE" 10 60); 
     echo "$COMPLETE_AUTOUPDATE"
     echo " "
 else
-    echo ""
+    exit 0
 fi
