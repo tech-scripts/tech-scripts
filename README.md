@@ -21,34 +21,38 @@
 
 ## 🚀 Project Overview
 
-**Tech Scripts** is a collection of utilities designed to simplify Linux system management, automation, and configuration. The project includes tools for managing LXC containers and virtual machines in Proxmox VE, as well as utilities for Debian system optimization, monitoring, and task automation. Key features include:
+**Tech Scripts** is a collection of utilities designed to simplify Linux system management, automation, and configuration. The project includes tools for stress testing system components, automating updates, optimizing system performance, and managing LXC containers and virtual machines. Key features include:
 
-- **LXC and VM Management**: Simplify the configuration, and monitoring of LXC containers and virtual machines in Proxmox VE.
-- **Debian Configuration**: Tools for optimizing system performance, including swap management, GRUB configuration, and startup commands.
-- **SSH in Telegram**: Receive notifications about SSH connections and manage sessions via Telegram.
-- **Task Automation**: Scripts for backups, resource monitoring, and other routine tasks.
+- **Stress Testing**: Tools for testing CPU, disk, and memory performance.
+- **System Optimization**: Utilities for configuring swap, GRUB, and startup scripts.
+- **Automation**: Scripts for automatic updates and system monitoring.
+- **Security**: Notifications for SSH logins.
+- **LXC and VM Management**: Tools for managing LXC containers and virtual machines.
 
 ---
 
 ## 📦 Features
 
-### LXC and VM Management
-- **Create and Delete Containers**: Easily manage LXC containers.
-- **Configure Virtual Machines**: Quickly set up VMs in Proxmox VE.
-- **Resource Monitoring**: Track resource usage for containers and VMs.
+### Stress Testing
+- **CPU Stress Test**: Test the stability and performance of your processor.
+- **Disk Stress Test**: Evaluate the speed and reliability of your storage.
+- **Memory Stress Test**: Check the stability and performance of your RAM.
 
-### Debian Configuration
-- **Swap Management**: Optimize and configure swap files.
-- **Startup Commands**: Automate tasks with custom startup scripts.
-- **GRUB Configuration**: Customize the GRUB bootloader for better system performance.
+### System Optimization
+- **Swap Configuration**: Optimize and configure swap files for better memory management.
+- **GRUB Configuration**: Customize the GRUB bootloader for improved system performance.
+- **Startup Scripts**: Automate tasks with custom scripts that run at system startup.
 
-### SSH in Telegram
-- **SSH Notifications**: Get real-time alerts in Telegram for new SSH connections.
-- **Session Management**: Control SSH sessions via a Telegram bot.
-
-### Other Utilities
+### Automation
+- **Auto Update**: Automatically update your system for security and performance improvements.
 - **System Monitoring**: Tools for monitoring system health and resource usage.
-- **Backup Automation**: Scripts for automated data backups.
+
+### Security
+- **SSH Notifications**: Receive real-time alerts for new SSH connections.
+
+### LXC and VM Management
+- **LXC Containers**: Manage LXC containers with ease.
+- **Virtual Machines**: Configure and manage virtual machines.
 
 ---
 
@@ -70,18 +74,26 @@ bash -c "$(wget -qO- https://raw.githubusercontent.com/tech-scripts/linux/refs/h
 ```
 ## 📚 Usage
 
+### Stress Testing
+- **CPU Stress Test**: `tech cpu`
+- **Disk Stress Test**: `tech disk`
+- **Memory Stress Test**: `tech memory`
+
+### System Optimization
+- **Configure Swap**: `tech swap`
+- **Customize GRUB**: `tech grub`
+- **Add Startup Script**: `tech startup`
+
+### Automation
+- **Enable Auto Update**: `tech autoupdate`
+- **Monitor System**: `tech system`
+
+### Security
+- **SSH Notifications**: `tech ssh`
+
 ### LXC and VM Management
-- **Manage lxc**: `tech lxc`
-- **Manage vm**: `tech vm`
-
-### Debian Configuration
-- **Setup Swap**: `tech swap`
-- **Configure GRUB**: `tech grub`
-- **Startup Script**: `tech startup`
-
-### SSH in Telegram
-- **Enable SSH Notifications**: `tech ssh alert`
-- **Manage SSH Sessions**: `tech ssh manage`
+- **Manage LXC Containers**: `tech lxc`
+- **Manage Virtual Machines**: `tech vm`
 
 ---
 
