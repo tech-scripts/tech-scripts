@@ -1,43 +1,7 @@
 #!/bin/bash
 
-SUDO=$(command -v sudo || echo "")
-AUTOSTART_SCRIPT="/usr/local/tech-scripts/autostart.sh"
-SERVICE_FILE="/etc/systemd/system/autostart.service"
-SERVICE_NAME="autostart.service"
-LANGUAGE=$(grep '^lang:' /etc/tech-scripts/choose.conf | cut -d' ' -f2)
-EDITOR=$(grep '^editor:' /etc/tech-scripts/choose.conf | cut -d ' ' -f 2)
-
-if [ "$LANGUAGE" = "Русский" ]; then
-    INSTALL_MSG="Хотите установить скрипт автозапуска?"
-    EDIT_MSG="Хотите открыть $AUTOSTART_SCRIPT для редактирования?"
-    INVALID_EDITOR="Неверный выбор редактора. Пожалуйста, выберите nano или vim."
-    SCRIPT_LOCATION="Скрипт autostart.sh расположен по адресу: $AUTOSTART_SCRIPT"
-    SERVICE_EXISTS="Служба $SERVICE_NAME уже существует."
-    REMOVE_SERVICE_MSG="Хотите удалить авто запуск $SERVICE_NAME?"
-    SERVICE_REMOVED="Служба $SERVICE_NAME успешно удалена."
-    SERVICE_REMOVE_ERROR="Ошибка: не удалось удалить службу $SERVICE_NAME."
-    DIR_ERROR="Ошибка: не удалось создать директорию /usr/local/tech-scripts"
-    SCRIPT_ERROR="Ошибка: не удалось создать файл $AUTOSTART_SCRIPT."
-    CHMOD_ERROR="Ошибка: не удалось сделать файл $AUTOSTART_SCRIPT исполняемым."
-    SERVICE_CREATE_ERROR="Ошибка: не удалось создать файл службы $SERVICE_FILE."
-    ENABLE_ERROR="Ошибка: не удалось активировать службу $SERVICE_NAME."
-    START_ERROR="Ошибка: не удалось запустить службу $SERVICE_NAME."
-else
-    INSTALL_MSG="Do you want to install the autostart script?"
-    EDIT_MSG="Do you want to open $AUTOSTART_SCRIPT for editing?"
-    INVALID_EDITOR="Invalid editor choice. Please choose nano or vim."
-    SCRIPT_LOCATION="The autostart.sh script is located at: $AUTOSTART_SCRIPT"
-    SERVICE_EXISTS="Service $SERVICE_NAME already exists."
-    REMOVE_SERVICE_MSG="Do you want to remove autostart for $SERVICE_NAME?"
-    SERVICE_REMOVED="Service $SERVICE_NAME successfully removed."
-    SERVICE_REMOVE_ERROR="Error: Failed to remove service $SERVICE_NAME."
-    DIR_ERROR="Error: Failed to create directory /usr/local/tech-scripts"
-    SCRIPT_ERROR="Error: Failed to create file $AUTOSTART_SCRIPT."
-    CHMOD_ERROR="Error: Failed to make $AUTOSTART_SCRIPT executable."
-    SERVICE_CREATE_ERROR="Error: Failed to create service file $SERVICE_FILE."
-    ENABLE_ERROR="Error: Failed to enable service $SERVICE_NAME."
-    START_ERROR="Error: Failed to start service $SERVICE_NAME."
-fi
+source /tmp/tech-scripts/misc/localization.sh
+source /tmp/tech-scripts/misc/variables.sh
 
 edit() {
     if whiptail --yesno "$EDIT_MSG" 8 50; then
