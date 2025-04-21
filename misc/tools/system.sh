@@ -142,7 +142,6 @@ main_menu() {
             "2" "$TEMPERATURE_SYSTEM" \
             "3" "$DISK_INFO_SYSTEM" \
             "4" "$NETWORK_INFO_SYSTEM" \
-            "0" "Выход" 3>&1 1>&2 2>&3)
         
         case $OPTION in
             1) show_system_info_SYSTEM ;;
