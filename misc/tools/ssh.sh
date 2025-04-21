@@ -1,7 +1,7 @@
 #!/bin/bash
 
-source /tmp/tech-scripts/misc/localization.sh
-source /tmp/tech-scripts/misc/variables.sh
+source /etc/tech-scripts/localization.sh
+source /etc/tech-scripts/variables.sh
 
 show_message() {
     whiptail --msgbox "$1" 10 50
@@ -67,8 +67,8 @@ create_ssh_alert_script() {
     $SUDO tee "$SCRIPT_DIR_SSH/alert.sh" >/dev/null <<'EOF'
 #!/bin/bash
 
-source /tmp/tech-scripts/misc/localization.sh
-source /tmp/tech-scripts/misc/variables.sh
+source /etc/tech-scripts/localization.sh
+source /etc/tech-scripts/variables.sh
 
 [ -f "$CONFIG_FILE_SSH" ] && source "$CONFIG_FILE_SSH"
 
