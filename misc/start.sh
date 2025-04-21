@@ -43,6 +43,9 @@ install_packages
 
 cd /tmp/tech-scripts/misc
 
+$SUDO cp -f /tmp/tech-scripts/misc/localization.sh /etc/tech-scripts/
+$SUDO cp -f /tmp/tech-scripts/misc/variables.sh /etc/tech-scripts/
+
 DIR_STACK=()
 CURRENT_DIR="$CLONE_DIR"
 EXCLUDE_FILES=("start.sh" "choose.sh" "localization.sh" "variables.sh" "*.tmp")
