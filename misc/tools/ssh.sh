@@ -170,7 +170,12 @@ if [ -f "$CONFIG_FILE_SSH" ] || [ -f "$SCRIPT_DIR_SSH/alert.sh" ] || [ -f "/etc/
             echo ""
             exit 0
         fi
-        :
+        echo ""
+        echo "$SERVICE_LOCATION_SSH"
+        echo "$CONFIG_LOCATION_SSH $CONFIG_FILE_SSH"
+        echo "$SCRIPT_LOCATION_SSH $SCRIPT_DIR_SSH/alert.sh"
+        echo ""
+        exit 0
     else
         exit 0
     fi
