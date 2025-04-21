@@ -1,60 +1,7 @@
 #!/bin/bash
 
-LANGUAGE=$(grep '^lang:' /etc/tech-scripts/choose.conf | cut -d' ' -f2)
-
-if [ "$LANGUAGE" = "Русский" ]; then
-    ERROR_SYSTEM="Ошибка"
-    INSTALL_SYSTEM="Установите lm-sensors"
-    SYSTEM_INFO_SYSTEM="Система"
-    DISK_INFO_SYSTEM="Диски"
-    NETWORK_INFO_SYSTEM="Сети"
-    TEMPERATURE_SYSTEM="Температуры"
-    HOST_SYSTEM="ХОСТ"
-    KERNEL_SYSTEM="ЯДРО"
-    UPTIME_SYSTEM="ВРЕМЯ РАБОТЫ"
-    PACKAGES_SYSTEM="ПАКЕТЫ"
-    SHELL_SYSTEM="ОБОЛОЧКА"
-    RESOLUTION_SYSTEM="РАЗРЕШЕНИЕ"
-    TERMINAL_SYSTEM="ТЕРМИНАЛ"
-    CPU_SYSTEM="ПРОЦЕССОР"
-    GPU_SYSTEM="ВИДЕОКАРТА"
-    MEMORY_SYSTEM="ПАМЯТЬ"
-    BATTERY_SYSTEM="БАТАРЕЯ"
-    UNKNOWN_SYSTEM="НЕИЗВЕСТНО"
-    UNAVAILABLE_SYSTEM="НЕДОСТУПНО"
-    INTERFACE_SYSTEM="Интерфейс"
-    STATUS_SYSTEM="Статус"
-    NO_NETWORK_ADAPTERS_SYSTEM="Активные сетевые адаптеры не обнаружены"
-    PUBLIC_IP_SYSTEM="Публичный IP"
-    MAIN_MENU_SYSTEM="Главное меню"
-    CHOOSE_OPTION_SYSTEM="Выберите опцию"
-else
-    ERROR_SYSTEM="Error"
-    INSTALL_SYSTEM="Install lm-sensors"
-    SYSTEM_INFO_SYSTEM="System"
-    DISK_INFO_SYSTEM="Disks"
-    NETWORK_INFO_SYSTEM="Networks"
-    TEMPERATURE_SYSTEM="Temperatures"
-    HOST_SYSTEM="HOST"
-    KERNEL_SYSTEM="KERNEL"
-    UPTIME_SYSTEM="UPTIME"
-    PACKAGES_SYSTEM="PACKAGES"
-    SHELL_SYSTEM="SHELL"
-    RESOLUTION_SYSTEM="RESOLUTION"
-    TERMINAL_SYSTEM="TERMINAL"
-    CPU_SYSTEM="CPU"
-    GPU_SYSTEM="GPU"
-    MEMORY_SYSTEM="MEMORY"
-    BATTERY_SYSTEM="BATTERY"
-    UNKNOWN_SYSTEM="Unknown"
-    UNAVAILABLE_SYSTEM="Unavailable"
-    INTERFACE_SYSTEM="Interface"
-    STATUS_SYSTEM="Status"
-    NO_NETWORK_ADAPTERS_SYSTEM="No active network adapters found"
-    PUBLIC_IP_SYSTEM="Public IP"
-    MAIN_MENU_SYSTEM="Main Menu"
-    CHOOSE_OPTION_SYSTEM="Choose an option"
-fi
+source /tmp/tech-scripts/misc/localization.sh
+source /tmp/tech-scripts/misc/variables.sh
 
 show_temperature_info_SYSTEM() {
     if ! command -v sensors &>/dev/null; then
