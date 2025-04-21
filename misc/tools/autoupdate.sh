@@ -1,7 +1,7 @@
 #!/bin/bash
 
-source /tmp/tech-scripts/misc/localization.sh
-source /tmp/tech-scripts/misc/variables.sh
+source /etc/tech-scripts/localization.sh
+source /etc/tech-scripts/variables.sh
 
 if (whiptail --title "$TITLE_AUTOUPDATE" --yesno "$QUESTION_AUTOUPDATE" 10 60); then
     echo " "
