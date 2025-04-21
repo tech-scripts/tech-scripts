@@ -22,6 +22,12 @@ if [ "$LANGUAGE" = "Русский" ]; then
     BATTERY_SYSTEM="БАТАРЕЯ"
     UNKNOWN_SYSTEM="НЕИЗВЕСТНО"
     UNAVAILABLE_SYSTEM="НЕДОСТУПНО"
+    INTERFACE_SYSTEM="Интерфейс"
+    STATUS_SYSTEM="Статус"
+    NO_NETWORK_ADAPTERS_SYSTEM="Активные сетевые адаптеры не обнаружены"
+    PUBLIC_IP_SYSTEM="Публичный IP"
+    MAIN_MENU_SYSTEM="Главное меню"
+    CHOOSE_OPTION_SYSTEM="Выберите опцию"
 else
     ERROR_SYSTEM="ERROR"
     INSTALL_SYSTEM="INSTALL lm-sensors:\nsudo apt install lm-sensors"
@@ -42,6 +48,12 @@ else
     BATTERY_SYSTEM="BATTERY"
     UNKNOWN_SYSTEM="UNKNOWN"
     UNAVAILABLE_SYSTEM="UNAVAILABLE"
+    INTERFACE_SYSTEM="Interface"
+    STATUS_SYSTEM="Status"
+    NO_NETWORK_ADAPTERS_SYSTEM="No active network adapters found"
+    PUBLIC_IP_SYSTEM="Public IP"
+    MAIN_MENU_SYSTEM="Main Menu"
+    CHOOSE_OPTION_SYSTEM="Choose an option"
 fi
 
 show_temperature_info_SYSTEM() {
@@ -84,8 +96,7 @@ $HOST_SYSTEM: $(cat /sys/devices/virtual/dmi/id/product_name 2>/dev/null || echo
 $KERNEL_SYSTEM: $KERNEL
 $UPTIME_SYSTEM: $UPTIME
 $PACKAGES_SYSTEM: $PACKAGES
-$SHELL_SYSTEM: $SHELL
-$BASH_VERSION
+$SHELL_SYSTEM: $SHELL $BASH_VERSION
 "
     [ -n "$RESOLUTION_SYSTEM" ] && MESSAGE+="$RESOLUTION_SYSTEM: $RESOLUTION\n"
     MESSAGE+="$TERMINAL_SYSTEM: $TERMINAL\n"
@@ -115,8 +126,8 @@ show_network_info_SYSTEM() {
         STATUS=$(cat /sys/class/net/$interface/operstate 2>/dev/null)
         
         if [ -n "$IP" ] || [ -n "$MAC" ]; then
-            NETWORK_INFO+="Интерфейс: $interface\n"
-            NETWORK_INFO+="Статус: ${STATUS:-$UNKNOWN_SYSTEM}\n"
+            NETWORK_INFO+="$INTERFACE_SYSTEM: $interface\n"
+            NETWORK_INFO+="$STATUS_SYSTEM: ${STATUS:-$UNKNOWN_SYSTEM}\n"
             [ -n "$IP" ] && NETWORK_INFO+="IP: $IP\n"
             [ -n "$MAC" ] && NETWORK_INFO+="MAC: $MAC\n"
             NETWORK_INFO+="\n"
@@ -124,12 +135,12 @@ show_network_info_SYSTEM() {
     done
     
     if [ -z "$NETWORK_INFO" ]; then
-        NETWORK_INFO="Активные сетевые адаптеры не обнаружены"
+        NETWORK_INFO="$NO_NETWORK_ADAPTERS_SYSTEM"
     fi
     
     if command -v curl &>/dev/null; then
         PUBLIC_IP=$(curl -s ifconfig.me)
-        [ -n "$PUBLIC_IP" ] && NETWORK_INFO+="\nПубличный IP: $PUBLIC_IP"
+        [ -n "$PUBLIC_IP" ] && NETWORK_INFO+="\n$PUBLIC_IP_SYSTEM: $PUBLIC_IP"
     fi
     
     whiptail --title "$NETWORK_INFO_SYSTEM" --scrolltext --msgbox "$NETWORK_INFO" 20 70
@@ -137,11 +148,11 @@ show_network_info_SYSTEM() {
 
 main_menu() {
     while true; do
-        OPTION=$(whiptail --title "Главное меню" --menu "Выберите опцию:" 15 60 5 \
+        OPTION=$(whiptail --title "$MAIN_MENU_SYSTEM" --menu "$CHOOSE_OPTION_SYSTEM:" 15 60 5 \
             "1" "$SYSTEM_INFO_SYSTEM" \
             "2" "$TEMPERATURE_SYSTEM" \
             "3" "$DISK_INFO_SYSTEM" \
-            "4" "$NETWORK_INFO_SYSTEM" \
+            "4" "$NETWORK_INFO_SYSTEM" 3>&1 1>&2 2>&3)
         
         case $OPTION in
             1) show_system_info_SYSTEM ;;
