@@ -57,6 +57,12 @@ if [[ "$LANGUAGE" == "Русский" ]]; then
     MSG_FAILED_DISK="Не удалось измерить скорость"
     MSG_SELECTED_DIR_DISK="Выбранная директория:"
     MSG_NO_MOUNTS_DISK="Нет доступных точек монтирования!"
+
+    TITLE_AUTOUPDATE="Обновление системы"
+    QUESTION_AUTOUPDATE="Вы хотите запустить обновление системы?"
+    UPDATING_AUTOUPDATE="Обновление системы..."
+    COMPLETE_AUTOUPDATE="Обновление завершено!"
+    ERROR_AUTOUPDATE="Пакетный менеджер не найден. Обновление отменено!"
 else
     MSG_NO_SCRIPTS="No available scripts or directories!"
     MSG_CANCELLED="Selection cancelled!"
@@ -112,4 +118,10 @@ else
     MSG_FAILED_DISK="Failed to measure speed"
     MSG_SELECTED_DIR_DISK="Selected directory:"
     MSG_NO_MOUNTS_DISK="No available mount points!"
+
+    TITLE_AUTOUPDATE="System Update"
+    QUESTION_AUTOUPDATE="Do you want to start the system update?"
+    UPDATING_AUTOUPDATE="Updating the system..."
+    COMPLETE_AUTOUPDATE="Update completed!"
+    ERROR_AUTOUPDATE="The package manager was not found. The update has been canceled!"
 fi
