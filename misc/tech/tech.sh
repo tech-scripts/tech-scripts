@@ -97,4 +97,3 @@ else
     $SUDO tee /usr/local/bin/tech > /dev/null <<< "$TECH_SCRIPT"
     $SUDO chmod +x /usr/local/bin/tech
 fi
-   
