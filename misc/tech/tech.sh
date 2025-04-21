@@ -14,8 +14,8 @@ if [ "$LANGUAGE" = "Русский" ]; then
     TITLE_UPDATE_TECH="Обновление команды"
     MSG_UPDATE_TECH="Команда tech уже существует. Хотите обновить её?"
     MSG_UPDATED_TECH="Команда tech успешно обновлена!"
-    UNKNOWN_COMMAND_TECH="Неизвестная команда: \$1"
-    USAGE_TECH="Использование: tech [lxc|vm|ssh alert|...]"
+    UNKNOWN_COMMAND_TECH="Неизвестная команда:"
+    USAGE_TECH="Использование: tech [update|config|ssh|...]"
 else
     TITLE_ADD_TECH="Quick access"
     MSG_ADD_TECH="Do you want to add the tech command for quick access?"
@@ -25,8 +25,8 @@ else
     TITLE_UPDATE_TECH="Update command"
     MSG_UPDATE_TECH="The tech command already exists. Do you want to update it?"
     MSG_UPDATED_TECH="The tech command has been successfully updated!"
-    UNKNOWN_COMMAND_TECH="Unknown command: \$1"
-    USAGE_TECH="Usage: tech [lxc|vm|ssh alert|...]"
+    UNKNOWN_COMMAND_TECH="Unknown command:"
+    USAGE_TECH="Usage: tech [update|config|ssh|...]"
 fi
 
 TECH_SCRIPT=$(cat <<EOF
