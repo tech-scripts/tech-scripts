@@ -1,7 +1,5 @@
 #!/bin/bash
 
-DIR_STACK=()
-
 source /tmp/tech-scripts/misc/localization.sh
 source /tmp/tech-scripts/misc/variables.sh
 
@@ -53,18 +51,18 @@ show_menu() {
         for DIR in "${DIRECTORIES[@]}"; do
             DIR_NAME=$(basename "$DIR")
             CHOICES+=("$DIR")
-            DISPLAY_NAMES+=("$DIR_NAME директория")
+            DISPLAY_NAMES+=("$DIR_NAME $DIRECTORY_FORMAT")
         done
 
         if [ ${#SCRIPTS[@]} -gt 0 ]; then
             for SCRIPT in "${SCRIPTS[@]}"; do
                 SCRIPT_NAME=$(basename "$SCRIPT")
                 CHOICES+=("$SCRIPT")
-                DISPLAY_NAMES+=("$SCRIPT_NAME конфиг")
+                DISPLAY_NAMES+=("$SCRIPT_NAME $CONFIG_FORAMT")
             done
         fi
 
-        [ "$CURRENT_DIR" != "/" ] && { CHOICES+=("$MSG_BACK"); DISPLAY_NAMES+=("назад опция"); }
+        [ "$CURRENT_DIR" != "/" ] && { CHOICES+=("$MSG_BACK"); DISPLAY_NAMES+=("$MSG_BACK $OPTION_FORMAT"); }
 
         [ ${#CHOICES[@]} -eq 0 ] && { echo "$MSG_NO_SCRIPTS"; exit 0; }
 
@@ -98,7 +96,7 @@ show_menu() {
         else
             if [ -f "$SELECTED_ITEM" ]; then
                 $EDITOR "$SELECTED_ITEM"
-                whiptail --yesno "Вы хотите продолжить?" 8 40
+                whiptail --yesno "$CONTINUE_CONFIG" 8 40
                 if [ $? -ne 0 ]; then
                     exit 0
                 fi
@@ -106,7 +104,7 @@ show_menu() {
         fi
     done
 }
-
+DIR_STACK=()
 CURRENT_DIR="/"
 cd "$CURRENT_DIR" || { echo "$MSG_CD_ERROR"; exit 1; }
 show_menu
