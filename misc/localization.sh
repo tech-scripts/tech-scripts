@@ -64,6 +64,8 @@ if [[ "$LANGUAGE" == "Русский" ]]; then
     UPDATING_AUTOUPDATE="Обновление системы..."
     COMPLETE_AUTOUPDATE="Обновление завершено!"
     ERROR_AUTOUPDATE="Пакетный менеджер не найден. Обновление отменено!"
+
+    CONTINUE_CONFIG="Вы хотите продолжить?"
 else
     MSG_NO_SCRIPTS="No available scripts or directories!"
     MSG_CANCELLED="Selection cancelled!"
@@ -126,4 +128,6 @@ else
     UPDATING_AUTOUPDATE="Updating the system..."
     COMPLETE_AUTOUPDATE="Update completed!"
     ERROR_AUTOUPDATE="The package manager was not found. The update has been canceled!"
+
+    CONTINUE_CONFIG="Do you want to continue?"
 fi
