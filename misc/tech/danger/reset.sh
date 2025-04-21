@@ -1,7 +1,7 @@
 #!/bin/bash
 
-source /tmp/tech-scripts/misc/localization.sh
-source /tmp/tech-scripts/misc/variables.sh
+source /etc/tech-scripts/localization.sh
+source /etc/tech-scripts/variables.sh
 
 whiptail --title "$TITLE_DANGER" --yesno "$MESSAGE_DANGER" --yes-button "$YES" --no-button "$NO" 10 60
 
