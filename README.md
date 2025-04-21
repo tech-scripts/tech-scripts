@@ -90,7 +90,7 @@ bash -c "$(wget -qO- https://raw.githubusercontent.com/tech-scripts/linux/refs/h
 - **Add Startup Script**: `tech startup`
 
 ### Automation
-- **Enable Auto Update**: `tech autoupdate`
+- **Auto Update**: `tech autoupdate`
 - **Monitor System**: `tech system`
 
 ### Security
