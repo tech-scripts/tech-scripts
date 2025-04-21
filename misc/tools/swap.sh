@@ -11,7 +11,7 @@ LANGUAGE=$(grep '^lang:' "$CONFIG_FILE_SWAP" | cut -d' ' -f2)
 
 if [ "$LANGUAGE" = "Русский" ]; then
     INVALID_SIZE_SWAP="Некорректный ввод. Введите размер в формате, например, 8G или 512M."
-    ENTER_SIZE_SWAP="Введите размер ZRAM (например, 8G, 512M):"
+    ENTER_SIZE_SWAP="Введите размер ZRAM (например, 4G, 512M):"
     SWAP_SETUP_SWAP="SWAP настроен на размер $SWAP_SIZE_SWAP."
     CHOOSE_MEMORY_SWAP="Выберите тип памяти:"
     ZRAM_OPTION_SWAP="ZRAM (сжатый swap в памяти)"
@@ -19,7 +19,7 @@ if [ "$LANGUAGE" = "Русский" ]; then
     ZSWAP_OPTION_SWAP="ZSWAP (автоматическая компрессия)"
     ZSWAP_NOT_SUPPORTED_SWAP="ZSWAP не поддерживается вашим ядром."
     DISABLE_SWAP_PROMPT_SWAP="Обнаружены активные swap-устройства. Отключить их перед настройкой?"
-    SWAP_SIZE_PROMPT_SWAP="Введите размер SWAP (например, 8G):"
+    SWAP_SIZE_PROMPT_SWAP="Введите размер SWAP (например, 4G, 512M):"
     ZRAM_SETUP_SWAP="ZRAM настроен на размер $ZRAM_SIZE_SWAP."
     CURRENT_SETTINGS_SWAP="Текущие настройки:"
     NO_ACTIVE_SWAP_SWAP="Активные swap-устройства не обнаружены."
@@ -35,9 +35,11 @@ if [ "$LANGUAGE" = "Русский" ]; then
     CHECK_ZSWAP_PARAMS_SWAP="Проверка параметров ZSWAP:"
     CHECK_ZSWAP_USAGE_SWAP="Проверка использования ZSWAP:"
     ZSWAP_NOT_SUPPORTED_MSG_SWAP="ZSWAP не поддерживается вашим ядром."
+    ZSWAP_COMPRESSOR_ERROR_SWAP="zswap: не удалось установить lz4 compressor"
+    ZSWAP_ZPOOL_ERROR_SWAP="zswap: zsmalloc zpool не поддерживается"
 else
     INVALID_SIZE_SWAP="Invalid input. Please enter size in format like 8G or 512M."
-    ENTER_SIZE_SWAP="Enter ZRAM size (e.g., 8G, 512M):"
+    ENTER_SIZE_SWAP="Enter ZRAM size (e.g., 4G, 512M):"
     SWAP_SETUP_SWAP="SWAP set with size $SWAP_SIZE_SWAP."
     CHOOSE_MEMORY_SWAP="Choose memory type:"
     ZRAM_OPTION_SWAP="ZRAM (compressed in-memory swap)"
@@ -45,7 +47,7 @@ else
     ZSWAP_OPTION_SWAP="ZSWAP (automatic compression)"
     ZSWAP_NOT_SUPPORTED_SWAP="ZSWAP is not supported by your kernel."
     DISABLE_SWAP_PROMPT_SWAP="Active swap devices found. Disable them before setup?"
-    SWAP_SIZE_PROMPT_SWAP="Enter SWAP size (e.g., 8G):"
+    SWAP_SIZE_PROMPT_SWAP="Enter SWAP size (e.g., 4G, 512M):"
     ZRAM_SETUP_SWAP="ZRAM set with size $ZRAM_SIZE_SWAP."
     CURRENT_SETTINGS_SWAP="Current settings:"
     NO_ACTIVE_SWAP_SWAP="No active swap devices found."
@@ -61,6 +63,8 @@ else
     CHECK_ZSWAP_PARAMS_SWAP="Checking ZSWAP parameters:"
     CHECK_ZSWAP_USAGE_SWAP="Checking ZSWAP usage:"
     ZSWAP_NOT_SUPPORTED_MSG_SWAP="ZSWAP is not supported by your kernel."
+    ZSWAP_COMPRESSOR_ERROR_SWAP="zswap: failed to set lz4 compressor"
+    ZSWAP_ZPOOL_ERROR_SWAP="zswap: zsmalloc zpool is not supported"
 fi
 
 is_valid_size() {
@@ -178,13 +182,13 @@ setup_zswap() {
 
     if [ -f /sys/module/zswap/parameters/compressor ]; then
         echo "lz4" | $SUDO_SWAP tee /sys/module/zswap/parameters/compressor >/dev/null 2>&1 || {
-            echo "zswap: не удалось установить lz4 compressor" >&2
+            echo "$ZSWAP_COMPRESSOR_ERROR_SWAP" >&2
         }
     fi
 
     if [ -f /sys/module/zswap/parameters/zpool ]; then
         echo "zsmalloc" | $SUDO_SWAP tee /sys/module/zswap/parameters/zpool >/dev/null 2>&1 || {
-            echo "zswap: zsmalloc zpool не поддерживается" >&2
+            echo "$ZSWAP_ZPOOL_ERROR_SWAP" >&2
         }
     fi
 
