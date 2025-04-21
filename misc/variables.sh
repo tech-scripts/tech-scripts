@@ -1,0 +1,1 @@
+SUDO=$(command -v sudo)
