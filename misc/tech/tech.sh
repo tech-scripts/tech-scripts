@@ -1,5 +1,7 @@
 #!/bin/bash
 
+[ ! -d "/tmp/tech-scripts" ] && cd /tmp && git clone --depth 1 https://github.com/tech-scripts/tech-scripts.git /tmp/tech-scripts
+
 source /tmp/tech-scripts/misc/localization.sh
 source /tmp/tech-scripts/misc/variables.sh
 
