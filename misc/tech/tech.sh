@@ -95,9 +95,6 @@ case "\$combined_args" in
     "config")
          run_script "tools" "config.sh"
          ;;
-    "test")
-         run_script "tools" "test.sh"
-         ;;
     *)
         echo " "
         echo "\$unknown_command"
