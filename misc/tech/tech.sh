@@ -6,9 +6,6 @@ source /tmp/tech-scripts/misc/variables.sh
 TECH_SCRIPT=$(cat <<EOF
 #!/bin/bash
 
-REPO_URL_TECH="https://github.com/tech-scripts/tech-scripts.git"
-CLONE_DIR_TECH="/tmp/tech-scripts"
-
 source /tmp/tech-scripts/misc/localization.sh
 source /tmp/tech-scripts/misc/variables.sh
 
