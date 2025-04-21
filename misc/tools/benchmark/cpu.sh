@@ -1,20 +1,21 @@
 #!/bin/bash
 
 source /tmp/tech-scripts/misc/localization.sh
+source /tmp/tech-scripts/misc/variables.sh
 
 install_sysbench() {
     if command -v apt &>/dev/null; then
-        sudo apt update && sudo apt install -y sysbench
+        $SUDO apt update && $SUDO apt install -y sysbench
     elif command -v yum &>/dev/null; then
-        sudo yum install -y sysbench
+        $SUDO yum install -y sysbench
     elif command -v dnf &>/dev/null; then
-        sudo dnf install -y sysbench
+        $SUDO dnf install -y sysbench
     elif command -v zypper &>/dev/null; then
-        sudo zypper install -y sysbench
+        $SUDO zypper install -y sysbench
     elif command -v pacman &>/dev/null; then
-        sudo pacman -S --noconfirm sysbench
+        $SUDO pacman -S --noconfirm sysbench
     elif command -v apk &>/dev/null; then
-        sudo apk add sysbench
+        $SUDO apk add sysbench
     elif command -v brew &>/dev/null; then
         brew install sysbench
     else
