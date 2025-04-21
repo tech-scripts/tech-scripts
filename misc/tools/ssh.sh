@@ -192,13 +192,13 @@ if yes_no_box "$CREATE_NOTIFY_SSH" "$CREATE_ALERT_SSH"; then
             TELEGRAM_THREAD_ID=$(input_box "Telegram Thread ID" "$SUPER_GROUP_ID_SSH")
             
             if send_test_message "$TELEGRAM_BOT_TOKEN" "$TELEGRAM_CHAT_ID" "$TELEGRAM_THREAD_ID" "$TEST_MESSAGE_SSH"; then
-                if yes_no_box "$PROHIBIT_SOUND_SSH"; then
+                if yes_no_box "$PROHIBIT_SOUND_SSH" ""; then
                     SEND_SILENT=true
                 else
                     SEND_SILENT=false
                 fi
                 
-                if yes_no_box "$PROHIBIT_FORWARDING_SSH"; then
+                if yes_no_box "$PROHIBIT_FORWARDING_SSH" ""; then
                     PROTECT_CONTENT=true
                 else
                     PROTECT_CONTENT=false
@@ -224,8 +224,8 @@ EOF
         show_message "$SUCCESS_INSTALL_SSH"
         echo ""
         echo "$SERVICE_LOCATION_SSH"
-        echo "$CONFIG_LOCATION_SSH"
-        echo "$SCRIPT_LOCATION_SSH"
+        echo "$CONFIG_LOCATION_SSH $CONFIG_FILE_SSH"
+        echo "$SCRIPT_LOCATION_SSH $SCRIPT_DIR_SSH/alert.sh"
         echo ""
     fi
 fi
