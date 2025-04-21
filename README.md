@@ -44,6 +44,7 @@
 - **Startup Scripts**: Automate tasks with custom scripts that run at system startup.
 
 ### Automation
+- **Script Updates**: Update the **Tech Scripts** project to the latest version.
 - **Auto Update**: Automatically update your system for security and performance improvements.
 - **System Monitoring**: Tools for monitoring system health and resource usage.
 
@@ -85,6 +86,7 @@ bash -c "$(wget -qO- https://raw.githubusercontent.com/tech-scripts/linux/refs/h
 - **Add Startup Script**: `tech startup`
 
 ### Automation
+- **Update Scripts**: `tech update`
 - **Enable Auto Update**: `tech autoupdate`
 - **Monitor System**: `tech system`
 
