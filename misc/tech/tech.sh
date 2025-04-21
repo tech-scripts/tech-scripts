@@ -1,7 +1,7 @@
 #!/bin/bash
 
-source /tmp/tech-scripts/misc/localization.sh
-source /tmp/tech-scripts/misc/variables.sh
+source /etc/tech-scripts/localization.sh
+source /etc/tech-scripts/variables.sh
 
 TECH_SCRIPT=$(cat <<EOF
 #!/bin/bash
@@ -13,8 +13,8 @@ SUDO=$(command -v sudo)
 $SUDO cp -f /tmp/tech-scripts/misc/localization.sh /etc/tech-scripts/
 $SUDO cp -f /tmp/tech-scripts/misc/variables.sh /etc/tech-scripts/
 
-source /tmp/tech-scripts/misc/localization.sh
-source /tmp/tech-scripts/misc/variables.sh
+source /etc/tech-scripts/localization.sh
+source /etc/tech-scripts/variables.sh
 
 run_script() {
     local script_dir="\$1"
