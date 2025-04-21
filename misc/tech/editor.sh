@@ -1,7 +1,7 @@
 #!/bin/bash
 
-source /tmp/tech-scripts/misc/localization.sh
-source /tmp/tech-scripts/misc/variables.sh
+source /etc/tech-scripts/localization.sh
+source /etc/tech-scripts/variables.sh
 
 [ ! -d "/etc/tech-scripts" ] && $SUDO mkdir -p /etc/tech-scripts
 [ ! -f "/etc/tech-scripts/choose.conf" ] && $SUDO touch /etc/tech-scripts/choose.conf
