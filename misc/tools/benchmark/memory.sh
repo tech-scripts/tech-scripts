@@ -5,13 +5,13 @@ source /tmp/tech-scripts/misc/variables.sh
 
 install_sysbench() {
     if command -v apt &>/dev/null; then
-        curl -s https://packagecloud.io/install/repositories/akopytov/sysbench/script.deb.sh | $SUDO bash
+        wget -qO- https://packagecloud.io/install/repositories/akopytov/sysbench/script.deb.sh | $SUDO bash
         $SUDO apt update && $SUDO apt install -y sysbench
     elif command -v yum &>/dev/null; then
-        curl -s https://packagecloud.io/install/repositories/akopytov/sysbench/script.rpm.sh | $SUDO bash
+        wget -qO- https://packagecloud.io/install/repositories/akopytov/sysbench/script.rpm.sh | $SUDO bash
         $SUDO yum install -y sysbench
     elif command -v dnf &>/dev/null; then
-        curl -s https://packagecloud.io/install/repositories/akopytov/sysbench/script.rpm.sh | $SUDO bash
+        wget -qO- https://packagecloud.io/install/repositories/akopytov/sysbench/script.rpm.sh | $SUDO bash
         $SUDO dnf install -y sysbench
     elif command -v zypper &>/dev/null; then
         $SUDO zypper install -y sysbench
