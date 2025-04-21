@@ -35,8 +35,7 @@ TECH_SCRIPT=$(cat <<EOF
 REPO_URL_TECH="https://github.com/tech-scripts/linux.git"
 CLONE_DIR_TECH="/tmp/tech-scripts"
 
-unknown_command="\$UNKNOWN_COMMAND_TECH"
-usage="\$USAGE_TECH"
+source /tmp/tech-scripts/misc/tech/tech.sh
 
 run_script() {
     local script_dir="\$1"
@@ -69,7 +68,7 @@ case "\$combined_args" in
     "swap") run_script "tools" "swap.sh" ;;
     "system") run_script "tools" "system.sh" ;;
     "config") run_script "tools" "config.sh" ;;
-    *) echo " "; echo "\$unknown_command"; echo "\$usage"; echo " "; exit 1 ;;
+    *) echo " "; echo "\$UNKNOWN_COMMAND_TECH"; echo "\$USAGE_TECH"; echo " "; exit 1 ;;
 esac
 EOF
 )
