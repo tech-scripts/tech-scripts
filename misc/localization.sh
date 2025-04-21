@@ -113,7 +113,11 @@ if [[ "$LANGUAGE" == "Русский" ]]; then
     CLOSED_SSH="❌ Отмененная попытка входа ❌"
     ERROR_SSH="Ошибка при отправке сообщения"
     SENT_SSH="Сообщение успешно отправлено!"
-
+    CONNECTION_SSH="Тип подключения:"
+    USER_SSH="Пользователь:"
+    PASSWORD_SSH="пароль"
+    KEY_SSH="ключ ssh"
+    
     INSTALL_MSG="Хотите установить скрипт автозапуска?"
     EDIT_MSG="Хотите открыть $AUTOSTART_SCRIPT для редактирования?"
     INVALID_EDITOR="Неверный выбор редактора. Пожалуйста, выберите nano или vim!"
@@ -304,7 +308,11 @@ else
     CLOSED_SSH="❌ Cancelled login attempt ❌"
     ERROR_SSH="Error sending message"
     SENT_SSH="Message sent successfully!"
-
+    CONNECTION_SSH="Connection type:"
+    USER_SSH="User:"
+    PASSWORD_SSH="password"
+    KEY_SSH="SSH key"
+    
     INSTALL_MSG="Do you want to install the autostart script?"
     EDIT_MSG="Do you want to open $AUTOSTART_SCRIPT for editing?"
     INVALID_EDITOR="Invalid editor choice. Please choose nano or vim."
