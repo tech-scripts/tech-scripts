@@ -37,8 +37,8 @@ CLONE_DIR_TECH="/tmp/tech-scripts"
 
 source /tmp/tech-scripts/misc/localization.sh
 source /tmp/tech-scripts/misc/variables.sh
-UNKNOWN_COMMAND_TECH="Неизвестная команда: \$1"
-USAGE_TECH="Использование: tech [lxc|vm|ssh alert|...]"
+UNKNOWN_COMMAND_TECH="Неизвестная команда:"
+USAGE_TECH="Использование: tech [update|config|ssh|...]"
 run_script() {
     local script_dir="\$1"
     local script_name="\$2"
@@ -70,7 +70,7 @@ case "\$combined_args" in
     "swap") run_script "tools" "swap.sh" ;;
     "system") run_script "tools" "system.sh" ;;
     "config") run_script "tools" "config.sh" ;;
-    *) echo ""; echo "$UNKNOWN_COMMAND_TECH"; echo "$USAGE_TECH"; echo ""; exit 1 ;;
+    *) echo ""; echo "$UNKNOWN_COMMAND_TECH \$1"; echo "$USAGE_TECH"; echo ""; exit 1 ;;
 esac
 EOF
 )
