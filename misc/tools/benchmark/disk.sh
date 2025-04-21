@@ -1,11 +1,9 @@
 #!/bin/bash
 
-FILE_SIZE="1G"
-
 source /tmp/tech-scripts/misc/localization.sh
+source /tmp/tech-scripts/misc/variables.sh
 
 disk_choices=()
-
 system_disk=$(df / | awk 'NR==2 {print $1}' | sed 's|/dev/||' | sed 's/[0-9]*$//')
 home_path="$HOME"
 disk_choices+=("$system_disk" "$home_path")
