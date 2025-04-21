@@ -6,7 +6,12 @@ source /tmp/tech-scripts/misc/variables.sh
 TECH_SCRIPT=$(cat <<EOF
 #!/bin/bash
 
+SUDO=$(command -v sudo)
+
 [ ! -d "/tmp/tech-scripts" ] && cd /tmp && git clone --depth 1 https://github.com/tech-scripts/tech-scripts.git /tmp/tech-scripts
+
+$SUDO cp -f /tmp/tech-scripts/misc/localization.sh /etc/tech-scripts/
+$SUDO cp -f /tmp/tech-scripts/misc/variables.sh /etc/tech-scripts/
 
 source /tmp/tech-scripts/misc/localization.sh
 source /tmp/tech-scripts/misc/variables.sh
