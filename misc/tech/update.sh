@@ -13,6 +13,8 @@ $SUDO rm -rf /usr/local/bin/tech
 cd "/tmp/tech-scripts/misc/tech"
 chmod +x tech.sh
 ./tech.sh
+$SUDO cp -f /tmp/tech-scripts/misc/localization.sh /etc/tech-scripts/
+$SUDO cp -f /tmp/tech-scripts/misc/variables.sh /etc/tech-scripts/
 echo ""
 if [ "$LANGUAGE" ]; then
 echo "Обновление завершено!"
