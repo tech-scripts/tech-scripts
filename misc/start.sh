@@ -61,7 +61,7 @@ if [ ! -f "$CONFIG_FILE" ]; then
     fi
 fi
 
-source /tmp/tech-scripts/misc/localization.sh 
+source /etc/tech-scripts/localization.sh 
 
 get_relative_path() {
     local full_path="$1"
