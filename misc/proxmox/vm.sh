@@ -86,7 +86,6 @@ while true; do
             9) break ;;
             *) show_message "$MSG_ERROR" ;;
         esac
-
         if ! whiptail --title "$SELECT_ACTION" --yesno "$CONTINUE_VM" 7 50; then
             break
         fi
