@@ -89,7 +89,6 @@ while true; do
             10) break ;;
             *) show_message "$MSG_ERROR" ;;
         esac
-
         if ! whiptail --title "$SELECT_ACTION" --yesno "$CONTINUE_LXC" 7 50; then
             break
         fi
