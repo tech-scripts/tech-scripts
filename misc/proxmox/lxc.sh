@@ -35,7 +35,7 @@ while true; do
         exit 1
     fi
 
-    selected_container_id=$(whiptail --title "$SELECT_CONTAINER" --menu "" 15 50 8 "${CONTAINERS_CACHE[@]}" 3>&1 1>&2 2>&3)
+    selected_container_id=$(whiptail --title "$SELECT_CONTAINER" --menu "" --yes-button "$YES" --no-button "$NO" 15 50 8 "${CONTAINERS_CACHE[@]}" 3>&1 1>&2 2>&3)
     if [ $? != 0 ]; then
         exit 0
     fi
