@@ -3,7 +3,7 @@
 source /etc/tech-scripts/localization.sh
 source /etc/tech-scripts/variables.sh
 
-whiptail --title "$TITLE_DANGER" --yesno "$MESSAGE_DANGER" --yes-button "$YES" --no-button "$NO" 10 60
+whiptail --title "$TITLE_DANGER" --yesno "$MESSAGE_DANGER" 10 60
 
 if [ $? -eq 0 ]; then
     echo "$DELETING"
