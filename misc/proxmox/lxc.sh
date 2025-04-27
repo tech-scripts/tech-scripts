@@ -35,14 +35,14 @@ while true; do
         exit 1
     fi
 
-    selected_container_id=$(whiptail --title "$SELECT_CONTAINER" --menu "" --yes-button "$YES" --no-button "$NO" 15 50 8 "${CONTAINERS_CACHE[@]}" 3>&1 1>&2 2>&3)
+    selected_container_id=$(whiptail --title "$SELECT_CONTAINER" --menu "" 15 50 8 "${CONTAINERS_CACHE[@]}" 3>&1 1>&2 2>&3)
     if [ $? != 0 ]; then
         exit 0
     fi
 
     while true; do
         if [ "$LANGUAGE" = "Русский" ]; then
-            ACTION=$(whiptail --title "$SELECT_ACTION" --menu "$SELECT_ACTION" --yes-button "$YES" --no-button "$NO" 15 50 8 \
+            ACTION=$(whiptail --title "$SELECT_ACTION" --menu "$SELECT_ACTION" 15 50 8 \
                 1 "Включить" \
                 2 "Выключить" \
                 3 "Перезагрузить" \
@@ -54,7 +54,7 @@ while true; do
                 9 "Консоль" \
                 10 "Назад" 3>&1 1>&2 2>&3)
         else
-            ACTION=$(whiptail --title "$SELECT_ACTION" --menu "$SELECT_ACTION" --yes-button "$YES" --no-button "$NO" 15 50 8 \
+            ACTION=$(whiptail --title "$SELECT_ACTION" --menu "$SELECT_ACTION" 15 50 8 \
                 1 "Start" \
                 2 "Stop" \
                 3 "Reboot" \
