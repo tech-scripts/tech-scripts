@@ -53,7 +53,7 @@ EOF
 )
 
 if [ -f /usr/local/bin/tech ]; then
-    whiptail --title "$TITLE_UPDATE_TECH" --yesno "$MSG_UPDATE_TECH" 10 40
+    whiptail --title "$TITLE_UPDATE_TECH" --yesno "$MSG_UPDATE_TECH" --yes-button "$YES" --no-button "$NO" 10 40
     if [ $? -eq 0 ]; then
         $SUDO rm /usr/local/bin/tech
         $SUDO tee /usr/local/bin/tech > /dev/null <<< "$TECH_SCRIPT"
@@ -62,7 +62,7 @@ if [ -f /usr/local/bin/tech ]; then
         echo "$MSG_UPDATED_TECH"
         echo " "
     else
-        whiptail --title "$TITLE_REMOVE_TECH" --yesno "$MSG_REMOVE_TECH" 10 40
+        whiptail --title "$TITLE_REMOVE_TECH" --yesno "$MSG_REMOVE_TECH" --yes-button "$YES" --no-button "$NO" 10 40
         if [ $? -eq 0 ]; then
             $SUDO rm /usr/local/bin/tech
             echo " "
