@@ -10,7 +10,7 @@ if [ ! -f "/etc/tech-scripts/choose.conf" ]; then
     $SUDO touch /etc/tech-scripts/choose.conf
 fi
 
-LANGUAGE=$(whiptail --title "Language Selection" --menu "Choose language:" --yes-button "$YES" --no-button "$NO" 10 40 2 \
+LANGUAGE=$(whiptail --title "Language Selection" --menu "Choose language:" 10 40 2 \
     1 "English" \
     2 "Русский" \
     3>&1 1>&2 2>&3)
