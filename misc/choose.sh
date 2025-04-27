@@ -3,15 +3,10 @@
 SCRIPT_DIR="/tmp/tech-scripts/misc/tech"
 cd "$SCRIPT_DIR" || exit 1
 
-if [ -f "lang.sh" ]; then
-    chmod +x "lang.sh"
-    ./"lang.sh"
-fi
+[ -f "lang.sh" ] && chmod +x "lang.sh" && ./lang.sh
 
+shopt -s nullglob
 for SCRIPT in *.sh; do
-    [ "$SCRIPT" = "lang.sh" ] && continue
-    [ "$SCRIPT" = "update.sh" ] && continue
-    [ -f "$SCRIPT" ] || continue
-    chmod +x "$SCRIPT"
-    ./"$SCRIPT"
+    [[ "$SCRIPT" == "lang.sh" || "$SCRIPT" == "update.sh" ]] && continue
+    chmod +x "$SCRIPT" && ./"$SCRIPT"
 done
