@@ -35,7 +35,7 @@ show_menu() {
                 DIRECTORIES=("/etc" "/opt" "/var" "/usr" "/home" "/root" "/tmp")
                 ;;
             /etc)
-                SCRIPTS=("/etc/fstab" "/etc/passwd" "/etc/ssh/sshd_config" "/etc/apt/sources.list" "/etc/tech-scripts")
+                SCRIPTS=("/etc/fstab" "/etc/passwd" "/etc/ssh" "/etc/apt" "/etc/tech-scripts")
                 ;;
             /usr)
                 DIRECTORIES=("/usr/local" "/usr/share" "/usr/local/etc" "/usr/local/tech-scripts")
@@ -107,4 +107,5 @@ show_menu() {
 DIR_STACK=()
 CURRENT_DIR="/"
 cd "$CURRENT_DIR" || { echo "$MSG_CD_ERROR"; exit 1; }
+
 show_menu
