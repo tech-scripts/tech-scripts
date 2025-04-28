@@ -22,7 +22,7 @@ if (whiptail --title "$TITLE_AUTOUPDATE" --yesno "$QUESTION_AUTOUPDATE" 10 60); 
         $SUDO zypper update -y
     elif command -v pacman &> /dev/null; then
         $SUDO pacman -Syu --noconfirm && \
-        [ -n "$(pacman -Qdtq)" ] && $SUDO pacman -Rns $(pacman -Qdtq) --noconfirm
+        $SUDO pacman -Rns $(pacman -Qdtq) --noconfirm
     elif command -v apk &> /dev/null; then
         $SUDO apk update && \
         $SUDO apk upgrade
