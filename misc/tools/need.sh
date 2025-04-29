@@ -5,27 +5,25 @@ check_module_and_access() {
     local display_name="$2"
     local path="$3"
     local module_dir="/lib/modules/$(uname -r)/kernel/$name"
+    local access_status="✓"
 
-    if [ -e "$path" ]; then
-        if [[ "$name" == "overlay" || "$name" == "br_netfilter" || "$name" == "ip_tables" || "$name" == "ip6_tables" || "$name" == "nf_nat" || "$name" == "cgroup" ]]; then
-            if lsmod | grep "$name" &> /dev/null; then
-                echo -e "\e[32m\e[1m$display_name ✓\e[0m"
-                
-                if [ -d "$module_dir" ]; then
-                    if [ -r "$module_dir" ] && [ -w "$module_dir" ]; then
-                        echo -e "\e[32m\e[1m$display_name (доступ к чтению и записи) ✓\e[0m"
-                    else
-                        echo -e "\e[31m\e[1m$display_name (доступ к чтению и записи) ✗\e[0m"
-                    fi
-                else
-                    echo -e "\e[31m\e[1m$display_name ✗\e[0m"
-                fi
-            else
-                echo -e "\e[31m\e[1m$display_name ✗\e[0m"
-            fi
-        else
-            echo -e "\e[32m\e[1m$display_name ✓\e[0m"
+    if [ ! -e "$path" ]; then
+        access_status="✗"
+    elif [[ "$name" == "overlay" || "$name" == "br_netfilter" || "$name" == "ip_tables" || "$name" == "ip6_tables" || "$name" == "nf_nat" || "$name" == "cgroup" ]]; then
+        if ! lsmod | grep "$name" &> /dev/null; then
+            access_status="✗"
         fi
+    fi
+
+    if [ -d "$module_dir" ]; then
+        if [ ! -r "$module_dir" ] || [ ! -w "$module_dir" ] || [ ! -x "$module_dir" ]; then
+            access_status="✗"
+        fi
+    fi
+
+    # Вывод результата
+    if [[ "$access_status" == "✓" ]]; then
+        echo -e "\e[32m\e[1m$display_name ✓\e[0m"
     else
         echo -e "\e[31m\e[1m$display_name ✗\e[0m"
     fi
