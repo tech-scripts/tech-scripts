@@ -2,17 +2,17 @@
 
 check_module() {
     if lsmod | grep "$1" &> /dev/null; then
-        echo -e "\e[32m$1 ✓\e[0m"
+        echo -e "\e[32m\e[1m$1 ✓\e[0m"
     else
-        echo -e "\e[31m$1 ✗\e[0m"
+        echo -e "\e[31m\e[1m$1 ✗\e[0m"
     fi
 }
 
 check_proc() {
     if [ -e "$1" ]; then
-        echo -e "\e[32m$2 ✓\e[0m"
+        echo -e "\e[32m\e[1m$2 ✓\e[0m"
     else
-        echo -e "\e[31m$2 ✗\e[0m"
+        echo -e "\e[31m\e[1m$2 ✗\e[0m"
     fi
 }
 
