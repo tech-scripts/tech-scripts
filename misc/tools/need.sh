@@ -30,36 +30,36 @@ check_module() {
     fi
 }
 
-echo -e "\nКатегория: Системные модули"
+echo -e "\nСистемные модули"
 check_module "overlay" "overlay" "/sys/module/overlay"
 check_module "br_netfilter" "br_netfilter" "/sys/module/br_netfilter"
 check_module "ip_tables" "ip_tables" "/sys/module/ip_tables"
 check_module "ip6_tables" "ip6_tables" "/sys/module/ip6_tables"
 check_module "nf_nat" "nf_nat" "/sys/module/nf_nat"
 
-echo -e "\nКатегория: Управление ресурсами"
+echo -e "\nУправление ресурсами"
 check_module "cgroup" "cgroup" "/sys/module/cgroup"
 check_module "cgroups" "cgroups" "/proc/cgroups"
 
-echo -e "\nКатегория: Файловые системы"
+echo -e "\nФайловые системы"
 check_module "fuse" "FUSE" "/sys/fs/fuse"
 check_module "nfs" "NFS" "/proc/fs/nfs"
 check_module "cifs" "SMB/KIFC" "/proc/fs/smb"
 check_module "overlayfs" "OverlayFS" "/sys/fs/overlayfs"
 
-echo -e "\nКатегория: Сетевые модули"
+echo -e "\nСетевые модули"
 check_module "ip_forward" "Network namespaces" "/proc/sys/net/ipv4/ip_forward"
 check_module "capabilities" "capabilities" "/proc/sys/kernel/cap_last"
 
-echo -e "\nКатегория: IPC (Межпроцессное взаимодействие)"
+echo -e "\nIPC (Межпроцессное взаимодействие)"
 check_module "shmmax" "Shared Memory" "/proc/sys/kernel/shmmax"
 check_module "msgmax" "Message Queues" "/proc/sys/kernel/msgmax"
 check_module "sem" "Semaphores" "/proc/sys/kernel/sem"
 
-echo -e "\nКатегория: Безопасность"
+echo -e "\nБезопасность"
 check_module "audit" "Kernel Auditing" "/proc/sys/kernel/audit"
 check_module "lockdown" "Kernel Lockdown" "/proc/sys/kernel/lockdown"
 
-echo -e "\nКатегория: Уникальные идентификаторы"
+echo -e "\nУникальные идентификаторы"
 check_module "hostname" "UTS namespace" "/proc/sys/kernel/hostname"
 check_module "keys" "Keyrings" "/proc/sys/kernel/keys"
