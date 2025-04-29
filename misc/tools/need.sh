@@ -9,10 +9,10 @@ check_module_and_access() {
 
     if [ ! -e "$path" ]; then
         access_status="✗"
-    elif [[ "$name" == "overlay" || "$name" == "br_netfilter" || "$name" == "ip_tables" || "$name" == "ip6_tables" || "$name" == "nf_nat" || "$name" == "cgroup" ]]; then
-        if ! lsmod | grep "$name" &> /dev/null; then
-            access_status="✗"
-        fi
+    fi
+
+    if [[ "$name" != "" && ! $(lsmod | grep "$name") ]]; then
+        access_status="✗"
     fi
 
     if [ -d "$module_dir" ]; then
@@ -28,15 +28,6 @@ check_module_and_access() {
     fi
 }
 
-check_kernel_functionality() {
-    local func_name="$1"
-    if ! grep -q "$func_name" /proc/kallsyms; then
-        echo -e "\e[31m\e[1mФункция $func_name недоступна в ядре ✗\e[0m"
-    else
-        echo -e "\e[32m\e[1mФункция $func_name доступна в ядре ✓\e[0m"
-    fi
-}
-
 echo "Проверка модулей ядра:"
 check_module_and_access "overlay" "overlay" "/sys/module/overlay"
 check_module_and_access "br_netfilter" "br_netfilter" "/sys/module/br_netfilter"
@@ -44,6 +35,10 @@ check_module_and_access "ip_tables" "ip_tables" "/sys/module/ip_tables"
 check_module_and_access "ip6_tables" "ip6_tables" "/sys/module/ip6_tables"
 check_module_and_access "nf_nat" "nf_nat" "/sys/module/nf_nat"
 check_module_and_access "cgroup" "cgroup" "/sys/module/cgroup"
+check_module_and_access "fuse" "FUSE" "/sys/fs/fuse"
+check_module_and_access "keyctl" "Keyctl" "/proc/keys"
+check_module_and_access "nfs" "NFS" "/proc/fs/nfs"
+check_module_and_access "smb" "SMB/KIFC" "/proc/fs/smb"
 
 echo -e "\nПроверка параметров ядра:"
 check_module_and_access "cgroups" "cgroups" "/proc/cgroups"
@@ -59,7 +54,6 @@ check_module_and_access "sem" "Semaphores" "/proc/sys/kernel/sem"
 echo -e "\nПроверка файловых систем:"
 check_module_and_access "cgroup" "cgroups v2" "/sys/fs/cgroup"
 check_module_and_access "overlayfs" "OverlayFS" "/sys/fs/overlayfs"
-check_module_and_access "fuse" "FUSE" "/sys/fs/fuse"
 
 echo -e "\nПроверка настроек безопасности:"
 check_module_and_access "audit" "Kernel Auditing" "/proc/sys/kernel/audit"
