@@ -37,10 +37,6 @@ check_module "ip_tables" "ip_tables" "/sys/module/ip_tables"
 check_module "ip6_tables" "ip6_tables" "/sys/module/ip6_tables"
 check_module "nf_nat" "nf_nat" "/sys/module/nf_nat"
 
-echo -e "\nУправление ресурсами"
-check_module "cgroup" "cgroup" "/sys/module/cgroup"
-check_module "cgroups" "cgroups" "/proc/cgroups"
-
 echo -e "\nФайловые системы"
 check_module "fuse" "FUSE" "/sys/fs/fuse"
 check_module "nfs" "NFS" "/proc/fs/nfs"
@@ -59,6 +55,7 @@ check_module "sem" "Semaphores" "/proc/sys/kernel/sem"
 echo -e "\nБезопасность"
 check_module "audit" "Kernel Auditing" "/proc/sys/kernel/audit"
 check_module "lockdown" "Kernel Lockdown" "/proc/sys/kernel/lockdown"
+check_module "cgroups" "cgroups" "/proc/cgroups"
 
 echo -e "\nУникальные идентификаторы"
 check_module "hostname" "UTS namespace" "/proc/sys/kernel/hostname"
