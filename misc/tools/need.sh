@@ -39,9 +39,9 @@ check_module "nf_nat" "nf_nat" "/sys/module/nf_nat"
 
 echo -e "\nФайловые системы"
 check_module "fuse" "FUSE" "/sys/fs/fuse"
-check_module "nfs" "NFS" "/proc/fs/nfs"
-check_module "cifs" "SMB/KIFC" "/proc/fs/smb"
-check_module "overlayfs" "OverlayFS" "/sys/fs/overlayfs"
+check_module "nfs" "NFS" "/proc/fs/nfsd"
+check_module "cifs" "SMB/KIFC" "/proc/fs/cifs"
+check_module "overlay" "OverlayFS" "/sys/module/overlay"
 
 echo -e "\nСетевые модули"
 check_module "ip_forward" "Network namespaces" "/proc/sys/net/ipv4/ip_forward"
