@@ -42,6 +42,7 @@ case "\$combined_args" in
     "memory") run_script "tools/benchmark" "memory.sh" ;;
     "autoupdate") run_script "tools" "autoupdate.sh" ;;
     "grub") run_script "tools" "grub.sh" ;;
+    "need") run_script "tools" "need.sh" ;;
     "ssh") run_script "tools" "ssh.sh" ;;
     "startup") run_script "tools" "startup.sh" ;;
     "swap") run_script "tools" "swap.sh" ;;
