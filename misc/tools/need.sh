@@ -100,7 +100,7 @@ for module in "${optional_modules[@]}"; do
             check_module "nfs" "NFS" "/proc/fs/nfsd"
             ;;
         "cifs")
-            check_module "cifs" "SMB/CIFS" "/proc/fs/cifs"
+            check_module "cifs" "SMB/KIFC" "/proc/fs/cifs"
             ;;
         "seccomp")
             check_module "seccomp" "Seccomp" "/proc/sys/kernel/seccomp"
@@ -113,3 +113,33 @@ for module in "${optional_modules[@]}"; do
             ;;
     esac
 done
+
+echo -e "\nСистемные модули"
+check_module "overlay" "OverlayFS" "/sys/module/overlay"
+check_module "br_netfilter" "br_netfilter" "/sys/module/br_netfilter"
+check_module "ip_tables" "ip_tables" "/sys/module/ip_tables"
+check_module "ip6_tables" "ip6_tables" "/sys/module/ip6_tables"
+check_module "nf_nat" "nf_nat" "/sys/module/nf_nat"
+
+echo -e "\nФайловые системы"
+check_module "fuse" "FUSE" "/sys/fs/fuse"
+check_module "nfs" "NFS" "/proc/fs/nfsd"
+check_module "cifs" "SMB/KIFC" "/proc/fs/cifs"
+
+echo -e "\nСетевые модули"
+check_module "ip_forward" "Network namespaces" "/proc/sys/net/ipv4/ip_forward"
+check_module "capabilities" "Capabilities" "/proc/sys/kernel/cap_last_cap"
+
+echo -e "\nIPC (Межпроцессное взаимодействие)"
+check_module "shmmax" "Shared Memory" "/proc/sys/kernel/shmmax"
+check_module "msgmax" "Message Queues" "/proc/sys/kernel/msgmax"
+check_module "sem" "Semaphores" "/proc/sys/kernel/sem"
+
+echo -e "\nБезопасность"
+check_module "audit" "Kernel Auditing" "/proc/sys/kernel/audit"
+check_module "lockdown" "Kernel Lockdown" "/proc/sys/kernel/lockdown"
+check_module "cgroups" "cgroups" "/proc/cgroups"
+
+echo -e "\nУникальные идентификаторы"
+check_module "hostname" "UTS namespace" "/proc/sys/kernel/hostname"
+check_module "keys" "Keyrings" "/proc/sys/kernel/keys"
