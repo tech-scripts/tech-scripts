@@ -24,9 +24,9 @@ check_module() {
     fi
 
     if [[ "$access_status" == "✓" ]]; then
-        echo -e "$display_name \e[1;32m✓"
+        echo -e "\e[37m$display_name \e[1;32m✓\e[0m"
     else
-        echo -e "$display_name \e[1;31m✗"
+        echo -e "\e[37m$display_name \e[1;31m✗\e[0m"
     fi
 }
 
