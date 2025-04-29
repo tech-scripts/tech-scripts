@@ -45,7 +45,7 @@ check_module "overlayfs" "OverlayFS" "/sys/fs/overlayfs"
 
 echo -e "\nСетевые модули"
 check_module "ip_forward" "Network namespaces" "/proc/sys/net/ipv4/ip_forward"
-check_module "capabilities" "capabilities" "/proc/sys/kernel/cap_last"
+check_module "capabilities" "capabilities" "/proc/sys/kernel/cap_last_cap"
 
 echo -e "\nIPC (Межпроцессное взаимодействие)"
 check_module "shmmax" "Shared Memory" "/proc/sys/kernel/shmmax"
