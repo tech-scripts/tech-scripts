@@ -12,7 +12,7 @@ check_module_and_access() {
                 echo -e "\e[32m\e[1m$display_name ✓\e[0m"
                 
                 if [ -d "$module_dir" ]; then
-                    if [ -r "$module_dir" ] && [ -x "$module_dir" ]; then
+                    if [ -r "$module_dir" ] && [ -w "$module_dir" ]; then
                         echo -e "\e[32m\e[1m$display_name (доступ к чтению и записи) ✓\e[0m"
                     else
                         echo -e "\e[31m\e[1m$display_name (доступ к чтению и записи) ✗\e[0m"
