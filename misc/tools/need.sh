@@ -21,7 +21,11 @@ check_module_and_access() {
         fi
     fi
 
-    # Вывод результата
+    local user_group=$(ls -ld "$path" | awk '{print $3":"$4}')
+    if [[ "$user_group" != "root:root" ]]; then
+        access_status="✗"
+    fi
+
     if [[ "$access_status" == "✓" ]]; then
         echo -e "\e[32m\e[1m$display_name ✓\e[0m"
     else
