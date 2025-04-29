@@ -7,22 +7,18 @@ check_module() {
     local module_dir="/lib/modules/$(uname -r)/kernel/$name"
     local access_status="✓"
 
-    # Проверка наличия модуля с помощью lsmod
     if ! lsmod | grep -q "$name"; then
-        # Проверка наличия директории модуля
         if [ -d "$module_dir" ]; then
             if [ ! -r "$module_dir" ] || [ ! -w "$module_dir" ] || [ ! -x "$module_dir" ]; then
                 access_status="✗"
             fi
         else
-            # Попытка загрузить модуль с помощью modprobe
             if ! modprobe "$name" &> /dev/null; then
                 access_status="✗"
             fi
         fi
     fi
 
-    # Проверка наличия файла или директории
     if [ ! -e "$path" ]; then
         access_status="✗"
     fi
