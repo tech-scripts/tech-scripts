@@ -38,19 +38,23 @@ choice=$(whiptail --title "Выбор проверки модулей" --menu "�
 
 case $choice in
     1)
-        modules=("overlay" "br_netfilter" "ip_tables" "ip6_tables" "nf_nat")
+        mandatory_modules=("overlay" "br_netfilter" "ip_tables" "ip6_tables" "nf_nat")
+        optional_modules=("fuse" "nfs" "cifs" "seccomp" "audit" "lockdown")
         echo -e "\nПроверка модулей для Docker:"
         ;;
     2)
-        modules=("overlay" "br_netfilter" "ip_tables" "ip6_tables" "nf_nat" "cgroup" "namespace")
+        mandatory_modules=("overlay" "br_netfilter" "ip_tables" "ip6_tables" "nf_nat" "cgroup" "namespace")
+        optional_modules=("fuse" "nfs" "cifs" "seccomp" "audit" "lockdown")
         echo -e "\nПроверка модулей для Podman:"
         ;;
     3)
-        modules=("overlay" "br_netfilter" "ip_tables" "ip6_tables" "nf_nat" "cgroup" "namespace")
+        mandatory_modules=("overlay" "br_netfilter" "ip_tables" "ip6_tables" "nf_nat" "cgroup" "namespace")
+        optional_modules=("fuse" "nfs" "cifs" "seccomp" "audit" "lockdown")
         echo -e "\nПроверка модулей для LXC:"
         ;;
     4)
-        modules=("overlay" "br_netfilter" "ip_tables" "ip6_tables" "nf_nat" "cgroup" "namespace" "fuse" "nfs" "cifs" "seccomp" "audit" "lockdown")
+        mandatory_modules=("overlay" "br_netfilter" "ip_tables" "ip6_tables" "nf_nat" "cgroup" "namespace")
+        optional_modules=("fuse" "nfs" "cifs" "seccomp" "audit" "lockdown")
         echo -e "\nПроверка всех модулей:"
         ;;
     *)
@@ -59,7 +63,8 @@ case $choice in
         ;;
 esac
 
-for module in "${modules[@]}"; do
+echo -e "\nОбязательные модули:"
+for module in "${mandatory_modules[@]}"; do
     case $module in
         "overlay")
             check_module "overlay" "OverlayFS" "/sys/module/overlay"
@@ -82,6 +87,12 @@ for module in "${modules[@]}"; do
         "namespace")
             check_module "namespace" "Namespaces" "/proc/self/ns"
             ;;
+    esac
+done
+
+echo -e "\nНеобязательные модули:"
+for module in "${optional_modules[@]}"; do
+    case $module in
         "fuse")
             check_module "fuse" "FUSE" "/sys/fs/fuse"
             ;;
