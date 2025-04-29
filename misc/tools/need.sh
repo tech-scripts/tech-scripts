@@ -108,11 +108,13 @@ for module in "${optional_modules[@]}"; do
             ;;
         "lockdown")
             check_module "lockdown" "Kernel Lockdown" "/proc/sys/kernel/lockdown"
+            echo ""
             ;;
     esac
 done
 
 if [[ "$choice" == "4" ]]; then
+    echo ""
     echo -e "\nСистемные модули"
     check_module "overlay" "OverlayFS" "/sys/module/overlay"
     check_module "br_netfilter" "br_netfilter" "/sys/module/br_netfilter"
@@ -142,4 +144,5 @@ if [[ "$choice" == "4" ]]; then
     echo -e "\nУникальные идентификаторы"
     check_module "hostname" "UTS namespace" "/proc/sys/kernel/hostname"
     check_module "keys" "Keyrings" "/proc/sys/kernel/keys"
+    echo ""
 fi
