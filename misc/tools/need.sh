@@ -11,8 +11,10 @@ check_module_and_access() {
         access_status="✗"
     fi
 
-    if [[ "$name" != "" && ! $(lsmod | grep "$name") ]]; then
-        access_status="✗"
+    if [[ "$name" != "" ]]; then
+        if ! modprobe "$name" &> /dev/null; then
+            access_status="✗"
+        fi
     fi
 
     if [ -d "$module_dir" ]; then
@@ -36,9 +38,9 @@ check_module_and_access "ip6_tables" "ip6_tables" "/sys/module/ip6_tables"
 check_module_and_access "nf_nat" "nf_nat" "/sys/module/nf_nat"
 check_module_and_access "cgroup" "cgroup" "/sys/module/cgroup"
 check_module_and_access "fuse" "FUSE" "/sys/fs/fuse"
-check_module_and_access "keyctl" "Keyctl" "/proc/keys"
+check_module_and_access "keyring" "Keyctl" "/proc/keys"
 check_module_and_access "nfs" "NFS" "/proc/fs/nfs"
-check_module_and_access "smb" "SMB/KIFC" "/proc/fs/smb"
+check_module_and_access "cifs" "SMB/KIFC" "/proc/fs/smb"
 
 echo -e "\nПроверка параметров ядра:"
 check_module_and_access "cgroups" "cgroups" "/proc/cgroups"
