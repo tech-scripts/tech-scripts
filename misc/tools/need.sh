@@ -21,15 +21,19 @@ check_module_and_access() {
         fi
     fi
 
-    local user_group=$(ls -ld "$path" | awk '{print $3":"$4}')
-    if [[ "$user_group" != "root:root" ]]; then
-        access_status="✗"
-    fi
-
     if [[ "$access_status" == "✓" ]]; then
         echo -e "\e[32m\e[1m$display_name ✓\e[0m"
     else
         echo -e "\e[31m\e[1m$display_name ✗\e[0m"
+    fi
+}
+
+check_kernel_functionality() {
+    local func_name="$1"
+    if ! grep -q "$func_name" /proc/kallsyms; then
+        echo -e "\e[31m\e[1mФункция $func_name недоступна в ядре ✗\e[0m"
+    else
+        echo -e "\e[32m\e[1mФункция $func_name доступна в ядре ✓\e[0m"
     fi
 }
 
