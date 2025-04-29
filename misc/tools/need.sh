@@ -54,8 +54,6 @@ case $choice in
         ;;
     4)
         echo -e "\nПроверка всех модулей:"
-        mandatory_modules=("overlay" "br_netfilter" "ip_tables" "ip6_tables" "nf_nat" "cgroup" "namespace")
-        optional_modules=("fuse" "nfs" "cifs" "seccomp" "audit" "lockdown")
         ;;
     *)
         echo "Неверный выбор."
