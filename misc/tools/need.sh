@@ -7,50 +7,24 @@ check_module() {
     local module_dir="/lib/modules/$(uname -r)/kernel/$name"
     local access_status="✓"
 
+    # Проверка наличия модуля с помощью lsmod
+    if ! lsmod | grep -q "$name"; then
+        # Проверка наличия директории модуля
+        if [ -d "$module_dir" ]; then
+            if [ ! -r "$module_dir" ] || [ ! -w "$module_dir" ] || [ ! -x "$module_dir" ]; then
+                access_status="✗"
+            fi
+        else
+            # Попытка загрузить модуль с помощью modprobe
+            if ! modprobe "$name" &> /dev/null; then
+                access_status="✗"
+            fi
+        fi
+    fi
+
+    # Проверка наличия файла или директории
     if [ ! -e "$path" ]; then
         access_status="✗"
-    fi
-
-    if [[ "$name" != "" ]]; then
-        if ! modprobe "$name" &> /dev/null; then
-            access_status="✗"
-        fi
-    fi
-
-    if [[ "$name" == "cgroup" ]]; then
-        if [ ! -d "/sys/fs/cgroup" ]; then
-            access_status="✗"
-        fi
-    fi
-
-    if [[ "$name" == "fuse" ]]; then
-        if [ ! -d "/sys/fs/fuse" ]; then
-            access_status="✗"
-        fi
-    fi
-
-    if [[ "$name" == "keyring" ]]; then
-        if [ ! -e "/proc/keys" ]; then
-            access_status="✗"
-        fi
-    fi
-
-    if [[ "$name" == "nfs" ]]; then
-        if [ ! -d "/proc/fs/nfs" ]; then
-            access_status="✗"
-        fi
-    fi
-
-    if [[ "$name" == "cifs" ]]; then
-        if [ ! -d "/proc/fs/smb" ]; then
-            access_status="✗"
-        fi
-    fi
-
-    if [ -d "$module_dir" ]; then
-        if [ ! -r "$module_dir" ] || [ ! -w "$module_dir" ] || [ ! -x "$module_dir" ]; then
-            access_status="✗"
-        fi
     fi
 
     if [[ "$access_status" == "✓" ]]; then
