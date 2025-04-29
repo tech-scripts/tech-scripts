@@ -1,6 +1,6 @@
 #!/bin/bash
 
-check_module_and_access() {
+check_module() {
     local name="$1"
     local display_name="$2"
     local path="$3"
@@ -13,6 +13,36 @@ check_module_and_access() {
 
     if [[ "$name" != "" ]]; then
         if ! modprobe "$name" &> /dev/null; then
+            access_status="✗"
+        fi
+    fi
+
+    if [[ "$name" == "cgroup" ]]; then
+        if [ ! -d "/sys/fs/cgroup" ]; then
+            access_status="✗"
+        fi
+    fi
+
+    if [[ "$name" == "fuse" ]]; then
+        if [ ! -d "/sys/fs/fuse" ]; then
+            access_status="✗"
+        fi
+    fi
+
+    if [[ "$name" == "keyring" ]]; then
+        if [ ! -e "/proc/keys" ]; then
+            access_status="✗"
+        fi
+    fi
+
+    if [[ "$name" == "nfs" ]]; then
+        if [ ! -d "/proc/fs/nfs" ]; then
+            access_status="✗"
+        fi
+    fi
+
+    if [[ "$name" == "cifs" ]]; then
+        if [ ! -d "/proc/fs/smb" ]; then
             access_status="✗"
         fi
     fi
@@ -31,34 +61,34 @@ check_module_and_access() {
 }
 
 echo "Проверка модулей ядра:"
-check_module_and_access "overlay" "overlay" "/sys/module/overlay"
-check_module_and_access "br_netfilter" "br_netfilter" "/sys/module/br_netfilter"
-check_module_and_access "ip_tables" "ip_tables" "/sys/module/ip_tables"
-check_module_and_access "ip6_tables" "ip6_tables" "/sys/module/ip6_tables"
-check_module_and_access "nf_nat" "nf_nat" "/sys/module/nf_nat"
-check_module_and_access "cgroup" "cgroup" "/sys/module/cgroup"
-check_module_and_access "fuse" "FUSE" "/sys/fs/fuse"
-check_module_and_access "keyring" "Keyctl" "/proc/keys"
-check_module_and_access "nfs" "NFS" "/proc/fs/nfs"
-check_module_and_access "cifs" "SMB/KIFC" "/proc/fs/smb"
+check_module "overlay" "overlay" "/sys/module/overlay"
+check_module "br_netfilter" "br_netfilter" "/sys/module/br_netfilter"
+check_module "ip_tables" "ip_tables" "/sys/module/ip_tables"
+check_module "ip6_tables" "ip6_tables" "/sys/module/ip6_tables"
+check_module "nf_nat" "nf_nat" "/sys/module/nf_nat"
+check_module "cgroup" "cgroup" "/sys/module/cgroup"
+check_module "fuse" "FUSE" "/sys/fs/fuse"
+check_module "keyring" "Keyctl" "/proc/keys"
+check_module "nfs" "NFS" "/proc/fs/nfs"
+check_module "cifs" "SMB/KIFC" "/proc/fs/smb"
 
 echo -e "\nПроверка параметров ядра:"
-check_module_and_access "cgroups" "cgroups" "/proc/cgroups"
-check_module_and_access "mount" "mount namespaces" "/proc/self/mountinfo"
-check_module_and_access "capabilities" "capabilities" "/proc/sys/kernel/cap_last"
-check_module_and_access "hostname" "UTS namespace" "/proc/sys/kernel/hostname"
-check_module_and_access "ip_forward" "Network namespaces" "/proc/sys/net/ipv4/ip_forward"
-check_module_and_access "keys" "Keyrings" "/proc/sys/kernel/keys"
-check_module_and_access "shmmax" "Shared Memory" "/proc/sys/kernel/shmmax"
-check_module_and_access "msgmax" "Message Queues" "/proc/sys/kernel/msgmax"
-check_module_and_access "sem" "Semaphores" "/proc/sys/kernel/sem"
+check_module "cgroups" "cgroups" "/proc/cgroups"
+check_module "mount" "mount namespaces" "/proc/self/mountinfo"
+check_module "capabilities" "capabilities" "/proc/sys/kernel/cap_last"
+check_module "hostname" "UTS namespace" "/proc/sys/kernel/hostname"
+check_module "ip_forward" "Network namespaces" "/proc/sys/net/ipv4/ip_forward"
+check_module "keys" "Keyrings" "/proc/sys/kernel/keys"
+check_module "shmmax" "Shared Memory" "/proc/sys/kernel/shmmax"
+check_module "msgmax" "Message Queues" "/proc/sys/kernel/msgmax"
+check_module "sem" "Semaphores" "/proc/sys/kernel/sem"
 
 echo -e "\nПроверка файловых систем:"
-check_module_and_access "cgroup" "cgroups v2" "/sys/fs/cgroup"
-check_module_and_access "overlayfs" "OverlayFS" "/sys/fs/overlayfs"
+check_module "cgroup" "cgroups v2" "/sys/fs/cgroup"
+check_module "overlayfs" "OverlayFS" "/sys/fs/overlayfs"
 
 echo -e "\nПроверка настроек безопасности:"
-check_module_and_access "audit" "Kernel Auditing" "/proc/sys/kernel/audit"
-check_module_and_access "lockdown" "Kernel Lockdown" "/proc/sys/kernel/lockdown"
+check_module "audit" "Kernel Auditing" "/proc/sys/kernel/audit"
+check_module "lockdown" "Kernel Lockdown" "/proc/sys/kernel/lockdown"
 
 echo -e "\nПроверка завершена."
