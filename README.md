@@ -134,11 +134,11 @@ If you'd like to contribute to the project, feel free to fork the repository and
 
 ### 🌟 Star History
 
-<a href="https://star-history.com/#tech-scripts/linux&Date">
+<a href="https://star-history.com/#tech-scripts/tech-scripts&Date">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=tech-scripts/linux&type=Date&theme=dark" />
-    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=tech-scripts/linux&type=Date" />
-    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=tech-scripts/linux&type=Date" />
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=tech-scripts/tech-scripts&type=Date&theme=dark" />
+    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=tech-scripts/tech-scripts&type=Date" />
+    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=tech-scripts/tech-scripts&type=Date" />
   </picture>
 </a>
 
