@@ -20,7 +20,7 @@ case $EDITOR in
     1) editor="nano" ;;
     2) editor="vim" ;;
     3)
-        editor=$(whiptail --title "$TITLE_CUSTOM_EDITOR" --inputbox "$MSG_CUSTOM_EDITOR" 10 40 3>&1 1>&2 2>&3)
+        editor=$(whiptail --title "$TITLE_CUSTOM_EDITOR" --inputbox "$MSG_CUSTOM_EDITOR" 12 40 3>&1 1>&2 2>&3)
         if [ $? -ne 0 ]; then
             exit 1
         fi
