@@ -20,15 +20,9 @@ BASIC_DIRECTORY=\$(echo "\$BASIC_DIRECTORY" | tr -s ' ')
 
 if [ -n "\$BASIC_DIRECTORY" ]; then
     IFS=' ' read -r -a directories <<< "\$BASIC_DIRECTORY"
-    directories=(\$(echo "\${directories[@]}" | grep -v '^$'))
 
     for dir in "\${directories[@]}"; do
-        if [ -d "\$dir" ]; then
-            current_access=\$(stat -c "%a" "\$dir")
-            if [ "\$current_access" != "\$ACCESS" ]; then
-                \$SUDO chmod "\$ACCESS" "\$dir"
-            fi
-        fi
+        [ -d "\$dir" ] && [ "\$(stat -c "%a" "\$dir")" != "\$ACCESS" ] && \$SUDO chmod "\$ACCESS" "\$dir"
     done
 fi
 
