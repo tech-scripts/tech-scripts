@@ -4,10 +4,10 @@ source /etc/tech-scripts/localization.sh
 source /etc/tech-scripts/variables.sh
 
 ACCESS_LEVEL=$(whiptail --title "$ACCESS_TITLE" --menu "$ACCESS_MENU_TEXT" 12 40 4 \
-"$ACCESS_OPTION1" \
-"$ACCESS_OPTION2" \
-"$ACCESS_OPTION3" \
-"$ACCESS_OPTION4" 3>&1 1>&2 2>&3)
+"1" "$ACCESS_OPTION1" \
+"2" "$ACCESS_OPTION2" \
+"3" "$ACCESS_OPTION3" \
+"4" "$ACCESS_OPTION4" 3>&1 1>&2 2>&3)
 
 [ $? != 0 ] && exit 1
 
