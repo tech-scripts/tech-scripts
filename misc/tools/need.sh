@@ -9,12 +9,14 @@ check_module() {
     local path="$3"
     local module_dir="/lib/modules/$(uname -r)/kernel/$name"
     local access_status="✗"
+    local has_lsmod=$(command -v lsmod &> /dev/null && echo "true" || echo "false")
+    local has_modprobe=$(command -v modprobe &> /dev/null && echo "true" || echo "false")
 
-    if lsmod | grep -q "$name"; then
+    if [[ "$has_lsmod" == "true" ]] && lsmod | grep -q "$name"; then
         access_status="✓"
-    elif [ -d "$module_dir" ] && [ -r "$module_dir" ] && [ -w "$module_dir" ] && [ -x "$module_dir" ]; then
+    elif [[ "$has_lsmod" == "true" ]] && [ -d "$module_dir" ] && [ -r "$module_dir" ] && [ -w "$module_dir" ] && [ -x "$module_dir" ]; then
         access_status="✓"
-    elif modprobe "$name" &> /dev/null; then
+    elif [[ "$has_modprobe" == "true" ]] && modprobe "$name" &> /dev/null; then
         access_status="✓"
     fi
 
