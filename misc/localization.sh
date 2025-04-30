@@ -195,6 +195,14 @@ if [[ "$LANGUAGE" == "Русский" ]]; then
     MSG_UPDATED_TECH="Команда tech успешно обновлена!"
     UNKNOWN_COMMAND_TECH="Неизвестная команда:"
     USAGE_TECH="Использование: tech [update|config|ssh|...]"
+
+    ACCESS_TITLE="Выберите уровень доступа"
+    ACCESS_MENU_TEXT=""
+    ACCESS_OPTION1="1 По умолчанию (755)"
+    ACCESS_OPTION2="2 Только владелец (700)"
+    ACCESS_OPTION3="3 Владелец и группа (770)"
+    ACCESS_OPTION4="4 Все (777)"
+    ACCESS_SET_TEXT="Уровень доступа установлен на:"
 else
     MSG_NO_SCRIPTS="No available scripts or directories!"
     MSG_CANCELLED="Selection cancelled!"
@@ -388,4 +396,12 @@ else
     MSG_UPDATED_TECH="The tech command has been successfully updated!"
     UNKNOWN_COMMAND_TECH="Unknown command:"
     USAGE_TECH="Usage: tech [update|config|ssh|...]"
+
+    ACCESS_TITLE="Select Access Level"
+    ACCESS_MENU_TEXT=""
+    ACCESS_OPTION1="1 Default (755)"
+    ACCESS_OPTION2="2 Owner Only (700)"
+    ACCESS_OPTION3="3 Owner and Group (770)"
+    ACCESS_OPTION4="4 Everyone (777)"
+    ACCESS_SET_TEXT="Access level set to:"
 fi
