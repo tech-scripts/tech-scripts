@@ -104,7 +104,7 @@ show_menu() {
         [ ${#CHOICES[@]} -eq 0 ] && { echo "$MSG_NO_SCRIPTS"; exit 0; }
 
         RELATIVE_PATH=$(get_relative_path "$CURRENT_DIR" "$CLONE_DIR")
-        SELECTED_ITEM=$(whiptail --title "$MSG_SELECT" --menu "$RELATIVE_PATH" 10 40 4 "${CHOICES[@]}" 3>&1 1>&2 2>&3)
+        SELECTED_ITEM=$(whiptail --title "$MSG_SELECT" --menu "$RELATIVE_PATH" 12 40 4 "${CHOICES[@]}" 3>&1 1>&2 2>&3)
 
         if [ $? -ne 0 ]; then
             exit 0
