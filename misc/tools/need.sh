@@ -29,7 +29,7 @@ check_module() {
     fi
 }
 
-choice=$(whiptail --title "$NEED_TITLE" --menu "$NEED_MENU_TITLE" 15 60 4 \
+choice=$(whiptail --title "$NEED_TITLE" --menu "$NEED_MENU_TITLE" 12 40 4 \
 "1" "Docker" \
 "2" "Podman" \
 "3" "LXC" \
