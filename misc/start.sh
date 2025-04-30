@@ -62,7 +62,14 @@ DIR_STACK=()
 CURRENT_DIR="$CLONE_DIR"
 EXCLUDE_FILES=("start.sh" "choose.sh" "localization.sh" "variables.sh" "*.tmp")
 
-source /etc/tech-scripts/localization.sh 
+source /etc/tech-scripts/localization.sh
+source /etc/tech-scripts/variables.sh
+
+IFS=' ' read -r -a directories <<< "$BASIC_DIRECTORY"
+
+for dir in "${directories[@]}"; do
+    [ -d "$dir" ] && [ "$(stat -c "%a" "$dir")" != "$ACCESS" ] && $SUDO chmod "$ACCESS" "$dir"
+done
 
 get_relative_path() {
     local full_path="$1"
