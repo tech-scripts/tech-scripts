@@ -19,32 +19,18 @@ source /etc/tech-scripts/variables.sh
 BASIC_DIRECTORY=\$(echo "\$BASIC_DIRECTORY" | tr -s ' ')
 
 if [ -n "\$BASIC_DIRECTORY" ]; then
-    echo "Processing BASIC_DIRECTORY: '\$BASIC_DIRECTORY'"
-    
     IFS=' ' read -r -a directories <<< "\$BASIC_DIRECTORY"
     directories=(\$(echo "\${directories[@]}" | grep -v '^$'))
 
     for dir in "\${directories[@]}"; do
-        echo "Checking directory: '\$dir'"
         if [ -d "\$dir" ]; then
-            echo "Directory exists: '\$dir'"
             current_access=\$(stat -c "%a" "\$dir")
-            echo "Current access for '\$dir': \$current_access"
             if [ "\$current_access" != "\$ACCESS" ]; then
-                echo "Changing access for '\$dir' to \$ACCESS"
                 \$SUDO chmod "\$ACCESS" "\$dir"
-            else
-                echo "Access for '\$dir' is already set to \$ACCESS"
             fi
-        else
-            echo "Directory does not exist: '\$dir'"
         fi
     done
-else
-    echo "BASIC_DIRECTORY variable is empty. Skipping execution."
 fi
-
-echo "BASIC_DIRECTORY: '\$BASIC_DIRECTORY'"
 
 run_script() {
     local script_dir="\$1"
