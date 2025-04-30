@@ -2,7 +2,7 @@
 
 CONFIG_FILE="/etc/tech-scripts/choose.conf"
 
-ACCESS_LEVEL=$(whiptail --title "Выберите уровня доступа" --menu "" 12 40 4 \
+ACCESS_LEVEL=$(whiptail --title "Выберите уровень доступа" --menu "" 12 40 4 \
 "1" "По умолчанию (755)" \
 "2" "Только владелец (700)" \
 "3" "Владелец и группа (770)" \
