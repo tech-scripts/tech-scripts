@@ -42,10 +42,7 @@ install_packages
 [ ! -d "/tmp/tech-scripts" ] && cd /tmp && git clone --depth 1 https://github.com/tech-scripts/tech-scripts.git /tmp/tech-scripts
 
 cd /tmp/tech-scripts/misc
-
-if [ ! -d "/etc/tech-scripts" ]; then
-    $SUDO mkdir -p /etc/tech-scripts
-fi
+sudo mkdir -p /etc/tech-scripts
 
 if [ ! -f "/etc/tech-scripts/choose.conf" ]; then
     $SUDO touch /etc/tech-scripts/choose.conf
