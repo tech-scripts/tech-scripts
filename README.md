@@ -109,16 +109,8 @@ bash -c "$(wget -qO- https://raw.githubusercontent.com/tech-scripts/tech-scripts
 If you find this project useful, consider supporting it:
 
 - **Support**: Donate to support: [Boosty](https://boosty.to/techscripts/donate)
-- **Star on GitHub**: Leave a star on: [GitHub](https://github.com/tech-scripts/linux)
-- **Feedback**: Share your ideas and suggestions in our: [GitHub discussions](https://github.com/tech-scripts/linux/discussions)
-
----
-
-## 💬 Questions and Support
-
-If you have questions or need help, join our Telegram community:
-
-<a href="https://github.com/tech-scripts/linux/discussions"> <img src="https://img.shields.io/badge/Discussions-181717?style=for-the-badge&logo=github&logoColor=white" alt="Discussions" /> </a>
+- **Star on GitHub**: Leave a star: [GitHub](https://github.com/tech-scripts/linux)
+- **Feedback**: Share your ideas and suggestions: [GitHub discussions](https://github.com/tech-scripts/linux/discussions)
 
 ---
 
