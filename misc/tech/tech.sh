@@ -16,6 +16,20 @@ $SUDO cp -f /tmp/tech-scripts/misc/variables.sh /etc/tech-scripts/
 source /etc/tech-scripts/localization.sh
 source /etc/tech-scripts/variables.sh
 
+if [ -n "$BASIC_DIRECTORY" ]; then
+    IFS=' ' read -r -a directories <<< "$BASIC_DIRECTORY"
+
+    for dir in "${directories[@]}"; do
+        if [ -d "$dir" ] && [ -n "$dir" ]; then
+            if [ "$(stat -c "%a" "$dir")" != "$ACCESS" ]; then
+                $SUDO chmod "$ACCESS" "$dir"
+            fi
+        fi
+    done
+else
+    echo "Переменная BASIC_DIRECTORY пуста. Выполнение пропущено."
+fi
+
 run_script() {
     local script_dir="\$1"
     local script_name="\$2"
