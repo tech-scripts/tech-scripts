@@ -19,11 +19,10 @@ source /etc/tech-scripts/variables.sh
 BASIC_DIRECTORY=$(echo "$BASIC_DIRECTORY" | tr -s ' ')
 
 if [ -n "$BASIC_DIRECTORY" ]; then
-    IFS=' ' read -r -a directories <<< "$BASIC_DIRECTORY"
+    directories=($(echo "$BASIC_DIRECTORY" | grep -v '^$'))  # Фильтрация пустых строк
 
     for dir in "${directories[@]}"; do
-        echo "Processing directory: '$dir'"
-        if [ -n "$dir" ] && [ -d "$dir" ]; then
+        if [ -d "$dir" ]; then
             if [ "$(stat -c "%a" "$dir")" != "$ACCESS" ]; then
                 $SUDO chmod "$ACCESS" "$dir"
             fi
