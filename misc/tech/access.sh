@@ -34,7 +34,7 @@ case $ACCESS_LEVEL in
         ;;
 esac
 
-awk -v access_value="access: $ACCESS_VALUE" 'NR==2 {$0=access_value} 1' "$CONFIG_FILE" > "$CONFIG_FILE.tmp" && mv "$CONFIG_FILE.tmp" "$CONFIG_FILE"
+sed -i "2s/.*/access: $ACCESS_VALUE/" /etc/tech-scripts/choose.conf
 
 echo ""
 echo "Уровень доступа установлен: $ACCESS_TEXT"
