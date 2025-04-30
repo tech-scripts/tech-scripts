@@ -6,7 +6,7 @@ source /etc/tech-scripts/variables.sh
 whiptail --title "$TITLE_DANGER" --yesno "$MESSAGE_DANGER" 10 60
 
 if [ $? -eq 0 ]; then
-    $SUDO rm -rf /tmp/tech-scripts /etc/tech-scripts /usr/local/tech-scripts /usr/local/bin/tech
+    $SUDO rm -rf "$BASIC_DIRECTORY"
     echo ""
     echo "$DELETED"
     echo ""
