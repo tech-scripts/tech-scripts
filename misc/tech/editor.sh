@@ -6,7 +6,7 @@ source /etc/tech-scripts/variables.sh
 [ ! -d "/etc/tech-scripts" ] && $SUDO mkdir -p /etc/tech-scripts
 [ ! -f "/etc/tech-scripts/choose.conf" ] && $SUDO touch /etc/tech-scripts/choose.conf
 
-EDITOR=$(whiptail --title "$TITLE_EDITOR" --menu "$MSG_EDITOR" 12 40 3 \
+EDITOR=$(whiptail --title "$TITLE_EDITOR" --menu "" 12 40 3 \
     1 "nano" \
     2 "vim" \
     3 "Custom" \
