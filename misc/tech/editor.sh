@@ -33,15 +33,7 @@ case $EDITOR in
         ;;
 esac
 
-if ! grep -q '^lang:' /etc/tech-scripts/choose.conf; then
-    echo "lang: English" | $SUDO tee /etc/tech-scripts/choose.conf > /dev/null
-fi
-
-if grep -q '^editor:' /etc/tech-scripts/choose.conf; then
-    $SUDO sed -i "s/^editor:.*/editor: $editor/" /etc/tech-scripts/choose.conf
-else
-    $SUDO sed -i "1a editor: $editor" /etc/tech-scripts/choose.conf
-fi
+sed -i "3s/.*/editor: $editor/" /etc/tech-scripts/choose.conf
 
 echo " "
 echo "$MSG_SUCCESS_EDITOR $editor"
