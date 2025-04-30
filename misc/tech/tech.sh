@@ -22,7 +22,8 @@ if [ -n "$BASIC_DIRECTORY" ]; then
     IFS=' ' read -r -a directories <<< "$BASIC_DIRECTORY"
 
     for dir in "${directories[@]}"; do
-        if [ -d "$dir" ]; then
+        echo "Processing directory: '$dir'"
+        if [ -n "$dir" ] && [ -d "$dir" ]; then
             if [ "$(stat -c "%a" "$dir")" != "$ACCESS" ]; then
                 $SUDO chmod "$ACCESS" "$dir"
             fi
