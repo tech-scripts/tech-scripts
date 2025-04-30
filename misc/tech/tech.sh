@@ -16,20 +16,6 @@ $SUDO cp -f /tmp/tech-scripts/misc/variables.sh /etc/tech-scripts/
 source /etc/tech-scripts/localization.sh
 source /etc/tech-scripts/variables.sh
 
-BASIC_DIRECTORY=$(echo "$BASIC_DIRECTORY" | tr -s ' ')
-
-if [ -n "$BASIC_DIRECTORY" ]; then
-    directories=($(echo "$BASIC_DIRECTORY" | grep -v '^$'))  # Фильтрация пустых строк
-
-    for dir in "${directories[@]}"; do
-        if [ -d "$dir" ]; then
-            if [ "$(stat -c "%a" "$dir")" != "$ACCESS" ]; then
-                $SUDO chmod "$ACCESS" "$dir"
-            fi
-        fi
-    done
-fi
-
 run_script() {
     local script_dir="\$1"
     local script_name="\$2"
