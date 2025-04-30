@@ -19,7 +19,9 @@ source /etc/tech-scripts/variables.sh
 [ -n "$BASIC_DIRECTORY" ] && IFS=' ' read -r -a directories <<< "$BASIC_DIRECTORY"
 
 for dir in "${directories[@]}"; do
-    [ -d "$dir" ] && [ "$(stat -c "%a" "$dir")" != "$ACCESS" ] && $SUDO chmod "$ACCESS" "$dir"
+    if [ -d "$dir" ] && [ -n "$dir" ] && [ "$(stat -c "%a" "$dir")" != "$ACCESS" ]; then
+        $SUDO chmod "$ACCESS" "$dir"
+    fi
 done
 
 run_script() {
