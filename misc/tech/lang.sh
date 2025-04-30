@@ -2,15 +2,7 @@
 
 SUDO=$(command -v sudo)
 
-if [ ! -d "/etc/tech-scripts" ]; then
-    $SUDO mkdir -p /etc/tech-scripts
-fi
-
-if [ ! -f "/etc/tech-scripts/choose.conf" ]; then
-    $SUDO touch /etc/tech-scripts/choose.conf
-fi
-
-LANGUAGE=$(whiptail --title "Language Selection" --menu "Choose language:" 10 40 2 \
+LANGUAGE=$(whiptail --title "Language Selection" --menu "" 12 40 2 \
     1 "English" \
     2 "Русский" \
     3>&1 1>&2 2>&3)
@@ -27,20 +19,11 @@ case $LANGUAGE in
         lang="Русский"
         ;;
     *)
-        echo " "
-        echo "Invalid choice!"
-        echo " "
         exit 1
         ;;
 esac
 
-temp_file=$(mktemp)
-
-echo "lang: $lang" > "$temp_file"
-
-$SUDO grep -v "^lang:" /etc/tech-scripts/choose.conf >> "$temp_file"
-
-$SUDO mv "$temp_file" /etc/tech-scripts/choose.conf
+sed -i "1s/.*/lang: $lang/" /etc/tech-scripts/choose.conf
 
 if [ "$lang" = "Русский" ]; then
     echo " "
