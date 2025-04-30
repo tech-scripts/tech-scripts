@@ -1,41 +1,26 @@
 #!/bin/bash
 
-CONFIG_FILE="/etc/tech-scripts/choose.conf"
+source /etc/tech-scripts/localization.sh
+source /etc/tech-scripts/variables.sh
 
-ACCESS_LEVEL=$(whiptail --title "Выберите уровень доступа" --menu "" 12 40 4 \
-"1" "По умолчанию (755)" \
-"2" "Только владелец (700)" \
-"3" "Владелец и группа (770)" \
-"4" "Все (777)" 3>&1 1>&2 2>&3)
+ACCESS_LEVEL=$(whiptail --title "$ACCESS_TITLE" --menu "$ACCESS_MENU_TEXT" 12 40 4 \
+"$ACCESS_OPTION1" \
+"$ACCESS_OPTION2" \
+"$ACCESS_OPTION3" \
+"$ACCESS_OPTION4" 3>&1 1>&2 2>&3)
 
-if [ $? != 0 ]; then
-    exit 1
-fi
+[ $? != 0 ] && exit 1
 
 case $ACCESS_LEVEL in
-    1)
-        ACCESS_VALUE=755
-        ACCESS_TEXT="По умолчанию (755)"
-        ;;
-    2)
-        ACCESS_VALUE=700
-        ACCESS_TEXT="Только владелец (700)"
-        ;;
-    3)
-        ACCESS_VALUE=770
-        ACCESS_TEXT="Владелец и группа (770)"
-        ;;
-    4)
-        ACCESS_VALUE=777
-        ACCESS_TEXT="Все (777)"
-        ;;
-    *)
-        exit 1
-        ;;
+    1) ACCESS_VALUE=755 ;;
+    2) ACCESS_VALUE=700 ;;
+    3) ACCESS_VALUE=770 ;;
+    4) ACCESS_VALUE=777 ;;
+    *) exit 1 ;;
 esac
 
-sed -i "2s/.*/access: $ACCESS_VALUE/" /etc/tech-scripts/choose.conf
+sed -i "2s/.*/access: $ACCESS_VALUE/" "$CONFIG_FILE"
 
 echo ""
-echo "Уровень доступа установлен: $ACCESS_TEXT"
+echo "$ACCESS_SET_TEXT $ACCESS_VALUE"
 echo ""
