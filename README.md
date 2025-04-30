@@ -73,6 +73,7 @@ To install and run the project, use the following command:
 ```
 bash -c "$(wget -qO- https://raw.githubusercontent.com/tech-scripts/tech-scripts/refs/heads/main/misc/start.sh)"
 ```
+
 ## 📚 Usage
 
 ### Core Commands
@@ -108,9 +109,9 @@ bash -c "$(wget -qO- https://raw.githubusercontent.com/tech-scripts/tech-scripts
 
 If you find this project useful, consider supporting it:
 
-- **Support**: Donate to support: [Boosty](https://boosty.to/techscripts/donate)
-- **Star on GitHub**: Leave a star: [GitHub](https://github.com/tech-scripts/linux)
 - **Feedback**: Share your ideas and suggestions: [GitHub discussions](https://github.com/tech-scripts/linux/discussions)
+- **Support**: Donate to support: [Boosty](https://boosty.to/techscripts/donate)
+- **Star**: Leave a star: [GitHub](https://github.com/tech-scripts/linux)
 
 ---
 
