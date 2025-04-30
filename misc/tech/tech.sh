@@ -21,7 +21,7 @@ BASIC_DIRECTORY=$(echo "$BASIC_DIRECTORY" | tr -s ' ')
 if [ -n "$BASIC_DIRECTORY" ]; then
     echo "Processing BASIC_DIRECTORY: '$BASIC_DIRECTORY'"
     
-    readarray -d ' ' -t directories <<< "$BASIC_DIRECTORY"
+    readarray -t directories <<< "$(echo $BASIC_DIRECTORY | awk 'NF')"
 
     for dir in "${directories[@]}"; do
         if [ -n "$dir" ]; then
@@ -39,8 +39,6 @@ if [ -n "$BASIC_DIRECTORY" ]; then
             else
                 echo "Directory does not exist: '$dir'"
             fi
-        else
-            echo "Empty directory name encountered, skipping."
         fi
     done
 else
