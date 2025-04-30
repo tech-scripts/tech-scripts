@@ -47,23 +47,23 @@ if [ ! -d "/etc/tech-scripts" ]; then
     $SUDO mkdir -p /etc/tech-scripts
 fi
 
+if [ ! -f "/etc/tech-scripts/choose.conf" ]; then
+    $SUDO touch /etc/tech-scripts/choose.conf
+    {
+        echo "lang: English"
+        echo "access: 755"
+        echo "editor: nano"
+    } | $SUDO tee -a /etc/tech-scripts/choose.conf > /dev/null
+    chmod +x "$CHOOSE_SCRIPT"
+    "$CHOOSE_SCRIPT"
+fi
+
 $SUDO cp -f /tmp/tech-scripts/misc/localization.sh /etc/tech-scripts/
 $SUDO cp -f /tmp/tech-scripts/misc/variables.sh /etc/tech-scripts/
 
 DIR_STACK=()
 CURRENT_DIR="$CLONE_DIR"
 EXCLUDE_FILES=("start.sh" "choose.sh" "localization.sh" "variables.sh" "*.tmp")
-CONFIG_FILE="/etc/tech-scripts/choose.conf"
-
-if [ ! -f "$CONFIG_FILE" ]; then
-    CHOOSE_SCRIPT="/tmp/tech-scripts/misc/choose.sh"
-    if [ -f "$CHOOSE_SCRIPT" ]; then
-        chmod +x "$CHOOSE_SCRIPT"
-        "$CHOOSE_SCRIPT"
-    else
-        exit 1
-    fi
-fi
 
 source /etc/tech-scripts/localization.sh 
 
