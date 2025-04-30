@@ -30,7 +30,6 @@ if [[ "$LANGUAGE" == "Русский" ]]; then
     MESSAGE_DANGER="Вы точно хотите удалить все файлы tech-scripts?"
     YES="Да"
     NO="Нет"
-    DELETING="Удаление файлов..."
     DELETED="Файлы успешно удалены!"
 
     TITLE_EDITOR="Выберите текстовый редактор"
@@ -224,7 +223,6 @@ else
     MESSAGE_DANGER="Are you sure you want to delete all tech-scripts files?"
     YES="Yes"
     NO="No"
-    DELETING="Deleting files..."
     DELETED="Files deleted successfully!"
 
     TITLE_EDITOR="Text Editor Selection"
