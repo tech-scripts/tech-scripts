@@ -127,6 +127,12 @@ If you'd like to contribute to the project, feel free to fork the repository and
 
 ---
 
+## 🔥 Repository activity
+
+![Alt](https://repobeats.axiom.co/api/embed/d6ca48aec51bc3c7281a6cac486783dd96898339.svg "Repobeats analytics image")
+
+---
+
 ### 🌟 Star History
 
 <a href="https://star-history.com/#tech-scripts/tech-scripts&Date">
