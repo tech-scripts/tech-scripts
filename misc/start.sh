@@ -54,8 +54,8 @@ if [ ! -f "/etc/tech-scripts/choose.conf" ]; then
         echo "access: 755"
         echo "editor: nano"
     } | $SUDO tee -a /etc/tech-scripts/choose.conf > /dev/null
-    chmod +x "$CHOOSE_SCRIPT"
-    "$CHOOSE_SCRIPT"
+    $SUDO chmod +x "choose.sh"
+    ./choose.sh
 fi
 
 $SUDO cp -f /tmp/tech-scripts/misc/localization.sh /etc/tech-scripts/
