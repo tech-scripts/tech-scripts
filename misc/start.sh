@@ -65,12 +65,12 @@ EXCLUDE_FILES=("start.sh" "choose.sh" "localization.sh" "variables.sh" "*.tmp")
 source /etc/tech-scripts/localization.sh
 source /etc/tech-scripts/variables.sh
 
-BASIC_DIRECTORY=\$(echo "\$BASIC_DIRECTORY" | tr -s ' ')
+BASIC_DIRECTORY=$(echo "$BASIC_DIRECTORY" | tr -s ' ')
 
-[ -n "\$BASIC_DIRECTORY" ] && IFS=' ' read -r -a directories <<< "\$BASIC_DIRECTORY"
+[ -n "$BASIC_DIRECTORY" ] && IFS=' ' read -r -a directories <<< "$BASIC_DIRECTORY"
 
-for dir in "\${directories[@]}"; do
-    [ -d "\$dir" ] && [ "\$(stat -c "%a" "\$dir")" != "\$ACCESS" ] && \$SUDO chmod "\$ACCESS" "\$dir"
+for dir in "${directories[@]}"; do
+    [ -d "$dir" ] && [ "$(stat -c "%a" "$dir")" != "$ACCESS" ] && $SUDO chmod "$ACCESS" "$dir"
 done
 
 get_relative_path() {
