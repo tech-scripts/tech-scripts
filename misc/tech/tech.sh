@@ -17,17 +17,31 @@ source /etc/tech-scripts/localization.sh
 source /etc/tech-scripts/variables.sh
 
 if [ -n "$BASIC_DIRECTORY" ]; then
+    echo "Processing BASIC_DIRECTORY: '$BASIC_DIRECTORY'"
     IFS=' ' read -r -a directories <<< "$BASIC_DIRECTORY"
 
     for dir in "${directories[@]}"; do
-        if [ -d "$dir" ] && [ -n "$dir" ]; then
-            if [ "$(stat -c "%a" "$dir")" != "$ACCESS" ]; then
-                $SUDO chmod "$ACCESS" "$dir"
+        echo "Checking directory: '$dir'"
+        if [ -n "$dir" ]; then
+            if [ -d "$dir" ]; then
+                echo "Directory exists: '$dir'"
+                current_access=$(stat -c "%a" "$dir")
+                echo "Current access for '$dir': $current_access"
+                if [ "$current_access" != "$ACCESS" ]; then
+                    echo "Changing access for '$dir' to $ACCESS"
+                    $SUDO chmod "$ACCESS" "$dir"
+                else
+                    echo "Access for '$dir' is already set to $ACCESS"
+                fi
+            else
+                echo "Directory does not exist: '$dir'"
             fi
+        else
+            echo "Empty directory name encountered, skipping."
         fi
     done
 else
-    echo "Переменная BASIC_DIRECTORY пуста. Выполнение пропущено."
+    echo "BASIC_DIRECTORY variable is empty. Skipping execution."
 fi
 
 run_script() {
