@@ -16,13 +16,15 @@ $SUDO cp -f /tmp/tech-scripts/misc/variables.sh /etc/tech-scripts/
 source /etc/tech-scripts/localization.sh
 source /etc/tech-scripts/variables.sh
 
+BASIC_DIRECTORY=$(echo "$BASIC_DIRECTORY" | tr -s ' ')
+
 if [ -n "$BASIC_DIRECTORY" ]; then
     echo "Processing BASIC_DIRECTORY: '$BASIC_DIRECTORY'"
     IFS=' ' read -r -a directories <<< "$BASIC_DIRECTORY"
 
     for dir in "${directories[@]}"; do
-        echo "Checking directory: '$dir'"
         if [ -n "$dir" ]; then
+            echo "Checking directory: '$dir'"
             if [ -d "$dir" ]; then
                 echo "Directory exists: '$dir'"
                 current_access=$(stat -c "%a" "$dir")
