@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 source /etc/tech-scripts/localization.sh
 source /etc/tech-scripts/variables.sh
@@ -65,7 +65,7 @@ create_ssh_alert_script() {
     [ -f "$SCRIPT_DIR_SSH/alert.sh" ] && return
     $SUDO mkdir -p "$SCRIPT_DIR_SSH"
     $SUDO tee "$SCRIPT_DIR_SSH/alert.sh" >/dev/null <<'EOF'
-#!/bin/bash
+#!/usr/bin/env bash
 
 source /etc/tech-scripts/localization.sh
 source /etc/tech-scripts/variables.sh
