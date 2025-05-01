@@ -45,11 +45,11 @@ done
 
 temp_file="$selected_mount_point/testfile"
 
-output=$(dd if=/dev/zero of="$temp_file" bs="$FILE_SIZE" count=1 oflag=direct 2>&1)
+output=$(timeout 5 dd if=/dev/zero of="$temp_file" bs="$FILE_SIZE" count=1 oflag=direct 2>&1)
 write_time=$(echo "$output" | grep -o '[0-9.]* s' | head -n 1)
 write_speed=$(echo "$output" | grep -o '[0-9.]* [MG]B/s' | head -n 1 || echo "$MSG_FAILED_DISK")
 
-output=$(dd if="$temp_file" of=/dev/null bs="$FILE_SIZE" count=1 iflag=direct 2>&1)
+output=$(timeout 5 dd if="$temp_file" of=/dev/null bs="$FILE_SIZE" count=1 iflag=direct 2>&1)
 read_time=$(echo "$output" | grep -o '[0-9.]* s' | head -n 1)
 read_speed=$(echo "$output" | grep -o '[0-9.]* [MG]B/s' | head -n 1 || echo "$MSG_FAILED_DISK")
 
