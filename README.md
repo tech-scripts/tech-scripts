@@ -5,11 +5,11 @@
     <a href="https://boosty.to/techscripts/donate">
       <img src="https://img.shields.io/badge/Support-FF5F5F?style=for-the-badge&logo=boosty&logoColor=white" alt="Donate" />
     </a>
-    <a href="https://github.com/tech-scripts/linux/blob/main/CONTRIBUTING.md">
-      <img src="https://img.shields.io/badge/Contribute-ff4785?style=for-the-badge&logo=git&logoColor=white" alt="Contribute" />
-    </a> 
     <a href="#-installation">
       <img src="https://img.shields.io/badge/Guides-0077b5?style=for-the-badge&logo=read-the-docs&logoColor=white" alt="Guides" />
+    </a> 
+    <a href="https://github.com/tech-scripts/linux/blob/main/CONTRIBUTING.md">
+      <img src="https://img.shields.io/badge/Contribute-ff4785?style=for-the-badge&logo=git&logoColor=white" alt="Contribute" />
     </a> 
     <a href="https://github.com/tech-scripts/linux/blob/main/CHANGELOG.md">
       <img src="https://img.shields.io/badge/Changelog-6c5ce7?style=for-the-badge&logo=git&logoColor=white" alt="Changelog" />
