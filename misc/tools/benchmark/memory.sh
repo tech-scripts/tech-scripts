@@ -3,24 +3,21 @@
 source /etc/tech-scripts/localization.sh
 source /etc/tech-scripts/variables.sh
 
-install_sysbench() {
+install_npm() {
     if command -v apt &>/dev/null; then
-        wget -qO- https://packagecloud.io/install/repositories/akopytov/sysbench/script.deb.sh | $SUDO bash
-        $SUDO apt update && $SUDO apt install -y sysbench
+        $SUDO apt update && $SUDO apt install -y npm
     elif command -v yum &>/dev/null; then
-        wget -qO- https://packagecloud.io/install/repositories/akopytov/sysbench/script.rpm.sh | $SUDO bash
-        $SUDO yum install -y sysbench
+        $SUDO yum install -y npm
     elif command -v dnf &>/dev/null; then
-        wget -qO- https://packagecloud.io/install/repositories/akopytov/sysbench/script.rpm.sh | $SUDO bash
-        $SUDO dnf install -y sysbench
+        $SUDO dnf install -y npm
     elif command -v zypper &>/dev/null; then
-        $SUDO zypper install -y sysbench
+        $SUDO zypper install -y npm
     elif command -v pacman &>/dev/null; then
-        $SUDO pacman -S --noconfirm sysbench
+        $SUDO pacman -S --noconfirm npm
     elif command -v apk &>/dev/null; then
-        $SUDO apk add sysbench
+        $SUDO apk add npm
     elif command -v brew &>/dev/null; then
-        brew install sysbench
+        brew install npm
     else
         echo "$PACKAGE_MANAGER_ERROR"
         exit 1
@@ -29,7 +26,15 @@ install_sysbench() {
 
 if ! command -v sysbench &>/dev/null; then
     if whiptail --title "$INSTALL_TITLE" --yesno "$INSTALL_QUESTION" 10 60; then
-        install_sysbench
+        install_npm
+        git clone https://github.com/akopytov/sysbench.git
+        cd sysbench
+        ./autogen.sh
+        ./configure
+        make -j$(nproc)
+        $SUDO make install
+        cd ..
+        $SUDO rm -rf sysbench
     else
         exit 0
     fi
