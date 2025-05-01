@@ -19,7 +19,7 @@ source /etc/tech-scripts/variables.sh
 for DIRECTORY in "${BASIC_DIRECTORIES[@]}"; do
     if [ -d "$DIRECTORY" ]; then
         echo "Изменяем права доступа для всех файлов и подкаталогов в: $DIRECTORY"
-        chmod -R "$ACCESS" "$DIRECTORY/*"
+        $SUDO chmod -R "$ACCESS" "$DIRECTORY/*"
     else
         echo "Директория не существует: $DIRECTORY"
     fi
