@@ -203,7 +203,7 @@ if [[ "$LANGUAGE" == "Русский" ]]; then
     ACCESS_OPTION2="Только владелец (700)"
     ACCESS_OPTION3="Владелец и группа (770)"
     ACCESS_OPTION4="Все (777)"
-    ACCESS_SET_TEXT="Уровень доступа установлен на:"
+    ACCESS_SET_TEXT="Уровень доступа установлен:"
 
     NEED_TITLE="Выбор проверки модулей"
     NEED_MENU_TITLE="Выберите, какие модули проверить:"
@@ -418,7 +418,7 @@ else
     ACCESS_OPTION2="Owner Only (700)"
     ACCESS_OPTION3="Owner and Group (770)"
     ACCESS_OPTION4="Everyone (777)"
-    ACCESS_SET_TEXT="Access level set to:"
+    ACCESS_SET_TEXT="Access level set:"
 
     NEED_TITLE="Module Check Selection"
     NEED_MENU_TITLE="Select which modules to check:"
