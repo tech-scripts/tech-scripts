@@ -16,10 +16,15 @@ $SUDO cp -f /tmp/tech-scripts/misc/variables.sh /etc/tech-scripts/
 source /etc/tech-scripts/localization.sh
 source /etc/tech-scripts/variables.sh
 
-for DIRECTORY in $BASIC_DIRECTORY; do
-    if [ -d "$DIRECTORY" ]; then
-        $SUDO chmod -R "$ACCESS" "$DIRECTORY"
-        echo "$SUDO chmod -R $ACCESS $DIRECTORY"
+for ITEM in $BASIC_DIRECTORY; do
+    if [ -d "$ITEM" ]; then
+        $SUDO chmod -R "$ACCESS" "$ITEM"
+        echo "Изменены права доступа для директории: $ITEM"
+        echo "$SUDO chmod -R $ACCESS $ITEM"
+    elif [ -f "$ITEM" ]; then
+        echo "Файл не изменен: $ITEM"
+    else
+        echo "Не существует: $ITEM"
     fi
 done
 
