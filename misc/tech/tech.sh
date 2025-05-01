@@ -16,8 +16,12 @@ $SUDO cp -f /tmp/tech-scripts/misc/variables.sh /etc/tech-scripts/
 source /etc/tech-scripts/localization.sh
 source /etc/tech-scripts/variables.sh
 
-for dir in $BASIC_DIRECTORY; do
-    chmod -R $ACCESS "$dir" || echo "Error: $dir"
+for dir in "${DIR_ARRAY[@]}"; do
+    if [ -e "$dir" ]; then
+        chmod -R $ACCESS "$dir" || echo "Ошибка при изменении прав для $dir"
+    else
+        echo "Директория или файл не существует: $dir"
+    fi
 done
 
 run_script() {
