@@ -6,9 +6,9 @@ source /etc/tech-scripts/variables.sh
 whiptail --title "$TITLE_DANGER" --yesno "$MESSAGE_DANGER" 10 60
 
 if [ $? -eq 0 ]; then
-    $SUDO rm -rf "$BASIC_DIRECTORY"
+    $SUDO rm -rf $BASIC_DIRECTORY
     echo ""
-    echo "$DELETED $BASIC_DIRECTORY $SUDO"
+    echo "$DELETED"
     echo ""
 else
     exit 0
