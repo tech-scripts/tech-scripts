@@ -1,6 +1,6 @@
 <div style="border: 2px solid #d1d5db; padding: 20px; border-radius: 8px; background-color: #f9fafb;">
   <h2 align="center">Tech Scripts</h2>
-  <p align="center">Best scripts for configuring linux</p>
+  <p align="center">Scripts for configuring linux</p>
   <p align="center">
     <a href="https://boosty.to/techscripts/donate">
       <img src="https://img.shields.io/badge/Support-FF5F5F?style=for-the-badge&logo=boosty&logoColor=white" alt="Donate" />
@@ -19,7 +19,7 @@
 
 ---
 
-## 🚀 Project Overview
+### 🚀 Project Overview
 
 **Tech Scripts** is a collection of utilities designed to simplify Linux system management, automation, and configuration. The project includes tools for stress testing system components, automating updates, optimizing system performance, and managing LXC containers and virtual machines. Key features include:
 
@@ -31,7 +31,7 @@
 
 ---
 
-## 📦 Features
+### 📦 Features
 
 ### Stress Testing
 - **CPU Stress Test**: Test the stability and performance of your processor.
@@ -57,7 +57,7 @@
 
 ---
 
-## ✅ Requirements
+### ✅ Requirements
 
 Ensure your system meets the following prerequisites:
 
@@ -66,7 +66,7 @@ Ensure your system meets the following prerequisites:
 
 ---
 
-## 🚀 Installation
+### 🚀 Installation
 
 To install and run the project, use the following command:
 
@@ -74,7 +74,9 @@ To install and run the project, use the following command:
 bash -c "$(wget -qO- https://raw.githubusercontent.com/tech-scripts/tech-scripts/refs/heads/main/misc/start.sh)"
 ```
 
-## 📚 Usage
+---
+
+### 📚 Usage
 
 ### Core Commands
 - **Open Menu**: `tech`
@@ -105,7 +107,7 @@ bash -c "$(wget -qO- https://raw.githubusercontent.com/tech-scripts/tech-scripts
 
 ---
 
-## ❤️ Support the Project
+### ❤️ Support the Project
 
 If you find this project useful, consider supporting it:
 
@@ -115,7 +117,7 @@ If you find this project useful, consider supporting it:
 
 ---
 
-## 📜 License
+### 📜 License
 
 This project is licensed under the Apache License 2.0. For more details, see the [LICENSE](LICENSE) file.
 
@@ -148,5 +150,3 @@ If you'd like to contribute to the project, feel free to fork the repository and
 ### 🙏 Credits
 
 Special thanks to all contributors and the open-source community for their support and inspiration.
-
----
