@@ -20,14 +20,7 @@ BASIC_DIRECTORY=$(echo "$BASIC_DIRECTORY" | tr -s ' ')
 
 [ -n "$BASIC_DIRECTORY" ] && IFS=' ' read -r -a directories <<< "$BASIC_DIRECTORY"
 
-for dir in "${directories[@]}"; do
-    if [ -d "$dir" ]; then
-        echo "Changing permissions in directory: $dir"
-        find "$dir" -exec $SUDO chmod "$ACCESS" {} +
-    else
-        echo "Not a directory: $dir"
-    fi
-done
+for dir in "${directories[@]}"; do [ -d "$dir" ] && [ "$(stat -c "%a" "$dir")" != "$ACCESS" ] && $SUDO chmod "$ACCESS" "$dir/*" done
 
 run_script() {
     local script_dir="\$1"
