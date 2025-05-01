@@ -21,7 +21,7 @@ array=($input)
 
 echo "$BASIC_DIRECTORY"
 for item in "${array[@]}"; do
-    $SUDO chmod -R $ACCESS $item
+    $SUDO chmod -R $ACCESS "$item"
     echo "$SUDO chmod -R $ACCESS $item"
 done
 
