@@ -45,11 +45,11 @@ done
 
 temp_file="$selected_mount_point/testfile"
 
-write_output=$(sysbench fileio --file-total-size=10G --file-test-mode=write --time=10 run)
+write_output=$(sysbench fileio --file-total-size=10G --file-test-mode=seqwr --time=10 run)
 write_time=$(echo "$write_output" | grep 'total time:' | awk '{print $3}')
 write_speed=$(echo "$write_output" | grep 'transferred' | awk '{print $3, $4}')
 
-read_output=$(sysbench fileio --file-total-size=10G --file-test-mode=read --time=10 run)
+read_output=$(sysbench fileio --file-total-size=10G --file-test-mode=seqrd --time=10 run)
 read_time=$(echo "$read_output" | grep 'total time:' | awk '{print $3}')
 read_speed=$(echo "$read_output" | grep 'transferred' | awk '{print $3, $4}')
 
