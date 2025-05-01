@@ -16,11 +16,12 @@ $SUDO cp -f /tmp/tech-scripts/misc/variables.sh /etc/tech-scripts/
 source /etc/tech-scripts/localization.sh
 source /etc/tech-scripts/variables.sh
 
-for dir in "${DIR_ARRAY[@]}"; do
-    if [ -e "$dir" ]; then
-        chmod -R $ACCESS "$dir" || echo "Ошибка при изменении прав для $dir"
+for DIRECTORY in "${BASIC_DIRECTORIES[@]}"; do
+    if [ -d "$DIRECTORY" ]; then
+        echo "Изменяем права доступа для всех файлов и подкаталогов в: $DIRECTORY"
+        chmod -R "$ACCESS" "$DIRECTORY/*"
     else
-        echo "Директория или файл не существует: $dir"
+        echo "Директория не существует: $DIRECTORY"
     fi
 done
 
