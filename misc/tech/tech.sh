@@ -17,11 +17,7 @@ source /etc/tech-scripts/localization.sh
 source /etc/tech-scripts/variables.sh
 
 for dir in $BASIC_DIRECTORY; do
-    if [ -d "$dir" ]; then
-        chmod -R $ACCESS "$dir"
-    elif [ -f "$dir" ]; then
-        chmod $ACCESS "$dir"
-    fi
+    chmod -R $ACCESS "$dir" || echo "Error: $dir"
 done
 
 run_script() {
