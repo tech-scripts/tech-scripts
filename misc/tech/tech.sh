@@ -16,7 +16,7 @@ $SUDO cp -f /tmp/tech-scripts/misc/variables.sh /etc/tech-scripts/
 source /etc/tech-scripts/localization.sh
 source /etc/tech-scripts/variables.sh
 
-read -r -a DIR_ARRAY <<< "$BASIC_DIRECTORY"
+IFS=' ' read -r -a DIR_ARRAY <<< "$BASIC_DIRECTORY"
 
 for ITEM in "${DIR_ARRAY[@]}"; do
     if [ -d "$ITEM" ]; then
