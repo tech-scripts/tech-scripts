@@ -36,11 +36,11 @@ if ! command -v sysbench &>/dev/null; then
         cd ..
         $SUDO rm -rf sysbench
     else
-        exit 0
+        exit 1
     fi
 fi
 
-command -v sysbench &> /dev/null || { echo ""; echo "$SYSBENCH_NOT_FOUND"; echo ""; }
+command -v sysbench &> /dev/null || { echo ""; echo "$SYSBENCH_NOT_FOUND"; echo ""; exit 1; }
 
 show_progress() {
     (
