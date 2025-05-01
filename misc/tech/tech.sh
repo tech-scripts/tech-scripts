@@ -16,11 +16,10 @@ $SUDO cp -f /tmp/tech-scripts/misc/variables.sh /etc/tech-scripts/
 source /etc/tech-scripts/localization.sh
 source /etc/tech-scripts/variables.sh
 
-echo "$BASIC_DIRECTORY"
-
-for ITEM in "$BASIC_DIRECTORY"; do
-    echo "Проверка: $ITEM"
+for ITEM in "${BASIC_DIRECTORY[@]}"; do
+    echo "Проверка: '$ITEM'"  # Отладочная информация с кавычками
     if [ -d "$ITEM" ]; then
+        echo "Директория существует: $ITEM"
         $SUDO chmod -R "$ACCESS" "$ITEM"
         echo "Изменены права доступа для директории: $ITEM"
         echo "$SUDO chmod -R $ACCESS $ITEM"
