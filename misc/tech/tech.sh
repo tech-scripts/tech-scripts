@@ -19,7 +19,7 @@ source /etc/tech-scripts/variables.sh
 for DIRECTORY in $BASIC_DIRECTORY; do
     if [ -d "$DIRECTORY" ]; then
         $SUDO chmod -R "$ACCESS" "$DIRECTORY"
-        echo "$SUDO chmod -R "$ACCESS" "$DIRECTORY" "
+        echo "$SUDO chmod -R $ACCESS $DIRECTORY"
     fi
 done
 
