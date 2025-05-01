@@ -17,6 +17,7 @@ source /etc/tech-scripts/localization.sh
 source /etc/tech-scripts/variables.sh
 
 for ITEM in $BASIC_DIRECTORY; do
+    echo "Проверка: $ITEM"
     if [ -d "$ITEM" ]; then
         $SUDO chmod -R "$ACCESS" "$ITEM"
         echo "Изменены права доступа для директории: $ITEM"
