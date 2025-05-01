@@ -17,7 +17,7 @@ source /etc/tech-scripts/localization.sh
 source /etc/tech-scripts/variables.sh
 
 ARRAY=($BASIC_DIRECTORY)
-
+echo "$BASIC_DIRECTORY"
 for ITEM in "${ARRAY[@]}"; do
     $SUDO chmod -R $ACCESS $ITEM
     echo "$SUDO chmod -R $ACCESS $ITEM"
