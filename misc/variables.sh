@@ -1,7 +1,7 @@
 #!/bin/bash
 
 SUDO=$(command -v sudo)
-LANGUAGE=$(grep '^lang:' /etc/tech-scripts/choose.conf | cut -d ' ' -f2)
+LANGUAGE=$(grep '^lang:' /etc/tech-scripts/choose.conf | cut -d ' ' -f 2)
 EDITOR=$(grep '^editor:' /etc/tech-scripts/choose.conf | cut -d ' ' -f 2)
 ACCESS=$(grep '^access:' /etc/tech-scripts/choose.conf | cut -d ' ' -f 2)
 CONFIG_FILE="/etc/tech-scripts/choose.conf"
