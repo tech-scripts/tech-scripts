@@ -16,13 +16,12 @@ $SUDO cp -f /tmp/tech-scripts/misc/variables.sh /etc/tech-scripts/
 source /etc/tech-scripts/localization.sh
 source /etc/tech-scripts/variables.sh
 
-input="$BASIC_DIRECTORY"
-array=($input)
+BASIC_DIRECTORY=$(echo "$BASIC_DIRECTORY" | tr -s ' ')
 
-echo "$BASIC_DIRECTORY"
-for item in "${array[@]}"; do
-    $SUDO chmod -R $ACCESS "$item"
-    echo "$SUDO chmod -R $ACCESS $item"
+[ -n "$BASIC_DIRECTORY" ] && IFS=' ' read -r -a directories <<< "$BASIC_DIRECTORY"
+
+for dir in "${directories[@]}"; do
+    [ -d "$dir" ] && [ "$(stat -c "%a" "$dir")" != "$ACCESS" ] && $SUDO chmod -R "$ACCESS" "$dir"
 done
 
 run_script() {
