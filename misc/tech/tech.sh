@@ -1,10 +1,10 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 source /etc/tech-scripts/localization.sh
 source /etc/tech-scripts/variables.sh
 
 TECH_SCRIPT=$(cat <<EOF
-#!/bin/bash
+#!/usr/bin/env bash
 
 SUDO=$(command -v sudo)
 
