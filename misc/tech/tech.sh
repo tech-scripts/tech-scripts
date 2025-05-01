@@ -16,15 +16,11 @@ $SUDO cp -f /tmp/tech-scripts/misc/variables.sh /etc/tech-scripts/
 source /etc/tech-scripts/localization.sh
 source /etc/tech-scripts/variables.sh
 
-IFS=' ' read -r -a DIR_ARRAY <<< "$BASIC_DIRECTORY"
+ARRAY=($BASIC_DIRECTORY)
 
-for ITEM in "${DIR_ARRAY[@]}"; do
-    if [ -d "$ITEM" ]; then
-        $SUDO chmod -R "$ACCESS" "$ITEM"
-        echo "Изменены права доступа для директории: $ITEM"
-    else
-        echo "Не существует: $ITEM"
-    fi
+for ITEM in "${ARRAY[@]}"; do
+    $SUDO chmod -R $ACCESS $ITEM
+    echo "$SUDO chmod -R $ACCESS $ITEM"
 done
 
 run_script() {
