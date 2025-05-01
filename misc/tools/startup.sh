@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 source /etc/tech-scripts/localization.sh
 source /etc/tech-scripts/variables.sh
@@ -43,7 +43,7 @@ if ! $SUDO mkdir -p /usr/local/tech-scripts; then
 fi
 
 {
-    echo "#!/bin/sh"
+    echo "#!/usr/bin/env bash"
     echo "# Systemd service is located at $SERVICE_FILE"
     echo "echo 'Autostart script executed!'"
     echo "exit 0"
