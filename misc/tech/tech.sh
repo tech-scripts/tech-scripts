@@ -16,6 +16,8 @@ $SUDO cp -f /tmp/tech-scripts/misc/variables.sh /etc/tech-scripts/
 source /etc/tech-scripts/localization.sh
 source /etc/tech-scripts/variables.sh
 
+echo "$BASIC_DIRECTORY"
+
 for ITEM in $BASIC_DIRECTORY; do
     echo "Проверка: $ITEM"
     if [ -d "$ITEM" ]; then
