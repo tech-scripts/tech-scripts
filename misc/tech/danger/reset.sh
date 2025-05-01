@@ -8,7 +8,7 @@ whiptail --title "$TITLE_DANGER" --yesno "$MESSAGE_DANGER" 10 60
 if [ $? -eq 0 ]; then
     $SUDO rm -rf "$BASIC_DIRECTORY"
     echo ""
-    echo "$DELETED"
+    echo "$DELETED $BASIC_DIRECTORY"
     echo ""
 else
     exit 0
