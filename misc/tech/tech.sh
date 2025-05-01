@@ -16,7 +16,13 @@ $SUDO cp -f /tmp/tech-scripts/misc/variables.sh /etc/tech-scripts/
 source /etc/tech-scripts/localization.sh
 source /etc/tech-scripts/variables.sh
 
-chmod -R $ACCESS $BASIC_DIRECTORY
+for dir in $BASIC_DIRECTORY; do
+    if [ -d "$dir" ]; then
+        chmod -R $ACCESS "$dir"
+    elif [ -f "$dir" ]; then
+        chmod $ACCESS "$dir"
+    fi
+done
 
 run_script() {
     local script_dir="\$1"
