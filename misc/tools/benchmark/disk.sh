@@ -8,7 +8,6 @@ system_disk=$(df / | awk 'NR==2 {print $1}' | sed 's|/dev/||' | sed 's/[0-9]*$//
 home_path="$HOME"
 disk_choices+=("$system_disk" "$home_path")
 
-# Используем df вместо lsblk
 while IFS= read -r line; do
     device=$(echo "$line" | awk '{print $1}' | sed 's|/dev/||' | sed 's/[0-9]*$//')
     mount_point=$(echo "$line" | awk '{print $6}')
