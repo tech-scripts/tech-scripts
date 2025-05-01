@@ -16,11 +16,9 @@ $SUDO cp -f /tmp/tech-scripts/misc/variables.sh /etc/tech-scripts/
 source /etc/tech-scripts/localization.sh
 source /etc/tech-scripts/variables.sh
 
-read -r -a BASIC_DIRECTORIES <<< "$BASIC_DIRECTORY"
-
-for DIRECTORY in "${BASIC_DIRECTORIES[@]}"; do
+for DIRECTORY in $BASIC_DIRECTORY; do
     if [ -d "$DIRECTORY" ]; then
-        $SUDO chmod -R "$ACCESS" "$DIRECTORY/*"
+        $SUDO chmod -R "$ACCESS" "$DIRECTORY"
     fi
 done
 
