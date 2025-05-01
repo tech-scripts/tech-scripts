@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 SUDO=$(command -v sudo)
 LANGUAGE=$(grep '^lang:' /etc/tech-scripts/choose.conf | cut -d ' ' -f 2)
