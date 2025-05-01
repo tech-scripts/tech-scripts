@@ -17,10 +17,10 @@ source /etc/tech-scripts/localization.sh
 source /etc/tech-scripts/variables.sh
 
 input="$BASIC_DIRECTORY"
-ARRAY=($input)
+array=($input)
 
 echo "$BASIC_DIRECTORY"
-for item in "${ARRAY[@]}"; do
+for item in "${array[@]}"; do
     $SUDO chmod -R $ACCESS $item
     echo "$SUDO chmod -R $ACCESS $item"
 done
