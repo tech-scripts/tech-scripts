@@ -16,7 +16,9 @@ $SUDO cp -f /tmp/tech-scripts/misc/variables.sh /etc/tech-scripts/
 source /etc/tech-scripts/localization.sh
 source /etc/tech-scripts/variables.sh
 
-for ITEM in "${BASIC_DIRECTORY[@]}"; do
+read -r -a DIR_ARRAY <<< "$BASIC_DIRECTORY"
+
+for ITEM in "${DIR_ARRAY[@]}"; do
     echo "Проверка: '$ITEM'"  # Отладочная информация с кавычками
     if [ -d "$ITEM" ]; then
         echo "Директория существует: $ITEM"
