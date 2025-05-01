@@ -20,7 +20,7 @@ read -r -a BASIC_DIRECTORIES <<< "$BASIC_DIRECTORY"
 
 for DIRECTORY in "${BASIC_DIRECTORIES[@]}"; do
     if [ -d "$DIRECTORY" ]; then
-        chmod -R "$ACCESS" "$DIRECTORY/*"
+        $SUDO chmod -R "$ACCESS" "$DIRECTORY/*"
     fi
 done
 
