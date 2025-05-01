@@ -22,7 +22,10 @@ BASIC_DIRECTORY=$(echo "$BASIC_DIRECTORY" | tr -s ' ')
 
 for dir in "${directories[@]}"; do
     if [ -d "$dir" ]; then
+        echo "Changing permissions in directory: $dir"
         find "$dir" -exec $SUDO chmod "$ACCESS" {} +
+    else
+        echo "Not a directory: $dir"
     fi
 done
 
