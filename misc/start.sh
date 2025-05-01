@@ -39,6 +39,14 @@ install_packages() {
 
 install_packages
 
+if [ -r / ]; then
+    USER_DIR=""
+else
+    USER_DIR="~"
+fi
+
+echo "USER_DIR: $USER_DIR"
+
 [ ! -d "/tmp/tech-scripts" ] && cd /tmp && git clone --depth 1 https://github.com/tech-scripts/tech-scripts.git /tmp/tech-scripts
 
 cd /tmp/tech-scripts/misc
