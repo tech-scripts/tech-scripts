@@ -8,16 +8,17 @@ system_disk=$(df / | awk 'NR==2 {print $1}' | sed 's|/dev/||' | sed 's/[0-9]*$//
 home_path="$HOME"
 disk_choices+=("$system_disk" "$home_path")
 
+# Используем df вместо lsblk
 while IFS= read -r line; do
     device=$(echo "$line" | awk '{print $1}' | sed 's|/dev/||' | sed 's/[0-9]*$//')
-    mount_point=$(echo "$line" | awk '{print $2}')
+    mount_point=$(echo "$line" | awk '{print $6}')
     
     if [[ -n "$mount_point" && "$mount_point" != "/boot" && "$mount_point" != "/boot/efi" && "$mount_point" != "[SWAP]" && "$mount_point" != "/" && ! "$device" =~ zram ]]; then
         if [[ "$device" != "$system_disk" ]]; then
             disk_choices+=("$device" "$mount_point")
         fi
     fi
-done < <(lsblk -o NAME,MOUNTPOINT -n -l | grep -v '^\s*$')
+done < <(df -h --output=source,target | tail -n +2)
 
 if [ ${#disk_choices[@]} -eq 0 ]; then
     echo "$MSG_NO_MOUNTS_DISK"
