@@ -97,7 +97,7 @@ bash -c "$(wget -qO- https://raw.githubusercontent.com/tech-scripts/tech-scripts
 
 ### Security
 - **SSH Notifications**: `tech ssh`
-- **Kernel Module Check**: `tech need`
+- **Kernel Module Check**: `tech modules`
 
 ### LXC and VM Management
 - **Manage LXC Containers**: `tech lxc`
