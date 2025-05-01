@@ -19,14 +19,9 @@ source /etc/tech-scripts/variables.sh
 read -r -a DIR_ARRAY <<< "$BASIC_DIRECTORY"
 
 for ITEM in "${DIR_ARRAY[@]}"; do
-    echo "Проверка: '$ITEM'"  # Отладочная информация с кавычками
     if [ -d "$ITEM" ]; then
-        echo "Директория существует: $ITEM"
         $SUDO chmod -R "$ACCESS" "$ITEM"
         echo "Изменены права доступа для директории: $ITEM"
-        echo "$SUDO chmod -R $ACCESS $ITEM"
-    elif [ -f "$ITEM" ]; then
-        echo "Файл не изменен: $ITEM"
     else
         echo "Не существует: $ITEM"
     fi
