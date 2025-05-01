@@ -35,6 +35,8 @@ if ! command -v sysbench &>/dev/null; then
     fi
 fi
 
+command -v sysbench &> /dev/null || { echo ""; echo "$SYSBENCH_NOT_FOUND"; echo ""; }
+
 show_progress() {
     (
         for i in {1..100}; do
