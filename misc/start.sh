@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 SUDO=$(command -v sudo)
 CLONE_DIR="/tmp/tech-scripts/misc"
