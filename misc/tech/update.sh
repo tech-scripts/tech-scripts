@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
 
-cat << 'EOF' > /tmp/update.sh
+[ -w /tmp ] && USER_DIR="" || USER_DIR=$HOME
+
+cat << 'EOF' > $USER_DIR/tmp/update.sh
 #!/usr/bin/env bash
 
-[ -w /tmp ] && USER_DIR="" || USER_DIR=$(pwd)
+[ -w /tmp ] && USER_DIR="" || USER_DIR=$HOME
 
 source $USER_DIR/etc/tech-scripts/source.sh
 
