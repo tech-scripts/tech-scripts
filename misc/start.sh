@@ -43,6 +43,8 @@ install_packages
 
 echo "USER_DIR: $USER_DIR"
 
+$SUDO mkdir -p $USER_DIR/tmp
+
 [ ! -d "$USER_DIR/tmp/tech-scripts" ] && cd $USER_DIR/tmp && git clone --depth 1 https://github.com/tech-scripts/tech-scripts.git $USER_DIR/tmp/tech-scripts
 
 cd $USER_DIR/tmp/tech-scripts/misc
