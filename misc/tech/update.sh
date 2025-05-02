@@ -3,6 +3,8 @@
 cat << 'EOF' > /tmp/update.sh
 #!/usr/bin/env bash
 
+[ -w /tmp ] && USER_DIR="" || USER_DIR="~"
+
 SUDO=$(command -v sudo)
 LANGUAGE=$(grep '^lang:' /etc/tech-scripts/choose.conf | cut -d' ' -f2)
 
@@ -13,8 +15,11 @@ $SUDO rm -rf /usr/local/bin/tech
 cd "/tmp/tech-scripts/misc/tech"
 chmod +x tech.sh
 ./tech.sh
-$SUDO cp -f /tmp/tech-scripts/misc/localization.sh /etc/tech-scripts/
-$SUDO cp -f /tmp/tech-scripts/misc/variables.sh /etc/tech-scripts/
+$SUDO cp -f $USER_DIR/tmp/tech-scripts/misc/localization.sh $USER_DIR/etc/tech-scripts/
+$SUDO cp -f $USER_DIR/tmp/tech-scripts/misc/variables.sh $USER_DIR/etc/tech-scripts/
+$SUDO cp -f $USER_DIR/tmp/tech-scripts/misc/functions.sh $USER_DIR/etc/tech-scripts/
+$SUDO cp -f $USER_DIR/tmp/tech-scripts/misc/source.sh $USER_DIR/etc/tech-scripts/
+change_directory_permissions
 echo ""
 if [ "$LANGUAGE" ]; then
 echo "Обновление завершено!"
