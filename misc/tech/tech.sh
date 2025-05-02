@@ -90,4 +90,5 @@ if [ -f $TECH_COMMAND_DIR/tech ]; then
 else
     $SUDO tee $TECH_COMMAND_DIR/tech > /dev/null <<< "$TECH_SCRIPT"
     $SUDO chmod +x $TECH_COMMAND_DIR/tech
+    hash -r
 fi
