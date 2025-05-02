@@ -15,7 +15,7 @@ check_module() {
     fi
 
     [ -e "$path" ] && access_status="✓"
-    results+=("$display_name: $access_status")
+    results+=("$display_name: ")
 }
 
 choice=$(whiptail --title "$NEED_TITLE" --menu "$NEED_MENU_TITLE" 12 40 4 \
