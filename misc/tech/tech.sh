@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-[ -w /tmp ] && USER_DIR="" || USER_DIR="tech-scripts"
+[ -w /tmp ] && USER_DIR="" || USER_DIR=$HOME
 
 source $USER_DIR/etc/tech-scripts/source.sh
 
