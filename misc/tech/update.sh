@@ -30,4 +30,4 @@ echo ""
 EOF
 chmod +x /tmp/update.sh
 /tmp/update.sh
-rm -f /tmp/update.sh
+#rm -f /tmp/update.sh
