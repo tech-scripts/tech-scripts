@@ -22,11 +22,7 @@ check_module() {
 
     [ -e "$path" ] && access_status="✓"
 
-    if [[ "$access_status" == "✓" ]]; then
-        echo -e "\e[37m$display_name \e[32m✓\e[0m"
-    else
-        echo -e "\e[37m$display_name \e[31m✗\e[0m"
-    fi
+    results+=("$display_name: $access_status")
 }
 
 choice=$(whiptail --title "$NEED_TITLE" --menu "$NEED_MENU_TITLE" 12 40 4 \
@@ -42,6 +38,8 @@ case $choice in
     4) echo -e "\n$NEED_CHECKING_MODULES Все:" ;;
     *) exit 1 ;;
 esac
+
+results=()
 
 echo -e "\n$NEED_MANDATORY_MODULES"
 for module in "${mandatory_modules[@]}"; do
@@ -98,5 +96,12 @@ if [[ "$choice" == "4" ]]; then
     echo -e "\n$NEED_UNIQUE_IDS"
     check_module "hostname" "UTS namespace" "/proc/sys/kernel/hostname"
     check_module "keys" "Keyrings" "/proc/sys/kernel/keys"
-    echo ""
 fi
+
+for result in "${results[@]}"; do
+    if [[ "$result" == *"✓"* ]]; then
+        echo -e "\e[37m$result \e[32m✓\e[0m"
+    else
+        echo -e "\e[37m$result \e[31m✗\e[0m"
+    fi
+done
