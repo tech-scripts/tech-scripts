@@ -15,11 +15,6 @@ chmod +x tech.sh
 ./tech.sh
 $SUDO cp -f /tmp/tech-scripts/misc/localization.sh /etc/tech-scripts/
 $SUDO cp -f /tmp/tech-scripts/misc/variables.sh /etc/tech-scripts/
-[ -n "\$BASIC_DIRECTORY" ] && IFS=' ' read -r -a directories <<< "\$BASIC_DIRECTORY"
-
-for dir in "\${directories[@]}"; do
-    [ -d "\$dir" ] && [ "\$(stat -c "%a" "\$dir")" != "\$ACCESS" ] && \$SUDO chmod -R "\$ACCESS" "\$dir"
-done
 echo ""
 if [ "$LANGUAGE" ]; then
 echo "Обновление завершено!"
