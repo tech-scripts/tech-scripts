@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 
+[ -w /tmp ] && USER_DIR="" || USER_DIR="~"
+
 SUDO=$(command -v sudo)
-CLONE_DIR="/tmp/tech-scripts/misc"
+CLONE_DIR="$USER_DIR/tmp/tech-scripts/misc"
 
 install_package() {
     local package=$1
@@ -39,29 +41,24 @@ install_packages() {
 
 install_packages
 
-if [ -r / ]; then
-    USER_DIR=""
-else
-    USER_DIR="~"
-fi
-
 echo "USER_DIR: $USER_DIR"
 
-[ ! -d "/tmp/tech-scripts" ] && cd /tmp && git clone --depth 1 https://github.com/tech-scripts/tech-scripts.git /tmp/tech-scripts
+[ ! -d "$USER_DIR/tmp/tech-scripts" ] && cd /tmp && git clone --depth 1 https://github.com/tech-scripts/tech-scripts.git $USER_DIR/tmp/tech-scripts
 
-cd /tmp/tech-scripts/misc
+cd $USER_DIR/tmp/tech-scripts/misc
 
-$SUDO mkdir -p /etc/tech-scripts
-$SUDO cp -f /tmp/tech-scripts/misc/localization.sh /etc/tech-scripts/
-$SUDO cp -f /tmp/tech-scripts/misc/variables.sh /etc/tech-scripts/
+$SUDO mkdir -p $USER_DIR/etc/tech-scripts
+$SUDO mkdir -p $USER_DIR/usr/local/tech-scripts
+$SUDO cp -f $USER_DIR/tmp/tech-scripts/misc/localization.sh $USER_DIR/etc/tech-scripts/
+$SUDO cp -f $USER_DIR/tmp/tech-scripts/misc/variables.sh $USER_DIR/etc/tech-scripts/
 
-if [ ! -f "/etc/tech-scripts/choose.conf" ]; then
-    $SUDO touch /etc/tech-scripts/choose.conf
+if [ ! -f "$USER_DIR/etc/tech-scripts/choose.conf" ]; then
+    $SUDO touch $USER_DIR/etc/tech-scripts/choose.conf
     {
         echo "lang: English"
         echo "access: 755"
         echo "editor: nano"
-    } | $SUDO tee -a /etc/tech-scripts/choose.conf > /dev/null
+    } | $SUDO tee -a $USER_DIR/etc/tech-scripts/choose.conf > /dev/null
     $SUDO chmod +x "choose.sh"
     ./choose.sh
 fi
@@ -70,8 +67,8 @@ DIR_STACK=()
 CURRENT_DIR="$CLONE_DIR"
 EXCLUDE_FILES=("start.sh" "choose.sh" "localization.sh" "variables.sh" "*.tmp")
 
-source /etc/tech-scripts/localization.sh
-source /etc/tech-scripts/variables.sh
+source $USER_DIR/etc/tech-scripts/localization.sh
+source $USER_DIR/etc/tech-scripts/variables.sh
 
 BASIC_DIRECTORY=$(echo "$BASIC_DIRECTORY" | tr -s ' ')
 
