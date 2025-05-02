@@ -93,27 +93,27 @@ journalctl -f -u ssh | while read -r line; do
     if echo "$line" | grep -q "sshd.*Failed password"; then
         ip=$(echo "$line" | grep -oP 'from \K[0-9.]+')
         user=$(echo "$line" | grep -oP 'for \K\w+')
-        message=$(echo -e "${FAILED_SSH}\n${CONNECTION_SSH} ${PASSWORD_SSH}\n${USER_SSH} ${user}\nIP: ${ip}")
+        message=$(echo -e "$HOST_NAME_MSG $HOST_NAME\n${FAILED_SSH}\n${CONNECTION_SSH} ${PASSWORD_SSH}\n${USER_SSH} ${user}\nIP: ${ip}")
         send_telegram_message "$message"
     elif echo "$line" | grep -q "sshd.*Accepted password"; then
         ip=$(echo "$line" | grep -oP 'from \K[0-9.]+')
         user=$(echo "$line" | grep -oP 'for \K\w+')
-        message=$(echo -e "${SUCCESS_SSH}\n${CONNECTION_SSH} ${PASSWORD_SSH}\n${USER_SSH} ${user}\nIP: ${ip}")
+        message=$(echo -e "$HOST_NAME_MSG $HOST_NAME\n${SUCCESS_SSH}\n${CONNECTION_SSH} ${PASSWORD_SSH}\n${USER_SSH} ${user}\nIP: ${ip}")
         send_telegram_message "$message"
     elif echo "$line" | grep -q "sshd.*Connection closed"; then
         ip=$(echo "$line" | grep -oP 'from \K[0-9.]+')
         user=$(echo "$line" | grep -oP 'user \K\w+')
-        message=$(echo -e "${CLOSED_SSH}\n${USER_SSH} ${user}")
+        message=$(echo -e "$HOST_NAME_MSG $HOST_NAME\n${CLOSED_SSH}\n${USER_SSH} ${user}")
         send_telegram_message "$message"
     elif echo "$line" | grep -q "sshd.*Invalid user"; then
         ip=$(echo "$line" | grep -oP 'from \K[0-9.]+')
         user=$(echo "$line" | grep -oP 'Invalid user \K\w+')
-        message=$(echo -e "${FAILED_SSH}\n${CONNECTION_SSH} ${PASSWORD_SSH}\n${USER_SSH} ${user}\nIP: ${ip}")
+        message=$(echo -e "$HOST_NAME_MSG $HOST_NAME\n${FAILED_SSH}\n${CONNECTION_SSH} ${PASSWORD_SSH}\n${USER_SSH} ${user}\nIP: ${ip}")
         send_telegram_message "$message"
     elif echo "$line" | grep -q "sshd.*Accepted publickey"; then
         ip=$(echo "$line" | grep -oP 'from \K[0-9.]+')
         user=$(echo "$line" | grep -oP 'for \K\w+')
-        message=$(echo -e "${SUCCESS_SSH}\n${CONNECTION_SSH} ${KEY_SSH}\n${USER_SSH} ${user}\nIP: ${ip}")
+        message=$(echo -e "$HOST_NAME_MSG $HOST_NAME\n${SUCCESS_SSH}\n${CONNECTION_SSH} ${KEY_SSH}\n${USER_SSH} ${user}\nIP: ${ip}")
         send_telegram_message "$message"
     fi
 done
@@ -197,6 +197,9 @@ if yes_no_box "$CREATE_NOTIFY_SSH" "$CREATE_ALERT_SSH"; then
             TELEGRAM_THREAD_ID=$(input_box "Telegram Thread ID" "$SUPER_GROUP_ID_SSH")
             
             if send_test_message "$TELEGRAM_BOT_TOKEN" "$TELEGRAM_CHAT_ID" "$TELEGRAM_THREAD_ID" "$TEST_MESSAGE_SSH"; then
+            
+                HOST_NAME=$(input_box "Host Name" "$HOST_NAME")
+                
                 if yes_no_box " " "$PROHIBIT_SOUND_SSH"; then
                     SEND_SILENT=true
                 else
@@ -220,6 +223,7 @@ if yes_no_box "$CREATE_NOTIFY_SSH" "$CREATE_ALERT_SSH"; then
 TELEGRAM_BOT_TOKEN=$TELEGRAM_BOT_TOKEN
 TELEGRAM_CHAT_ID=$TELEGRAM_CHAT_ID
 TELEGRAM_THREAD_ID=$TELEGRAM_THREAD_ID
+HOST_NAME=$HOST_NAME
 SEND_SILENT=$SEND_SILENT
 PROTECT_CONTENT=$PROTECT_CONTENT
 EOF
