@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-[ -w /tmp ] && USER_DIR="" || USER_DIR="~"
+[ -w /tmp ] && USER_DIR="" || USER_DIR="tech-scripts"
 
 SUDO=$(command -v sudo)
 CLONE_DIR="$USER_DIR/tmp/tech-scripts/misc"
