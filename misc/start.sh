@@ -51,6 +51,7 @@ $SUDO mkdir -p $USER_DIR/etc/tech-scripts
 $SUDO mkdir -p $USER_DIR/usr/local/tech-scripts
 $SUDO cp -f $USER_DIR/tmp/tech-scripts/misc/localization.sh $USER_DIR/etc/tech-scripts/
 $SUDO cp -f $USER_DIR/tmp/tech-scripts/misc/variables.sh $USER_DIR/etc/tech-scripts/
+$SUDO cp -f $USER_DIR/tmp/tech-scripts/misc/functions.sh $USER_DIR/etc/tech-scripts/
 
 if [ ! -f "$USER_DIR/etc/tech-scripts/choose.conf" ]; then
     $SUDO touch $USER_DIR/etc/tech-scripts/choose.conf
