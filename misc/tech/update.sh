@@ -12,7 +12,7 @@ source $USER_DIR/etc/tech-scripts/source.sh
 cd $USER_DIR/tmp
 $SUDO rm -rf $USER_DIR/tmp/tech-scripts
 git clone --depth 1 https://github.com/tech-scripts/tech-scripts.git $USER_DIR/tmp/tech-scripts
-$SUDO rm -rf $USER_DIR/usr/local/bin/tech
+$SUDO rm -rf $TECH_COMMAND_DIR/tech
 cd $USER_DIR/tmp/tech-scripts/misc/tech
 chmod +x tech.sh
 ./tech.sh
