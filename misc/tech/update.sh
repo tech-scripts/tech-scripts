@@ -27,6 +27,6 @@ echo "Update completed!"
 fi
 echo ""
 EOF
-chmod +x /tmp/update.sh
+chmod +x $USER_DIR/tmp/update.sh
 $USER_DIR/tmp/update.sh
 rm -f /tmp/update.sh
