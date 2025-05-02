@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-source /etc/tech-scripts/localization.sh
-source /etc/tech-scripts/variables.sh
+[ -w /tmp ] && USER_DIR="" || USER_DIR="~"
+
+source $USER_DIR/etc/tech-scripts/source.sh
 
 ACCESS_LEVEL=$(whiptail --title "$ACCESS_TITLE" --menu "$ACCESS_MENU_TEXT" 12 40 4 \
 "1" "$ACCESS_OPTION1" \
