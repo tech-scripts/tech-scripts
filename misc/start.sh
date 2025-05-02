@@ -41,7 +41,7 @@ install_packages() {
 
 install_packages
 
-echo "USER_DIR: $USER_DIR"
+[ -n "$USER_DIR" ] && $SUDO mkdir -p "$USER_DIR"
 
 $SUDO mkdir -p $USER_DIR/tmp
 $SUDO mkdir -p $USER_DIR/etc
