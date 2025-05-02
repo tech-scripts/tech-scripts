@@ -71,6 +71,7 @@ if [ -f $TECH_COMMAND_DIR/tech ]; then
         $SUDO rm $TECH_COMMAND_DIR/tech
         $SUDO tee $TECH_COMMAND_DIR/tech > /dev/null <<< "$TECH_SCRIPT"
         $SUDO chmod +x $TECH_COMMAND_DIR/tech
+        hash -r
         echo " "
         echo "$MSG_UPDATED_TECH"
         echo " "
@@ -78,6 +79,7 @@ if [ -f $TECH_COMMAND_DIR/tech ]; then
         whiptail --title "$TITLE_REMOVE_TECH" --yesno "$MSG_REMOVE_TECH" 10 40
         if [ $? -eq 0 ]; then
             $SUDO rm $TECH_COMMAND_DIR/tech
+            hash -r
             echo " "
             echo "$MSG_REMOVED_TECH"
             echo " "
