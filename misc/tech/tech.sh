@@ -12,6 +12,7 @@ SUDO=$(command -v sudo)
 
 $SUDO cp -f /tmp/tech-scripts/misc/localization.sh /etc/tech-scripts/
 $SUDO cp -f /tmp/tech-scripts/misc/variables.sh /etc/tech-scripts/
+$SUDO cp -f /tmp/tech-scripts/misc/functions.sh /etc/tech-scripts/
 
 source /etc/tech-scripts/localization.sh
 source /etc/tech-scripts/variables.sh
