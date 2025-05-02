@@ -10,8 +10,11 @@ TECH_SCRIPT=$(cat <<EOF
 [ -w /tmp ] && USER_DIR="" || USER_DIR="~"
 
 SUDO=$(command -v sudo)
+CURRENT_DIR=$(pwd)
 
-[ ! -d "$USER_DIR/tmp/tech-scripts" ] && cd $USER_DIR/tmp && git clone --depth 1 https://github.com/tech-scripts/tech-scripts.git $USER_DIR/tmp/tech-scripts
+[ ! -d "$USER_DIR/tmp/tech-scripts" ] && cd $USER_DIR/tmp && git clone --depth 1 https://github.com/tech-scripts/tech-scripts.git
+
+cd "$CURRENT_DIR"
 
 $SUDO cp -f $USER_DIR/tmp/tech-scripts/misc/localization.sh $USER_DIR/etc/tech-scripts/
 $SUDO cp -f $USER_DIR/tmp/tech-scripts/misc/variables.sh $USER_DIR/etc/tech-scripts/
