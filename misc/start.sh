@@ -43,7 +43,7 @@ install_packages
 
 echo "USER_DIR: $USER_DIR"
 
-[ ! -d "$USER_DIR/tmp/tech-scripts" ] && cd /tmp && git clone --depth 1 https://github.com/tech-scripts/tech-scripts.git $USER_DIR/tmp/tech-scripts
+[ ! -d "$USER_DIR/tmp/tech-scripts" ] && cd $USER_DIR/tmp && git clone --depth 1 https://github.com/tech-scripts/tech-scripts.git $USER_DIR/tmp/tech-scripts
 
 cd $USER_DIR/tmp/tech-scripts/misc
 
