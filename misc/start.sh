@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-[ -w /tmp ] && USER_DIR="" || USER_DIR="tech-scripts"
+[ -w /tmp ] && USER_DIR="" || USER_DIR=$(pwd)
 
 SUDO=$(command -v sudo)
 CURRENT_DIR=$(pwd)
@@ -75,6 +75,8 @@ fi
 DIR_STACK=()
 CURRENT_DIR="$CLONE_DIR"
 EXCLUDE_FILES=("start.sh" "choose.sh" "localization.sh" "variables.sh" "functions.sh" "source.sh" "*.tmp")
+
+cd "$CURRENT_DIR"
 
 source $USER_DIR/etc/tech-scripts/source.sh
 
