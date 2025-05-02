@@ -65,19 +65,19 @@ esac
 EOF
 )
 
-if [ -f $USER_DIR/usr/local/bin/tech ]; then
+if [ -f $TECH_COMMAND_DIR/tech ]; then
     whiptail --title "$TITLE_UPDATE_TECH" --yesno "$MSG_UPDATE_TECH" 10 40
     if [ $? -eq 0 ]; then
-        $SUDO rm $USER_DIR/usr/local/bin/tech
-        $SUDO tee $USER_DIR/usr/local/bin/tech > /dev/null <<< "$TECH_SCRIPT"
-        $SUDO chmod +x $USER_DIR/usr/local/bin/tech
+        $SUDO rm $TECH_COMMAND_DIR/tech
+        $SUDO tee $TECH_COMMAND_DIR/tech > /dev/null <<< "$TECH_SCRIPT"
+        $SUDO chmod +x $TECH_COMMAND_DIR/tech
         echo " "
         echo "$MSG_UPDATED_TECH"
         echo " "
     else
         whiptail --title "$TITLE_REMOVE_TECH" --yesno "$MSG_REMOVE_TECH" 10 40
         if [ $? -eq 0 ]; then
-            $SUDO rm $USER_DIR/usr/local/bin/tech
+            $SUDO rm $TECH_COMMAND_DIR/tech
             echo " "
             echo "$MSG_REMOVED_TECH"
             echo " "
@@ -86,6 +86,6 @@ if [ -f $USER_DIR/usr/local/bin/tech ]; then
         fi
     fi
 else
-    $SUDO tee $USER_DIR/usr/local/bin/tech > /dev/null <<< "$TECH_SCRIPT"
-    $SUDO chmod +x $USER_DIR/usr/local/bin/tech
+    $SUDO tee $TECH_COMMAND_DIR/tech > /dev/null <<< "$TECH_SCRIPT"
+    $SUDO chmod +x $TECH_COMMAND_DIR/tech
 fi
