@@ -1,37 +1,38 @@
 #!/usr/bin/env bash
 
-[ -w /tmp ] && USER_DIR="" || USER_DIR=$HOME
+# Determine user directory based on write access to /tmp
+USER_DIR=$( [ -w /tmp ] && echo "" || echo "$HOME" )
 
-source $USER_DIR/etc/tech-scripts/source.sh
+# Source external script
+source "$USER_DIR/etc/tech-scripts/source.sh"
 
+# Function to check if a module is loaded or accessible
 check_module() {
     local name="$1"
     local display_name="$2"
     local path="$3"
     local module_dir="/lib/modules/$(uname -r)/kernel/$name"
     local access_status="✗"
-    local has_lsmod=$(command -v lsmod &> /dev/null && echo "true" || echo "false")
-    local has_modprobe=$(command -v modprobe &> /dev/null && echo "true" || echo "false")
 
-    if [[ "$has_lsmod" == "true" ]] && lsmod | grep -q "$name"; then
-        access_status="✓"
-    elif [[ "$has_lsmod" == "true" ]] && [ -d "$module_dir" ] && [ -r "$module_dir" ] && [ -w "$module_dir" ] && [ -x "$module_dir" ]; then
-        access_status="✓"
-    elif [[ "$has_modprobe" == "true" ]] && modprobe "$name" &> /dev/null; then
+    # Check if the module is loaded or accessible
+    if lsmod | grep -q "$name" || [ -d "$module_dir" ] && [ -r "$module_dir" ] && [ -w "$module_dir" ] && [ -x "$module_dir" ] || modprobe "$name" &> /dev/null; then
         access_status="✓"
     fi
 
+    # Check if the path exists
     [ -e "$path" ] && access_status="✓"
 
     results+=("$display_name: $access_status")
 }
 
+# Display menu and get user choice
 choice=$(whiptail --title "$NEED_TITLE" --menu "$NEED_MENU_TITLE" 12 40 4 \
 "1" "Docker" \
 "2" "Podman" \
 "3" "LXC" \
 "4" "$NEED_ALL" 3>&1 1>&2 2>&3)
 
+# Define mandatory and optional modules based on user choice
 case $choice in
     1) mandatory_modules=("overlay" "br_netfilter" "ip_tables" "ip6_tables" "nf_nat"); optional_modules=("fuse" "nfs" "cifs" "seccomp" "audit" "lockdown"); echo -e "\n$NEED_CHECKING_MODULES Docker:" ;;
     2) mandatory_modules=("overlay" "br_netfilter" "ip_tables" "ip6_tables" "nf_nat" "cgroup" "namespace"); optional_modules=("fuse" "nfs" "cifs" "seccomp" "audit" "lockdown"); echo -e "\n$NEED_CHECKING_MODULES Podman:" ;;
@@ -42,6 +43,7 @@ esac
 
 results=()
 
+# Check mandatory modules
 echo -e "\n$NEED_MANDATORY_MODULES"
 for module in "${mandatory_modules[@]}"; do
     case $module in
@@ -55,6 +57,7 @@ for module in "${mandatory_modules[@]}"; do
     esac
 done
 
+# Check optional modules
 echo -e "\n$NEED_OPTIONAL_MODULES"
 for module in "${optional_modules[@]}"; do
     case $module in
@@ -67,6 +70,7 @@ for module in "${optional_modules[@]}"; do
     esac
 done
 
+# If "Все" is selected, check additional modules
 if [[ "$choice" == "4" ]]; then
     echo -e "\n$NEED_SYSTEM_MODULES"
     check_module "overlay" "OverlayFS" "/sys/module/overlay"
@@ -99,6 +103,7 @@ if [[ "$choice" == "4" ]]; then
     check_module "keys" "Keyrings" "/proc/sys/kernel/keys"
 fi
 
+# Display results
 for result in "${results[@]}"; do
     if [[ "$result" == *"✓"* ]]; then
         echo -e "\e[37m$result \e[32m✓\e[0m"
