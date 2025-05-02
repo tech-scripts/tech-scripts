@@ -3,11 +3,13 @@
 # Цветовые коды для вывода
 GREEN="\\e[32m"
 RED="\\e[31m"
+YELLOW="\\e[33m"
 RESET="\\e[0m"
 
 # Символы для статуса
 CHECK_MARK="✓"
 CROSS_MARK="✗"
+QUESTION_MARK="?"
 
 # Определение массива категорий с модулями
 categories=(
@@ -37,16 +39,38 @@ categories=(
 check_module() {
   local mod=$1
 
+  # Проверка загрузки через lsmod
   if lsmod | grep -qw "^${mod}"; then
     echo -e "  ${GREEN}${CHECK_MARK}${RESET} ${mod} (загружен)"
     return
   fi
 
-  if find /lib/modules/$(uname -r) -type f -name "${mod}.ko*" -print -quit | grep -q .; then
-    echo -e "  ${GREEN}${CHECK_MARK}${RESET} ${mod} (доступен, но не загружен)"
-  else
-    echo -e "  ${RED}${CROSS_MARK}${RESET} ${mod} (не доступен)"
+  # Проверка в /proc/modules (загружен ли)
+  if grep -qw "^${mod}" /proc/modules 2>/dev/null; then
+    echo -e "  ${GREEN}${CHECK_MARK}${RESET} ${mod} (загружен)"
+    return
   fi
+
+  # Проверка наличия ko файла через modinfo (проверяет и наличие и доступность)
+  if modinfo "$mod" &>/dev/null; then
+    echo -e "  ${GREEN}${CHECK_MARK}${RESET} ${mod} (доступен, но не загружен)"
+    return
+  fi
+
+  # Проверка файла ko напрямую в каталоге модулей
+  if find /lib/modules/$(uname -r) -type f -name "${mod}.ko*" -print -quit | grep -q .; then
+    echo -e "  ${YELLOW}${QUESTION_MARK}${RESET} ${mod} (файл модуля найден, но modinfo не подтвердил)"
+    return
+  fi
+
+  # Попытка проверить модуль через modprobe в режиме имитации (-n)
+  if modprobe -n -v "$mod" &>/dev/null; then
+    echo -e "  ${YELLOW}${QUESTION_MARK}${RESET} ${mod} (модуль можно загрузить)"
+    return
+  fi
+
+  # Если ничего не найдено - недоступен
+  echo -e "  ${RED}${CROSS_MARK}${RESET} ${mod} (не доступен)"
 }
 
 echo -e "Проверка модулей ядра и их статуса:\n"
@@ -55,10 +79,11 @@ for category in "${categories[@]}"; do
   # Извлекаем название категории и модули
   cat_name=$(echo "$category" | cut -d':' -f1)
   mods=$(echo "$category" | cut -d':' -f2)
-  
+
   echo -e "\e[1m${cat_name}:\e[0m"
   for mod in $mods; do
     check_module "$mod"
   done
   echo
 done
+
