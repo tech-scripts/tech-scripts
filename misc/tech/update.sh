@@ -5,8 +5,7 @@ cat << 'EOF' > /tmp/update.sh
 
 [ -w /tmp ] && USER_DIR="" || USER_DIR="~"
 
-SUDO=$(command -v sudo)
-LANGUAGE=$(grep '^lang:' /etc/tech-scripts/choose.conf | cut -d' ' -f2)
+source $USER_DIR/etc/tech-scripts/source.sh
 
 cd /tmp
 $SUDO rm -rf /tmp/tech-scripts
