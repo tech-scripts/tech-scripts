@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-[ -w /tmp ] && USER_DIR="" || USER_DIR="tech-scripts"
+[ -w /tmp ] && USER_DIR="" || USER_DIR=$(pwd)
 
 SUDO=$(command -v sudo)
 
