@@ -18,7 +18,7 @@ while IFS= read -r line; do
             disk_choices+=("$device" "$mount_point")
         fi
     fi
-done < <(df -h --output=source,target | tail -n +2)
+done < <(df -h | tail -n +2)
 
 if [ ${#disk_choices[@]} -eq 0 ]; then
     echo "$MSG_NO_MOUNTS_DISK"
