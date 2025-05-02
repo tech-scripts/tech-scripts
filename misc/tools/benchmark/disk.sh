@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-source /etc/tech-scripts/localization.sh
-source /etc/tech-scripts/variables.sh
+[ -w /tmp ] && USER_DIR="" || USER_DIR="~"
+
+source $USER_DIR/etc/tech-scripts/source.sh
 
 disk_choices=()
 system_disk=$(df / | awk 'NR==2 {print $1}' | sed 's|/dev/||' | sed 's/[0-9]*$//')
