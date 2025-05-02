@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-source /etc/tech-scripts/localization.sh
-source /etc/tech-scripts/variables.sh
+[ -w /tmp ] && USER_DIR="" || USER_DIR="~"
+
+source $USER_DIR/etc/tech-scripts/source.sh
 
 show_temperature_info_SYSTEM() {
     if ! command -v sensors &>/dev/null; then
