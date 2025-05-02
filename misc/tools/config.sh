@@ -63,7 +63,7 @@ show_menu() {
             done
         fi
 
-        [ "$CURRENT_DIR" != "/" ] && { CHOICES+=("$MSG_BACK"); DISPLAY_NAMES+=("$MSG_BACK $OPTION_FORMAT"); }
+        [ "$CURRENT_DIR" != "$USER_DIR/" ] && { CHOICES+=("$MSG_BACK"); DISPLAY_NAMES+=("$MSG_BACK $OPTION_FORMAT"); }
 
         [ ${#CHOICES[@]} -eq 0 ] && { echo "$MSG_NO_SCRIPTS"; exit 0; }
 
@@ -106,7 +106,7 @@ show_menu() {
     done
 }
 DIR_STACK=()
-CURRENT_DIR="/"
+CURRENT_DIR="$USER_DIR/"
 cd "$CURRENT_DIR" || { echo "$MSG_CD_ERROR"; exit 1; }
 
 show_menu
