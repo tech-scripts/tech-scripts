@@ -117,6 +117,8 @@ if [[ "$LANGUAGE" == "Русский" ]]; then
     PASSWORD_SSH="пароль"
     KEY_SSH="ключ ssh"
     HOST_NAME_MSG="Хост:"
+    HOST_NAME_SSH="Введите название хоста:"
+    SELECTION_MENU="Меню выбора"
     
     INSTALL_MSG="Хотите установить скрипт автозапуска?"
     EDIT_MSG="Хотите открыть $AUTOSTART_SCRIPT для редактирования?"
@@ -333,7 +335,9 @@ else
     PASSWORD_SSH="password"
     KEY_SSH="SSH key"
     HOST_NAME_MSG="Host:"
-    
+    HOST_NAME_SSH="Enter the host name:"
+    SELECTION_MENU="Selection menu"
+
     INSTALL_MSG="Do you want to install the autostart script?"
     EDIT_MSG="Do you want to open $AUTOSTART_SCRIPT for editing?"
     INVALID_EDITOR="Invalid editor choice. Please choose nano or vim."
