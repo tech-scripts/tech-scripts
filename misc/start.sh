@@ -55,6 +55,7 @@ cd $USER_DIR/tmp/tech-scripts/misc
 
 $SUDO mkdir -p $USER_DIR/etc/tech-scripts
 $SUDO mkdir -p $USER_DIR/usr/local/tech-scripts
+$SUDO mkdir -p $USER_DIR/usr/local/bin
 
 $SUDO cp -f $USER_DIR/tmp/tech-scripts/misc/localization.sh $USER_DIR/etc/tech-scripts/
 $SUDO cp -f $USER_DIR/tmp/tech-scripts/misc/variables.sh $USER_DIR/etc/tech-scripts/
