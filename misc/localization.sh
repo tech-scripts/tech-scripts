@@ -116,6 +116,7 @@ if [[ "$LANGUAGE" == "Русский" ]]; then
     USER_SSH="Пользователь:"
     PASSWORD_SSH="пароль"
     KEY_SSH="ключ ssh"
+    HOST_NAME_MSG="Имя хоста:"
     
     INSTALL_MSG="Хотите установить скрипт автозапуска?"
     EDIT_MSG="Хотите открыть $AUTOSTART_SCRIPT для редактирования?"
@@ -331,6 +332,7 @@ else
     USER_SSH="User:"
     PASSWORD_SSH="password"
     KEY_SSH="SSH key"
+    HOST_NAME_MSG="Name host:"
     
     INSTALL_MSG="Do you want to install the autostart script?"
     EDIT_MSG="Do you want to open $AUTOSTART_SCRIPT for editing?"
