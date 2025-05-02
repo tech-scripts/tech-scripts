@@ -198,15 +198,15 @@ if yes_no_box "$CREATE_NOTIFY_SSH" "$CREATE_ALERT_SSH"; then
             
             if send_test_message "$TELEGRAM_BOT_TOKEN" "$TELEGRAM_CHAT_ID" "$TELEGRAM_THREAD_ID" "$TEST_MESSAGE_SSH"; then
             
-                HOST_NAME=$(input_box "Host Name" "$HOST_NAME")
+                HOST_NAME=$(input_box "Host Name" "$HOST_NAME_SSH")
                 
-                if yes_no_box " " "$PROHIBIT_SOUND_SSH"; then
+                if yes_no_box "$SELECTION_MENU" "$PROHIBIT_SOUND_SSH"; then
                     SEND_SILENT=true
                 else
                     SEND_SILENT=false
                 fi
                 
-                if yes_no_box " " "$PROHIBIT_FORWARDING_SSH"; then
+                if yes_no_box "$SELECTION_MENU" "$PROHIBIT_FORWARDING_SSH"; then
                     PROTECT_CONTENT=true
                 else
                     PROTECT_CONTENT=false
