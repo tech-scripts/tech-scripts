@@ -47,7 +47,7 @@ $SUDO mkdir -p $USER_DIR/tmp
 $SUDO mkdir -p $USER_DIR/etc
 $SUDO mkdir -p $USER_DIR/usr
 
-[ ! -d "$USER_DIR/tmp/tech-scripts" ] && cd $USER_DIR/tmp && git clone --depth 1 https://github.com/tech-scripts/tech-scripts.git $USER_DIR/tmp/tech-scripts
+[ ! -d "$USER_DIR/tmp/tech-scripts" ] && cd $USER_DIR/tmp && git clone --depth 1 https://github.com/tech-scripts/tech-scripts.git
 
 cd $USER_DIR/tmp/tech-scripts/misc
 
