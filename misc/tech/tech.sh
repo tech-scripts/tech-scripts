@@ -11,7 +11,7 @@ TECH_SCRIPT=$(cat <<EOF
 
 SUDO=$(command -v sudo)
 
-[ ! -d "/tmp/tech-scripts" ] && cd /tmp && git clone --depth 1 https://github.com/tech-scripts/tech-scripts.git /tmp/tech-scripts
+[ ! -d "$USER_DIR/tmp/tech-scripts" ] && cd $USER_DIR/tmp && git clone --depth 1 https://github.com/tech-scripts/tech-scripts.git $USER_DIR/tmp/tech-scripts
 
 $SUDO cp -f $USER_DIR/tmp/tech-scripts/misc/localization.sh $USER_DIR/etc/tech-scripts/
 $SUDO cp -f $USER_DIR/tmp/tech-scripts/misc/variables.sh $USER_DIR/etc/tech-scripts/
@@ -37,7 +37,7 @@ run_script() {
 }
 
 if [ \$# -eq 0 ]; then
-    cd /tmp/tech-scripts/misc
+    cd $USER_DIR/tmp/tech-scripts/misc
     chmod +x start.sh
     ./start.sh
     exit 0
@@ -65,19 +65,19 @@ esac
 EOF
 )
 
-if [ -f /usr/local/bin/tech ]; then
+if [ -f $USER_DIR/usr/local/bin/tech ]; then
     whiptail --title "$TITLE_UPDATE_TECH" --yesno "$MSG_UPDATE_TECH" 10 40
     if [ $? -eq 0 ]; then
-        $SUDO rm /usr/local/bin/tech
-        $SUDO tee /usr/local/bin/tech > /dev/null <<< "$TECH_SCRIPT"
-        $SUDO chmod +x /usr/local/bin/tech
+        $SUDO rm $USER_DIR/usr/local/bin/tech
+        $SUDO tee $USER_DIR/usr/local/bin/tech > /dev/null <<< "$TECH_SCRIPT"
+        $SUDO chmod +x $USER_DIR/usr/local/bin/tech
         echo " "
         echo "$MSG_UPDATED_TECH"
         echo " "
     else
         whiptail --title "$TITLE_REMOVE_TECH" --yesno "$MSG_REMOVE_TECH" 10 40
         if [ $? -eq 0 ]; then
-            $SUDO rm /usr/local/bin/tech
+            $SUDO rm $USER_DIR/usr/local/bin/tech
             echo " "
             echo "$MSG_REMOVED_TECH"
             echo " "
@@ -86,6 +86,6 @@ if [ -f /usr/local/bin/tech ]; then
         fi
     fi
 else
-    $SUDO tee /usr/local/bin/tech > /dev/null <<< "$TECH_SCRIPT"
-    $SUDO chmod +x /usr/local/bin/tech
+    $SUDO tee $USER_DIR/usr/local/bin/tech > /dev/null <<< "$TECH_SCRIPT"
+    $SUDO chmod +x $USER_DIR/usr/local/bin/tech
 fi
