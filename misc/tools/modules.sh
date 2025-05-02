@@ -53,7 +53,9 @@ echo -e "Проверка модулей ядра и их статуса:\n"
 
 for category in "${categories[@]}"; do
   # Извлекаем название категории и модули
-  IFS=": " read -r cat_name mods <<< "$category"
+  cat_name=$(echo "$category" | cut -d':' -f1)
+  mods=$(echo "$category" | cut -d':' -f2)
+  
   echo -e "\e[1m${cat_name}:\e[0m"
   for mod in $mods; do
     check_module "$mod"
