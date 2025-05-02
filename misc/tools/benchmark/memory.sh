@@ -28,7 +28,7 @@ install_npm() {
 if ! command -v sysbench &>/dev/null; then
     if whiptail --title "$INSTALL_TITLE" --yesno "$INSTALL_QUESTION" 10 60; then
         install_npm
-        cd /tmp
+        cd $USER_DIR/tmp
         git clone https://github.com/akopytov/sysbench.git
         cd sysbench
         ./autogen.sh
