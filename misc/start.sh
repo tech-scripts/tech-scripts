@@ -3,6 +3,7 @@
 [ -w /tmp ] && USER_DIR="" || USER_DIR="tech-scripts"
 
 SUDO=$(command -v sudo)
+CURRENT_DIR=$(pwd)
 CLONE_DIR="$USER_DIR/tmp/tech-scripts/misc"
 
 install_package() {
@@ -49,6 +50,7 @@ $SUDO mkdir -p $USER_DIR/usr
 
 [ ! -d "$USER_DIR/tmp/tech-scripts" ] && cd $USER_DIR/tmp && git clone --depth 1 https://github.com/tech-scripts/tech-scripts.git
 
+cd "$CURRENT_DIR"
 cd $USER_DIR/tmp/tech-scripts/misc
 
 $SUDO mkdir -p $USER_DIR/etc/tech-scripts
