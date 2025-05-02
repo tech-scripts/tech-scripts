@@ -3,7 +3,7 @@
 [ -w /tmp ] && USER_DIR="" || USER_DIR=$HOME
 
 source $USER_DIR/etc/tech-scripts/source.sh
-
+echo "$USER_DIR/etc/tech-scripts/source.sh"
 if ! command -v pct &> /dev/null; then
     echo ""
     echo "$PCT_NOT_FOUND"
