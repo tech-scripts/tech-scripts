@@ -43,8 +43,8 @@ esac
 
 results=()
 
-# Check mandatory modules
-echo -e "\n$NEED_MANDATORY_MODULES"
+# Display results
+echo -e "\n$NEED_SYSTEM_MODULES"
 for module in "${mandatory_modules[@]}"; do
     case $module in
         "overlay") check_module "overlay" "OverlayFS" "/sys/module/overlay" ;;
@@ -57,57 +57,39 @@ for module in "${mandatory_modules[@]}"; do
     esac
 done
 
-# Check optional modules
-echo -e "\n$NEED_OPTIONAL_MODULES"
+echo -e "\n$NEED_FILESYSTEMS"
 for module in "${optional_modules[@]}"; do
     case $module in
         "fuse") check_module "fuse" "FUSE" "/sys/fs/fuse" ;;
         "nfs") check_module "nfs" "NFS" "/proc/fs/nfsd" ;;
         "cifs") check_module "cifs" "SMB/KIFC" "/proc/fs/cifs" ;;
-        "seccomp") check_module "seccomp" "Seccomp" "/proc/sys/kernel/seccomp" ;;
-        "audit") check_module "audit" "Kernel Auditing" "/proc/sys/kernel/audit" ;;
-        "lockdown") check_module "lockdown" "Kernel Lockdown" "/proc/sys/kernel/lockdown" ;;
     esac
 done
 
-# If "Все" is selected, check additional modules
-if [[ "$choice" == "4" ]]; then
-    echo -e "\n$NEED_SYSTEM_MODULES"
-    check_module "overlay" "OverlayFS" "/sys/module/overlay"
-    check_module "br_netfilter" "br_netfilter" "/sys/module/br_netfilter"
-    check_module "ip_tables" "ip_tables" "/sys/module/ip_tables"
-    check_module "ip6_tables" "ip6_tables" "/sys/module/ip6_tables"
-    check_module "nf_nat" "nf_nat" "/sys/module/nf_nat"
+echo -e "\n$NEED_NETWORK_MODULES"
+check_module "ip_forward" "Network namespaces" "/proc/sys/net/ipv4/ip_forward"
+check_module "capabilities" "Capabilities" "/proc/sys/kernel/cap_last_cap"
 
-    echo -e "\n$NEED_FILESYSTEMS"
-    check_module "fuse" "FUSE" "/sys/fs/fuse"
-    check_module "nfs" "NFS" "/proc/fs/nfsd"
-    check_module "cifs" "SMB/KIFC" "/proc/fs/cifs"
+echo -e "\n$NEED_IPC"
+check_module "shmmax" "Shared Memory" "/proc/sys/kernel/shmmax"
+check_module "msgmax" "Message Queues" "/proc/sys/kernel/msgmax"
+check_module "sem" "Semaphores" "/proc/sys/kernel/sem"
 
-    echo -e "\n$NEED_NETWORK_MODULES"
-    check_module "ip_forward" "Network namespaces" "/proc/sys/net/ipv4/ip_forward"
-    check_module "capabilities" "Capabilities" "/proc/sys/kernel/cap_last_cap"
+echo -e "\n$NEED_SECURITY"
+check_module "audit" "Kernel Auditing" "/proc/sys/kernel/audit"
+check_module "lockdown" "Kernel Lockdown" "/proc/sys/kernel/lockdown"
+check_module "cgroups" "cgroups" "/proc/cgroups"
 
-    echo -e "\n$NEED_IPC"
-    check_module "shmmax" "Shared Memory" "/proc/sys/kernel/shmmax"
-    check_module "msgmax" "Message Queues" "/proc/sys/kernel/msgmax"
-    check_module "sem" "Semaphores" "/proc/sys/kernel/sem"
+echo -e "\n$NEED_UNIQUE_IDS"
+check_module "hostname" "UTS namespace" "/proc/sys/kernel/hostname"
+check_module "keys" "Keyrings" "/proc/sys/kernel/keys"
 
-    echo -e "\n$NEED_SECURITY"
-    check_module "audit" "Kernel Auditing" "/proc/sys/kernel/audit"
-    check_module "lockdown" "Kernel Lockdown" "/proc/sys/kernel/lockdown"
-    check_module "cgroups" "cgroups" "/proc/cgroups"
-
-    echo -e "\n$NEED_UNIQUE_IDS"
-    check_module "hostname" "UTS namespace" "/proc/sys/kernel/hostname"
-    check_module "keys" "Keyrings" "/proc/sys/kernel/keys"
-fi
-
-# Display results
+# Display results without double checkmarks or crosses
+echo -e "\nРезультаты проверки модулей:"
 for result in "${results[@]}"; do
     if [[ "$result" == *"✓"* ]]; then
-        echo -e "\e[37m$result \e[32m✓\e[0m"
+        echo -e "\e[37m$result \e[32m✓\e[0m"  # Green checkmark for success
     else
-        echo -e "\e[37m$result \e[31m✗\e[0m"
+        echo -e "\e[37m$result \e[31m✗\e[0m"  # Red cross for failure
     fi
 done
