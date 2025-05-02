@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-[ -w /tmp ] && USER_DIR="" || USER_DIR=$(pwd)
+[ -w /tmp ] && USER_DIR="" || USER_DIR=$HOME
 
 SUDO=$(command -v sudo)
 
