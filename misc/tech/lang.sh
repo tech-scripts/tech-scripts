@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+[ -w /tmp ] && USER_DIR="" || USER_DIR="~"
+
 SUDO=$(command -v sudo)
 
 LANGUAGE=$(whiptail --title "Language Selection" --menu "" 12 40 2 \
@@ -23,7 +25,7 @@ case $LANGUAGE in
         ;;
 esac
 
-sed -i "1s/.*/lang: $lang/" /etc/tech-scripts/choose.conf
+sed -i "1s/.*/lang: $lang/" $USER_DIR/etc/tech-scripts/choose.conf
 
 if [ "$lang" = "Русский" ]; then
     echo " "
