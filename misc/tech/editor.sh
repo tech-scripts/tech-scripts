@@ -4,8 +4,8 @@
 
 source $USER_DIR/etc/tech-scripts/source.sh
 
-[ ! -d "/etc/tech-scripts" ] && $SUDO mkdir -p /etc/tech-scripts
-[ ! -f "/etc/tech-scripts/choose.conf" ] && $SUDO touch /etc/tech-scripts/choose.conf
+[ ! -d "$USER_DIR/etc/tech-scripts" ] && $SUDO mkdir -p $USER_DIR/etc/tech-scripts
+[ ! -f "$USER_DIR/etc/tech-scripts/choose.conf" ] && $SUDO touch $USER_DIR/etc/tech-scripts/choose.conf
 
 EDITOR=$(whiptail --title "$TITLE_EDITOR" --menu "" 12 40 3 \
     1 "nano" \
@@ -34,7 +34,7 @@ case $EDITOR in
         ;;
 esac
 
-sed -i "3s/.*/editor: $editor/" /etc/tech-scripts/choose.conf
+sed -i "3s/.*/editor: $editor/" $USER_DIR/etc/tech-scripts/choose.conf
 
 echo " "
 echo "$MSG_SUCCESS_EDITOR $editor"
