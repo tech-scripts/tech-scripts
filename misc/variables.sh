@@ -3,6 +3,7 @@
 [ -w /tmp ] && USER_DIR="" || USER_DIR="tech-scripts"
 
 SUDO=$(command -v sudo)
+CURRENT_DIR=$(pwd)
 LANGUAGE=$(grep '^lang:' /etc/tech-scripts/choose.conf | cut -d ' ' -f 2)
 EDITOR=$(grep '^editor:' /etc/tech-scripts/choose.conf | cut -d ' ' -f 2)
 ACCESS=$(grep '^access:' /etc/tech-scripts/choose.conf | cut -d ' ' -f 2)
