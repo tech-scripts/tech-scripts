@@ -22,7 +22,7 @@ categories=(
   "13. Поддержка RAID: md_mod dm_raid raid1 raid5 raid6"
   "14. Подключение к сети: ath9k iwlwifi wpa_supplicant ethdev macsec"
   "15. Поддержка Bluetooth: bluetooth btusb btrtl btqca btintel"
-  "16. Поддержка контейнеров и изоляции: cgroup namespaces seccomp overlayfs apparmor"
+  "16. Поддержка контейнеров и изоляции: cgroups namespaces seccomp overlayfs apparmor fuse"
   "17. Системы хранения и протоколы: scsi_mod nvme fiberchannel iscsi_tcp rdma"
   "18. Системная шина: pci pci_hotplug platform usbcore acpi"
   "21. Другие важные модули: dm_mod loop autofs seccomp"
