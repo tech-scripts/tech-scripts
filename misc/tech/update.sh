@@ -11,9 +11,11 @@ cd $USER_DIR/tmp
 $SUDO rm -rf /tmp/tech-scripts
 git clone --depth 1 https://github.com/tech-scripts/tech-scripts.git $USER_DIR/tmp/tech-scripts
 $SUDO rm -rf /usr/local/bin/tech
+cd "$CURRENT_DIR"
 cd $USER_DIR/tmp/tech-scripts/misc/tech
 chmod +x tech.sh
 ./tech.sh
+cd "$CURRENT_DIR"
 $SUDO cp -f $USER_DIR/tmp/tech-scripts/misc/localization.sh $USER_DIR/etc/tech-scripts/
 $SUDO cp -f $USER_DIR/tmp/tech-scripts/misc/variables.sh $USER_DIR/etc/tech-scripts/
 $SUDO cp -f $USER_DIR/tmp/tech-scripts/misc/functions.sh $USER_DIR/etc/tech-scripts/
