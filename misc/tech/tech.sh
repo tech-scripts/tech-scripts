@@ -6,16 +6,18 @@ source /etc/tech-scripts/variables.sh
 TECH_SCRIPT=$(cat <<EOF
 #!/usr/bin/env bash
 
+[ -w /tmp ] && USER_DIR="" || USER_DIR="~"
+
 SUDO=$(command -v sudo)
 
 [ ! -d "/tmp/tech-scripts" ] && cd /tmp && git clone --depth 1 https://github.com/tech-scripts/tech-scripts.git /tmp/tech-scripts
 
-$SUDO cp -f /tmp/tech-scripts/misc/localization.sh /etc/tech-scripts/
-$SUDO cp -f /tmp/tech-scripts/misc/variables.sh /etc/tech-scripts/
-$SUDO cp -f /tmp/tech-scripts/misc/functions.sh /etc/tech-scripts/
+$SUDO cp -f $USER_DIR/tmp/tech-scripts/misc/localization.sh $USER_DIR/etc/tech-scripts/
+$SUDO cp -f $USER_DIR/tmp/tech-scripts/misc/variables.sh $USER_DIR/etc/tech-scripts/
+$SUDO cp -f $USER_DIR/tmp/tech-scripts/misc/functions.sh $USER_DIR/etc/tech-scripts/
+$SUDO cp -f $USER_DIR/tmp/tech-scripts/misc/source.sh $USER_DIR/etc/tech-scripts/
 
-source /etc/tech-scripts/localization.sh
-source /etc/tech-scripts/variables.sh
+source $USER_DIR/etc/tech-scripts/source.sh
 
 BASIC_DIRECTORY=\$(echo "\$BASIC_DIRECTORY" | tr -s ' ')
 
