@@ -36,7 +36,7 @@ if ! command -v sysbench &>/dev/null; then
         make -j$(nproc)
         $SUDO make install
         cd ..
-        $SUDO rm -rf sysbench
+        #$SUDO rm -rf sysbench
     else
         exit 1
     fi
