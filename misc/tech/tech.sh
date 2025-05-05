@@ -13,10 +13,10 @@ SUDO=$(command -v sudo)
 
 [ ! -d "$USER_DIR/tmp/tech-scripts" ] && cd $USER_DIR/tmp && git clone --depth 1 https://github.com/tech-scripts/tech-scripts.git
 
-$SUDO cp -f $USER_DIR/tmp/tech-scripts/misc/localization.sh $USER_DIR/etc/tech-scripts/
-$SUDO cp -f $USER_DIR/tmp/tech-scripts/misc/variables.sh $USER_DIR/etc/tech-scripts/
-$SUDO cp -f $USER_DIR/tmp/tech-scripts/misc/functions.sh $USER_DIR/etc/tech-scripts/
-$SUDO cp -f $USER_DIR/tmp/tech-scripts/misc/source.sh $USER_DIR/etc/tech-scripts/
+cp -f $USER_DIR/tmp/tech-scripts/misc/localization.sh $USER_DIR/etc/tech-scripts/
+cp -f $USER_DIR/tmp/tech-scripts/misc/variables.sh $USER_DIR/etc/tech-scripts/
+cp -f $USER_DIR/tmp/tech-scripts/misc/functions.sh $USER_DIR/etc/tech-scripts/
+cp -f $USER_DIR/tmp/tech-scripts/misc/source.sh $USER_DIR/etc/tech-scripts/
 
 source $USER_DIR/etc/tech-scripts/source.sh
 
