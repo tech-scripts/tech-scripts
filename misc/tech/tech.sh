@@ -20,12 +20,14 @@ cp -f $USER_DIR/tmp/tech-scripts/misc/source.sh $USER_DIR/etc/tech-scripts/
 
 source $USER_DIR/etc/tech-scripts/source.sh
 
-BASIC_DIRECTORY=\$(echo "\$BASIC_DIRECTORY" | tr -s ' ')
+BASIC_DIRECTORY=$(echo "$BASIC_DIRECTORY" | tr -s ' ')
 
-[ -n "\$BASIC_DIRECTORY" ] && IFS=' ' read -r -a directories <<< "\$BASIC_DIRECTORY"
+[ -n "$BASIC_DIRECTORY" ] && IFS=' ' read -r -a directories <<< "$BASIC_DIRECTORY"
 
-for dir in "\${directories[@]}"; do
-    [ -d "\$dir" ] && [ "\$(stat -c "%a" "\$dir")" != "\$ACCESS" ] && echo "$ACCESS $dir" && \$SUDO chmod -R "\$ACCESS" "\$dir"
+for dir in "${directories[@]}"; do
+    if [ -n "$dir" ] && [ -d "$dir" ]; then
+        [ "$(stat -c "%a" "$dir")" != "$ACCESS" ] && echo "$ACCESS $dir" && $SUDO chmod -R "$ACCESS" "$dir"
+    fi
 done
 
 run_script() {
