@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-echo "-2"
+
 [ -w /tmp ] && USER_DIR="" || USER_DIR=$HOME
 
 SUDO=$(command -v sudo)
@@ -27,7 +27,7 @@ install_package() {
         exit 1
     fi
 }
-echo "-1"
+
 install_packages() {
     for package in git whiptail; do
         command -v "$package" &>/dev/null && continue
@@ -41,13 +41,13 @@ install_packages() {
 }
 
 install_packages
-echo "0"
+
 [ -n "$USER_DIR" ] && $SUDO mkdir -p "$USER_DIR"
-echo "1"
+
 [ ! -d "$USER_DIR/tmp" ] && $SUDO mkdir -p "$USER_DIR/tmp"
 [ ! -d "$USER_DIR/etc" ] && $SUDO mkdir -p "$USER_DIR/etc"
 [ ! -d "$USER_DIR/usr" ] && $SUDO mkdir -p "$USER_DIR/usr"
-echo "2"
+
 [ ! -d "$USER_DIR/tmp/tech-scripts" ] && cd $USER_DIR/tmp && git clone --depth 1 https://github.com/tech-scripts/tech-scripts.git
 
 cd "$CURRENT_DIR"
@@ -56,7 +56,7 @@ cd $USER_DIR/tmp/tech-scripts/misc
 [ ! -d "$USER_DIR/etc/tech-scripts" ] && $SUDO mkdir -p "$USER_DIR/etc/tech-scripts"
 [ ! -d "$USER_DIR/usr/local/tech-scripts" ] && $SUDO mkdir -p "$USER_DIR/usr/local/tech-scripts"
 [ ! -d "$USER_DIR/usr/local/bin" ] && $SUDO mkdir -p "$USER_DIR/usr/local/bin"
-echo "3"
+
 cp -f $USER_DIR/tmp/tech-scripts/misc/localization.sh $USER_DIR/etc/tech-scripts/
 cp -f $USER_DIR/tmp/tech-scripts/misc/variables.sh $USER_DIR/etc/tech-scripts/
 cp -f $USER_DIR/tmp/tech-scripts/misc/functions.sh $USER_DIR/etc/tech-scripts/
