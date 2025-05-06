@@ -21,13 +21,13 @@ cp -f $USER_DIR/tmp/tech-scripts/misc/source.sh $USER_DIR/etc/tech-scripts/
 source $USER_DIR/etc/tech-scripts/source.sh
 
 BASIC_DIRECTORY=\$(echo "\$BASIC_DIRECTORY" | tr -s ' ')
-echo "21"
+
 [ -n "\$BASIC_DIRECTORY" ] && IFS=' ' read -r -a directories <<< "\$BASIC_DIRECTORY"
 
 for dir in "\${directories[@]}"; do
     [ -d "\$dir" ] && [ "\$(stat -c "%a" "\$dir")" != "\$ACCESS" ] && \$SUDO chmod -R "\$ACCESS" "\$dir"
 done
-echo "22"
+
 run_script() {
     local script_dir="\$1"
     local script_name="\$2"
