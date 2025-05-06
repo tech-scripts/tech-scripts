@@ -6,7 +6,7 @@ change_directory_permissions() {
     for dir in "${directories[@]}"; do
         if [ -n "$dir" ] && [ -d "$dir" ]; then
             if [ "$(stat -c "%a" "$dir")" != "$ACCESS" ]; then
-                echo "$ACCESS $dir"
+                echo "1 $ACCESS $dir"
                 $SUDO chmod -R "$ACCESS" "$dir"
             fi
         fi
