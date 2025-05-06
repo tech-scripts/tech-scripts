@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-
+echo "-2"
 [ -w /tmp ] && USER_DIR="" || USER_DIR=$HOME
 
 SUDO=$(command -v sudo)
