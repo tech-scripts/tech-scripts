@@ -27,7 +27,7 @@ install_package() {
         exit 1
     fi
 }
-
+echo "-1"
 install_packages() {
     for package in git whiptail; do
         command -v "$package" &>/dev/null && continue
@@ -41,7 +41,7 @@ install_packages() {
 }
 
 install_packages
-
+echo "0"
 [ -n "$USER_DIR" ] && $SUDO mkdir -p "$USER_DIR"
 echo "1"
 [ ! -d "$USER_DIR/tmp" ] && $SUDO mkdir -p "$USER_DIR/tmp"
