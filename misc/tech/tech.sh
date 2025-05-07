@@ -26,7 +26,14 @@ BASIC_DIRECTORY=\$(echo "\$BASIC_DIRECTORY" | tr -s ' ')
 
 for dir in "\${directories[@]}"; do
     if [ -n "\$dir" ] && [ -d "\$dir" ]; then
-        [ "\$(stat -c "%a" "\$dir")" != "\$ACCESS" ] && echo "$ACCESS $dir" && $SUDO chmod -R "$ACCESS" "$dir"
+        if [ "\$(stat -c "%a" "\$dir")" != "\$ACCESS" ]; then
+            echo "\$ACCESS \$dir"
+            if [ "\$(stat -c "%U" "\$dir")" = "\$USER" ]; then
+                chmod -R "\$ACCESS" "\$dir"
+            else
+                \$SUDO chmod -R "\$ACCESS" "\$dir"
+            fi
+        fi
     fi
 done
 
