@@ -85,10 +85,19 @@ BASIC_DIRECTORY=$(echo "$BASIC_DIRECTORY" | tr -s ' ')
 
 [ -n "$BASIC_DIRECTORY" ] && IFS=' ' read -r -a directories <<< "$BASIC_DIRECTORY"
 
+getent group tech || $SUDO groupadd tech
+
 for dir in "${directories[@]}"; do
-    if [ -n "$dir" ] && [ -d "$dir" ]; then
-        [ "$(stat -c "%a" "$dir")" != "$ACCESS" ] && echo "$ACCESS $dir" && $SUDO chmod -R "$ACCESS" "$dir"
+  [ -n "$dir" ] && [ -e "$dir" ] || continue
+  if [ "$(stat -c "%a" "$dir")" != "$ACCESS" ] || [ "$(stat -c "%G" "$dir")" != "tech" ]; then
+    echo "$ACCESS tech $dir"
+    CMD="chmod -R $ACCESS $dir; chgrp -R tech $dir"
+    if [ ! -w "$dir" ]; then
+      $SUDO bash -c "$CMD"
+    else
+      bash -c "$CMD"
     fi
+  fi
 done
 
 get_relative_path() {
