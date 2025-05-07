@@ -62,21 +62,6 @@ cp -f $USER_DIR/tmp/tech-scripts/misc/variables.sh $USER_DIR/etc/tech-scripts/
 cp -f $USER_DIR/tmp/tech-scripts/misc/functions.sh $USER_DIR/etc/tech-scripts/
 cp -f $USER_DIR/tmp/tech-scripts/misc/source.sh $USER_DIR/etc/tech-scripts/
 
-if [ ! -f "$USER_DIR/etc/tech-scripts/choose.conf" ]; then
-    $SUDO touch $USER_DIR/etc/tech-scripts/choose.conf
-    {
-        echo "lang: English"
-        echo "access: 755"
-        echo "editor: nano"
-    } | $SUDO tee -a $USER_DIR/etc/tech-scripts/choose.conf > /dev/null
-    $SUDO chmod +x "choose.sh"
-    ./choose.sh
-fi
-
-DIR_STACK=()
-CURRENT_DIR="$CLONE_DIR"
-EXCLUDE_FILES=("start.sh" "choose.sh" "localization.sh" "variables.sh" "functions.sh" "source.sh" "*.tmp")
-
 cd "$CURRENT_DIR"
 
 source $USER_DIR/etc/tech-scripts/source.sh
@@ -98,6 +83,21 @@ for dir in "${directories[@]}"; do
     fi
   fi
 done
+
+if [ ! -f "$USER_DIR/etc/tech-scripts/choose.conf" ]; then
+    $SUDO touch $USER_DIR/etc/tech-scripts/choose.conf
+    {
+        echo "lang: English"
+        echo "access: 755"
+        echo "editor: nano"
+    } | $SUDO tee -a $USER_DIR/etc/tech-scripts/choose.conf > /dev/null
+    $SUDO chmod +x "choose.sh"
+    ./choose.sh
+fi
+
+DIR_STACK=()
+CURRENT_DIR="$CLONE_DIR"
+EXCLUDE_FILES=("start.sh" "choose.sh" "localization.sh" "variables.sh" "functions.sh" "source.sh" "*.tmp")
 
 get_relative_path() {
     local full_path="$1"
