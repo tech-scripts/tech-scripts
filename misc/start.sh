@@ -85,7 +85,7 @@ BASIC_DIRECTORY=$(echo "$BASIC_DIRECTORY" | tr -s ' ')
 
 [ -n "$BASIC_DIRECTORY" ] && IFS=' ' read -r -a directories <<< "$BASIC_DIRECTORY"
 
-getent group tech || $SUDO groupadd tech
+getent group tech > /dev/null 2>&1 || $SUDO groupadd tech
 
 for dir in "${directories[@]}"; do
   [ -n "$dir" ] && [ -e "$dir" ] || continue
