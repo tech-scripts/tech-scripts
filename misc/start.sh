@@ -90,7 +90,6 @@ getent group tech > /dev/null 2>&1 || $SUDO groupadd tech
 for dir in "${directories[@]}"; do
   [ -n "$dir" ] && [ -e "$dir" ] || continue
   if [ "$(stat -c "%a" "$dir")" != "$ACCESS" ] || [ "$(stat -c "%G" "$dir")" != "tech" ]; then
-    echo "$ACCESS tech $dir"
     CMD="chmod -R $ACCESS $dir; chgrp -R tech $dir"
     if [ ! -w "$dir" ]; then
       $SUDO bash -c "$CMD"
