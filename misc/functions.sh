@@ -3,9 +3,13 @@
 change_directory_permissions() {
     [ -n "$BASIC_DIRECTORY" ] && IFS=' ' read -r -a directories <<< "$BASIC_DIRECTORY"
     for dir in "${directories[@]}"; do
-        if [ -n "$dir" ] && [ -d "$dir" ]; then
-            if [ "$(stat -c "%a" "$dir")" != "$ACCESS" ]; then
-                $SUDO chmod -R "$ACCESS" "$dir"
+        [ -n "$dir" ] && [ -e "$dir" ] || continue
+        if [ "$(stat -c "%a" "$dir")" != "$ACCESS" ] || [ "$(stat -c "%G" "$dir")" != "tech" ]; then
+            CMD="chmod -R $ACCESS $dir; chgrp -R tech $dir"
+            if [ ! -w "$dir" ]; then
+                $SUDO bash -c "$CMD"
+            else
+                bash -c "$CMD"
             fi
         fi
     done
