@@ -10,16 +10,16 @@ cat << 'EOF' > $USER_DIR/tmp/update.sh
 source $USER_DIR/etc/tech-scripts/source.sh
 
 cd $USER_DIR/tmp
-$SUDO rm -rf $USER_DIR/tmp/tech-scripts
+rm -rf $USER_DIR/tmp/tech-scripts
 git clone --depth 1 https://github.com/tech-scripts/tech-scripts.git $USER_DIR/tmp/tech-scripts
-$SUDO rm -rf $TECH_COMMAND_DIR/tech
+rm -rf $TECH_COMMAND_DIR/tech
 cd $USER_DIR/tmp/tech-scripts/misc/tech
 chmod +x tech.sh
 ./tech.sh
-$SUDO cp -f $USER_DIR/tmp/tech-scripts/misc/localization.sh $USER_DIR/etc/tech-scripts/
-$SUDO cp -f $USER_DIR/tmp/tech-scripts/misc/variables.sh $USER_DIR/etc/tech-scripts/
-$SUDO cp -f $USER_DIR/tmp/tech-scripts/misc/functions.sh $USER_DIR/etc/tech-scripts/
-$SUDO cp -f $USER_DIR/tmp/tech-scripts/misc/source.sh $USER_DIR/etc/tech-scripts/
+cp -f $USER_DIR/tmp/tech-scripts/misc/localization.sh $USER_DIR/etc/tech-scripts/
+cp -f $USER_DIR/tmp/tech-scripts/misc/variables.sh $USER_DIR/etc/tech-scripts/
+cp -f $USER_DIR/tmp/tech-scripts/misc/functions.sh $USER_DIR/etc/tech-scripts/
+cp -f $USER_DIR/tmp/tech-scripts/misc/source.sh $USER_DIR/etc/tech-scripts/
 change_directory_permissions
 echo ""
 if [ "$LANGUAGE" ]; then
