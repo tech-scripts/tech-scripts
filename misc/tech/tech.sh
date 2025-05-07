@@ -34,13 +34,11 @@ run_script() {
     local script_dir="\$1"
     local script_name="\$2"
     cd "\$CLONE_DIR_TECH/misc/\$script_dir"
-    chmod +x "\$script_name"
     ./"\$script_name"
 }
 
 if [ \$# -eq 0 ]; then
     cd $USER_DIR/tmp/tech-scripts/misc
-    chmod +x start.sh
     ./start.sh
     exit 0
 fi
