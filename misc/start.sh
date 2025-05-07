@@ -146,7 +146,6 @@ show_menu() {
             cd "$CURRENT_DIR" || { echo "$MSG_CD_ERROR"; exit 1; }
         else
             if [ -f "$SELECTED_ITEM" ]; then
-                chmod +x "$SELECTED_ITEM"
                 ./"$SELECTED_ITEM"
                 exit 0
             fi
