@@ -8,7 +8,9 @@ CLONE_DIR="$USER_DIR/tmp/tech-scripts/misc"
 
 install_package() {
     local package=$1
-    if command -v apt &>/dev/null; then
+    if command -v pkg &>/dev/null; then
+         apt update && apt install -y "$package"
+    elif command -v apt &>/dev/null; then
         $SUDO apt update && $SUDO apt install -y "$package"
     elif command -v yum &>/dev/null; then
         $SUDO yum install -y "$package"
