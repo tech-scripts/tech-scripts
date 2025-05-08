@@ -100,20 +100,23 @@ install_package() {
     eval "$install_cmd \"$package\""
 }
 
-[ ! -f "$USER_DIR/etc/tech-scripts/choose.conf" ] && show_inscription
+[ ! -f "$USER_DIR/etc/tech-scripts/choose.conf" ] && { show_inscription; manage_packages; }
 
-for package in git whiptail; do
-    if ! command -v "$package" &>/dev/null && package_exists "$package"; then
-        update_packages
-        break
-    fi
-done
+manage_packages() {
+    local packages=(git whiptail)
+    for package in "${packages[@]}"; do
+        if ! command -v "$package" &>/dev/null && package_exists "$package"; then
+            update_packages
+            break
+        fi
+    done
 
-for package in git whiptail newt; do
-    if ! command -v "$package" &>/dev/null && package_exists "$package"; then
-        install_package "$package"
-    fi
-done
+    for package in "${packages[@]}"; do
+        if ! command -v "$package" &>/dev/null && package_exists "$package"; then
+            install_package "$package"
+        fi
+    done
+}
 
 [ -n "$USER_DIR" ] && $SUDO mkdir -p "$USER_DIR"
 
