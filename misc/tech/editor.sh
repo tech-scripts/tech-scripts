@@ -34,7 +34,9 @@ case $EDITOR in
         ;;
 esac
 
-sed -i "3s/.*/editor: $editor/" $USER_DIR/etc/tech-scripts/choose.conf
+CONFIG_FILE="$USER_DIR/etc/tech-scripts/choose.conf"
+
+[ -w "$CONFIG_FILE" ] && sed -i "1s/.*/editor: $editor/" "$CONFIG_FILE" || sudo sed -i "1s/.*/editor: $editor/" "$CONFIG_FILE"
 
 echo " "
 echo "$MSG_SUCCESS_EDITOR $editor"
