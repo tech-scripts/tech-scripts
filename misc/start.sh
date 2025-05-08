@@ -16,7 +16,6 @@ error_handler() {
 }
 
 trap 'error_handler' ERR
-set -o errexit
 set -o errtrace
 set -o pipefail
 
