@@ -7,7 +7,7 @@ CURRENT_DIR=$(pwd)
 CLONE_DIR="$USER_DIR/tmp/tech-scripts/misc"
 
 LOG_DIR="$USER_DIR/tmp/tech-scripts/error"
-LOG_FILE="$LOG_DIR/$(basename "$0").log"
+LOG_FILE="$LOG_DIR/$(basename "$0" .sh).log"
 mkdir -p "$LOG_DIR"
 
 error_handler() {
