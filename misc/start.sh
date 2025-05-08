@@ -101,15 +101,14 @@ install_package() {
 }
 
 manage_packages() {
-    local packages=(git whiptail)
-    for package in "${packages[@]}"; do
+    for package in git whiptail; do
         if ! command -v "$package" &>/dev/null && package_exists "$package"; then
             update_packages
             break
         fi
     done
 
-    for package in "${packages[@]}"; do
+    for package in git whiptail; do
         if ! command -v "$package" &>/dev/null && package_exists "$package"; then
             install_package "$package"
         fi
