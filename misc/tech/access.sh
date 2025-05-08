@@ -20,7 +20,9 @@ case $ACCESS_LEVEL in
     *) exit 1 ;;
 esac
 
-sed -i "2s/.*/access: $ACCESS_VALUE/" "$CONFIG_FILE"
+CONFIG_FILE="$USER_DIR/etc/tech-scripts/choose.conf"
+
+[ -w "$CONFIG_FILE" ] && sed -i "1s/.*/access: $ACCESS_VALUE/" "$CONFIG_FILE" || sudo sed -i "1s/.*/access: $ACCESS_VALUE/" "$CONFIG_FILE"
 
 BASIC_DIRECTORY=$(echo "$BASIC_DIRECTORY" | tr -s ' ')
 
