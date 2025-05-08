@@ -6,7 +6,7 @@ SUDO=$(command -v sudo)
 CURRENT_DIR=$(pwd)
 CLONE_DIR="$USER_DIR/tmp/tech-scripts/misc"
 
-LOG_DIR="/tmp/tech-scripts/error"
+LOG_DIR="$USER_DIR/tmp/tech-scripts/error"
 LOG_FILE="$LOG_DIR/$(basename "$0").log"
 mkdir -p "$LOG_DIR"
 
