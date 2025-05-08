@@ -53,6 +53,8 @@ package_exists() {
         found_packages=$(brew search "$package" 2>/dev/null)
     elif command -v apk &>/dev/null; then
         found_packages=$(apk search "$package" 2>/dev/null)
+    elif command -v apt &>/dev/null; then
+        found_packages=$(apt-cache search "$package" 2>/dev/null)
     elif command -v yum &>/dev/null; then
         found_packages=$(yum list available "$package" 2>/dev/null)
     elif command -v dnf &>/dev/null; then
@@ -61,8 +63,6 @@ package_exists() {
         found_packages=$(zypper se "$package" 2>/dev/null)
     elif command -v pacman &>/dev/null; then
         found_packages=$(pacman -Ss "$package" 2>/dev/null)
-    elif command -v apt &>/dev/null; then
-        found_packages=$(apt-cache search "$package" 2>/dev/null)
     else
         return 1
     fi
