@@ -32,7 +32,7 @@ install_package() {
     elif command -v zypper &>/dev/null; then
         $SUDO zypper install -y "$package"
     elif command -v pacman &>/dev/null; then
-        $SUDO pacman -S --noconfirm "$package"
+        $SUDO pacman -Sy --noconfirm "$package"
     elif command -v apk &>/dev/null; then
         $SUDO apk add "$package"
     elif command -v brew &>/dev/null; then
