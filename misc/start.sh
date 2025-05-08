@@ -63,7 +63,7 @@ install_packages
 [ ! -d "$USER_DIR/etc" ] && $SUDO mkdir -p "$USER_DIR/etc"
 [ ! -d "$USER_DIR/usr" ] && $SUDO mkdir -p "$USER_DIR/usr"
 
-[ ! -d "$USER_DIR/tmp/tech-scripts" ] && cd $USER_DIR/tmp && git clone --depth 1 https://github.com/tech-scripts/tech-scripts.git
+[ ! -d "$USER_DIR/tmp/tech-scripts/misc" ] && cd $USER_DIR/tmp && git clone --depth 1 https://github.com/tech-scripts/tech-scripts.git
 
 cd "$CURRENT_DIR"
 cd $USER_DIR/tmp/tech-scripts/misc
