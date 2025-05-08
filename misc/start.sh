@@ -178,4 +178,6 @@ show_menu() {
     done
 }
 
+cd "$CLONE_DIR"
+
 show_menu
