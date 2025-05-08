@@ -25,7 +25,9 @@ case $LANGUAGE in
         ;;
 esac
 
-sed -i "1s/.*/lang: $lang/" $USER_DIR/etc/tech-scripts/choose.conf
+CONFIG_FILE="$USER_DIR/etc/tech-scripts/choose.conf"
+
+[ -w "$CONFIG_FILE" ] && sed -i "1s/.*/lang: $lang/" "$CONFIG_FILE" || sudo sed -i "1s/.*/lang: $lang/" "$CONFIG_FILE"
 
 if [ "$lang" = "Русский" ]; then
     echo " "
