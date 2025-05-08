@@ -45,26 +45,33 @@ update_packages() {
 
 package_exists() {
     local package=$1
+    local found_packages
+
     if command -v pkg &>/dev/null; then
-        pkg search "$package" &>/dev/null
+        found_packages=$(pkg search "$package" 2>/dev/null)
     elif command -v brew &>/dev/null; then
-        brew search "$package" &>/dev/null
-    elif command -v apt &>/dev/null; then
-        apt-cache show "$package" &>/dev/null
-    elif command -v yum &>/dev/null; then
-        yum list available "$package" &>/dev/null
-    elif command -v dnf &>/dev/null; then
-        dnf list available "$package" &>/dev/null
-    elif command -v zypper &>/dev/null; then
-        zypper se -i "$package" &>/dev/null
-    elif command -v pacman &>/dev/null; then
-        pacman -Ss "$package" &>/dev/null
+        found_packages=$(brew search "$package" 2>/dev/null)
     elif command -v apk &>/dev/null; then
-        apk search "$package" &>/dev/null
+        found_packages=$(apk search "$package" 2>/dev/null)
+    elif command -v yum &>/dev/null; then
+        found_packages=$(yum list available "$package" 2>/dev/null)
+    elif command -v dnf &>/dev/null; then
+        found_packages=$(dnf list available "$package" 2>/dev/null)
+    elif command -v zypper &>/dev/null; then
+        found_packages=$(zypper se "$package" 2>/dev/null)
+    elif command -v pacman &>/dev/null; then
+        found_packages=$(pacman -Ss "$package" 2>/dev/null)
+    elif command -v apt &>/dev/null; then
+        found_packages=$(apt-cache search "$package" 2>/dev/null)
     else
         return 1
     fi
-    return 0
+
+    if echo "$found_packages" | grep -q "$package"; then
+        return 0
+    else
+        return 1
+    fi
 }
 
 install_package() {
@@ -97,7 +104,6 @@ install_package() {
 
 for package in git whiptail; do
     if ! command -v "$package" &>/dev/null && package_exists "$package"; then
-        echo "$package"
         update_packages
         break
     fi
@@ -105,7 +111,6 @@ done
 
 for package in git whiptail newt; do
     if ! command -v "$package" &>/dev/null && package_exists "$package"; then
-        echo "$package"
         install_package "$package"
     fi
 done
