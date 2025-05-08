@@ -12,7 +12,7 @@ update_packages() {
     elif command -v brew &>/dev/null; then
         brew update
     elif command -v apk &>/dev/null; then
-        apk update
+        $SUDO apk update
     elif command -v apt &>/dev/null; then
         $SUDO apt update
     elif command -v yum &>/dev/null; then
