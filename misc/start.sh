@@ -100,8 +100,6 @@ install_package() {
     eval "$install_cmd \"$package\""
 }
 
-[ ! -f "$USER_DIR/etc/tech-scripts/choose.conf" ] && { show_inscription; manage_packages; }
-
 manage_packages() {
     local packages=(git whiptail)
     for package in "${packages[@]}"; do
@@ -117,6 +115,8 @@ manage_packages() {
         fi
     done
 }
+
+[ ! -f "$USER_DIR/etc/tech-scripts/choose.conf" ] && { show_inscription; manage_packages; }
 
 [ -n "$USER_DIR" ] && $SUDO mkdir -p "$USER_DIR"
 
