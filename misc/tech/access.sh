@@ -22,7 +22,7 @@ esac
 
 CONFIG_FILE="$USER_DIR/etc/tech-scripts/choose.conf"
 
-[ -w "$CONFIG_FILE" ] && sed -i "1s/.*/access: $ACCESS_VALUE/" "$CONFIG_FILE" || sudo sed -i "1s/.*/access: $ACCESS_VALUE/" "$CONFIG_FILE"
+[ -w "$CONFIG_FILE" ] && sed -i "3s/.*/access: $ACCESS_VALUE/" "$CONFIG_FILE" || $SUDO sed -i "3s/.*/access: $ACCESS_VALUE/" "$CONFIG_FILE"
 
 BASIC_DIRECTORY=$(echo "$BASIC_DIRECTORY" | tr -s ' ')
 
