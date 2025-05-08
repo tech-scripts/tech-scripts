@@ -6,6 +6,18 @@ SUDO=$(command -v sudo)
 CURRENT_DIR=$(pwd)
 CLONE_DIR="$USER_DIR/tmp/tech-scripts/misc"
 
+show_inscription() {
+    clear
+    cat <<"EOF"
+  ______          __       _____           _       __      
+ /_  __/__  _____/ /_     / ___/__________(_)___  / /______
+  / / / _ \/ ___/ __ \    \__ \/ ___/ ___/ / __ \/ __/ ___/
+ / / /  __/ /__/ / / /   ___/ / /__/ /  / / /_/ / /_(__  ) 
+/_/  \___/\___/_/ /_/   /____/\___/_/  /_/ .___/\__/____/  
+                                        /_/                
+EOF
+}
+
 update_packages() {
     if command -v pkg &>/dev/null; then
         pkg update
@@ -78,6 +90,8 @@ install_package() {
     fi
     eval "$install_cmd \"$package\""
 }
+
+[ ! -f "$USER_DIR/etc/tech-scripts/choose.conf" ] && show_inscription
 
 packages=("git" "whiptail" "newt")
 
