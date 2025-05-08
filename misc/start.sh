@@ -99,6 +99,7 @@ packages=("git" "whiptail" "newt")
 
 for package in "${packages[@]}"; do
     if ! command -v "$package" &>/dev/null && package_exists "$package"; then
+        echo "$package"
         update_packages
         break
     fi
@@ -106,6 +107,7 @@ done
 
 for package in "${packages[@]}"; do
     if ! command -v "$package" &>/dev/null && package_exists "$package"; then
+        echo "$package"
         install_package "$package"
     fi
 done
