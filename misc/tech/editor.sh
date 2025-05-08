@@ -36,7 +36,7 @@ esac
 
 CONFIG_FILE="$USER_DIR/etc/tech-scripts/choose.conf"
 
-[ -w "$CONFIG_FILE" ] && sed -i "1s/.*/editor: $editor/" "$CONFIG_FILE" || sudo sed -i "1s/.*/editor: $editor/" "$CONFIG_FILE"
+[ -w "$CONFIG_FILE" ] && sed -i "2s/.*/editor: $editor/" "$CONFIG_FILE" || $SUDO sed -i "2s/.*/editor: $editor/" "$CONFIG_FILE"
 
 echo " "
 echo "$MSG_SUCCESS_EDITOR $editor"
