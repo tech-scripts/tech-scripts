@@ -66,7 +66,6 @@ install_packages
 [ ! -d "$USER_DIR/tmp/tech-scripts" ] && cd $USER_DIR/tmp && git clone --depth 1 https://github.com/tech-scripts/tech-scripts.git
 
 cd "$CURRENT_DIR"
-cd $USER_DIR/tmp/tech-scripts/misc
 
 [ ! -d "$USER_DIR/etc/tech-scripts" ] && $SUDO mkdir -p "$USER_DIR/etc/tech-scripts"
 [ ! -d "$USER_DIR/usr/local/tech-scripts" ] && $SUDO mkdir -p "$USER_DIR/usr/local/tech-scripts"
@@ -79,7 +78,16 @@ for file in "${FILES[@]}"; do
     cp -f "$USER_DIR/tmp/tech-scripts/misc/$file" "$TARGET_DIR" > /dev/null 2>&1 || $SUDO cp -f "$USER_DIR/tmp/tech-scripts/misc/$file" "$TARGET_DIR" > /dev/null 2>&1
 done
 
-cd "$CURRENT_DIR"
+if [ ! -f "$USER_DIR/etc/tech-scripts/choose.conf" ]; then
+    $SUDO touch $USER_DIR/etc/tech-scripts/choose.conf
+    {
+        echo "lang: English"
+        echo "access: 755"
+        echo "editor: nano"
+    } | $SUDO tee -a $USER_DIR/etc/tech-scripts/choose.conf > /dev/null
+    $SUDO chmod +x "choose.sh"
+    ./choose.sh
+fi
 
 source $USER_DIR/etc/tech-scripts/source.sh
 
@@ -100,17 +108,6 @@ for dir in "${directories[@]}"; do
     fi
   fi
 done
-
-if [ ! -f "$USER_DIR/etc/tech-scripts/choose.conf" ]; then
-    $SUDO touch $USER_DIR/etc/tech-scripts/choose.conf
-    {
-        echo "lang: English"
-        echo "access: 755"
-        echo "editor: nano"
-    } | $SUDO tee -a $USER_DIR/etc/tech-scripts/choose.conf > /dev/null
-    $SUDO chmod +x "choose.sh"
-    ./choose.sh
-fi
 
 DIR_STACK=()
 CURRENT_DIR="$CLONE_DIR"
