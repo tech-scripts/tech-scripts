@@ -6,19 +6,6 @@ SUDO=$(command -v sudo)
 CURRENT_DIR=$(pwd)
 CLONE_DIR="$USER_DIR/tmp/tech-scripts/misc"
 
-LOG_DIR="$USER_DIR/tmp/flaw"
-LOG_FILE="$LOG_DIR/$(basename "$0" .sh).log"
-mkdir -p "$LOG_DIR"
-
-error_handler() {
-  local exit_code=$? 
-  echo "[$(date '+%Y-%m-%d %H:%M:%S')] Error in command: '${BASH_COMMAND}', exit code: ${exit_code}" >> "$LOG_FILE"
-}
-
-trap 'error_handler' ERR
-set -o errtrace
-set -o pipefail
-
 install_package() {
     local package=$1
     if command -v pkg &>/dev/null; then
