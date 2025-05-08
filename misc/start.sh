@@ -101,12 +101,7 @@ install_package() {
 }
 
 manage_packages() {
-    for package in git whiptail; do
-        if ! command -v "$package" &>/dev/null && package_exists "$package"; then
-            update_packages
-            break
-        fi
-    done
+    update_packages
 
     for package in git whiptail; do
         if ! command -v "$package" &>/dev/null && package_exists "$package"; then
@@ -115,7 +110,10 @@ manage_packages() {
     done
 }
 
-[ ! -f "$USER_DIR/etc/tech-scripts/choose.conf" ] && { show_inscription; manage_packages; }
+if [ ! -f "$USER_DIR/etc/tech-scripts/choose.conf" ]; then
+    show_inscription
+    manage_packages
+fi
 
 [ -n "$USER_DIR" ] && $SUDO mkdir -p "$USER_DIR"
 
