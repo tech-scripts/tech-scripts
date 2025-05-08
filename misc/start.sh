@@ -95,9 +95,7 @@ install_package() {
 
 [ ! -f "$USER_DIR/etc/tech-scripts/choose.conf" ] && show_inscription
 
-packages=("git" "whiptail" "newt")
-
-for package in "${packages[@]}"; do
+for package in git whiptail; do
     if ! command -v "$package" &>/dev/null && package_exists "$package"; then
         echo "$package"
         update_packages
@@ -105,7 +103,7 @@ for package in "${packages[@]}"; do
     fi
 done
 
-for package in "${packages[@]}"; do
+for package in git whiptail newt; do
     if ! command -v "$package" &>/dev/null && package_exists "$package"; then
         echo "$package"
         install_package "$package"
