@@ -98,19 +98,15 @@ install_package() {
 packages=("git" "whiptail" "newt")
 
 for package in "${packages[@]}"; do
-    if ! command -v "$package" &>/dev/null; then
-        if package_exists "$package"; then
-            update_packages
-            break
-        fi
+    if ! command -v "$package" &>/dev/null && package_exists "$package"; then
+        update_packages
+        break
     fi
 done
 
 for package in "${packages[@]}"; do
-    if ! command -v "$package" &>/dev/null; then
-        if package_exists "$package"; then
-            install_package "$package"
-        fi
+    if ! command -v "$package" &>/dev/null && package_exists "$package"; then
+        install_package "$package"
     fi
 done
 
