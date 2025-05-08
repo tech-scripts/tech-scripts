@@ -6,43 +6,95 @@ SUDO=$(command -v sudo)
 CURRENT_DIR=$(pwd)
 CLONE_DIR="$USER_DIR/tmp/tech-scripts/misc"
 
-install_package() {
-    local package=$1
+update_packages() {
     if command -v pkg &>/dev/null; then
-         pkg update && pkg install -y "$package"
-    elif command -v apt &>/dev/null; then
-        $SUDO apt update && $SUDO apt install -y "$package"
-    elif command -v yum &>/dev/null; then
-        $SUDO yum install -y "$package"
-    elif command -v dnf &>/dev/null; then
-        $SUDO dnf install -y "$package"
-    elif command -v zypper &>/dev/null; then
-        $SUDO zypper install -y "$package"
-    elif command -v pacman &>/dev/null; then
-        $SUDO pacman -Sy && $SUDO pacman -S --noconfirm "$package"
-    elif command -v apk &>/dev/null; then
-        $SUDO apk add "$package"
+        pkg update
     elif command -v brew &>/dev/null; then
-        brew install "$package"
+        brew update
+    elif command -v apk &>/dev/null; then
+        apk update
+    elif command -v apt &>/dev/null; then
+        $SUDO apt update
+    elif command -v yum &>/dev/null; then
+        $SUDO yum update
+    elif command -v dnf &>/dev/null; then
+        $SUDO dnf makecache
+    elif command -v zypper &>/dev/null; then
+        $SUDO zypper refresh
+    elif command -v pacman &>/dev/null; then
+        $SUDO pacman -Sy
     else
-        echo "The package manager could not be identified. Install $package manually!"
+        echo "The package manager could not be identified. Cannot update packages."
         exit 1
     fi
 }
 
-install_packages() {
-    for package in git whiptail; do
-        command -v "$package" &>/dev/null && continue
-        
-        if [ "$package" = "whiptail" ]; then
-            install_package newt
-        fi
-        
-        install_package "$package"
-    done
+package_exists() {
+    local package=$1
+    if command -v pkg &>/dev/null; then
+        pkg search "$package" &>/dev/null
+    elif command -v brew &>/dev/null; then
+        brew search "$package" &>/dev/null
+    elif command -v apt &>/dev/null; then
+        apt-cache show "$package" &>/dev/null
+    elif command -v yum &>/dev/null; then
+        yum list available "$package" &>/dev/null
+    elif command -v dnf &>/dev/null; then
+        dnf list available "$package" &>/dev/null
+    elif command -v zypper &>/dev/null; then
+        zypper se -i "$package" &>/dev/null
+    elif command -v pacman &>/dev/null; then
+        pacman -Ss "$package" &>/dev/null
+    elif command -v apk &>/dev/null; then
+        apk search "$package" &>/dev/null
+    else
+        return 1
+    fi
+    return 0
 }
 
-install_packages
+install_package() {
+    local package=$1
+    local install_cmd=""
+    if command -v pkg &>/dev/null; then
+        install_cmd="pkg install -y"
+    elif command -v brew &>/dev/null; then
+        install_cmd="brew install"
+    elif command -v apk &>/dev/null; then
+        install_cmd="$SUDO apk add"
+    elif command -v apt &>/dev/null; then
+        install_cmd="$SUDO apt install -y"
+    elif command -v yum &>/dev/null; then
+        install_cmd="$SUDO yum install -y"
+    elif command -v dnf &>/dev/null; then
+        install_cmd="$SUDO dnf install -y"
+    elif command -v zypper &>/dev/null; then
+        install_cmd="$SUDO zypper install -y"
+    elif command -v pacman &>/dev/null; then
+        install_cmd="$SUDO pacman -S --noconfirm"
+    else
+        echo "The package manager could not be identified. Cannot install $package."
+        exit 1
+    fi
+    eval "$install_cmd \"$package\""
+}
+
+packages=("git" "whiptail" "newt")
+
+for package in "${packages[@]}"; do
+    if ! command -v "$package" &>/dev/null; then
+        update_packages
+        break
+    fi
+done
+
+for package in "${packages[@]}"; do
+    if ! command -v "$package" &>/dev/null; then
+        if package_exists "$package"; then
+            install_package "$package"
+        fi
+    fi
+done
 
 [ -n "$USER_DIR" ] && $SUDO mkdir -p "$USER_DIR"
 
