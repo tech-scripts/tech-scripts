@@ -65,8 +65,6 @@ install_packages
 
 [ ! -d "$USER_DIR/tmp/tech-scripts" ] && cd $USER_DIR/tmp && git clone --depth 1 https://github.com/tech-scripts/tech-scripts.git
 
-cd "$CURRENT_DIR"
-
 [ ! -d "$USER_DIR/etc/tech-scripts" ] && $SUDO mkdir -p "$USER_DIR/etc/tech-scripts"
 [ ! -d "$USER_DIR/usr/local/tech-scripts" ] && $SUDO mkdir -p "$USER_DIR/usr/local/tech-scripts"
 [ ! -d "$USER_DIR/usr/local/bin" ] && $SUDO mkdir -p "$USER_DIR/usr/local/bin"
@@ -77,6 +75,8 @@ FILES=("localization.sh" "variables.sh" "functions.sh" "source.sh")
 for file in "${FILES[@]}"; do
     cp -f "$USER_DIR/tmp/tech-scripts/misc/$file" "$TARGET_DIR" > /dev/null 2>&1 || $SUDO cp -f "$USER_DIR/tmp/tech-scripts/misc/$file" "$TARGET_DIR" > /dev/null 2>&1
 done
+
+cd "$CLONE_DIR"
 
 if [ ! -f "$USER_DIR/etc/tech-scripts/choose.conf" ]; then
     $SUDO touch $USER_DIR/etc/tech-scripts/choose.conf
