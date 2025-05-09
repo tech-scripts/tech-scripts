@@ -2,8 +2,11 @@
 
 [ -w /tmp ] && USER_DIR="" || USER_DIR=$HOME
 
-SUDO=$(command -v sudo)
 CLONE_DIR="$USER_DIR/tmp/tech-scripts/misc"
+
+[ ! -f "$USER_DIR/etc/tech-scripts/choose.conf" ] && cd "$CLONE_DIR" && ./menu.sh
+
+SUDO=$(command -v sudo)
 
 show_inscription() {
     clear
