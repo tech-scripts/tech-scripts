@@ -7,11 +7,11 @@ source $USER_DIR/etc/tech-scripts/source.sh
 TECH_SCRIPT=$(cat <<EOF
 #!/usr/bin/env bash
 
+[ "${HOME##*/}" = ".suroot" ] && export HOME="${HOME%/*}"
+
 [ -w /tmp ] && USER_DIR="" || USER_DIR=$HOME
 
 SUDO=$(env | grep -qi TERMUX && echo "" || command -v sudo 2>/dev/null)
-
-[ "${PWD##*/}" = ".suroot" ] && export HOME "${PWD%/*}"
 
 [ ! -d "$USER_DIR/tmp/tech-scripts" ] && cd $USER_DIR/tmp && git clone --depth 1 https://github.com/tech-scripts/tech-scripts.git
 
