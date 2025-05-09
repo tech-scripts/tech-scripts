@@ -12,7 +12,7 @@ error_exit() {
 }
 
 log "Установка необходимых пакетов..."
-pkg install -y git build-essential golang make libseccomp libseccomp-static || error_exit "Не удалось установить необходимые пакеты."
+pkg install -y git build-essential golang make libseccomp libseccomp-static jq || error_exit "Не удалось установить необходимые пакеты."
 
 log "Клонирование репозитория Termux..."
 cd ~
