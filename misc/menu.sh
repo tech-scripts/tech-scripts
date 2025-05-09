@@ -5,6 +5,7 @@
 source $USER_DIR/etc/tech-scripts/source.sh
 
 DIR_STACK=()
+CLONE_DIR="$USER_DIR/tmp/tech-scripts/misc"
 CURRENT_DIR="$CLONE_DIR"
 EXCLUDE_FILES=("start.sh" "choose.sh" "localization.sh" "variables.sh" "functions.sh" "menu.sh" "source.sh" "*.tmp")
 
