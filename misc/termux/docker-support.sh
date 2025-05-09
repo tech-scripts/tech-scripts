@@ -15,7 +15,6 @@ log "Установка необходимых пакетов..."
 pkg install -y git build-essential golang make libseccomp libseccomp-static tsu root-repo jq || error_exit "Не удалось установить необходимые пакеты."
 
 log "Клонирование репозитория Termux..."
-cd ~
 [ ! -d termux-packages ] && git clone https://github.com/termux/termux-packages.git || error_exit "Не удалось клонировать репозиторий."
 cd termux-packages
 
@@ -40,7 +39,7 @@ termux_step_make_install() {
 EOF
 
 log "Сборка libc++..."
-tsu -c "./build-package.sh packages/libc++" || error_exit "Не удалось собрать libc++."
+./build-package.sh packages/libc++ || error_exit "Не удалось собрать libc++."
 
 log "Создание скрипта сборки runc..."
 cat > root-packages/runc/build.sh << 'EOF'
@@ -74,11 +73,11 @@ termux_step_make_install() {
 EOF
 
 log "Сборка runc..."
-tsu -c "rm -rf /data/data/com.termux/files/home/.termux-build/runc"
-tsu -c "./build-package.sh root-packages/runc" || error_exit "Не удалось собрать runc."
+rm -rf /data/data/com.termux/files/home/.termux-build/runc
+./build-package.sh root-packages/runc" || error_exit "Не удалось собрать runc.
 
 log "Настройка блокировки версии..."
-tsu -c "mkdir -p $PREFIX/etc/apt/preferences.d"
+mkdir -p $PREFIX/etc/apt/preferences.d
 cat > $PREFIX/etc/apt/preferences.d/runc << 'EOF'
 Package: runc
 Pin: version 1.1.15
