@@ -9,7 +9,7 @@ TECH_SCRIPT=$(cat <<EOF
 
 [ -w /tmp ] && USER_DIR="" || USER_DIR=$HOME
 
-SUDO=$(command -v sudo)
+SUDO=$(env | grep -qi TERMUX && echo "" || command -v sudo 2>/dev/null)
 
 [ ! -f "$USER_DIR/etc/tech-scripts/choose.conf" ] && cd "$CLONE_DIR" && ./start.sh
 
