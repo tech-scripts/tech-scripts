@@ -29,7 +29,7 @@ BASIC_DIRECTORY=\$(echo "\$BASIC_DIRECTORY" | tr -s ' ')
 for dir in "\${directories[@]}"; do
   [ -n "\$dir" ] && [ -e "\$dir" ] || continue
   if [ "\$(stat -c "%a" "\$dir")" != "\$ACCESS" ] || [ "\$(stat -c "%G" "\$dir")" != "tech" ]; then
-    CMD="chmod -R \$ACCESS \$dir; chgrp -R tech \$dir"
+    CMD="chmod -R \$ACCESS \$dir; getent group tech > /dev/null 2>&1 && chgrp -R tech \$dir"
     if [ ! -w "\$dir" ]; then
       \$SUDO bash -c "\$CMD"
     else
@@ -47,7 +47,7 @@ run_script() {
 
 if [ \$# -eq 0 ]; then
     cd $USER_DIR/tmp/tech-scripts/misc
-    ./start.sh
+    ./menu.sh
     exit 0
 fi
 
