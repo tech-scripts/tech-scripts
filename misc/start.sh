@@ -167,5 +167,4 @@ for dir in "${directories[@]}"; do
   fi
 done
 
-cd "$CLONE_DIR/misc"
 ./menu.sh
