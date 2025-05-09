@@ -7,17 +7,17 @@ source $USER_DIR/etc/tech-scripts/source.sh
 TECH_SCRIPT=$(cat <<EOF
 #!/usr/bin/env bash
 
-[ "${HOME##*/}" = ".suroot" ] && export HOME="${HOME%/*}"
+[ "\${HOME##*/}" = ".suroot" ] && export HOME="\${HOME%/*}"
 
-[ -w /tmp ] && USER_DIR="" || USER_DIR=$HOME
+[ -w /tmp ] && USER_DIR="" || USER_DIR=\$HOME
 
-SUDO=$(env | grep -qi TERMUX && echo "" || command -v sudo 2>/dev/null)
+SUDO=\$(env | grep -qi TERMUX && echo "" || command -v sudo 2>/dev/null)
 
-[ ! -d "$USER_DIR/tmp/tech-scripts" ] && cd $USER_DIR/tmp && git clone --depth 1 https://github.com/tech-scripts/tech-scripts.git
+[ ! -d "\$USER_DIR/tmp/tech-scripts" ] && cd \$USER_DIR/tmp && git clone --depth 1 https://github.com/tech-scripts/tech-scripts.git
 
-[ ! -x "$USER_DIR/tmp/tech-scripts/misc/start.sh" ] && "$USER_DIR/tmp/tech-scripts/misc/start.sh"
+[ ! -x "\$USER_DIR/tmp/tech-scripts/misc/start.sh" ] && "\$USER_DIR/tmp/tech-scripts/misc/start.sh"
 
-source $USER_DIR/etc/tech-scripts/source.sh
+source \$USER_DIR/etc/tech-scripts/source.sh
 
 run_script() {
     local script_dir="\$1"
@@ -27,7 +27,7 @@ run_script() {
 }
 
 if [ \$# -eq 0 ]; then
-    cd $USER_DIR/tmp/tech-scripts/misc
+    cd \$USER_DIR/tmp/tech-scripts/misc
     ./menu.sh
     exit 0
 fi
@@ -49,7 +49,7 @@ case "\$combined_args" in
     "swap") run_script "tools" "swap.sh" ;;
     "system") run_script "tools" "system.sh" ;;
     "config") run_script "tools" "config.sh" ;;
-    *) echo ""; echo "$UNKNOWN_COMMAND_TECH \$1"; echo "$USAGE_TECH"; echo ""; exit 1 ;;
+    *) echo ""; echo "\$UNKNOWN_COMMAND_TECH \$1"; echo "\$USAGE_TECH"; echo ""; exit 1 ;;
 esac
 EOF
 )
