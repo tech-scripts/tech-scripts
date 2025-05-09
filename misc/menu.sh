@@ -6,7 +6,7 @@ source $USER_DIR/etc/tech-scripts/source.sh
 
 DIR_STACK=()
 CURRENT_DIR="$CLONE_DIR"
-EXCLUDE_FILES=("start.sh" "choose.sh" "localization.sh" "variables.sh" "functions.sh" "source.sh" "*.tmp")
+EXCLUDE_FILES=("start.sh" "choose.sh" "localization.sh" "variables.sh" "functions.sh" "menu.sh" "source.sh" "*.tmp")
 
 get_relative_path() {
     local full_path="$1"
