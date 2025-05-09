@@ -11,11 +11,11 @@ TECH_SCRIPT=$(cat <<EOF
 
 SUDO=$(env | grep -qi TERMUX && echo "" || command -v sudo 2>/dev/null)
 
-[ "${PWD##*/}" = ".suroot" ] && cd "${PWD%/*}"
-
-[ ! -f "$USER_DIR/etc/tech-scripts/choose.conf" ] && cd "$CLONE_DIR" && ./start.sh
+[ "${PWD##*/}" = ".suroot" ] && echo "${PWD%/*}"
 
 [ ! -d "$USER_DIR/tmp/tech-scripts" ] && cd $USER_DIR/tmp && git clone --depth 1 https://github.com/tech-scripts/tech-scripts.git
+
+[ ! -f "$USER_DIR/etc/tech-scripts/choose.conf" ] && cd "$CLONE_DIR" && ./start.sh
 
 source $USER_DIR/etc/tech-scripts/source.sh
 
