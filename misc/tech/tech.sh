@@ -15,7 +15,7 @@ SUDO=$(env | grep -qi TERMUX && echo "" || command -v sudo 2>/dev/null)
 
 [ ! -d "$USER_DIR/tmp/tech-scripts" ] && cd $USER_DIR/tmp && git clone --depth 1 https://github.com/tech-scripts/tech-scripts.git
 
-[ ! -x "$USER_DIR/tmp/tech-scripts/misc/start.sh" ] && cd "$USER_DIR/tmp/tech-scripts/misc/start.sh" && ./start.sh
+[ ! -x "$USER_DIR/tmp/tech-scripts/misc/start.sh" ] && "$USER_DIR/tmp/tech-scripts/misc/start.sh"
 
 source $USER_DIR/etc/tech-scripts/source.sh
 
