@@ -11,9 +11,6 @@ trap 'error_handler $LINENO "$BASH_COMMAND"' ERR
 [ -w /tmp ] && USER_DIR="" || USER_DIR=$HOME
 
 CLONE_DIR="$USER_DIR/tmp/tech-scripts/misc"
-
-[ ! -f "$USER_DIR/etc/tech-scripts/choose.conf" ] && cd "$CLONE_DIR" && ./menu.sh
-
 SUDO=$(command -v sudo)
 
 show_inscription() {
@@ -130,6 +127,8 @@ fi
 [ ! -d "$USER_DIR/usr" ] && $SUDO mkdir -p "$USER_DIR/usr"
 
 [ ! -d "$USER_DIR/tmp/tech-scripts" ] && cd $USER_DIR/tmp && git clone --depth 1 https://github.com/tech-scripts/tech-scripts.git
+
+[ ! -f "$USER_DIR/etc/tech-scripts/choose.conf" ] && cd "$CLONE_DIR" && ./menu.sh
 
 [ ! -d "$USER_DIR/etc/tech-scripts" ] && $SUDO mkdir -p "$USER_DIR/etc/tech-scripts"
 [ ! -d "$USER_DIR/usr/local/tech-scripts" ] && $SUDO mkdir -p "$USER_DIR/usr/local/tech-scripts"
