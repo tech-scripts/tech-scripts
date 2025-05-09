@@ -120,7 +120,7 @@ fi
 
 [ ! -d "$USER_DIR/tmp/tech-scripts" ] && cd $USER_DIR/tmp && git clone --depth 1 https://github.com/tech-scripts/tech-scripts.git
 
-[ ! -d "$USER_DIR/etc/tech-scripts" ] && cd "$CLONE_DIR" && ./menu.sh
+[ ! -x "$USER_DIR/tmp/tech-scripts/misc/menu.sh" ] && cd "$USER_DIR/tmp/tech-scripts/misc/menu.sh" && ./menu.sh
 
 [ ! -d "$USER_DIR/etc/tech-scripts" ] && $SUDO mkdir -p "$USER_DIR/etc/tech-scripts"
 [ ! -d "$USER_DIR/usr/local/tech-scripts" ] && $SUDO mkdir -p "$USER_DIR/usr/local/tech-scripts"
