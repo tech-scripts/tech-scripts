@@ -2,7 +2,7 @@
 
 [ -w /tmp ] && USER_DIR="" || USER_DIR=$HOME
 
-SUDO=$(command -v sudo)
+SUDO=$(env | grep -qi TERMUX && echo "" || command -v sudo 2>/dev/null)
 CURRENT_DIR=$(pwd)
 LANGUAGE=$(grep '^lang:' $USER_DIR/etc/tech-scripts/choose.conf | cut -d ' ' -f 2)
 EDITOR=$(grep '^editor:' $USER_DIR/etc/tech-scripts/choose.conf | cut -d ' ' -f 2)
