@@ -166,4 +166,6 @@ for dir in "${directories[@]}"; do
   fi
 done
 
+[ "${PWD##*/}" = ".suroot" ] && cd "${PWD%/*}"
+
 ./menu.sh
