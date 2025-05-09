@@ -3,7 +3,6 @@
 [ -w /tmp ] && USER_DIR="" || USER_DIR=$HOME
 
 SUDO=$(command -v sudo)
-CURRENT_DIR=$(pwd)
 CLONE_DIR="$USER_DIR/tmp/tech-scripts/misc"
 
 show_inscription() {
