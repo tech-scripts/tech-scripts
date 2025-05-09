@@ -1,13 +1,5 @@
 #!/usr/bin/env bash
 
-error_handler() {
-    echo "An error occurred at line: $1"
-    echo "Error: $2"
-    exit 1
-}
-
-trap 'error_handler $LINENO "$BASH_COMMAND"' ERR
-
 [ -w /tmp ] && USER_DIR="" || USER_DIR=$HOME
 
 CLONE_DIR="$USER_DIR/tmp/tech-scripts/misc"
