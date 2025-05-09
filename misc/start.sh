@@ -1,5 +1,13 @@
 #!/usr/bin/env bash
 
+error_handler() {
+    local exit_code=$?
+    echo "Error: $exit_code"
+    exit $exit_code
+}
+
+trap 'error_handler' ERR
+
 [ -w /tmp ] && USER_DIR="" || USER_DIR=$HOME
 
 CLONE_DIR="$USER_DIR/tmp/tech-scripts/misc"
