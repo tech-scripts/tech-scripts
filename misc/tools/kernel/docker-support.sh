@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e  # Остановить выполнение при ошибке
+set -e
 
 log() {
     echo ">>> $1"
@@ -16,8 +16,7 @@ pkg install -y git build-essential golang make libseccomp libseccomp-static || e
 
 log "Клонирование репозитория Termux..."
 cd ~
-rm -rf termux-packages
-git clone https://github.com/termux/termux-packages.git || error_exit "Не удалось клонировать репозиторий."
+[ ! -d termux-packages ] && git clone https://github.com/termux/termux-packages.git || error_exit "Не удалось клонировать репозиторий."
 cd termux-packages
 git checkout dd0d111e5057b9ee772b5167979db01227ba9024 || error_exit "Не удалось переключиться на нужную ветку."
 
