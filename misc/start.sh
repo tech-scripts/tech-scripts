@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 
 error_handler() {
-    local exit_code=$?
-    echo "Error: $exit_code"
-    exit $exit_code
+    echo "An error occurred at line: $1"
+    echo "Error: $2"
+    exit 1
 }
 
-trap 'error_handler' ERR
+trap 'error_handler $LINENO "$BASH_COMMAND"' ERR
 
 [ -w /tmp ] && USER_DIR="" || USER_DIR=$HOME
 
