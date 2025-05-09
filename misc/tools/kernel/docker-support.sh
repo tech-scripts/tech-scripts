@@ -18,7 +18,6 @@ log "Клонирование репозитория Termux..."
 cd ~
 [ ! -d termux-packages ] && git clone https://github.com/termux/termux-packages.git || error_exit "Не удалось клонировать репозиторий."
 cd termux-packages
-git checkout dd0d111e5057b9ee772b5167979db01227ba9024 || error_exit "Не удалось переключиться на нужную ветку."
 
 log "Создание скрипта сборки libc++..."
 cat > packages/libc++/build.sh << 'EOF'
