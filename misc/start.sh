@@ -2,8 +2,8 @@
 
 [ -w /tmp ] && USER_DIR="" || USER_DIR=$HOME
 
+SUDO=$(env | grep -qi TERMUX && echo "" || command -v sudo 2>/dev/null)
 CLONE_DIR="$USER_DIR/tmp/tech-scripts/misc"
-SUDO=$(command -v sudo)
 
 show_inscription() {
     clear
