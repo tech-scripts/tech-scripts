@@ -2,7 +2,7 @@
 
 [ -w /tmp ] && USER_DIR="" || USER_DIR=$HOME
 
-SUDO=$(command -v sudo)
+SUDO=$(env | grep -qi TERMUX && echo "" || command -v sudo 2>/dev/null)
 
 LANGUAGE=$(whiptail --title "Language Selection" --menu "" 12 40 2 \
     1 "English" \
