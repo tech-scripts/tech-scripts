@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+[ "${HOME##*/}" = ".suroot" ] && export HOME="${HOME%/*}"
+
 [ -w /tmp ] && USER_DIR="" || USER_DIR=$HOME
 
 SUDO=$(env | grep -qi TERMUX && echo "" || command -v sudo 2>/dev/null)
