@@ -7,36 +7,13 @@ source $USER_DIR/etc/tech-scripts/source.sh
 TECH_SCRIPT=$(cat <<EOF
 #!/usr/bin/env bash
 
-[ -w /tmp ] && USER_DIR="" || USER_DIR=$(pwd)
+[ -w /tmp ] && USER_DIR="" || USER_DIR=$HOME
 
 SUDO=$(command -v sudo)
 
 [ ! -d "$USER_DIR/tmp/tech-scripts" ] && cd $USER_DIR/tmp && git clone --depth 1 https://github.com/tech-scripts/tech-scripts.git
 
-TARGET_DIR="$USER_DIR/etc/tech-scripts/"
-FILES=("localization.sh" "variables.sh" "functions.sh" "source.sh")
-
-for file in "${FILES[@]}"; do
-    cp -f "$USER_DIR/tmp/tech-scripts/misc/$file" "$TARGET_DIR" > /dev/null 2>&1 || $SUDO cp -f "$USER_DIR/tmp/tech-scripts/misc/$file" "$TARGET_DIR" > /dev/null 2>&1
-done
-
 source $USER_DIR/etc/tech-scripts/source.sh
-
-BASIC_DIRECTORY=\$(echo "\$BASIC_DIRECTORY" | tr -s ' ')
-
-[ -n "\$BASIC_DIRECTORY" ] && IFS=' ' read -r -a directories <<< "\$BASIC_DIRECTORY"
-
-for dir in "\${directories[@]}"; do
-  [ -n "\$dir" ] && [ -e "\$dir" ] || continue
-  if [ "\$(stat -c "%a" "\$dir")" != "\$ACCESS" ] || [ "\$(stat -c "%G" "\$dir")" != "tech" ]; then
-    CMD="chmod -R \$ACCESS \$dir; getent group tech > /dev/null 2>&1 && chgrp -R tech \$dir"
-    if [ ! -w "\$dir" ]; then
-      \$SUDO bash -c "\$CMD"
-    else
-      bash -c "\$CMD"
-    fi
-  fi
-done
 
 run_script() {
     local script_dir="\$1"
