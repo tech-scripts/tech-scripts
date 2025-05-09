@@ -11,6 +11,8 @@ TECH_SCRIPT=$(cat <<EOF
 
 SUDO=$(command -v sudo)
 
+[ ! -f "$USER_DIR/etc/tech-scripts/choose.conf" ] && cd "$CLONE_DIR" && ./start.sh
+
 [ ! -d "$USER_DIR/tmp/tech-scripts" ] && cd $USER_DIR/tmp && git clone --depth 1 https://github.com/tech-scripts/tech-scripts.git
 
 source $USER_DIR/etc/tech-scripts/source.sh
