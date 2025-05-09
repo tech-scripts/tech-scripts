@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -e
 
@@ -40,7 +40,7 @@ termux_step_make_install() {
 EOF
 
 log "Сборка libc++..."
-./build-package.sh packages/libc++ || error_exit "Не удалось собрать libc++."
+tsu -c "./build-package.sh packages/libc++" || error_exit "Не удалось собрать libc++."
 
 log "Создание скрипта сборки runc..."
 cat > root-packages/runc/build.sh << 'EOF'
@@ -74,11 +74,11 @@ termux_step_make_install() {
 EOF
 
 log "Сборка runc..."
-rm -rf /data/data/com.termux/files/home/.termux-build/runc
-./build-package.sh root-packages/runc || error_exit "Не удалось собрать runc."
+tsu -c "rm -rf /data/data/com.termux/files/home/.termux-build/runc"
+tsu -c "./build-package.sh root-packages/runc" || error_exit "Не удалось собрать runc."
 
 log "Настройка блокировки версии..."
-mkdir -p $PREFIX/etc/apt/preferences.d
+tsu -c "mkdir -p $PREFIX/etc/apt/preferences.d"
 cat > $PREFIX/etc/apt/preferences.d/runc << 'EOF'
 Package: runc
 Pin: version 1.1.15
@@ -93,7 +93,7 @@ log "Проверка установки..."
 if [ -f "$PREFIX/bin/runc" ]; then
     echo "Установка успешна!"
     echo "Версия runc:"
-    runc --version
+    tsu -c "runc --version"
 else
     error_exit "Установка runc не удалась!"
 fi
@@ -105,7 +105,7 @@ log "Проверка политики runc..."
 apt policy runc || error_exit "Не удалось проверить политику runc."
 
 log "Установка Docker..."
-pkg install docker || error_exit "Не удалось установить Docker."
+pkg install -y docker || error_exit "Не удалось установить Docker."
 
 log "Настройка конфигурации Docker..."
 mkdir -p $PREFIX/etc/docker
@@ -142,9 +142,9 @@ EOF
 chmod +x $PREFIX/bin/dockerd || error_exit "Не удалось сделать скрипт dockerd исполняемым."
 
 log "Запуск Docker daemon..."
-sudo dockerd --iptables=false &>/dev/null & || error_exit "Не удалось запустить Docker daemon."
+tsu -c "dockerd --iptables=false &>/dev/null &" || error_exit "Не удалось запустить Docker daemon."
 
 log "Docker установлен и запущен. Проверка работы Docker..."
-sudo docker run hello-world || error_exit "Не удалось запустить тестовый контейнер hello-world."
+tsu -c "docker run hello-world" || error_exit "Не удалось запустить тестовый контейнер hello-world."
 
 log "Установка завершена успешно! Вы можете использовать Docker на вашем Android устройстве."
