@@ -225,7 +225,7 @@ if [[ "$LANGUAGE" == "Русский" ]]; then
     HIDE_MENU_TEXT=""
     HIDE_OPTION1="Скрывать"
     HIDE_OPTION2="Показывать"
-    HIDE_SET_TEXT="Метод скрытия установлен:"
+    HIDE_SET_TEXT="Метод скрытия функций установлен:"
     
 else
     MSG_NO_SCRIPTS="No available scripts or directories!"
@@ -450,5 +450,5 @@ else
     HIDE_MENU_TEXT=""
     HIDE_OPTION1="Hide"
     HIDE_OPTION2="Show"
-    HIDE_SET_TEXT="Hiding Method Set:"
+    HIDE_SET_TEXT="Hiding Method Functions Set:"
 fi
