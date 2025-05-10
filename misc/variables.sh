@@ -7,6 +7,7 @@ CURRENT_DIR=$(pwd)
 LANGUAGE=$(grep '^lang:' $USER_DIR/etc/tech-scripts/choose.conf | cut -d ' ' -f 2)
 EDITOR=$(grep '^editor:' $USER_DIR/etc/tech-scripts/choose.conf | cut -d ' ' -f 2)
 ACCESS=$(grep '^access:' $USER_DIR/etc/tech-scripts/choose.conf | cut -d ' ' -f 2)
+HIDE=$(grep '^hide:' $USER_DIR/etc/tech-scripts/choose.conf | cut -d ' ' -f 2)
 TECH_COMMAND_DIR=$(command -v tech >/dev/null && dirname "$(command -v tech)" || echo "$PATH" | cut -d ':' -f1)
 CONFIG_FILE="$USER_DIR/etc/tech-scripts/choose.conf"
 SCRIPT_DIR_SSH="$USER_DIR/usr/local/tech-scripts"
