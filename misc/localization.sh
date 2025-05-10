@@ -221,10 +221,10 @@ if [[ "$LANGUAGE" == "Русский" ]]; then
     NEED_UNIQUE_IDS="Уникальные идентификаторы"
     NEED_ALL="Все"
 
-    HIDE_TITLE="Выберите метод скрытия"
+    HIDE_TITLE="Выберите метод скрытия функций"
     HIDE_MENU_TEXT=""
-    HIDE_OPTION1="Скрывать неподдерживаемые скрипты"
-    HIDE_OPTION2="Показывать неподдерживаемые скрипты"
+    HIDE_OPTION1="Скрывать"
+    HIDE_OPTION2="Показывать"
     HIDE_SET_TEXT="Метод скрытия установлен:"
     
 else
@@ -446,9 +446,9 @@ else
     NEED_UNIQUE_IDS="Unique Identifiers"
     NEED_ALL="All"
 
-    HIDE_TITLE="Select Hiding Method"
+    HIDE_TITLE="Select Hiding Method Functions"
     HIDE_MENU_TEXT=""
-    HIDE_OPTION1="Hide Unsupported Scripts"
-    HIDE_OPTION2="Show Unsupported Scripts"
+    HIDE_OPTION1="Hide"
+    HIDE_OPTION2="Show"
     HIDE_SET_TEXT="Hiding Method Set:"
 fi
