@@ -116,13 +116,13 @@ if [ ! -f "$USER_DIR/etc/tech-scripts/choose.conf" ]; then
     manage_packages
 fi
 
+[ -x "$USER_DIR/tmp/tech-scripts/misc/menu.sh" ] && "$USER_DIR/tmp/tech-scripts/misc/menu.sh"
+
 [ ! -d "$USER_DIR/tmp" ] && $SUDO mkdir -p "$USER_DIR/tmp"
 [ ! -d "$USER_DIR/etc" ] && $SUDO mkdir -p "$USER_DIR/etc"
 [ ! -d "$USER_DIR/usr" ] && $SUDO mkdir -p "$USER_DIR/usr"
 
 [ ! -d "$USER_DIR/tmp/tech-scripts" ] && cd $USER_DIR/tmp && git clone --depth 1 https://github.com/tech-scripts/tech-scripts.git
-
-[ ! -x "$USER_DIR/tmp/tech-scripts/misc/menu.sh" ] && "$USER_DIR/tmp/tech-scripts/misc/menu.sh"
 
 [ ! -d "$USER_DIR/etc/tech-scripts" ] && $SUDO mkdir -p "$USER_DIR/etc/tech-scripts"
 [ ! -d "$USER_DIR/usr/local/tech-scripts" ] && $SUDO mkdir -p "$USER_DIR/usr/local/tech-scripts"
@@ -167,7 +167,5 @@ for dir in "${directories[@]}"; do
     fi
   fi
 done
-
-[ "${PWD##*/}" = ".suroot" ] && cd "${PWD%/*}"
 
 ./menu.sh
