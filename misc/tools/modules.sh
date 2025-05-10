@@ -31,7 +31,7 @@ categories=(
 check_module() {
   local mod=$1
 
-  if lsmod | grep -qw "^${mod}"; then
+  if lsmod | grep -qw "^${mod}" &>/dev/null; then
     echo -e "  ${GREEN}${CHECK_MARK}${RESET} ${mod} (загружен)"
     return
   fi
@@ -46,7 +46,7 @@ check_module() {
     return
   fi
 
-  if find /lib/modules/$(uname -r) -type f -name "${mod}.ko*" -print -quit | grep -q .; then
+  if find /lib/modules/$(uname -r) -type f -name "${mod}.ko*" -print -quit | grep -q . &>/dev/null; then
     echo -e "  ${YELLOW}${QUESTION_MARK}${RESET} ${mod} (файл модуля найден, но modinfo не подтвердил)"
     return
   fi
