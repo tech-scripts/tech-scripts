@@ -10,9 +10,9 @@ cat << 'EOF' > $USER_DIR/tmp/update.sh
 source $USER_DIR/etc/tech-scripts/source.sh
 
 cd $USER_DIR/tmp
-rm -rf $USER_DIR/tmp/tech-scripts
+$SUDO rm -rf $USER_DIR/tmp/tech-scripts
 git clone --depth 1 https://github.com/tech-scripts/tech-scripts.git $USER_DIR/tmp/tech-scripts
-rm -rf $TECH_COMMAND_DIR/tech
+$SUDO rm -rf $TECH_COMMAND_DIR/tech
 cd $USER_DIR/tmp/tech-scripts/misc/tech
 chmod +x tech.sh
 ./tech.sh
@@ -35,4 +35,4 @@ echo ""
 EOF
 chmod +x $USER_DIR/tmp/update.sh
 $USER_DIR/tmp/update.sh
-rm -f /tmp/update.sh
+$SUDO rm -f /tmp/update.sh
