@@ -68,7 +68,7 @@ create_ssh_alert_script() {
     $SUDO tee "$SCRIPT_DIR_SSH/alert.sh" >/dev/null <<'EOF'
 #!/usr/bin/env bash
 
-[ -w /tmp ] && USER_DIR="" || USER_DIR="~"
+[ -w /tmp ] && USER_DIR="" || USER_DIR=$HOME
 
 source $USER_DIR/etc/tech-scripts/source.sh
 
