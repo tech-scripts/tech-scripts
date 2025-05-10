@@ -116,7 +116,7 @@ if [ ! -f "$USER_DIR/etc/tech-scripts/choose.conf" ]; then
     manage_packages
 fi
 
-[ -x "$USER_DIR/tmp/tech-scripts/misc/menu.sh" ] && "$USER_DIR/tmp/tech-scripts/misc/menu.sh"
+[ -x "$USER_DIR/tmp/tech-scripts/misc/menu.sh" ] && "$USER_DIR/tmp/tech-scripts/misc/menu.sh" && exit 1
 
 [ ! -d "$USER_DIR/tmp" ] && $SUDO mkdir -p "$USER_DIR/tmp"
 [ ! -d "$USER_DIR/etc" ] && $SUDO mkdir -p "$USER_DIR/etc"
