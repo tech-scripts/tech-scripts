@@ -143,6 +143,7 @@ if [ ! -f "$USER_DIR/etc/tech-scripts/choose.conf" ]; then
         echo "lang: English"
         echo "access: 755"
         echo "editor: nano"
+        echo "hide: true"
     } | $SUDO tee -a $USER_DIR/etc/tech-scripts/choose.conf > /dev/null
     $SUDO chmod +x "choose.sh"
     ./choose.sh
