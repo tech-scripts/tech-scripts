@@ -220,6 +220,13 @@ if [[ "$LANGUAGE" == "Русский" ]]; then
     NEED_SECURITY="Безопасность"
     NEED_UNIQUE_IDS="Уникальные идентификаторы"
     NEED_ALL="Все"
+
+    HIDE_TITLE="Выберите метод скрытия"
+    HIDE_MENU_TEXT=""
+    HIDE_OPTION1="Скрывать неподдерживаемые скрипты"
+    HIDE_OPTION2="Показывать неподдерживаемые скрипты"
+    HIDE_SET_TEXT="Метод скрытия установлен:"
+    
 else
     MSG_NO_SCRIPTS="No available scripts or directories!"
     MSG_CANCELLED="Selection cancelled!"
@@ -438,4 +445,10 @@ else
     NEED_SECURITY="Security"
     NEED_UNIQUE_IDS="Unique Identifiers"
     NEED_ALL="All"
+
+    HIDE_TITLE="Select Hiding Method"
+    HIDE_MENU_TEXT=""
+    HIDE_OPTION1="Hide Unsupported Scripts"
+    HIDE_OPTION2="Show Unsupported Scripts"
+    HIDE_SET_TEXT="Hiding Method Set:"
 fi
