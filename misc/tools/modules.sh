@@ -71,6 +71,7 @@ check_module() {
   echo -e "  ${RED}${CROSS_MARK}${RESET} ${mod} (не доступен)"
 }
 
+echo ""
 echo -e "Проверка модулей ядра и их статуса:\n"
 
 for category in "${categories[@]}"; do
