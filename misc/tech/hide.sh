@@ -21,5 +21,5 @@ CONFIG_FILE="$USER_DIR/etc/tech-scripts/choose.conf"
 [ -w "$CONFIG_FILE" ] && sed -i "4s/.*/hide: $HIDE_VALUE/" "$CONFIG_FILE" || $SUDO sed -i "4s/.*/hide: $HIDE_VALUE/" "$CONFIG_FILE"
 
 echo ""
-echo "$HIDE_SET_TEXT $HIDE_VALUE"
+[ "$HIDE_VALUE" = true ] && echo "$HIDE_SET_TEXT $HIDE_OPTION1" || echo "$HIDE_SET_TEXT $HIDE_OPTION2"
 echo ""
