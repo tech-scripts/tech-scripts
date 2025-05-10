@@ -9,8 +9,10 @@ CLONE_DIR="$USER_DIR/tmp/tech-scripts/misc"
 CURRENT_DIR="$CLONE_DIR"
 EXCLUDE_FILES=("start.sh" "choose.sh" "localization.sh" "variables.sh" "functions.sh" "menu.sh" "source.sh" "*.tmp")
 
-if ! command -v update-grub &>/dev/null; then
-  EXCLUDE_FILES+=("grub.sh")
+if [ "$HIDE" = true ]; then
+  ! command -v update-grub &>/dev/null && EXCLUDE_FILES+=("grub.sh")
+  ! command -v ssh &>/dev/null && EXCLUDE_FILES+=("ssh.sh")
+  ! command -v swapon &>/dev/null && EXCLUDE_FILES+=("swap.sh")
 fi
 
 get_relative_path() {
