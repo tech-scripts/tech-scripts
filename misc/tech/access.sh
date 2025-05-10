@@ -24,13 +24,7 @@ CONFIG_FILE="$USER_DIR/etc/tech-scripts/choose.conf"
 
 [ -w "$CONFIG_FILE" ] && sed -i "3s/.*/access: $ACCESS_VALUE/" "$CONFIG_FILE" || $SUDO sed -i "3s/.*/access: $ACCESS_VALUE/" "$CONFIG_FILE"
 
-BASIC_DIRECTORY=$(echo "$BASIC_DIRECTORY" | tr -s ' ')
-
-[ -n "$BASIC_DIRECTORY" ] && IFS=' ' read -r -a directories <<< "$BASIC_DIRECTORY"
-
-for dir in "${directories[@]}"; do
-    [ -d "$dir" ] && [ "$(stat -c "%a" "$dir")" != "$ACCESS" ] && $SUDO chmod -R "$ACCESS" "$dir"
-done
+change_directory_permissions
 
 echo ""
 echo "$ACCESS_SET_TEXT $ACCESS_VALUE"
