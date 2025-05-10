@@ -9,6 +9,10 @@ CLONE_DIR="$USER_DIR/tmp/tech-scripts/misc"
 CURRENT_DIR="$CLONE_DIR"
 EXCLUDE_FILES=("start.sh" "choose.sh" "localization.sh" "variables.sh" "functions.sh" "menu.sh" "source.sh" "*.tmp")
 
+if ! command -v update-grub &>/dev/null; then
+  EXCLUDE_FILES+=("grub.sh")
+fi
+
 get_relative_path() {
     local full_path="$1"
     local base_path="$2"
