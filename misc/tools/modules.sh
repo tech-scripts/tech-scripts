@@ -11,8 +11,8 @@ QUESTION_MARK="?"
 
 categories=(
   "1. Сетевые модули: netfilter ip_tables bridge 8021q macvlan vxlan"
-  "2. Файловые системы: ext4 btrfs xfs nfs fuse overlayfs zfs"
-  "3. Драйверы устройств: usbcore ahci nouveau radeon sd_mod virtio_blk"
+  "2. Файловые системы: ext4 btrfs xfs nfs fuse zfs"
+  "3. Драйверы устройств: usbcore ahci nouveau radeon sd_mod"
   "4. Безопасность: selinux dm_crypt audit seccomp keyring"
   "5. Виртуализация: kvm vhost virtio virtio_net virtio_blk"
   "6. Поддержка оборудования: i2c spi pwm gpio hwmon"
@@ -24,7 +24,7 @@ categories=(
   "12. Поддержка Bluetooth: bluetooth btusb btrtl btqca btintel"
   "13. Контейнеризация и изоляция: cgroups namespaces seccomp overlayfs apparmor aufs fuse"
   "14. Системы хранения и протоколы: scsi_mod nvme fiberchannel iscsi_tcp rdma"
-  "15. Системная шина: pci pci_hotplug platform usbcore acpi"
+  "15. Системная шина: pci pci_hotplug platform acpi"
   "16. Другие важные модули: dm_mod loop autofs"
 )
 
