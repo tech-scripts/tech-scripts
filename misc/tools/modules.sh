@@ -12,14 +12,14 @@ QUESTION_MARK="?"
 categories=(
   "1. Сетевые модули и подключение к сети: netfilter ip_tables bridge 8021q macvlan vxlan ath9k iwlwifi wpa_supplicant ethdev macsec"
   "2. Файловые системы: ext4 btrfs xfs nfs fuse zfs"
-  "3. Драйверы устройств и поддержка оборудования: usbcore ahci nouveau radeon sd_mod i2c spi pwm gpio hwmon"
-  "4. Безопасность: selinux dm_crypt audit seccomp keyring"
+  "3. Драйверы устройств и поддержка оборудования: usbcore ahci sd_mod i2c spi pwm gpio hwmon"
+  "4. Безопасность: selinux dm_crypt audit keyring"
   "5. Виртуализация: kvm vhost virtio virtio_net virtio_blk"
   "6. Контейнеризация: cgroups namespaces seccomp overlayfs apparmor aufs fuse configfs tmpfs devtmpfs udev sysfs"
-  "7. Аудио: snd_hda_intel snd_usb_audio snd_pcm snd_seq"
-  "8. Графика: fbdev drm i915 amdgpu"
-  "9. Системы хранения, протоколы и поддержка RAID: scsi_mod nvme fiberchannel iscsi_tcp rdma md_mod dm_raid dm_mod raid1 raid5 raid6"
-  "10. Системная шина: pci pci_hotplug platform acpi"
+  "7. Аудио: snd_hda_intel snd_usb_audio snd_pcm snd_seq snd_seq"
+  "8. Графика: amdgpu radeon fbdev drm i915 nouveau"
+  "9. Системы хранения, протоколы и поддержка RAID: scsi_mod nvme fiberchannel iscsi_tcp rdma md_mod dm_raid dm_mod autofs loop"
+  "10. Системная шина: platform pci pci_hotplug acpi"
 )
 
 check_module() {
