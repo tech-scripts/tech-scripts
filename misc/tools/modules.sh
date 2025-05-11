@@ -58,8 +58,8 @@ check_module() {
     return
   fi
 
-  if dmesg | grep -i "$mod" &>/dev/null; then
-    echo -e "  ${YELLOW}${QUESTION_MARK}${RESET} ${mod} (модуль упоминался в dmesg)"
+  if dmesg 2>/dev/null | grep -i "$mod" &>/dev/null; then
+    echo -e "  \${YELLOW}\${QUESTION_MARK}\${RESET} \${mod} (модуль упоминался в dmesg)"
     return
   fi
 
