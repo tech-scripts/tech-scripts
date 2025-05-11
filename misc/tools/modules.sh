@@ -11,7 +11,7 @@ QUESTION_MARK="?"
 
 categories=(
   "1. Сетевые модули: netfilter ip_tables bridge 8021q macvlan vxlan ath9k iwlwifi wpa_supplicant ethdev macsec"
-  "2. Файловые системы: ext4 btrfs xfs nfs fuse zfs"
+  "2. Файловые системы: ext4 btrfs xfs nfs cifs"
   "3. Драйверы устройств: usbcore ahci sd_mod i2c spi pwm gpio hwmon"
   "4. Безопасность: selinux dm_crypt audit keyring"
   "5. Виртуализация: kvm vhost virtio virtio_net virtio_blk"
