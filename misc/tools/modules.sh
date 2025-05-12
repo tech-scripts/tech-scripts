@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 GREEN="\e[32m"
 RED="\e[31m"
@@ -53,7 +53,7 @@ check_module() {
   fi
 
   if dmesg 2>/dev/null | grep -i "$mod" &>/dev/null; then
-    echo -e "  \${YELLOW}\${QUESTION_MARK}\${RESET} \${mod} (модуль упоминался в dmesg)"
+    echo -e "  ${YELLOW}${QUESTION_MARK}${RESET} ${mod} (модуль упоминался в dmesg)"
     return
   fi
 
