@@ -43,7 +43,7 @@ copy_files() {
     done
 }
 
-compete_install() {
+complete_install() {
     echo -e "${COLOR_GREEN}╔══════════════════════════════════════════════╗${COLOR_RESET}"
     echo -e "${COLOR_GREEN}║                                              ║${COLOR_RESET}"
     echo -e "${COLOR_GREEN}║      ${COLOR_RESET}${COLOR_WHITE}Вы успешно завершили установление!      ${COLOR_GREEN}║${COLOR_RESET}"
@@ -54,7 +54,7 @@ compete_install() {
     echo -e "${COLOR_GREEN}╚══════════════════════════════════════════════╝${COLOR_RESET}"
 }
 
-compete_repair() {
+complete_repair() {
     echo -e "${COLOR_BLUE}╔══════════════════════════════════════════════╗${COLOR_RESET}"
     echo -e "${COLOR_BLUE}║                                              ║${COLOR_RESET}"
     echo -e "${COLOR_BLUE}║     ${COLOR_RESET}${COLOR_WHITE}Вы успешно завершили восстановление!     ${COLOR_BLUE}║${COLOR_RESET}"
@@ -65,7 +65,7 @@ compete_repair() {
     echo -e "${COLOR_BLUE}╚══════════════════════════════════════════════╝${COLOR_RESET}"
 }
 
-compete_remove() {
+complete_remove() {
     echo -e "${COLOR_RED}╔══════════════════════════════════════════════╗${COLOR_RESET}"
     echo -e "${COLOR_RED}║                                              ║${COLOR_RESET}"
     echo -e "${COLOR_RED}║        ${COLOR_RESET}${COLOR_WHITE}Вы успешно завершили удаление!        ${COLOR_RED}║${COLOR_RESET}"
