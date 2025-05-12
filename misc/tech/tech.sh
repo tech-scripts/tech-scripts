@@ -13,7 +13,7 @@ TECH_SCRIPT=$(cat <<EOF
 
 SUDO=\$(env | grep -qi TERMUX && echo "" || command -v sudo 2>/dev/null)
 
-[ ! -d "\$USER_DIR/tmp/tech-scripts" ] && cd \$USER_DIR/tmp && git clone --depth 1 https://github.com/tech-scripts/tech-scripts.git
+[ ! -d "\$USER_DIR/tmp/tech-scripts" ] && cd \$USER_DIR/tmp && git clone --depth 1 https://github.com/tech-scripts/tech-scripts.git && copy_files && change_directory_permissions
 
 source \$USER_DIR/etc/tech-scripts/source.sh
 
@@ -33,6 +33,8 @@ fi
 combined_args="\$*"
 
 case "\$combined_args" in
+    "menu") run_script "tech" "menu.sh" ;;
+    "help") run_script "tech" "help.sh" ;;
     "update") run_script "tech" "update.sh" ;;
     "lxc") run_script "proxmox" "lxc.sh" ;;
     "vm") run_script "proxmox" "vm.sh" ;;
