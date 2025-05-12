@@ -16,14 +16,7 @@ $SUDO rm -rf $TECH_COMMAND_DIR/tech
 cd $USER_DIR/tmp/tech-scripts/misc/tech
 chmod +x tech.sh
 ./tech.sh
-
-TARGET_DIR="$USER_DIR/etc/tech-scripts/"
-FILES=("localization.sh" "variables.sh" "functions.sh" "source.sh")
-
-for file in "${FILES[@]}"; do
-    cp -f "$USER_DIR/tmp/tech-scripts/misc/$file" "$TARGET_DIR" > /dev/null 2>&1 || $SUDO cp -f "$USER_DIR/tmp/tech-scripts/misc/$file" "$TARGET_DIR" > /dev/null 2>&1
-done
-
+copy_files
 change_directory_permissions
 echo ""
 if [ "$LANGUAGE" ]; then
