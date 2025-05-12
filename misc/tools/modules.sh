@@ -1,9 +1,9 @@
 #!/bin/bash
 
-GREEN="\\e[32m"
-RED="\\e[31m"
-YELLOW="\\e[33m"
-RESET="\\e[0m"
+GREEN="\e[32m"
+RED="\e[31m"
+YELLOW="\e[33m"
+RESET="\e[0m"
 
 CHECK_MARK="✓"
 CROSS_MARK="✗"
@@ -67,7 +67,7 @@ check_module() {
 
 echo ""
 echo -e "Проверка модулей ядра и их статуса:\n"
-echo -e "  ${YELLOW}${QUESTION_MARK}${RESET} ${mod} (файл модуля найден, но modinfo не подтвердил)"
+
 for category in "${categories[@]}"; do
   cat_name=$(echo "$category" | cut -d':' -f1)
   mods=$(echo "$category" | cut -d':' -f2)
