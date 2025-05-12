@@ -1,5 +1,20 @@
 #!/usr/bin/env bash
 
+show_inscription() {
+    clear
+    cat <<"EOF"
+    
+  ______          __       _____           _       __      
+ /_  __/__  _____/ /_     / ___/__________(_)___  / /______
+  / / / _ \/ ___/ __ \    \__ \/ ___/ ___/ / __ \/ __/ ___/
+ / / /  __/ /__/ / / /   ___/ / /__/ /  / / /_/ / /_(__  ) 
+/_/  \___/\___/_/ /_/   /____/\___/_/  /_/ .___/\__/____/  
+                                        /_/                
+
+EOF
+}
+
+
 change_directory_permissions() {
     [ -n "$BASIC_DIRECTORY" ] && IFS=' ' read -r -a directories <<< "$BASIC_DIRECTORY"
 
@@ -15,5 +30,15 @@ change_directory_permissions() {
                 bash -c "$CMD"
             fi
         fi
+    done
+}
+
+copy_files() {
+    TARGET_DIR="$USER_DIR/etc/tech-scripts/"
+    FILES=("localization.sh" "variables.sh" "functions.sh" "source.sh")
+
+    for file in "${FILES[@]}"; do
+        cp -f "$USER_DIR/tmp/tech-scripts/misc/$file" "$TARGET_DIR" > /dev/null 2>&1 || \
+        $SUDO cp -f "$USER_DIR/tmp/tech-scripts/misc/$file" "$TARGET_DIR" > /dev/null 2>&1
     done
 }
