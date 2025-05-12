@@ -44,6 +44,7 @@ check_module() {
     if find /lib/modules/$(uname -r) -type f -name "${mod}.ko*" -print -quit | grep -q . &>/dev/null; then
       echo -e "  ${YELLOW}${QUESTION_MARK}${RESET} ${mod} (файл модуля найден, но modinfo не подтвердил)"
       return
+    fi
   fi
 
   if modprobe -n -v "$mod" &>/dev/null; then
@@ -66,7 +67,7 @@ check_module() {
 
 echo ""
 echo -e "Проверка модулей ядра и их статуса:\n"
-echo -e "  ${YELLOW}${QUESTION_MARK}${RESET} ${mod} (файл модуля найден, но modinfo не подтвердил)"
+
 for category in "${categories[@]}"; do
   cat_name=$(echo "$category" | cut -d':' -f1)
   mods=$(echo "$category" | cut -d':' -f2)
