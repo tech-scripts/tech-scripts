@@ -169,4 +169,6 @@ for dir in "${directories[@]}"; do
   fi
 done
 
+cd tech
+
 ./menu.sh
