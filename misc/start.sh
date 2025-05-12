@@ -168,5 +168,5 @@ for dir in "${directories[@]}"; do
 done
 
 echo ""
-[ ! -f "$USER_DIR/etc/tech-scripts/choose.conf" ] && compete_install || compete_repair
+[ ! -f "$USER_DIR/etc/tech-scripts/choose.conf" ] && complete_install || complete_repair
 echo ""
