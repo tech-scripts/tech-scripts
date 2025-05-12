@@ -25,8 +25,8 @@ run_script() {
 }
 
 if [ \$# -eq 0 ]; then
-    cd \$USER_DIR/tmp/tech-scripts/misc
-    ./start.sh
+    cd \$USER_DIR/tmp/tech-scripts/misc/tech
+    ./menu.sh
     exit 0
 fi
 
