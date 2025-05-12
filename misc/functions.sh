@@ -42,3 +42,25 @@ copy_files() {
         $SUDO cp -f "$USER_DIR/tmp/tech-scripts/misc/$file" "$TARGET_DIR" > /dev/null 2>&1
     done
 }
+
+compete_install() {
+    echo -e "${COLOR_GREEN}╔══════════════════════════════════════════════╗${COLOR_RESET}"
+    echo -e "${COLOR_GREEN}║                                              ║${COLOR_RESET}"
+    echo -e "${COLOR_GREEN}║      ${COLOR_RESET}${COLOR_HIGHLIGHT}Вы успешно завершили установление!      ${COLOR_GREEN}║${COLOR_RESET}"
+    echo -e "${COLOR_GREEN}║                                              ║${COLOR_RESET}"
+    echo -e "${COLOR_GREEN}║      ${COLOR_RESET}${COLOR_HIGHLIGHT}tech menu${COLOR_RESET} \e[38;5;117m- ${COLOR_GREEN}Главное меню                ${COLOR_GREEN}║${COLOR_RESET}"
+    echo -e "${COLOR_GREEN}║      ${COLOR_RESET}${COLOR_HIGHLIGHT}tech help${COLOR_RESET} \e[38;5;117m- ${COLOR_GREEN}Помощь по командам          ${COLOR_GREEN}║${COLOR_RESET}"
+    echo -e "${COLOR_GREEN}║                                              ║${COLOR_RESET}"
+    echo -e "${COLOR_GREEN}╚══════════════════════════════════════════════╝${COLOR_RESET}"
+}
+
+compete_repair() {
+    echo -e "${COLOR_RED}╔══════════════════════════════════════════════╗${COLOR_RESET}"
+    echo -e "${COLOR_RED}║                                              ║${COLOR_RESET}"
+    echo -e "${COLOR_RED}║     ${COLOR_RESET}${COLOR_HIGHLIGHT}Вы успешно завершили восстановление!     ${COLOR_RED}║${COLOR_RESET}"
+    echo -e "${COLOR_RED}║                                              ║${COLOR_RESET}"
+    echo -e "${COLOR_RED}║      ${COLOR_RESET}${COLOR_HIGHLIGHT}tech menu${COLOR_RESET} \e[38;5;117m- ${COLOR_RED}Главное меню                ${COLOR_RED}║${COLOR_RESET}"
+    echo -e "${COLOR_RED}║      ${COLOR_RESET}${COLOR_HIGHLIGHT}tech help${COLOR_RESET} \e[38;5;117m- ${COLOR_RED}Помощь по командам          ${COLOR_RED}║${COLOR_RESET}"
+    echo -e "${COLOR_RED}║                                              ║${COLOR_RESET}"
+    echo -e "${COLOR_RED}╚══════════════════════════════════════════════╝${COLOR_RESET}"
+}
