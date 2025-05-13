@@ -7,6 +7,7 @@ source $USER_DIR/etc/tech-scripts/source.sh
 whiptail --title "$TITLE_DANGER" --yesno "$MESSAGE_DANGER" 10 60
 
 if [ $? -eq 0 ]; then
+    show_inscription
     $SUDO rm -rf $BASIC_DIRECTORY
     echo ""
     complete_remove
