@@ -261,7 +261,7 @@ else
     TITLE_CUSTOM_EDITOR="Custom Editor"
     MSG_CUSTOM_EDITOR="Enter the command custom text editor:"
     MSG_INVALID_EDITOR="Invalid choice!"
-    MSG_SUCCESS_EDITOR="Text editor set to:"
+    MSG_SUCCESS_EDITOR="Text editor set:"
 
     CPU_TEST_TITLE="CPU Stress Test"
     CPU_TEST_QUESTION="Do you want to perform a CPU stress test?"
@@ -450,5 +450,5 @@ else
     HIDE_MENU_TEXT=""
     HIDE_OPTION1="Hide"
     HIDE_OPTION2="Show"
-    HIDE_SET_TEXT="Hiding Method Functions Set:"
+    HIDE_SET_TEXT="Hiding method functions set:"
 fi
