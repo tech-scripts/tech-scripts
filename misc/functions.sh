@@ -46,7 +46,7 @@ copy_files() {
 complete_install() {
     echo -e "${COLOR_GREEN}╔══════════════════════════════════════════════╗${COLOR_RESET}"
     echo -e "${COLOR_GREEN}║                                              ║${COLOR_RESET}"
-    echo -e "${COLOR_GREEN}║      ${COLOR_RESET}${COLOR_WHITE}Вы успешно завершили установление!      ${COLOR_GREEN}║${COLOR_RESET}"
+    echo -e "${COLOR_GREEN}║      ${COLOR_RESET}${COLOR_WHITE}Вы успешно завершили установление!      ${COLOR_RESET}${COLOR_GREEN}║${COLOR_RESET}"
     echo -e "${COLOR_GREEN}║                                              ║${COLOR_RESET}"
     echo -e "${COLOR_GREEN}║        ${COLOR_RESET}${COLOR_WHITE}tech menu${COLOR_RESET} ${COLOR_GRAY}- ${COLOR_GREEN}Главное меню              ${COLOR_GREEN}║${COLOR_RESET}"
     echo -e "${COLOR_GREEN}║        ${COLOR_RESET}${COLOR_WHITE}tech help${COLOR_RESET} ${COLOR_GRAY}- ${COLOR_GREEN}Помощь по командам        ${COLOR_GREEN}║${COLOR_RESET}"
@@ -57,7 +57,7 @@ complete_install() {
 complete_repair() {
     echo -e "${COLOR_BLUE}╔══════════════════════════════════════════════╗${COLOR_RESET}"
     echo -e "${COLOR_BLUE}║                                              ║${COLOR_RESET}"
-    echo -e "${COLOR_BLUE}║     ${COLOR_RESET}${COLOR_WHITE}Вы успешно завершили восстановление!     ${COLOR_BLUE}║${COLOR_RESET}"
+    echo -e "${COLOR_BLUE}║     ${COLOR_RESET}${COLOR_WHITE}Вы успешно завершили восстановление!     ${COLOR_RESET}${COLOR_BLUE}║${COLOR_RESET}"
     echo -e "${COLOR_BLUE}║                                              ║${COLOR_RESET}"
     echo -e "${COLOR_BLUE}║       ${COLOR_RESET}${COLOR_WHITE}tech menu${COLOR_RESET} ${COLOR_GRAY}- ${COLOR_BLUE}Главное меню               ${COLOR_BLUE}║${COLOR_RESET}"
     echo -e "${COLOR_BLUE}║       ${COLOR_RESET}${COLOR_WHITE}tech help${COLOR_RESET} ${COLOR_GRAY}- ${COLOR_BLUE}Помощь по командам         ${COLOR_BLUE}║${COLOR_RESET}"
@@ -68,7 +68,7 @@ complete_repair() {
 complete_remove() {
     echo -e "${COLOR_RED}╔══════════════════════════════════════════════╗${COLOR_RESET}"
     echo -e "${COLOR_RED}║                                              ║${COLOR_RESET}"
-    echo -e "${COLOR_RED}║        ${COLOR_RESET}${COLOR_WHITE}Вы успешно завершили удаление!        ${COLOR_RED}║${COLOR_RESET}"
+    echo -e "${COLOR_RED}║        ${COLOR_RESET}${COLOR_WHITE}Вы успешно завершили удаление!        ${COLOR_RESET}${COLOR_RED}║${COLOR_RESET}"
     echo -e "${COLOR_RED}║                                              ║${COLOR_RESET}"
     echo -e "${COLOR_RED}╚══════════════════════════════════════════════╝${COLOR_RESET}"
 }
