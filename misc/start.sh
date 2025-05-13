@@ -8,6 +8,8 @@ SUDO=$(env | grep -qi TERMUX && echo "" || command -v sudo 2>/dev/null)
 CLONE_DIR="$USER_DIR/tmp/tech-scripts/misc"
 CONFIG_DIR="$USER_DIR/etc/tech-scripts/choose.conf"
 
+[ ! -f "$CONFIG_DIR" ] && RESULT="true" || RESULT="false"
+
 show_inscription() {
     clear
     cat <<"EOF"
@@ -169,5 +171,5 @@ for dir in "${directories[@]}"; do
 done
 
 echo ""
-[ ! -f $CONFIG_DIR ] && complete_install || complete_repair
+[ "$RESULT" == "true" ] && complete_install || complete_repair
 echo ""
