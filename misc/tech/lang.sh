@@ -35,6 +35,6 @@ if [ "$lang" = "Русский" ]; then
     echo " "
 else
     echo " "
-    echo "Language set to: $lang"
+    echo "Language set: $lang"
     echo " "
 fi
