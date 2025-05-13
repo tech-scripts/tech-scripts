@@ -79,7 +79,7 @@ curl -fsSL https://raw.githubusercontent.com/tech-scripts/tech-scripts/refs/head
 ### 📚 Usage
 
 ### Core Commands
-- **Open Menu**: `tech`
+- **Open Menu**: `tech menu`
 - **Update Scripts**: `tech update`
 - **Edit Config**: `tech config`
 
