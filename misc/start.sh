@@ -105,14 +105,71 @@ install_package() {
 }
 
 manage_packages() {
-    update_packages
+    required_packages=(git)
+    optional_packages_1=(newt whiptail)
+    optional_packages_2=(curl wget)
+    optional_packages_3=(nano vim)
 
-    for package in git whiptail; do
-        if ! command -v "$package" &>/dev/null && package_exists "$package"; then
-            install_package "$package"
+    any_installed() {
+        local -n arr=$1
+        for pkg in "${arr[@]}"; do
+            if command -v "$pkg" &>/dev/null; then
+                return 0
+            fi
+        done
+        return 1
+    }
+
+    all_required_installed=true
+    for pkg in "${required_packages[@]}"; do
+        if ! command -v "$pkg" &>/dev/null; then
+            all_required_installed=false
+            break
         fi
     done
+
+    optional_installed=false
+    for optional_group in optional_packages_1 optional_packages_2 optional_packages_3 optional_packages_4; do
+        if any_installed "$optional_group"; then
+            optional_installed=true
+            break
+        fi
+    done
+
+    if [ "$all_required_installed" = false ] || [ "$optional_installed" = false ]; then
+        update_packages
+    fi
+
+    for pkg in "${required_packages[@]}"; do
+        if ! command -v "$pkg" &>/dev/null && package_exists "$pkg"; then
+            install_package "$pkg"
+        fi
+    done
+
+    install_optional_group() {
+        local -n arr=$1
+        local installed_count=0
+        local threshold=2
+        for pkg in "${arr[@]}"; do
+            if command -v "$pkg" &>/dev/null; then
+                ((installed_count++))
+            fi
+        done
+
+        if (( installed_count < threshold )); then
+            for pkg in "${arr[@]}"; do
+                if ! command -v "$pkg" &>/dev/null && package_exists "$pkg"; then
+                    install_package "$pkg"
+                fi
+            done
+        fi
+    }
+
+    install_optional_group optional_packages_1
+    install_optional_group optional_packages_2
+    install_optional_group optional_packages_3
 }
+
 
 if [ ! -f "$USER_DIR/etc/tech-scripts/choose.conf" ]; then
     show_inscription
