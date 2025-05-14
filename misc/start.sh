@@ -129,7 +129,7 @@ manage_packages() {
     done
 
     optional_installed=false
-    for optional_group in optional_packages_1 optional_packages_2 optional_packages_3 optional_packages_4; do
+    for optional_group in optional_packages_1 optional_packages_2 optional_packages_3; do
         if any_installed "$optional_group"; then
             optional_installed=true
             break
