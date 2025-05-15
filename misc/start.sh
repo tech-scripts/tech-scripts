@@ -149,16 +149,16 @@ manage_packages() {
     install_optional_group() {
         local -n arr=$1
         local installed_count=0
-        local threshold=2
+        local threshold=1
         for pkg in "${arr[@]}"; do
             if command -v "$pkg" &>/dev/null; then
                 ((installed_count++))
             fi
         done
 
-        if (( installed_count < threshold )); then
+        if (( installed_count == 0 )); then
             for pkg in "${arr[@]}"; do
-                if ! command -v "$pkg" &>/dev/null && package_exists "$pkg"; then
+                if package_exists "$pkg"; then
                     install_package "$pkg"
                 fi
             done
