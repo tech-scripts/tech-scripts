@@ -1,42 +1,41 @@
 #!/usr/bin/env bash
 
-RED="\e[31m"
-GREEN="\e[32m"
-YELLOW="\e[33m"
-BLUE="\e[34m"
-CYAN="\e[36m"
-BOLD="\e[1m"
-RESET="\e[0m"
+RED="\e[31;1m"          # Ярко-красный
+GREEN="\e[32m"          # Зеленый (для описания)
+WHITE="\e[97m"          # Ярко-белый (для команд)
+BLUE="\e[34;1m"         # Ярко-голубой (для заголовков)
+BOLD="\e[1m"            # Жирный
+RESET="\e[0m"           # Сброс стиля
 
-echo -e "${BOLD}${CYAN}Core Commands${RESET}"
-echo -e "  ${YELLOW}Open Menu:${RESET}            tech menu"
-echo -e "  ${YELLOW}Update Scripts:${RESET}       tech update"
-echo -e "  ${YELLOW}Edit Config:${RESET}          tech config"
+echo -e "${BOLD}${BLUE}Core Commands${RESET}"
+echo -e "  ${GREEN}Open Menu:${RESET}               ${WHITE}tech menu${RESET}"
+echo -e "  ${GREEN}Update Scripts:${RESET}          ${WHITE}tech update${RESET}"
+echo -e "  ${GREEN}Edit Config:${RESET}             ${WHITE}tech config${RESET}"
 echo ""
 
-echo -e "${BOLD}${CYAN}Stress Testing${RESET}"
-echo -e "  ${YELLOW}CPU Stress Test:${RESET}      tech cpu"
-echo -e "  ${YELLOW}Disk Stress Test:${RESET}     tech disk"
-echo -e "  ${YELLOW}Memory Stress Test:${RESET}   tech memory"
+echo -e "${BOLD}${BLUE}Stress Testing${RESET}"
+echo -e "  ${GREEN}CPU Stress Test:${RESET}         ${WHITE}tech cpu${RESET}"
+echo -e "  ${GREEN}Disk Stress Test:${RESET}        ${WHITE}tech disk${RESET}"
+echo -e "  ${GREEN}Memory Stress Test:${RESET}      ${WHITE}tech memory${RESET}"
 echo ""
 
-echo -e "${BOLD}${CYAN}System Optimization${RESET}"
-echo -e "  ${YELLOW}Configure Swap:${RESET}       tech swap"
-echo -e "  ${YELLOW}Customize GRUB:${RESET}       tech grub"
-echo -e "  ${YELLOW}Add Startup Script:${RESET}    tech startup"
+echo -e "${BOLD}${BLUE}System Optimization${RESET}"
+echo -e "  ${GREEN}Configure Swap:${RESET}          ${WHITE}tech swap${RESET}"
+echo -e "  ${GREEN}Customize GRUB:${RESET}          ${WHITE}tech grub${RESET}"
+echo -e "  ${GREEN}Add Startup Script:${RESET}      ${WHITE}tech startup${RESET}"
 echo ""
 
-echo -e "${BOLD}${CYAN}Automation${RESET}"
-echo -e "  ${YELLOW}Auto Update:${RESET}           tech autoupdate"
-echo -e "  ${YELLOW}Monitor System:${RESET}        tech system"
+echo -e "${BOLD}${BLUE}Automation${RESET}"
+echo -e "  ${GREEN}Auto Update:${RESET}             ${WHITE}tech autoupdate${RESET}"
+echo -e "  ${GREEN}Monitor System:${RESET}          ${WHITE}tech system${RESET}"
 echo ""
 
-echo -e "${BOLD}${CYAN}Security${RESET}"
-echo -e "  ${YELLOW}SSH Notifications:${RESET}     tech ssh"
-echo -e "  ${YELLOW}Kernel Module Check:${RESET}   tech modules"
+echo -e "${BOLD}${BLUE}Security${RESET}"
+echo -e "  ${GREEN}SSH Notifications:${RESET}       ${WHITE}tech ssh${RESET}"
+echo -e "  ${GREEN}Kernel Module Check:${RESET}     ${WHITE}tech modules${RESET}"
 echo ""
 
-echo -e "${BOLD}${CYAN}LXC and VM Management${RESET}"
-echo -e "  ${YELLOW}Manage LXC Containers:${RESET}   tech lxc"
-echo -e "  ${YELLOW}Manage Virtual Machines:${RESET} tech vm"
+echo -e "${BOLD}${BLUE}LXC and VM Management${RESET}"
+echo -e "  ${GREEN}Manage LXC Containers:${RESET}   ${WHITE}tech lxc${RESET}"
+echo -e "  ${GREEN}Manage Virtual Machines:${RESET} ${WHITE}tech vm${RESET}"
 echo ""
