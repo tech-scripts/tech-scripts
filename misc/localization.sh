@@ -226,7 +226,12 @@ if [[ "$LANGUAGE" == "Русский" ]]; then
     HIDE_OPTION1="Скрывать"
     HIDE_OPTION2="Показывать"
     HIDE_SET_TEXT="Метод скрытия функций установлен:"
-    
+
+    SUCCESSFUL_COMPLETION="Вы успешно завершили установление!"
+    SUCCESSFUL_RECOVERY="Вы успешно завершили восстановление!"
+    SUCCESSFUL_DELETION="Вы успешно завершили удаление!"
+    MAIN_MENU="Главное меню"
+    HELP_COMMAND="Помощь по командам"
 else
     MSG_NO_SCRIPTS="No available scripts or directories!"
     MSG_CANCELLED="Selection cancelled!"
@@ -451,4 +456,10 @@ else
     HIDE_OPTION1="Hide"
     HIDE_OPTION2="Show"
     HIDE_SET_TEXT="Hiding method functions set:"
+
+    SUCCESSFUL_COMPLETION="You have successfully completed the installation!"
+    SUCCESSFUL_RECOVERY="You have successfully completed the recovery!"
+    SUCCESSFUL_DELETION="You have successfully completed the deletion!"
+    MAIN_MENU="Main Menu"
+    HELP_COMMAND="Help with commands"
 fi
