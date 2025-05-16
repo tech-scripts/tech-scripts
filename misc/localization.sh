@@ -198,7 +198,7 @@ if [[ "$LANGUAGE" == "Русский" ]]; then
     MSG_UPDATE_TECH="Команда tech уже существует. Хотите обновить её?"
     MSG_UPDATED_TECH="Команда tech успешно обновлена!"
     UNKNOWN_COMMAND_TECH="Неизвестная команда:"
-    USAGE_TECH="Использование: tech [update|config|ssh|...]"
+    USAGE_TECH="Использование: tech [help|update|menu|...]"
 
     ACCESS_TITLE="Выберите уровень доступа"
     ACCESS_MENU_TEXT=""
@@ -423,7 +423,7 @@ else
     MSG_UPDATE_TECH="The tech command already exists. Do you want to update it?"
     MSG_UPDATED_TECH="The tech command has been successfully updated!"
     UNKNOWN_COMMAND_TECH="Unknown command:"
-    USAGE_TECH="Usage: tech [update|config|ssh|...]"
+    USAGE_TECH="Usage: tech [help|update|menu|...]"
 
     ACCESS_TITLE="Select Access Level"
     ACCESS_MENU_TEXT=""
