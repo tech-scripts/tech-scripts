@@ -99,7 +99,7 @@ curl -fsSL https://raw.githubusercontent.com/tech-scripts/tech-scripts/refs/head
 
 ### Security
 - **SSH Notifications**: `tech ssh`
-- **Kernel Module Check**: `tech modules`
+- **Kernel Module Check**: `tech kernel`
 
 ### LXC and VM Management
 - **Manage LXC Containers**: `tech lxc`
