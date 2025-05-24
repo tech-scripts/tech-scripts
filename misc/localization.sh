@@ -459,7 +459,7 @@ else
 
     SUCCESSFUL_COMPLETION="You have completed the installation!"
     SUCCESSFUL_RECOVERY="    You have completed the recovery!  "
-    SUCCESSFUL_DELETION="    You have completed the deletion!  "
+    SUCCESSFUL_DELETION="You have completed the deletion!"
     MAIN_MENU="Main Menu   "
     HELP_COMMAND="Help with commands"
 fi
