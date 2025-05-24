@@ -227,9 +227,9 @@ if [[ "$LANGUAGE" == "Русский" ]]; then
     HIDE_OPTION2="Показывать"
     HIDE_SET_TEXT="Метод скрытия функций установлен:"
 
-    SUCCESSFUL_COMPLETION="Вы успешно завершили установление!"
-    SUCCESSFUL_RECOVERY="Вы успешно завершили восстановление!"
-    SUCCESSFUL_DELETION="Вы успешно завершили удаление!"
+    SUCCESSFUL_COMPLETION="  Вы успешно завершили установление!"
+    SUCCESSFUL_RECOVERY="  Вы успешно завершили восстановление!"
+    SUCCESSFUL_DELETION="  Вы успешно завершили удаление!"
     MAIN_MENU="Главное меню"
     HELP_COMMAND="Помощь по командам"
 else
@@ -460,6 +460,6 @@ else
     SUCCESSFUL_COMPLETION="You have completed the installation!"
     SUCCESSFUL_RECOVERY="You have completed the recovery!"
     SUCCESSFUL_DELETION="You have completed the deletion!"
-    MAIN_MENU="Main Menu    "
+    MAIN_MENU="Main Menu   "
     HELP_COMMAND="Help with commands"
 fi
