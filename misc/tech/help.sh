@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
-RED="\e[31;1m"          # Ярко-красный
-GREEN="\e[32m"          # Зеленый (для описания)
-WHITE="\e[97m"          # Ярко-белый (для команд)
-BLUE="\e[34;1m"         # Ярко-голубой (для заголовков)
-BOLD="\e[1m"            # Жирный
-RESET="\e[0m"           # Сброс стиля
+RED="\e[31;1m"
+GREEN="\e[32m"
+WHITE="\e[97m"
+BLUE="\e[34;1m"
+BOLD="\e[1m"
+RESET="\e[0m"
 
 echo -e "${BOLD}${BLUE}Core Commands${RESET}"
 echo -e "  ${GREEN}Open Menu:${RESET}               ${WHITE}tech menu${RESET}"
@@ -32,7 +32,7 @@ echo ""
 
 echo -e "${BOLD}${BLUE}Security${RESET}"
 echo -e "  ${GREEN}SSH Notifications:${RESET}       ${WHITE}tech ssh${RESET}"
-echo -e "  ${GREEN}Kernel Module Check:${RESET}     ${WHITE}tech modules${RESET}"
+echo -e "  ${GREEN}Kernel Modules Check:${RESET}     ${WHITE}tech kernel${RESET}"
 echo ""
 
 echo -e "${BOLD}${BLUE}LXC and VM Management${RESET}"
