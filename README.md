@@ -26,7 +26,7 @@
 - **Stress Testing**: Tools for testing CPU, disk, and memory performance.
 - **System Optimization**: Utilities for configuring swap, GRUB, and startup scripts.
 - **Automation**: Scripts for automatic updates and system monitoring.
-- **Security**: Notifications for SSH logins and kernel module checks.
+- **Security**: Notifications for SSH logins and kernel modules checks.
 - **LXC and VM Management**: Tools for managing LXC containers and virtual machines.
 
 ---
@@ -49,7 +49,7 @@
 
 ### Security
 - **SSH Notifications**: Receive real-time alerts for new SSH connections.
-- **Kernel Module Check**: Verify the presence of kernel modules to ensure system integrity.
+- **Kernel Modules Check**: Verify the presence of kernel modules to ensure system integrity.
 
 ### LXC and VM Management
 - **LXC Containers**: Manage LXC containers with ease.
@@ -99,7 +99,7 @@ curl -fsSL https://raw.githubusercontent.com/tech-scripts/tech-scripts/refs/head
 
 ### Security
 - **SSH Notifications**: `tech ssh`
-- **Kernel Module Check**: `tech kernel`
+- **Kernel Modules Check**: `tech kernel`
 
 ### LXC and VM Management
 - **Manage LXC Containers**: `tech lxc`
