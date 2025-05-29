@@ -1,3 +1,5 @@
+5.1 - Improving translation and removing errors
+
 5.0 - Improve compatibility with arm devices, fix errors, and boost performance
 
 4.2 - added the ability to use scripts without having access to / if not, then the files will be placed in the home directory
