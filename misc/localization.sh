@@ -232,6 +232,15 @@ if [[ "$LANGUAGE" == "Русский" ]]; then
     SUCCESSFUL_DELETION="  Вы успешно завершили удаление!"
     MAIN_MENU="Главное меню"
     HELP_COMMAND="Помощь по командам"
+    
+    KERNEL_MODULE_LOADED="(загружен)"
+    KERNEL_MODULE_AVAILABLE="(доступен, но не загружен)"
+    KERNEL_MODULE_FILE_FOUND="(файл модуля найден, но modinfo не подтвердил)"
+    KERNEL_MODULE_LOADABLE="(модуль можно загрузить)"
+    KERNEL_MODULE_MENTIONED="(модуль упоминался в dmesg)"
+    KERNEL_MODULE_SCHEDULED="(запланирован для загрузки при старте)"
+    KERNEL_MODULE_NOT_AVAILABLE="(не доступен)"
+    KERNEL_CHECK_MODULES="Проверка модулей ядра и их статуса:"
 else
     MSG_NO_SCRIPTS="No available scripts or directories!"
     MSG_CANCELLED="Selection cancelled!"
@@ -462,4 +471,13 @@ else
     SUCCESSFUL_DELETION="You have completed the deletion!"
     MAIN_MENU="Main Menu   "
     HELP_COMMAND="Help with commands"
+
+    KERNEL_MODULE_LOADED="(loaded)"
+    KERNEL_MODULE_AVAILABLE="(available, but not loaded)"
+    KERNEL_MODULE_FILE_FOUND="(module file found, but modinfo did not confirm)"
+    KERNEL_MODULE_LOADABLE="(module can be loaded)"
+    KERNEL_MODULE_MENTIONED="(module mentioned in dmesg)"
+    KERNEL_MODULE_SCHEDULED="(scheduled to load at startup)"
+    KERNEL_MODULE_NOT_AVAILABLE="(not available)"
+    KERNEL_CHECK_MODULES="Kernel module check and their status:"
 fi
