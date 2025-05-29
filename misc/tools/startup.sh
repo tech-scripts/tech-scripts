@@ -16,6 +16,52 @@ edit() {
     exit 0
 }
 
+create_systemd_service() {
+    {
+        echo "[Unit]"
+        echo "Description=Autostart Script"
+        echo ""
+        echo "[Service]"
+        echo "ExecStart=$AUTOSTART_SCRIPT"
+        echo "Type=oneshot"
+        echo "RemainAfterExit=yes"
+        echo ""
+        echo "[Install]"
+        echo "WantedBy=multi-user.target"
+    } | $SUDO tee "$SERVICE_FILE" > /dev/null
+}
+
+create_openrc_service() {
+    {
+        echo "#!/sbin/openrc-run"
+        echo "command=$AUTOSTART_SCRIPT"
+        echo "command_background"
+        echo "description=\"Autostart Script\""
+    } | $SUDO tee "$SERVICE_FILE" > /dev/null
+}
+
+create_runit_service() {
+    {
+        echo "#!/bin/sh"
+        echo "exec $AUTOSTART_SCRIPT"
+    } | $SUDO tee "$SERVICE_FILE" > /dev/null
+}
+
+create_s6_service() {
+    {
+        echo "#!/bin/sh"
+        echo "exec $AUTOSTART_SCRIPT"
+    } | $SUDO tee "$SERVICE_FILE" > /dev/null
+}
+
+create_dinit_service() {
+    {
+        echo "service $SERVICE_NAME {"
+        echo "    exec = \"$AUTOSTART_SCRIPT\""
+        echo "}"
+    } | $SUDO tee "$SERVICE_FILE" > /dev/null
+}
+
 if systemctl list-units --full --all | grep -q "$SERVICE_NAME"; then
     echo ""
     if whiptail --yesno "$REMOVE_SERVICE_MSG" 8 50; then
@@ -45,7 +91,7 @@ fi
 
 {
     echo "#!/usr/bin/env bash"
-    echo "# Systemd service is located at $SERVICE_FILE"
+    echo "# Autostart script executed!"
     echo "echo 'Autostart script executed!'"
     echo "exit 0"
 } | $SUDO tee "$AUTOSTART_SCRIPT" > /dev/null
@@ -60,31 +106,46 @@ if ! $SUDO chmod +x "$AUTOSTART_SCRIPT"; then
     exit 1
 fi
 
-{
-    echo "[Unit]"
-    echo "Description=Autostart Script"
-    echo ""
-    echo "[Service]"
-    echo "ExecStart=$AUTOSTART_SCRIPT"
-    echo "Type=oneshot"
-    echo "RemainAfterExit=yes"
-    echo ""
-    echo "[Install]"
-    echo "WantedBy=multi-user.target"
-} | $SUDO tee "$SERVICE_FILE" > /dev/null
-
-if [ $? -ne 0 ]; then
-    whiptail --msgbox "$SERVICE_CREATE_ERROR" 8 50
-    exit 1
-fi
-
-if ! $SUDO systemctl enable "$SERVICE_NAME"; then
-    whiptail --msgbox "$ENABLE_ERROR" 8 50
-    exit 1
-fi
-
-if ! $SUDO systemctl start "$SERVICE_NAME"; then
-    whiptail --msgbox "$START_ERROR" 8 50
+if command -v systemctl &> /dev/null; then
+    create_systemd_service
+    if ! $SUDO systemctl enable "$SERVICE_NAME"; then
+        whiptail --msgbox "$ENABLE_ERROR" 8 50
+        exit 1
+    fi
+    if ! $SUDO systemctl start "$SERVICE_NAME"; then
+        whiptail --msgbox "$START_ERROR" 8 50
+        exit 1
+    fi
+elif command -v rc-update &> /dev/null; then
+    create_openrc_service
+    if ! $SUDO rc-update add "$SERVICE_NAME" default; then
+        whiptail --msgbox "$ENABLE_ERROR" 8 50
+        exit 1
+    fi
+    if ! $SUDO service "$SERVICE_NAME" start; then
+        whiptail --msgbox "$START_ERROR" 8 50
+        exit 1
+    fi
+elif command -v runit &> /dev/null; then
+    create_runit_service
+    if ! $SUDO mv "$SERVICE_FILE" /etc/service/; then
+        whiptail --msgbox "$ENABLE_ERROR" 8 50
+        exit 1
+    fi
+elif command -v s6 &> /dev/null; then
+    create_s6_service
+    if ! $SUDO mv "$SERVICE_FILE" /etc/s6/; then
+        whiptail --msgbox "$ENABLE_ERROR" 8 50
+        exit 1
+    fi
+elif command -v dinit &> /dev/null; then
+    create_dinit_service
+    if ! $SUDO mv "$SERVICE_FILE" /etc/dinit/; then
+        whiptail --msgbox "$ENABLE_ERROR" 8 50
+        exit 1
+    fi
+else
+    whiptail --msgbox "$INIT_SYSTEM_NOT_FOUND" 8 50
     exit 1
 fi
 
