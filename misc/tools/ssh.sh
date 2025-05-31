@@ -49,7 +49,7 @@ detect_init_system() {
     elif [ -x /usr/bin/dinit ]; then
         echo "dinit"
     else
-        echo "unknown"
+        echo "$INIT_SYSTEM_NOT_FOUND"
     fi
 }
 
