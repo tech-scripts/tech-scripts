@@ -242,7 +242,7 @@ if [[ "$LANGUAGE" == "Русский" ]]; then
     KERNEL_MODULE_NOT_AVAILABLE="(не доступен)"
     KERNEL_CHECK_MODULES="Проверка модулей ядра и их статуса:"
 
-    INIT_SYSTEM_NOT_FOUND="Поддерживаемая система инициализации не найдена!"
+    INIT_SYSTEM_UNSUPPORTED="Поддерживаемая система инициализации не найдена!"
 else
     MSG_NO_SCRIPTS="No available scripts or directories!"
     MSG_CANCELLED="Selection cancelled!"
@@ -483,5 +483,5 @@ else
     KERNEL_MODULE_NOT_AVAILABLE="(not available)"
     KERNEL_CHECK_MODULES="Kernel module check and their status:"
 
-    INIT_SYSTEM_NOT_FOUND="A supported init system has not been found!"
+    INIT_SYSTEM_UNSUPPORTED="A supported init system has not been found!"
 fi
