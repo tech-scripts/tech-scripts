@@ -37,9 +37,23 @@ send_test_message() {
     fi
 }
 
-create_ssh_alert_service() {
-    [ -f "/etc/systemd/system/ssh.alert.service" ] && return
-    
+detect_init_system() {
+    if [ -d /run/systemd/system ]; then
+        echo "systemd"
+    elif [ -x /sbin/openrc-run ]; then
+        echo "openrc"
+    elif [ -x /usr/bin/runsvdir ]; then
+        echo "runit"
+    elif [ -x /usr/bin/s6-svscan ]; then
+        echo "s6"
+    elif [ -x /usr/bin/dinit ]; then
+        echo "dinit"
+    else
+        echo "unknown"
+    fi
+}
+
+create_systemd_service() {
     $SUDO tee "/etc/systemd/system/ssh.alert.service" >/dev/null <<EOF
 [Unit]
 Description=SSH Alert
@@ -57,9 +71,112 @@ SyslogIdentifier=ssh-alert-monitor
 [Install]
 WantedBy=multi-user.target
 EOF
-
     $SUDO systemctl daemon-reload
     $SUDO systemctl enable --now ssh.alert.service
+}
+
+create_openrc_service() {
+    $SUDO tee "/etc/init.d/ssh-alert" >/dev/null <<EOF
+#!/sbin/openrc-run
+command="$SCRIPT_DIR_SSH/alert.sh"
+command_background=true
+pidfile="/run/ssh-alert.pid"
+name="SSH Alert"
+description="Monitors SSH login attempts"
+
+depend() {
+    need net
+    after net
+}
+
+start() {
+    ebegin "Starting \$name"
+    start-stop-daemon --start --background --make-pidfile --pidfile \$pidfile --exec \$command
+    eend \$?
+}
+
+stop() {
+    ebegin "Stopping \$name"
+    start-stop-daemon --stop --pidfile \$pidfile
+    eend \$?
+}
+EOF
+    $SUDO chmod +x /etc/init.d/ssh-alert
+    $SUDO rc-update add ssh-alert default
+    $SUDO rc-service ssh-alert start
+}
+
+create_runit_service() {
+    $SUDO mkdir -p /etc/sv/ssh-alert
+    $SUDO tee "/etc/sv/ssh-alert/run" >/dev/null <<EOF
+#!/bin/sh
+exec $SCRIPT_DIR_SSH/alert.sh
+EOF
+    $SUDO chmod +x /etc/sv/ssh-alert/run
+    $SUDO ln -s /etc/sv/ssh-alert /var/service/
+}
+
+create_s6_service() {
+    $SUDO mkdir -p /etc/s6/sv/ssh-alert
+    $SUDO tee "/etc/s6/sv/ssh-alert/run" >/dev/null <<EOF
+#!/bin/sh
+exec $SCRIPT_DIR_SSH/alert.sh
+EOF
+    $SUDO chmod +x /etc/s6/sv/ssh-alert/run
+    $SUDO s6-svscanctl -a /etc/s6/sv
+}
+
+create_dinit_service() {
+    $SUDO tee "/etc/dinit.d/ssh-alert" >/dev/null <<EOF
+type = process
+command = "$SCRIPT_DIR_SSH/alert.sh"
+restart = true
+EOF
+    $SUDO dinitctl enable ssh-alert
+    $SUDO dinitctl start ssh-alert
+}
+
+create_init_service() {
+    local init_system=$(detect_init_system)
+    case $init_system in
+        systemd) create_systemd_service ;;
+        openrc) create_openrc_service ;;
+        runit) create_runit_service ;;
+        s6) create_s6_service ;;
+        dinit) create_dinit_service ;;
+        *) echo "$UNSUPPORTED_INIT_SYSTEM"; exit 1 ;;
+    esac
+}
+
+remove_init_service() {
+    local init_system=$(detect_init_system)
+    case $init_system in
+        systemd) 
+            $SUDO systemctl stop ssh.alert.service
+            $SUDO systemctl disable ssh.alert.service
+            $SUDO rm -f /etc/systemd/system/ssh.alert.service
+            $SUDO systemctl daemon-reload
+            ;;
+        openrc)
+            $SUDO rc-service ssh-alert stop
+            $SUDO rc-update del ssh-alert
+            $SUDO rm -f /etc/init.d/ssh-alert
+            ;;
+        runit)
+            $SUDO rm -f /var/service/ssh-alert
+            $SUDO rm -rf /etc/sv/ssh-alert
+            ;;
+        s6)
+            $SUDO s6-svc -d /etc/s6/sv/ssh-alert
+            $SUDO rm -rf /etc/s6/sv/ssh-alert
+            $SUDO s6-svscanctl -a /etc/s6/sv
+            ;;
+        dinit)
+            $SUDO dinitctl stop ssh-alert
+            $SUDO dinitctl disable ssh-alert
+            $SUDO rm -f /etc/dinit.d/ssh-alert
+            ;;
+    esac
 }
 
 create_ssh_alert_script() {
@@ -151,7 +268,8 @@ if [ -f "$CONFIG_FILE_SSH" ]; then
     yes_no_box "$SCRIPT_UPDATE_SSH" "$UPDATE_SCRIPT_SSH" && {
         $SUDO rm -f "$SCRIPT_DIR_SSH/alert.sh"
         create_ssh_alert_script
-        $SUDO systemctl daemon-reload
+        remove_init_service
+        create_init_service
         echo ""
         echo "$UPDATE_SUCCESS_SSH"
         echo ""
@@ -161,17 +279,13 @@ if [ -f "$CONFIG_FILE_SSH" ]; then
     }
 fi
 
-if [ -f "$CONFIG_FILE_SSH" ] || [ -f "$SCRIPT_DIR_SSH/alert.sh" ] || [ -f "/etc/systemd/system/ssh.alert.service" ]; then
+if [ -f "$CONFIG_FILE_SSH" ] || [ -f "$SCRIPT_DIR_SSH/alert.sh" ]; then
     if yes_no_box "$REMOVE_SSH" "$REMOVE_ALL_SSH"; then
         [ -f "$CONFIG_FILE_SSH" ] && $SUDO rm -f "$CONFIG_FILE_SSH" && echo "" && echo "$CONFIG_REMOVE_SSH $CONFIG_FILE_SSH"
         [ -f "$SCRIPT_DIR_SSH/alert.sh" ] && $SUDO rm -f "$SCRIPT_DIR_SSH/alert.sh" && echo "$SCRIPT_REMOVE_SSH $SCRIPT_DIR_SSH/alert.sh"
-        if [ -f "/etc/systemd/system/ssh.alert.service" ]; then
-            $SUDO rm -f /etc/systemd/system/ssh.alert.service
-            $SUDO systemctl daemon-reload
-            echo "$SERVICE_REMOVE_SSH /etc/systemd/system/ssh.alert.service"
-            echo ""
-            exit 0
-        fi
+        remove_init_service
+        echo "$SERVICE_REMOVED_SSH"
+        echo ""
         exit 0
     else
         echo ""
@@ -231,7 +345,7 @@ PROTECT_CONTENT=$PROTECT_CONTENT
 EOF
         $SUDO chmod 600 "$CONFIG_FILE_SSH"
         create_ssh_alert_script
-        create_ssh_alert_service
+        create_init_service
         show_message "$SUCCESS_INSTALL_SSH"
         echo ""
         echo "$SERVICE_LOCATION_SSH"
