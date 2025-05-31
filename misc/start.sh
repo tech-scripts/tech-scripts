@@ -149,7 +149,6 @@ manage_packages() {
     install_optional_group() {
         local -n arr=$1
         local installed_count=0
-        local threshold=1
         for pkg in "${arr[@]}"; do
             if command -v "$pkg" &>/dev/null; then
                 ((installed_count++))
