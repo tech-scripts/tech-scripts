@@ -5,15 +5,15 @@
 source $USER_DIR/etc/tech-scripts/source.sh
 
 detect_init_system() {
-    if systemctl --version &>/dev/null; then
+    if systemctl --version &> /dev/null; then
         echo "systemd"
-    elif openrc-init --version &>/dev/null; then
+    elif openrc-init --version &> /dev/null; then
         echo "openrc"
-    elif [ -x /usr/bin/runit-init ]; then
+    elif runit-init --version &> /dev/null; then
         echo "runit"
-    elif [ -x /usr/bin/s6-svscan ]; then
+    elif s6-svscan --version &> /dev/null; then
         echo "s6"
-    elif [ -x /usr/bin/dinit ]; then
+    elif dinit --version &> /dev/null; then
         echo "dinit"
     else
         echo "unknown"
