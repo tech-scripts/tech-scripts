@@ -13,9 +13,9 @@ TECH_SCRIPT=$(cat <<EOF
 
 SUDO=\$(env | grep -qi TERMUX && echo "" || command -v sudo 2>/dev/null)
 
-[ ! -d "\$USER_DIR/tmp/tech-scripts" ] && cd \$USER_DIR/tmp && git clone --depth 1 https://github.com/tech-scripts/tech-scripts.git && copy_files && change_directory_permissions
-
 source \$USER_DIR/etc/tech-scripts/source.sh
+
+[ ! -d "\$USER_DIR/tmp/tech-scripts" ] && cd \$USER_DIR/tmp && git clone --depth 1 https://github.com/tech-scripts/tech-scripts.git && copy_files && change_directory_permissions
 
 run_script() {
     local script_dir="\$1"
