@@ -15,7 +15,8 @@ edit() {
 create_systemd_service() {
     $SUDO tee "$SERVICE_FILE" >/dev/null <<EOF
 [Unit]
-Description=AutostStart=$Start=$Start=$Start=$Start=$AUTOSTART_SCRIPT
+Description=Autostart Script
+ExecStart=$AUTOSTART_SCRIPT
 Type=oneshot
 RemainAfterExit=yes
 
@@ -34,7 +35,7 @@ EOF
 }
 
 create_runit_service() {
-    $SUDO mkdir -p /etc/sv/$SERVICE_NAME
+    $SUDO mkdir -p "/etc/sv/$SERVICE_NAME"
     $SUDO tee "/etc/sv/$SERVICE_NAME/run" >/dev/null <<EOF
 #!/bin/sh
 exec $AUTOSTART_SCRIPT
@@ -43,7 +44,7 @@ EOF
 }
 
 create_s6_service() {
-    $SUDO mkdir -p /etc/s6/sv/$SERVICE_NAME
+    $SUDO mkdir -p "/etc/s6/sv/$SERVICE_NAME"
     $SUDO tee "/etc/s6/sv/$SERVICE_NAME/run" >/dev/null <<EOF
 #!/bin/sh
 exec $AUTOSTART_SCRIPT
@@ -98,7 +99,7 @@ remove_service() {
             ;;
         runit)
             $SUDO rm -f "/var/service/$SERVICE_NAME"
-            $SUDO rm -rf "/etc/sv/$SERVICE            ;;
+            $SUDO rm -rf "/etc/sv/$SERVICE_NAME"
             ;;
         s6)
             $SUDO rm -rf "/etc/s6/sv/$SERVICE_NAME"
@@ -138,7 +139,7 @@ $SUDO mkdir -p /usr/local/tech-scripts || {
     exit 1
 }
 
-$SU "$A "$AUTOSTART_SCRIPT" >/dev/null <<EOF
+$SUDO tee "$AUTOSTART_SCRIPT" >/dev/null <<EOF
 #!/usr/bin/env bash
 # Autostart script executed!
 echo 'Autostart script executed!'
@@ -151,11 +152,26 @@ $SUDO chmod +x "$AUTOSTART_SCRIPT" || {
 }
 
 case $init_system in
-    systemd) create_systemd_service ;;
-    openrc) create_openrc_service ;;
-    runit) create_runit_service) create) create) create_service ;;
-_service ;;
-    dinit) create_dinit_service ;;
+    systemd) 
+        create_systemd_service
+        SERVICE_FILE="/etc/systemd/system/$SERVICE_NAME.service"
+        ;;
+    openrc) 
+        create_openrc_service
+        SERVICE_FILE="/etc/init.d/$SERVICE_NAME"
+        ;;
+    runit) 
+        create_runit_service
+        SERVICE_FILE="/etc/sv/$SERVICE_NAME/run"
+        ;;
+    s6) 
+        create_s6_service
+        SERVICE_FILE="/etc/s6/sv/$SERVICE_NAME/run"
+        ;;
+    dinit) 
+        create_dinit_service
+        SERVICE_FILE="/etc/dinit.d/$SERVICE_NAME"
+        ;;
     *)
         whiptail --msgbox "$INIT_SYSTEM_NOT_FOUND" 8 50
         exit 1
