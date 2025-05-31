@@ -4,16 +4,18 @@
 
 source $USER_DIR/etc/tech-scripts/source.sh
 
+#!/bin/bash
+
 detect_init_system() {
-    if systemctl --version &> /dev/null; then
+    if command -v systemctl &> /dev/null; then
         echo "systemd"
-    elif openrc-init --version &> /dev/null; then
+    elif command -v openrc &> /dev/null; then
         echo "openrc"
-    elif runit-init --version &> /dev/null; then
+    elif command -v runit &> /dev/null; then
         echo "runit"
-    elif s6-svscan --version &> /dev/null; then
+    elif command -v s6-svscan &> /dev/null; then
         echo "s6"
-    elif dinit --version &> /dev/null; then
+    elif command -v dinit &> /dev/null; then
         echo "dinit"
     else
         echo "unknown"
