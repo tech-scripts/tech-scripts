@@ -96,11 +96,11 @@ show_network_info() {
 
 main_menu() {
     while true; do
-        OPTION=$(whiptail --title "$MAIN_MENU" --menu "$CHOOSE_OPTION:" 15 60 5 \
-            "1" "$SYSTEM_INFO" \
-            "2" "$TEMPERATURE" \
-            "3" "$DISK_INFO" \
-            "4" "$NETWORK_INFO" 3>&1 1>&2 2>&3)
+        OPTION=$(whiptail --title "$MAIN_MENU" --menu "$CHOOSE_OPTION_SYSTEM:" 15 60 5 \
+            "1" "$SYSTEM_INFO_SYSTEM" \
+            "2" "$TEMPERATURE_SYSTEM" \
+            "3" "$DISK_INFO_SYSTEM" \
+            "4" "$NETWORK_INFO_SYSTEM" 3>&1 1>&2 2>&3)
         
         case $OPTION in
             1) show_system_info ;;
