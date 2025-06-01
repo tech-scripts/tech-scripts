@@ -226,7 +226,6 @@ for dir in "${directories[@]}"; do
   fi
 done
 
-hash -r
 echo ""
 [ "$RESULT" == "true" ] && complete_install || complete_repair
 echo ""
