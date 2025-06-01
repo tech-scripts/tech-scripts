@@ -1,3 +1,5 @@
+6.0 - Added support for openrc, ruinit, s6 and dinit initialization systems to systemd and removed critical error
+
 5.1 - Improving translation and removing errors
 
 5.0 - Improve compatibility with arm devices, fix errors, and boost performance
