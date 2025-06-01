@@ -18,7 +18,7 @@ chmod +x tech.sh
 ./tech.sh
 copy_files
 change_directory_permissions
-hash -r
+$SUDO hash -d tech
 echo ""
 if [ "$LANGUAGE" ]; then
 echo "Обновление завершено!"
