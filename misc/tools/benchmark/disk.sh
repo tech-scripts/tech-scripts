@@ -13,7 +13,7 @@ while IFS= read -r line; do
     device=$(echo "$line" | awk '{print $1}' | sed 's|/dev/||' | sed 's/[0-9]*$//')
     mount_point=$(echo "$line" | awk '{print $6}')
     
-    if [[ -n "$mount_point" && "$mount_point" != "/boot" && "$mount_point" != "/boot/efi" && "$mount_point" != "[SWAP]" && "$mount_point" != "/" && ! "$device" =~ zram ]]; then
+    if [[ -n "$mount_point" && "$mount_point" != "/boot" && "$mount_point" != "/dev" && "$mount_point" != "[SWAP]" && "$mount_point" != "/" && ! "$device" =~ zram ]]; then
         if [[ "$device" != "$system_disk" ]]; then
             disk_choices+=("$device" "$mount_point")
         fi
