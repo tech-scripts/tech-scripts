@@ -24,8 +24,8 @@ show_system_info() {
     CPU=$(lscpu | grep "Model name" | cut -d':' -f2 | sed 's/^ *//')
     MEMORY=$(free -h | grep "Mem:" | awk '{print $3 "/" $2}')
     GPU=$(lshw -C display 2>/dev/null | grep "product" | cut -d':' -f2 | sed 's/^ *//' || echo "$UNKNOWN_SYSTEM (lshw не установлено)")
-    
     BATTERY_INFO=""
+    
     if [ -d /sys/class/power_supply ]; then
         for battery in /sys/class/power_supply/*; do
             if [ -e "$battery/capacity" ]; then
