@@ -23,11 +23,11 @@
 
 **Tech Scripts** is a collection of utilities designed to simplify Linux system management, automation, and configuration. The project includes tools for stress testing system components, automating updates, optimizing system performance, and managing LXC containers and virtual machines. Key features include:
 
-- **Stress Testing**: Tools for testing CPU, disk, and memory performance.
-- **System Optimization**: Utilities for configuring swap, GRUB, and startup scripts.
+- **Stress Testing**: Tools for testing cpu, disk, and memory performance.
+- **System Optimization**: Utilities for configuring swap, grub, and startup scripts.
 - **Automation**: Scripts for automatic updates and system monitoring.
-- **Security**: Notifications for SSH logins and kernel modules checks.
-- **LXC and VM Management**: Tools for managing LXC containers and virtual machines.
+- **Security**: Notifications for ssh logins and kernel modules checks.
+- **LXC and VM Management**: Tools for managing lxc containers and virtual machines.
 
 ---
 
@@ -36,7 +36,7 @@
 ### Stress Testing
 - **CPU Stress Test**: Test the stability and performance of your processor.
 - **Disk Stress Test**: Evaluate the speed and reliability of your storage.
-- **Memory Stress Test**: Check the stability and performance of your RAM.
+- **Memory Stress Test**: Check the stability and performance of your ram.
 
 ### System Optimization
 - **Swap Configuration**: Optimize and configure swap files for better memory management.
@@ -48,11 +48,11 @@
 - **System Monitoring**: Tools for monitoring system health and resource usage.
 
 ### Security
-- **SSH Notifications**: Receive real-time alerts for new SSH connections.
+- **SSH Notifications**: Receive real-time alerts for new ssh connections.
 - **Kernel Modules Check**: Verify the presence of kernel modules to ensure system integrity.
 
 ### LXC and VM Management
-- **LXC Containers**: Manage LXC containers with ease.
+- **LXC Containers**: Manage lxc containers with ease.
 - **Virtual Machines**: Configure and manage virtual machines.
 
 ---
@@ -90,7 +90,7 @@ curl -fsSL https://raw.githubusercontent.com/tech-scripts/tech-scripts/refs/head
 
 ### System Optimization
 - **Configure Swap**: `tech swap`
-- **Customize GRUB**: `tech grub`
+- **Customize Grub**: `tech grub`
 - **Add Startup Script**: `tech startup`
 
 ### Automation
@@ -102,7 +102,7 @@ curl -fsSL https://raw.githubusercontent.com/tech-scripts/tech-scripts/refs/head
 - **Kernel Modules Check**: `tech kernel`
 
 ### LXC and VM Management
-- **Manage LXC Containers**: `tech lxc`
+- **Manage Lxc Containers**: `tech lxc`
 - **Manage Virtual Machines**: `tech vm`
 
 ---
