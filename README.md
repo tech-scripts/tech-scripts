@@ -27,20 +27,20 @@
 - **System Optimization**: Utilities for configuring swap, grub, and startup scripts.
 - **Automation**: Scripts for automatic updates and system monitoring.
 - **Security**: Notifications for ssh logins and kernel modules checks.
-- **LXC and VM Management**: Tools for managing lxc containers and virtual machines.
+- **Lxc and Vm Management**: Tools for managing lxc containers and virtual machines.
 
 ---
 
 ### 📦 Features
 
 ### Stress Testing
-- **CPU Stress Test**: Test the stability and performance of your processor.
+- **Cpu Stress Test**: Test the stability and performance of your processor.
 - **Disk Stress Test**: Evaluate the speed and reliability of your storage.
 - **Memory Stress Test**: Check the stability and performance of your ram.
 
 ### System Optimization
 - **Swap Configuration**: Optimize and configure swap files for better memory management.
-- **GRUB Configuration**: Customize the GRUB bootloader for improved system performance.
+- **Grub Configuration**: Customize the grub bootloader for improved system performance.
 - **Startup Scripts**: Automate tasks with custom scripts that run at system startup.
 
 ### Automation
@@ -48,11 +48,11 @@
 - **System Monitoring**: Tools for monitoring system health and resource usage.
 
 ### Security
-- **SSH Notifications**: Receive real-time alerts for new ssh connections.
+- **Ssh Notifications**: Receive real-time alerts for new ssh connections.
 - **Kernel Modules Check**: Verify the presence of kernel modules to ensure system integrity.
 
 ### LXC and VM Management
-- **LXC Containers**: Manage lxc containers with ease.
+- **Lxc Containers**: Manage lxc containers with ease.
 - **Virtual Machines**: Configure and manage virtual machines.
 
 ---
