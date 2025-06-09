@@ -45,7 +45,7 @@ for user in "${sorted_users[@]}"; do
   done
 done
 
-CHOICE=$(whiptail --title "Выберите процесс для завершения" --menu "           Пользователь (процесс) порт:" 20 60 10 "${whiptail_list[@]}" 3>&1 1>&2 2>&3)
+CHOICE=$(whiptail --title "Выберите процесс для завершения" --menu "             Пользователь (процесс) порт:" 20 60 10 "${whiptail_list[@]}" 3>&1 1>&2 2>&3)
 
 if [ $? -ne 0 ]; then
   exit 0
@@ -55,13 +55,21 @@ chosen_user=$(echo "$CHOICE" | awk -F ' ' '{print $1}' | sed 's/ (.*)//')
 chosen_process=$(echo "$CHOICE" | awk -F ' ' '{print $1}' | sed 's/.*(//;s/)//')
 chosen_entry=""
 
+echo "Выбранный пользователь: $chosen_user"
+echo "Выбранный процесс: $chosen_process"
+echo "Содержимое entries:"
+printf '%s\n' "${entries[@]}"
+
 for line in "${entries[@]}"; do
   read user process_name port pid <<< "$line"
-  if [[ "$user" == "$chosen_user" && "$process_name" == "$chosen_process" && "$port" == "$chosen_port" ]]; then
+  echo "Проверка: $user $process_name $port $pid"
+  if [ "$user" == "$chosen_user" ] && [ "$process_name" == "$chosen_process" ]; then
     chosen_entry="$line"
     break
   fi
 done
+
+echo "Выбранная запись: $chosen_entry"
 
 pid_to_kill=$(echo "$chosen_entry" | awk '{print $4}')
 
