@@ -54,28 +54,15 @@ fi
 chosen_user=$(echo "$CHOICE" | awk -F ' ' '{print $1}' | sed 's/ (.*)//')
 chosen_process=$(echo "$CHOICE" | awk -F ' ' '{print $2}' | sed 's/.*(//;s/)//')
 chosen_port=$(echo "$CHOICE" | awk '{print $3}' | grep -o '[0-9]*')
-
-echo "$CHOICE" | awk '{print $4}'
-echo "$CHOICE" | awk '{print $3}'
-echo "$CHOICE" | awk '{print $2}'
-echo "$CHOICE" | awk '{print $1}'
-
-echo "Выбранный пользователь: '$chosen_user'"
-echo "Выбранный процесс: '$chosen_process'"
-echo "Выбранный порт: '$chosen_port'"
-
 chosen_entry=""
 
 for line in "${entries[@]}"; do
   read user process_name port pid <<< "$line"
-  echo "Проверка: '$user' '$process_name' '$port' '$pid'"
-  if [[ "$user" == "$chosen_user" && "$process_name" == "$chosen_process" && "$port" == "$chosen_port" ]]; then
+  if [[ "$pid" == "$pid_to_kill" ]]; then
     chosen_entry="$line"
     break
   fi
 done
-
-echo "Выбранная запись: '$chosen_entry'"
 
 pid_to_kill=$(echo "$chosen_entry" | awk '{print $4}')
 
