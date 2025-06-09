@@ -1,23 +1,17 @@
 #!/bin/bash
 
 function get_process_list() {
-  ss -tulnp | awk '
-    NR>1 {
-      local_addr=$5;
-      match(local_addr, /.*:([0-9]+)/, portm);
-      port=portm[1];
-      match($0, /pid=([0-9]+)/, pidm);
-      pid=pidm[1];
-      if (pid != "") {
-        print port, pid;
-      }
+  ss -tulnp | awk 'NR>1 {
+    match($5, /.*:([0-9]+)/, portm);
+    match($0, /pid=([0-9]+)/, pidm);
+    if (pidm[1] != "") {
+      print portm[1], pidm[1];
     }
-  ' | sort -u | while read port pid; do
+  }' | sort -u | while read port pid; do
     if [ -d "/proc/$pid" ]; then
-      user=$(ps -o user= -p $pid)
-      user=$(echo $user)
-      process_name=$(ps -o comm= -p $pid)  # Get the process name
-      echo "$user $process_name $port $pid"  # Include process name in output
+      user=$(ps -o user= -p $pid | xargs)
+      process_name=$(ps -o comm= -p $pid | xargs)
+      echo "$user $process_name $port $pid"
     fi
   done
 }
@@ -30,17 +24,12 @@ if [ ${#entries[@]} -eq 0 ]; then
 fi
 
 declare -A user_ports
+declare -A user_port_count
 
 for line in "${entries[@]}"; do
-  user=$(echo "$line" | awk '{print $1}')
-  process_name=$(echo "$line" | awk '{print $2}')
-  port=$(echo "$line" | awk '{print $3}')
+  read user process_name port pid <<< "$line"
   user_ports["$user"]+="$process_name:$port "
-done
-
-declare -A user_port_count
-for user in "${!user_ports[@]}"; do
-  user_port_count["$user"]=$(echo "${user_ports[$user]}" | tr ' ' '\n' | sort -u | wc -l)
+  user_port_count["$user"]=$((user_port_count["$user"] + 1))
 done
 
 sorted_users=($(for u in "${!user_port_count[@]}"; do echo "$u ${user_port_count[$u]}"; done | sort -k2,2n | awk '{print $1}'))
@@ -63,13 +52,12 @@ if [ $? -ne 0 ]; then
   exit 0
 fi
 
-chosen_user=$(echo "$CHOICE" | awk -F ' ' '{print $1}' | sed 's/ (.*)//')  # Extract user
-chosen_process=$(echo "$CHOICE" | awk -F ' ' '{print $1}' | sed 's/.*(//;s/)//')  # Extract process name
+chosen_user=$(echo "$CHOICE" | awk -F ' ' '{print $1}' | sed 's/ (.*)//')
+chosen_process=$(echo "$CHOICE" | awk -F ' ' '{print $1}' | sed 's/.*(//;s/)//')
 chosen_entry=""
+
 for line in "${entries[@]}"; do
-  user=$(echo "$line" | awk '{print $1}')
-  process_name=$(echo "$line" | awk '{print $2}')
-  port=$(echo "$line" | awk '{print $3}')
+  read user process_name port pid <<< "$line"
   if [ "$user" == "$chosen_user" ] && [ "$process_name" == "$chosen_process" ]; then
     chosen_entry="$line"
     break
@@ -83,7 +71,7 @@ if [ -z "$pid_to_kill" ]; then
   exit 1
 fi
 
-if (whiptail --title "Подтверждение" --yesno "Завершить процесс PID $pid_to_kill, принадлежащий пользователю $chosen_user ($chosen_process)?" 8 60) then
+if (whiptail --title "Подтверждение" --yesno "Завершить процесс PID $pid_to_kill, принадлежащий пользователю $chosen_user ($chosen_process)?" 8 60); then
   kill "$pid_to_kill" 2>/dev/null
   if [ $? -eq 0 ]; then
     whiptail --msgbox "Процесс $pid_to_kill успешно завершён." 8 50
