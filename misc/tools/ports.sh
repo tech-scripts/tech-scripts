@@ -51,21 +51,19 @@ if [ $? -ne 0 ]; then
   exit 0
 fi
 
-chosen_user=$(echo "$CHOICE" | awk -F ' ' '{print $1}' | sed 's/ (.*)//')
-chosen_process=$(echo "$CHOICE" | awk -F ' ' '{print $2}' | sed 's/.*(//;s/)//')
-chosen_port=$(echo "$CHOICE" | awk '{print $3}' | grep -o '[0-9]*')
+declare -A chosen_values
 
-chosen_entry=""
+chosen_values["user"]="$chosen_user"
+chosen_values["process_name"]="$chosen_process"
+chosen_values["port"]="$chosen_port"
 
 for line in "${entries[@]}"; do
   read user process_name port pid <<< "$line"
-  if [[ "$user" == "$chosen_user" && "$process_name" == "$chosen_process" && "$port" == "$chosen_port" ]]; then
+  if [[ "$user" == "${chosen_values["user"]}" && "$process_name" == "${chosen_values["process_name"]}" && "$port" == "${chosen_values["port"]}" ]]; then
     chosen_entry="$line"
     break
   fi
 done
-
-echo "Выбранная запись: '$chosen_entry'"
 
 pid_to_kill=$(echo "$chosen_entry" | awk '{print $4}')
 
