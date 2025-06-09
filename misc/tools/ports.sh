@@ -28,41 +28,40 @@ declare -A user_port_count
 
 for line in "${entries[@]}"; do
   read user process_name port pid <<< "$line"
-  user_ports["$user"]+="$process_name:$port:$pid "
+  user_ports["$user"]+="$process_name:$port "
   user_port_count["$user"]=$((user_port_count["$user"] + 1))
 done
 
 sorted_users=($(for u in "${!user_port_count[@]}"; do echo "$u ${user_port_count[$u]}"; done | sort -k2,2n | awk '{print $1}'))
 
 whiptail_list=()
-index=1
 for user in "${sorted_users[@]}"; do
   ports="${user_ports[$user]}"
   for entry in $ports; do
     process_name=$(echo "$entry" | cut -d':' -f1)
     port=$(echo "$entry" | cut -d':' -f2)
-    pid=$(echo "$entry" | cut -d':' -f3)
-    whiptail_list+=("$index" "$user ($process_name)" "$port")
-    index=$((index + 1))
+    pid=$(echo "${entries[@]}" | grep "$user $process_name $port" | awk '{print $4}')
+    whiptail_list+=("$user ($process_name)" "$port")
   done
 done
 
-CHOICE=$(whiptail --title "Выберите процесс для завершения" --menu "             Пользователь (процесс) порт:" 15 40 0 "${whiptail_list[@]}" 3>&1 1>&2 2>&3)
+CHOICE=$(whiptail --title "Выберите процесс для завершения" --menu "             Пользователь (процесс) порт:" 20 60 10 "${whiptail_list[@]}" 3>&1 1>&2 2>&3)
 
 if [ $? -ne 0 ]; then
   exit 0
 fi
 
-chosen_index=$(echo "$CHOICE" | awk '{print $1}')
+chosen_user=$(echo "$CHOICE" | awk -F ' ' '{print $1}' | sed 's/ (.*)//')
+chosen_process=$(echo "$CHOICE" | awk -F ' ' '{print $2}' | sed 's/.*(//;s/)//')
+chosen_port=$(echo "$CHOICE" | awk '{print $3}' | grep -o '[0-9]*')
 chosen_entry=""
 
 for line in "${entries[@]}"; do
   read user process_name port pid <<< "$line"
-  if [[ "$index" == "$chosen_index" ]]; then
+  if [[ "$pid" == "$pid_to_kill" ]]; then
     chosen_entry="$line"
     break
   fi
-  index=$((index + 1))
 done
 
 pid_to_kill=$(echo "$chosen_entry" | awk '{print $4}')
