@@ -57,6 +57,7 @@ fi
 selected_index=$CHOICE
 
 # Find the corresponding entry based on the selected index
+# Adjusting to get the correct entry from the original entries
 chosen_entry="${entries[$((selected_index - 1))]}"
 
 if [ -z "$chosen_entry" ]; then
