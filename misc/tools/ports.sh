@@ -47,7 +47,7 @@ for user in "${sorted_users[@]}"; do
   done
 done
 
-CHOICE=$(whiptail --title "Выберите процесс для завершения" --menu "             Пользователь (процесс) порт:" 20 60 10 "${whiptail_list[@]}" 3>&1 1>&2 2>&3)
+CHOICE=$(whiptail --title "Выберите процесс для завершения" --menu "             Пользователь (процесс) порт:" 15 40 0 "${whiptail_list[@]}" 3>&1 1>&2 2>&3)
 
 if [ $? -ne 0 ]; then
   exit 0
