@@ -44,6 +44,7 @@ case "\$combined_args" in
     "autoupdate") run_script "tools" "autoupdate.sh" ;;
     "grub") run_script "tools" "grub.sh" ;;
     "kernel") run_script "tools" "kernel.sh" ;;
+    "ports") run_script "tools" "ports.sh" ;;
     "ssh") run_script "tools" "ssh.sh" ;;
     "startup") run_script "tools" "startup.sh" ;;
     "swap") run_script "tools" "swap.sh" ;;
