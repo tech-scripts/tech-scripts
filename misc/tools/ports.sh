@@ -53,17 +53,13 @@ fi
 
 chosen_user=$(echo "$CHOICE" | awk -F ' ' '{print $1}' | sed 's/ (.*)//')
 chosen_process=$(echo "$CHOICE" | awk -F ' ' '{print $1}' | sed 's/.*(//;s/)//')
+chosen_port=$(echo "$CHOICE" | awk -F ' ' '{print $2}') 
 chosen_entry=""
-
-echo "Выбранный пользователь: $chosen_user"
-echo "Выбранный процесс: $chosen_process"
-echo "Содержимое entries:"
-printf '%s\n' "${entries[@]}"
 
 for line in "${entries[@]}"; do
   read user process_name port pid <<< "$line"
   echo "Проверка: $user $process_name $port $pid"
-  if [ "$user" == "$chosen_user" ] && [ "$process_name" == "$chosen_process" ]; then
+  if [[ "$user" == "$chosen_user" && "$process_name" == "$chosen_process" && "$port" == "$chosen_port" ]]; then
     chosen_entry="$line"
     break
   fi
