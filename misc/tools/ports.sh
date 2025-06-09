@@ -21,7 +21,6 @@ function get_process_list() {
   done
 }
 
-process_list=()
 mapfile -t entries < <(get_process_list)
 
 if [ ${#entries[@]} -eq 0 ]; then
@@ -29,42 +28,25 @@ if [ ${#entries[@]} -eq 0 ]; then
   exit 0
 fi
 
-declare -A port_users
-declare -A port_user_pids
+declare -A user_process_count
+declare -A user_ports
 
 for line in "${entries[@]}"; do
   user=$(echo "$line" | awk '{print $1}')
   port=$(echo "$line" | awk '{print $2}')
-  pid=$(echo "$line" | awk '{print $3}')
-  port_users["$port"]+="$user "
-  port_user_pids["$port|$user"]=$pid
+  user_process_count["$user"]=$((user_process_count["$user"] + 1))
+  user_ports["$user"]+="$port "
 done
 
-# Уникальные пользователи для каждого порта
-for port in "${!port_users[@]}"; do
-  users="${port_users[$port]}"
-  unique_users=$(echo $users | tr ' ' '\n' | sort -u | tr '\n' ' ')
-  port_users[$port]=$unique_users
-done
-
-declare -A port_usercount
-for port in "${!port_users[@]}"; do
-  usercount=$(echo "${port_users[$port]}" | wc -w)
-  port_usercount[$port]=$usercount
-done
-
-# Сортируем порты по возрастанию количества уникальных пользователей
-sorted_ports=($(for p in "${!port_usercount[@]}"; do echo "$p ${port_usercount[$p]}"; done | sort -k2,2n | awk '{print $1}'))
+sorted_users=($(for u in "${!user_process_count[@]}"; do echo "$u ${user_process_count[$u]}"; done | sort -k2,2n | awk '{print $1}'))
 
 whiptail_list=()
-for port in "${sorted_ports[@]}"; do
-  users=(${port_users[$port]})
-  for user in "${users[@]}"; do
-    whiptail_list+=("$user" "$port")
-  done
+for user in "${sorted_users[@]}"; do
+  ports="${user_ports[$user]}"
+  whiptail_list+=("$user" "$ports")
 done
 
-CHOICE=$(whiptail --title "Выберите процесс для завершения" --menu "Пользователь (порт):" 20 60 10 "${whiptail_list[@]}" 3>&1 1>&2 2>&3)
+CHOICE=$(whiptail --title "Выберите процесс для завершения" --menu "Пользователь (порты):" 20 60 10 "${whiptail_list[@]}" 3>&1 1>&2 2>&3)
 
 exitstatus=$?
 if [ $exitstatus -ne 0 ]; then
@@ -76,7 +58,6 @@ chosen_user=$CHOICE
 chosen_entry=""
 for line in "${entries[@]}"; do
   user=$(echo "$line" | awk '{print $1}')
-  port=$(echo "$line" | awk '{print $2}')
   if [ "$user" == "$chosen_user" ]; then
     chosen_entry="$line"
     break
