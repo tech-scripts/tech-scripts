@@ -11,7 +11,7 @@ function get_process_list() {
     if [ -d "/proc/$pid" ]; then
       user=$(ps -o user= -p $pid | xargs)
       process_name=$(ps -o comm= -p $pid | xargs)
-      echo "$process_name $port $pid"
+      echo "$user $process_name $port $pid"
     fi
   done
 }
@@ -42,7 +42,7 @@ for pid in "${!pid_map[@]}"; do
   user=$(echo "$info" | awk '{print $1}')
   process_name=$(echo "$info" | awk '{print $2}')
   port=$(echo "$info" | awk '{print $3}')
-  whiptail_list+=("$pid ($user $process_name)" "$port")
+  whiptail_list+=("$user ($process_name)" "$port")
 done
 
 CHOICE=$(whiptail --title "Выберите процесс для завершения" --menu "             PID (пользователь процесс) порт:" 20 60 10 "${whiptail_list[@]}" 3>&1 1>&2 2>&3)
