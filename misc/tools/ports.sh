@@ -52,8 +52,8 @@ if [ $? -ne 0 ]; then
 fi
 
 chosen_user=$(echo "$CHOICE" | awk -F ' ' '{print $1}' | sed 's/ (.*)//')
-chosen_process=$(echo "$CHOICE" | awk -F ' ' '{print $1}' | sed 's/.*(//;s/)//')
-chosen_port=$(echo "$CHOICE" | awk -F ' ' '{print $2}')
+chosen_process=$(echo "$CHOICE" | awk -F ' ' '{print $2}' | sed 's/.*(//;s/)//')
+chosen_port=$(echo "$CHOICE" | awk -F ' ' '{print $3}')
 
 
 echo "Выбранный пользователь: '$chosen_user'"
