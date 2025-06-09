@@ -25,10 +25,12 @@ fi
 
 declare -A user_ports
 declare -A user_port_count
+declare -A user_pid
 
 for line in "${entries[@]}"; do
   read user process_name port pid <<< "$line"
   user_ports["$user"]+="$process_name:$port "
+  user_pid["$user:$process_name:$port"]="$pid"
   user_port_count["$user"]=$((user_port_count["$user"] + 1))
 done
 
@@ -40,7 +42,7 @@ for user in "${sorted_users[@]}"; do
   for entry in $ports; do
     process_name=$(echo "$entry" | cut -d':' -f1)
     port=$(echo "$entry" | cut -d':' -f2)
-    pid=$(echo "${entries[@]}" | grep "$user $process_name $port" | awk '{print $4}')
+    pid="${user_pid[$user:$process_name:$port]}"
     whiptail_list+=("$user ($process_name)" "$port")
   done
 done
@@ -56,15 +58,7 @@ chosen_process=$(echo "$CHOICE" | awk -F ' ' '{print $2}' | sed 's/.*(//;s/)//')
 chosen_port=$(echo "$CHOICE" | awk '{print $3}' | grep -o '[0-9]*')
 chosen_entry=""
 
-for line in "${entries[@]}"; do
-  read user process_name port pid <<< "$line"
-  if [[ "$pid" == "$pid_to_kill" ]]; then
-    chosen_entry="$line"
-    break
-  fi
-done
-
-pid_to_kill=$(echo "$chosen_entry" | awk '{print $4}')
+pid_to_kill="${user_pid[$chosen_user:$chosen_process:$chosen_port]}"
 
 if [ -z "$pid_to_kill" ]; then
   echo "Ошибка: Не удалось определить PID выбранного процесса!"
