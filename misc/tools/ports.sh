@@ -55,7 +55,7 @@ chosen_user=$(echo "$CHOICE" | awk -F ' ' '{print $1}' | sed 's/ (.*)//')
 chosen_process=$(echo "$CHOICE" | awk -F ' ' '{print $2}' | sed 's/.*(//;s/)//')
 chosen_port=$(echo "$CHOICE" | awk '{print $3}' | sed 's/[^0-9]*//g')
 
-echo "$1 $2 $3 $4"
+echo "{print $1} {print $3}"
 echo "Выбранный пользователь: '$chosen_user'"
 echo "Выбранный процесс: '$chosen_process'"
 echo "Выбранный порт: '$chosen_port'"
