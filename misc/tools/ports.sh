@@ -3,22 +3,16 @@
 function get_process_list() {
   ss -tulnp | awk '
     NR>1 {
-      local_addr=$5;
-      match(local_addr, /.*:([0-9]+)/, portm);
-      port=portm[1];
       match($0, /pid=([0-9]+)/, pidm);
       pid=pidm[1];
       if (pid != "") {
-        print port, pid;
+        match($0, /([0-9]+):([0-9]+)/, addr);
+        port=addr[2];
+        user=system("ps -o user= -p " pid);
+        print user, port;
       }
     }
-  ' | sort -u | while read port pid; do
-    if [ -d "/proc/$pid" ]; then
-      user=$(ps -o user= -p $pid)
-      user=$(echo $user)
-      echo "$user $port $pid"
-    fi
-  done
+  ' | sort -u
 }
 
 mapfile -t entries < <(get_process_list)
