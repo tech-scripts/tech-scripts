@@ -23,7 +23,6 @@ get_process_list() {
       }
 
       # Get user name from /proc/[pid] if exists, else empty
-      command = "ps -o user= -p " pid
       command | getline username
       close(command)
       
