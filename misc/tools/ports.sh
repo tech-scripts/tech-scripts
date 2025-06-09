@@ -26,12 +26,14 @@ fi
 declare -A user_ports
 declare -A user_port_count
 declare -A pid_map
+declare -a extra_info
 
 for line in "${entries[@]}"; do
   read user process_name port pid <<< "$line"
   user_ports["$user"]+="$process_name:$port "
   user_port_count["$user"]=$((user_port_count["$user"] + 1))
   pid_map["$pid"]="$user $process_name $port"
+  extra_info+=("$line")
 done
 
 sorted_users=($(for u in "${!user_port_count[@]}"; do echo "$u ${user_port_count[$u]}"; done | sort -k2,2n | awk '{print $1}'))
