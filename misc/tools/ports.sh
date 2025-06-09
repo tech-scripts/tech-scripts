@@ -35,25 +35,15 @@ done
 sorted_users=($(for u in "${!user_port_count[@]}"; do echo "$u ${user_port_count[$u]}"; done | sort -k2,2n | awk '{print $1}'))
 
 whiptail_list=()
-pid_array=()  # Separate array for PIDs
-
+index=1
 for user in "${sorted_users[@]}"; do
   ports="${user_ports[$user]}"
   for entry in $ports; do
     process_name=$(echo "$entry" | cut -d':' -f1)
     port=$(echo "$entry" | cut -d':' -f2)
-
-    # Find the PID from entries matching user, process_name, and port
-    for line in "${entries[@]}"; do
-      read u p_name p_port p_pid <<< "$line"
-      if [[ "$u" == "$user" && "$p_name" == "$process_name" && "$p_port" == "$port" ]]; then
-        pid="$p_pid"
-        break
-      fi
-    done
-
-    whiptail_list+=("$user ($process_name)" "$port")
-    pid_array+=("$pid")
+    pid=$(echo "${entries[@]}" | grep "$user $process_name $port" | awk '{print $4}')
+    whiptail_list+=("$index" "$user ($process_name)" "$port")
+    index=$((index + 1))
   done
 done
 
@@ -63,29 +53,20 @@ if [ $? -ne 0 ]; then
   exit 0
 fi
 
-# Get the index of the chosen item in the menu
-choice_index=-1
-for i in "${!whiptail_list[@]}"; do
-  if [[ "${whiptail_list[$i]}" == "$CHOICE" ]]; then
-    # The labels and items alternate in whiptail_list: even indices are labels,
-    # odd indices are ports. The choice value corresponds to the label, so i is the index of label.
-    choice_index=$i
-    break
-  fi
-done
+# Get the selected index
+selected_index=$CHOICE
 
-if [ $choice_index -eq -1 ]; then
-  echo "Ошибка: Выбранный процесс не найден в списке!"
+# Find the corresponding entry based on the selected index
+chosen_entry="${entries[$((selected_index - 1))]}"
+
+if [ -z "$chosen_entry" ]; then
+  echo "Ошибка: Не удалось определить выбранный процесс!"
   exit 1
 fi
 
-pid_to_kill="${pid_array[$choice_index]}"
-
-# Retrieve user and process_name from chosen entry string (label)
-chosen_label="${whiptail_list[$choice_index]}"
-# Extract user (before space) and process name between parentheses
-chosen_user=$(echo "$chosen_label" | awk '{print $1}')
-chosen_process=$(echo "$chosen_label" | sed -E 's/.*\$(.*)\$/\1/')
+pid_to_kill=$(echo "$chosen_entry" | awk '{print $4}')
+chosen_user=$(echo "$chosen_entry" | awk '{print $1}')
+chosen_process=$(echo "$chosen_entry" | awk '{print $2}')
 
 if [ -z "$pid_to_kill" ]; then
   echo "Ошибка: Не удалось определить PID выбранного процесса!"
