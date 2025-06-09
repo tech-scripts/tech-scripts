@@ -45,7 +45,7 @@ for user in "${sorted_users[@]}"; do
   done
 done
 
-CHOICE=$(whiptail --title "Выберите процесс для завершения" --menu "Пользователь (процесс) порт:" 20 60 10 "${whiptail_list[@]}" 3>&1 1>&2 2>&3)
+CHOICE=$(whiptail --title "Выберите процесс для завершения" --menu "           Пользователь (процесс) порт:" 20 60 10 "${whiptail_list[@]}" 3>&1 1>&2 2>&3)
 
 if [ $? -ne 0 ]; then
   exit 0
@@ -57,7 +57,7 @@ chosen_entry=""
 
 for line in "${entries[@]}"; do
   read user process_name port pid <<< "$line"
-  if [ "$user" == "$chosen_user" ] && [ "$process_name" == "$chosen_process" ]; then
+  if [[ "$user" == "$chosen_user" && "$process_name" == "$chosen_process" && "$port" == "$chosen_port" ]]; then
     chosen_entry="$line"
     break
   fi
