@@ -7,9 +7,10 @@ get_process_list() {
       port=addr[length(addr)]
       userfield=""
       for(i=6;i<=NF;i++) userfield=userfield $i " "
-      if (match(userfield, /users:\$\$"([^"]+)"\,pid=([0-9]+)/, m)) {
+      # Simplified regex: no unnecessary backslashes before quotes or commas
+      if (match(userfield, /users:\$\$"([^"]+)",pid=([0-9]+)/, m)) {
         procname = m[1]
-        pid=m[2]
+        pid = m[2]
       } else {
         procname = "unknown"
         pid = ""
