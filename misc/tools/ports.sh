@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 function get_process_list() {
   ss -tulnp | awk 'NR>1 {
@@ -19,7 +19,7 @@ function get_process_list() {
 mapfile -t entries < <(get_process_list)
 
 if [ ${#entries[@]} -eq 0 ]; then
-  whiptail --msgbox "Слушающих процессов на портах не найдено." 8 50
+  echo "Слушающих процессов на портах не найдено!"
   exit 0
 fi
 
@@ -45,10 +45,9 @@ for user in "${sorted_users[@]}"; do
   done
 done
 
-CHOICE=$(whiptail --title "Выберите процесс для завершения" --menu "Пользователь (процесс):" 20 60 10 "${whiptail_list[@]}" 3>&1 1>&2 2>&3)
+CHOICE=$(whiptail --title "Выберите процесс для завершения" --menu "Пользователь (процесс) порт:" 20 60 10 "${whiptail_list[@]}" 3>&1 1>&2 2>&3)
 
 if [ $? -ne 0 ]; then
-  echo "Отмена пользователем."
   exit 0
 fi
 
@@ -67,19 +66,17 @@ done
 pid_to_kill=$(echo "$chosen_entry" | awk '{print $4}')
 
 if [ -z "$pid_to_kill" ]; then
-  whiptail --msgbox "Ошибка: Не удалось определить PID выбранного процесса." 8 50
+  echo "Ошибка: Не удалось определить PID выбранного процесса!"
   exit 1
 fi
 
 if (whiptail --title "Подтверждение" --yesno "Завершить процесс PID $pid_to_kill, принадлежащий пользователю $chosen_user ($chosen_process)?" 8 60); then
   kill "$pid_to_kill" 2>/dev/null
   if [ $? -eq 0 ]; then
-    whiptail --msgbox "Процесс $pid_to_kill успешно завершён." 8 50
+    exit 0
   else
-    whiptail --msgbox "Не удалось завершить процесс $pid_to_kill." 8 50
+    whiptail --msgbox "Не удалось завершить процесс $pid_to_kill!" 8 50
   fi
 else
-  whiptail --msgbox "Завершение процесса отменено." 8 50
+  exit 0
 fi
-
-exit 0
