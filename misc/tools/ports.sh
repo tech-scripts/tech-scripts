@@ -47,13 +47,12 @@ for user in "${sorted_users[@]}"; do
     done
 done
 
-CHOICE=$(whiptail --title "Выберите процесс для завершения" --menu "             Пользователь (процесс) порт:" 20 60 10 "${whiptail_list[@]}" 3>&1 1>&2 2>&3)
+CHOICE=$(whiptail --title "Выберите процесс для завершения" --menu "Пользователь (процесс) порт:" 20 60 10 "${whiptail_list[@]}" 3>&1 1>&2 2>&3)
 
 if [ $? -ne 0 ]; then
     exit 0
 fi
 
-# Получаем номер выбранного процесса
 selected_index=$(echo "$CHOICE" | awk '{print $1}' | cut -d'.' -f1)
 chosen_entry="${entries[$((selected_index - 1))]}"
 
@@ -64,7 +63,7 @@ if [ -z "$pid_to_kill" ]; then
     exit 1
 fi
 
-if (whiptail --title "Подтверждение" --yesno "Завершить процесс PID $pid_to_kill, принадлежащий пользователю $chosen_user ($chosen_process)?" 8 60); then
+if (whiptail --title "Подтверждение" --yesno "Завершить процесс PID $pid_to_kill?" 8 60); then
     kill "$pid_to_kill" 2>/dev/null
     if [ $? -eq 0 ]; then
         exit 0
