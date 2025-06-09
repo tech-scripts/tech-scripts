@@ -11,7 +11,7 @@ function get_process_list() {
     if [ -d "/proc/$pid" ]; then
       user=$(ps -o user= -p $pid | xargs)
       process_name=$(ps -o comm= -p $pid | xargs)
-      echo "$user $process_name $port $pid"
+      echo "$process_name $port $pid"
     fi
   done
 }
