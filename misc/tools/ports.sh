@@ -42,7 +42,7 @@ for index in "${!entries[@]}"; do
   whiptail_list+=("$unique_id" "$user ($process_name) - Порт: $port")
 done
 
-CHOICE=$(whiptail --title "Выберите процесс для завершения" --menu "Пользователь Процесс Порт:" 20 70 15 "${whiptail_list[@]}" 3>&1 1>&2 2>&3)
+CHOICE=$(whiptail --title "Выберите процесс для завершения" --menu "Пользователь (Процесс) Порт:" 15 50 20 "${whiptail_list[@]}" 3>&1 1>&2 2>&3)
 
 if [ $? -ne 0 ]; then
   exit 0
