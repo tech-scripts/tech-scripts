@@ -14,11 +14,13 @@ get_process_list() {
         procname = "unknown"
         pid = ""
       }
-      command = "ps -o user= -p " pid
-      command | getline username
-      close(command)
-      if (username != "" && pid != "") {
-        print username, procname, port, pid
+      if (pid != "") {
+        command = "ps -o user= -p " pid
+        command | getline username
+        close(command)
+        if (username != "") {
+          print username, procname, port, pid
+        }
       }
     }
   ' | sort -u
