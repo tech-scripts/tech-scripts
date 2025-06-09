@@ -28,7 +28,7 @@ declare -A user_port_count
 
 for line in "${entries[@]}"; do
   read user process_name port pid <<< "$line"
-  user_ports["$user"]+="$process_name:$port "
+  user_ports["$user"]+="$process_name:$port:$pid "
   user_port_count["$user"]=$((user_port_count["$user"] + 1))
 done
 
@@ -41,7 +41,7 @@ for user in "${sorted_users[@]}"; do
   for entry in $ports; do
     process_name=$(echo "$entry" | cut -d':' -f1)
     port=$(echo "$entry" | cut -d':' -f2)
-    pid=$(echo "${entries[@]}" | grep "$user $process_name $port" | awk '{print $4}')
+    pid=$(echo "$entry" | cut -d':' -f3)
     whiptail_list+=("$index" "$user ($process_name)" "$port")
     index=$((index + 1))
   done
@@ -53,21 +53,19 @@ if [ $? -ne 0 ]; then
   exit 0
 fi
 
-# Get the selected index
-selected_index=$CHOICE
+chosen_index=$(echo "$CHOICE" | awk '{print $1}')
+chosen_entry=""
 
-# Find the corresponding entry based on the selected index
-# Adjusting to get the correct entry from the original entries
-chosen_entry="${entries[$((selected_index - 1))]}"
-
-if [ -z "$chosen_entry" ]; then
-  echo "Ошибка: Не удалось определить выбранный процесс!"
-  exit 1
-fi
+for line in "${entries[@]}"; do
+  read user process_name port pid <<< "$line"
+  if [[ "$index" == "$chosen_index" ]]; then
+    chosen_entry="$line"
+    break
+  fi
+  index=$((index + 1))
+done
 
 pid_to_kill=$(echo "$chosen_entry" | awk '{print $4}')
-chosen_user=$(echo "$chosen_entry" | awk '{print $1}')
-chosen_process=$(echo "$chosen_entry" | awk '{print $2}')
 
 if [ -z "$pid_to_kill" ]; then
   echo "Ошибка: Не удалось определить PID выбранного процесса!"
