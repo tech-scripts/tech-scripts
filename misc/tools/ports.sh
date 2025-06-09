@@ -35,30 +35,56 @@ done
 sorted_users=($(for u in "${!user_port_count[@]}"; do echo "$u ${user_port_count[$u]}"; done | sort -k2,2n | awk '{print $1}'))
 
 whiptail_list=()
-for index in "${!entries[@]}"; do
-  line="${entries[$index]}"
-  read user process_name port pid <<< "$line"
-  unique_id="$index"
-  whiptail_list+=("$unique_id" "$user ($process_name) - Порт: $port")
+for user in "${sorted_users[@]}"; do
+  ports="${user_ports[$user]}"
+  for entry in $ports; do
+    process_name=$(echo "$entry" | cut -d':' -f1)
+    port=$(echo "$entry" | cut -d':' -f2)
+    pid=$(echo "${entries[@]}" | grep "$user $process_name $port" | awk '{print $4}')
+    whiptail_list+=("$user ($process_name)" "$port")
+  done
 done
 
-CHOICE=$(whiptail --title "Выберите процесс для завершения" --menu "Пользователь (Процесс) Порт:" 15 50 0 "${whiptail_list[@]}" 3>&1 1>&2 2>&3)
+CHOICE=$(whiptail --title "Выберите процесс для завершения" --menu "             Пользователь (процесс) порт:" 20 60 10 "${whiptail_list[@]}" 3>&1 1>&2 2>&3)
 
 if [ $? -ne 0 ]; then
   exit 0
 fi
 
-chosen_id="$CHOICE"
-chosen_entry="${entries[$chosen_id]}"
+chosen_user=$(echo "$CHOICE" | awk -F ' ' '{print $1}' | sed 's/ (.*)//')
+chosen_process=$(echo "$CHOICE" | awk -F ' ' '{print $2}' | sed 's/.*(//;s/)//')
+chosen_port=$(echo "$CHOICE" | awk '{print $3}' | grep -o '[0-9]*')
 
-if [ -z "$chosen_entry" ]; then
-  echo "Ошибка: Не удалось определить выбранный процесс!"
+echo "$CHOICE" | awk '{print $4}'
+echo "$CHOICE" | awk '{print $3}'
+echo "$CHOICE" | awk '{print $2}'
+echo "$CHOICE" | awk '{print $1}'
+
+echo "Выбранный пользователь: '$chosen_user'"
+echo "Выбранный процесс: '$chosen_process'"
+echo "Выбранный порт: '$chosen_port'"
+
+chosen_entry=""
+
+for line in "${entries[@]}"; do
+  read user process_name port pid <<< "$line"
+  echo "Проверка: '$user' '$process_name' '$port' '$pid'"
+  if [[ "$user" == "$chosen_user" && "$process_name" == "$chosen_process" && "$port" == "$chosen_port" ]]; then
+    chosen_entry="$line"
+    break
+  fi
+done
+
+echo "Выбранная запись: '$chosen_entry'"
+
+pid_to_kill=$(echo "$chosen_entry" | awk '{print $4}')
+
+if [ -z "$pid_to_kill" ]; then
+  echo "Ошибка: Не удалось определить PID выбранного процесса!"
   exit 1
 fi
 
-read chosen_user chosen_process chosen_port pid_to_kill <<< "$chosen_entry"
-
-if (whiptail --title "Подтверждение" --yesno "Завершить процесс PID $pid_to_kill, принадлежащий пользователю $chosen_user ($chosen_process) на порту $chosen_port?" 8 70); then
+if (whiptail --title "Подтверждение" --yesno "Завершить процесс PID $pid_to_kill, принадлежащий пользователю $chosen_user ($chosen_process)?" 8 60); then
   kill "$pid_to_kill" 2>/dev/null
   if [ $? -eq 0 ]; then
     exit 0
