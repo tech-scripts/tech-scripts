@@ -4,8 +4,6 @@
 
 source $USER_DIR/etc/tech-scripts/source.sh
 
-#!/bin/bash
-
 detect_init_system() {
     if command -v systemctl &> /dev/null; then
         echo "systemd"
