@@ -25,12 +25,11 @@ fi
 
 declare -A user_ports
 declare -A user_port_count
-declare -A user_pid
+declare -A label_to_pid  # Map menu label string to PID
 
 for line in "${entries[@]}"; do
   read user process_name port pid <<< "$line"
   user_ports["$user"]+="$process_name:$port "
-  user_pid["$user:$process_name:$port"]="$pid"
   user_port_count["$user"]=$((user_port_count["$user"] + 1))
 done
 
@@ -42,8 +41,20 @@ for user in "${sorted_users[@]}"; do
   for entry in $ports; do
     process_name=$(echo "$entry" | cut -d':' -f1)
     port=$(echo "$entry" | cut -d':' -f2)
-    pid="${user_pid[$user:$process_name:$port]}"
-    whiptail_list+=("$user ($process_name)" "$port")
+    # Find the pid for this user, process and port in entries (since user_ports lost pids)
+    pid=""
+    for line in "${entries[@]}"; do
+      read u p_name p_port p_pid <<< "$line"
+      if [[ "$u" == "$user" && "$p_name" == "$process_name" && "$p_port" == "$port" ]]; then
+        pid="$p_pid"
+        break
+      fi
+    done
+    # Create a unique key for mapping to PID
+    key="${user}|${process_name}|${port}"
+    label="${user} (${process_name})"
+    whiptail_list+=("$key" "$port")
+    label_to_pid["$key"]=$pid
   done
 done
 
@@ -53,17 +64,16 @@ if [ $? -ne 0 ]; then
   exit 0
 fi
 
-chosen_user=$(echo "$CHOICE" | awk -F ' ' '{print $1}' | sed 's/ (.*)//')
-chosen_process=$(echo "$CHOICE" | awk -F ' ' '{print $2}' | sed 's/.*(//;s/)//')
-chosen_port=$(echo "$CHOICE" | awk '{print $3}' | grep -o '[0-9]*')
-chosen_entry=""
-
-pid_to_kill="${user_pid[$chosen_user:$chosen_process:$chosen_port]}"
+pid_to_kill="${label_to_pid[$CHOICE]}"
 
 if [ -z "$pid_to_kill" ]; then
   echo "Ошибка: Не удалось определить PID выбранного процесса!"
   exit 1
 fi
+
+# Extract user and process for confirmation message from $CHOICE key string
+chosen_user=$(echo "$CHOICE" | cut -d '|' -f1)
+chosen_process=$(echo "$CHOICE" | cut -d '|' -f2)
 
 if (whiptail --title "Подтверждение" --yesno "Завершить процесс PID $pid_to_kill, принадлежащий пользователю $chosen_user ($chosen_process)?" 8 60); then
   kill "$pid_to_kill" 2>/dev/null
