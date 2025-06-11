@@ -57,17 +57,18 @@ selected_index=$(echo "$CHOICE" | awk '{print $1}' | cut -d'.' -f1)
 chosen_entry="${entries[$((selected_index - 1))]}"
 
 pid_to_kill=$(echo "$chosen_entry" | awk '{print $4}')
+port_to_kill=$(echo "$chosen_entry" | awk '{print $3}')
 
 if [ -z "$pid_to_kill" ]; then
     echo "Ошибка: Не удалось определить PID выбранного процесса!"
     exit 1
 fi
 
-if (whiptail --title "Подтверждение" --yesno "Завершить процесс PID $pid_to_kill с портом $port?" 8 60); then
+if (whiptail --title "Подтверждение" --yesno "Завершить процесс PID $pid_to_kill с портом $port_to_kill?" 8 60); then
     kill "$pid_to_kill" 2>/dev/null
     if [ $? -eq 0 ]; then
         exit 0
     else
-        whiptail --msgbox "Не удалось завершить процесс $pid_to_kill с портом $port!" 8 50
+        whiptail --msgbox "Не удалось завершить процесс $pid_to_kill с портом $port_to_kill!" 8 50
     fi
 fi
