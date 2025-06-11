@@ -69,5 +69,5 @@ if (whiptail --title "Подтверждение" --yesno "Завершить п
         exit 0
     else
         whiptail --msgbox "Не удалось завершить процесс $pid_to_kill с портом $port!" 8 50
-    fi с
+    fi
 fi
