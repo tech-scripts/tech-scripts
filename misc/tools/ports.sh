@@ -70,6 +70,4 @@ if (whiptail --title "Подтверждение" --yesno "Завершить п
     else
         whiptail --msgbox "Не удалось завершить процесс $pid_to_kill!" 8 50
     fi
-else
-    exit 0
 fi
