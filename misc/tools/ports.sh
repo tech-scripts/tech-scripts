@@ -58,7 +58,7 @@ chosen_entry="${entries[$((selected_index - 1))]}"
 
 pid_to_kill=$(echo "$chosen_entry" | awk '{print $4}')
 port_to_kill=$(echo "$chosen_entry" | awk '{print $3}')
-
+echo "$chosen_entry"
 if [ -z "$pid_to_kill" ]; then
     echo "Ошибка: Не удалось определить PID выбранного процесса!"
     exit 1
