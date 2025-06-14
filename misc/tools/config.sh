@@ -32,14 +32,14 @@ show_menu() {
         DISPLAY_NAMES=()
 
         case "$CURRENT_DIR" in
-            /)
-                DIRECTORIES=("/etc" "/opt" "/var" "/usr" "/home" "/root" "/tmp")
+            USER_DIR/)
+                DIRECTORIES=("$USER_DIR/etc" "$USER_DIR/opt" "$USER_DIR/var" "$USER_DIR/usr" "$USER_DIR/home" "$USER_DIR/root" "$USER_DIR/tmp")
                 ;;
             /etc)
-                SCRIPTS=("/etc/fstab" "/etc/passwd" "/etc/ssh" "/etc/apt" "/etc/tech-scripts")
+                SCRIPTS=("/etc/fstab" "/etc/passwd" "/etc/ssh" "/etc/apt" "$USER_DIR/etc/tech-scripts")
                 ;;
             /usr)
-                DIRECTORIES=("/usr/local" "/usr/share" "/usr/local/etc" "/usr/local/tech-scripts")
+                DIRECTORIES=("/usr/local" "/usr/share" "/usr/local/etc" "$USER_DIR/usr/local/tech-scripts")
                 ;;
             /var)
                 DIRECTORIES=("/var/lib/docker" "/var/www/html")
