@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+[ -w /tmp ] && USER_DIR="" || USER_DIR=$HOME
+
+source $USER_DIR/etc/tech-scripts/source.sh
+
 function get_process_list() {
     ss -tulnp | awk 'NR>1 {
         match($5, /.*:([0-9]+)/, portm);
