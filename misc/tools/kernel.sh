@@ -9,6 +9,8 @@ CHECK_MARK="✓"
 CROSS_MARK="✗"
 QUESTION_MARK="?"
 
+[ -w /tmp ] && USER_DIR="" || USER_DIR=$HOME
+
 source $USER_DIR/etc/tech-scripts/source.sh
 
 if [ "$LANGUAGE" = "Русский" ]; then
