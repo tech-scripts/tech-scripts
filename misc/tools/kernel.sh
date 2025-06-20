@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+[ -w /tmp ] && USER_DIR="" || USER_DIR=$HOME
+
+source $USER_DIR/etc/tech-scripts/source.sh
+
 GREEN="\e[32m"
 RED="\e[31m"
 YELLOW="\e[33m"
@@ -8,10 +12,6 @@ RESET="\e[0m"
 CHECK_MARK="✓"
 CROSS_MARK="✗"
 QUESTION_MARK="?"
-
-[ -w /tmp ] && USER_DIR="" || USER_DIR=$HOME
-
-source $USER_DIR/etc/tech-scripts/source.sh
 
 if [ "$LANGUAGE" = "Русский" ]; then
   KERNEL_MODULES=(
