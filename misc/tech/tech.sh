@@ -36,6 +36,7 @@ case "\$combined_args" in
     "menu") run_script "tech" "menu.sh" ;;
     "help") run_script "tech" "help.sh" ;;
     "update") run_script "tech" "update.sh" ;;
+    "apatch") run_script "android" "apatch.sh" ;;
     "lxc") run_script "proxmox" "lxc.sh" ;;
     "vm") run_script "proxmox" "vm.sh" ;;
     "disk") run_script "tools/benchmark" "disk.sh" ;;
