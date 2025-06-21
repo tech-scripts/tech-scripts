@@ -10,6 +10,8 @@ CURRENT_DIR="$CLONE_DIR"
 EXCLUDE_FILES=("start.sh" "choose.sh" "localization.sh" "variables.sh" "functions.sh" "menu.sh" "source.sh" "*.tmp")
 
 if [ "$HIDE" = true ]; then
+  [ -z "$(getprop ro.hardware 2>/dev/null)" ] && EXCLUDE_FILES+=("android")
+  ss 2>&1 | grep -q "Permission denied" && EXCLUDE_FILES+=("ports.sh")
   ! command -v lxc &>/dev/null && ! command -v qm &>/dev/null && EXCLUDE_FILES+=("proxmox")
   ! command -v lsmod &>/dev/null && EXCLUDE_FILES+=("kernel.sh")
   ! command -v update-grub &>/dev/null && EXCLUDE_FILES+=("grub.sh")
