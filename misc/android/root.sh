@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Настройки SuperCall
 __NR_supercall=223  # Проверьте в /proc/kallsyms
