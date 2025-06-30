@@ -1,3 +1,7 @@
+<div align="center">
+  🇷🇺 <a href="README_RU.md">RU</a> | 🇺🇸 <a>EN</a>
+</div>
+
 <div style="border: 2px solid #d1d5db; padding: 20px; border-radius: 8px; background-color: #f9fafb;">
   <h2 align="center">Tech Scripts</h2>
   <p align="center">Scripts for configuring linux</p>
