@@ -23,12 +23,11 @@ function get_process_list() {
 mapfile -t entries < <(get_process_list)
 
 if [ ${#entries[@]} -eq 0 ]; then
-    echo "Слушающих процессов на портах не найдено!"
+    echo "$MSG_NO_PROCESSES"
     exit 0
 fi
 
-declare -A user_ports
-declare -A user_port_count
+declare -A user_ports user_port_count
 
 for line in "${entries[@]}"; do
     read user process_name port pid <<< "$line"
@@ -51,7 +50,7 @@ for user in "${sorted_users[@]}"; do
     done
 done
 
-CHOICE=$(whiptail --title "Выберите порт для завершения" --menu "             Пользователь (процесс) порт:" 20 60 10 "${whiptail_list[@]}" 3>&1 1>&2 2>&3)
+CHOICE=$(whiptail --title "$TITLE" --menu "$MENU_HEADER" 20 60 10 "${whiptail_list[@]}" 3>&1 1>&2 2>&3)
 
 if [ $? -ne 0 ]; then
     exit 0
@@ -64,15 +63,15 @@ pid_to_kill=$(echo "$chosen_entry" | awk '{print $4}')
 port_to_kill=$(echo "$chosen_entry" | awk '{print $3}')
 
 if [ -z "$pid_to_kill" ]; then
-    echo "Ошибка: Не удалось определить PID потра $port_to_kill!"
+    echo "$(printf "$MSG_ERROR_PID" "$port_to_kill")"
     exit 1
 fi
 
-if (whiptail --title "Подтверждение" --yesno "Завершить процесс PID $pid_to_kill с портом $port_to_kill?" 8 60); then
+if (whiptail --title "Подтверждение" --yesno "$(printf "$MSG_CONFIRM" "$pid_to_kill" "$port_to_kill")" 8 60); then
     kill "$pid_to_kill" 2>/dev/null
     if [ $? -eq 0 ]; then
         exit 0
     else
-        whiptail --msgbox "Не удалось завершить процесс $pid_to_kill с портом $port_to_kill!" 8 50
+        whiptail --msgbox "$(printf "$MSG_KILL_FAILED" "$pid_to_kill" "$port_to_kill")" 8 50
     fi
 fi
