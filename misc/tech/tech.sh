@@ -46,6 +46,7 @@ case "\$combined_args" in
     "grub") run_script "tools" "grub.sh" ;;
     "kernel") run_script "tools" "kernel.sh" ;;
     "ports") run_script "tools" "ports.sh" ;;
+    "root") run_script "tools" "root.sh" ;;
     "ssh") run_script "tools" "ssh.sh" ;;
     "startup") run_script "tools" "startup.sh" ;;
     "swap") run_script "tools" "swap.sh" ;;
