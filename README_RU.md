@@ -1,8 +1,10 @@
-[🇷🇺 RU](README_RU.md) | [🇺🇸 EN](README.md)
+<p align="center">
+  <a href="README_RU.md">🇷🇺 RU</a> | <a href="README.md">🇺🇸 EN</a>
+</p>
 
 <div style="border: 2px solid #d1d5db; padding: 20px; border-radius: 8px; background-color: #f9fafb;">
   <h2 align="center">Tech Scripts</h2>
-  <p align="center">Scripts for configuring linux</p>
+  <p align="center">Скрипты для настройки Linux</p>
   <p align="center">
     <a href="https://boosty.to/techscripts/donate">
       <img src="https://img.shields.io/badge/Support-FF5F5F?style=for-the-badge&logo=boosty&logoColor=white" alt="Donate" />
