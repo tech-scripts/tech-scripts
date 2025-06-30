@@ -51,7 +51,7 @@ for user in "${sorted_users[@]}"; do
     done
 done
 
-CHOICE=$(whiptail --title "Выберите процесс для завершения" --menu "             Пользователь (процесс) порт:" 20 60 10 "${whiptail_list[@]}" 3>&1 1>&2 2>&3)
+CHOICE=$(whiptail --title "Выберите порт для завершения" --menu "             Пользователь (процесс) порт:" 20 60 10 "${whiptail_list[@]}" 3>&1 1>&2 2>&3)
 
 if [ $? -ne 0 ]; then
     exit 0
@@ -64,7 +64,7 @@ pid_to_kill=$(echo "$chosen_entry" | awk '{print $4}')
 port_to_kill=$(echo "$chosen_entry" | awk '{print $3}')
 
 if [ -z "$pid_to_kill" ]; then
-    echo "Ошибка: Не удалось определить PID выбранного процесса!"
+    echo "Ошибка: Не удалось определить PID потра $port_to_kill!"
     exit 1
 fi
 
