@@ -56,7 +56,7 @@
 - **Kernel Modules Check**: Verify the presence of kernel modules to ensure system integrity.
 - **Check Ports**: Monitor network ports to prevent unauthorized access.
 - **Manage Root**: Control root user permissions to enhance security.
-- 
+
 ### LXC and VM Management
 - **Lxc Containers**: Manage lxc containers with ease.
 - **Virtual Machines**: Configure and manage virtual machines.
