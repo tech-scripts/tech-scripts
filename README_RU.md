@@ -1,5 +1,5 @@
 <div align="center">
-  <a href="README_RU.md">🇷🇺&nbsp;RU</a> | <a href="README.md">🇺🇸&nbsp;EN</a>
+  🇷🇺 <a href="README_RU.md">RU</a> | 🇺🇸 <a href="README.md">EN</a>
 </div>
 
 <div style="border: 2px solid #d1d5db; padding: 20px; border-radius: 8px; background-color: #f9fafb;">
