@@ -1,6 +1,7 @@
-<center>
-  [🇷🇺 RU](README_RU.md) | [🇺🇸 EN](README.md)
-</center>
+<p align="center">
+  <a href="README_RU.md" style="text-decoration: none;">🇷🇺 RU</a> | 
+  <a href="README.md" style="text-decoration: none;">🇺🇸 EN</a>
+</p>
 
 <div style="border: 2px solid #d1d5db; padding: 20px; border-radius: 8px; background-color: #f9fafb;">
   <h2 align="center">Tech Scripts</h2>
