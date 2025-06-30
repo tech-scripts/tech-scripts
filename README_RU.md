@@ -1,5 +1,5 @@
 <div align="center">
-  🇷🇺 [RU] | 🇺🇸 [EN](README.md)
+  🇷🇺 [RU](README_RU.md) | 🇺🇸 [EN](README.md)
 </div>
 
 <div style="border: 2px solid #d1d5db; padding: 20px; border-radius: 8px; background-color: #f9fafb;">
