@@ -243,7 +243,21 @@ if [[ "$LANGUAGE" == "Русский" ]]; then
     KERNEL_CHECK_MODULES="Проверка модулей ядра и их статуса:"
 
     INIT_SYSTEM_UNSUPPORTED="Поддерживаемая система инициализации не найдена!"
+
+    MSG_NO_PROCESSES="Слушающих процессов на портах не найдено!"
+    MSG_CONFIRM="Завершить процесс PID %s с портом %s?"
+    MSG_ERROR_PID="Ошибка: Не удалось определить PID потра %s!"
+    MSG_KILL_FAILED="Не удалось завершить процесс %s с портом %s!"
+    TITLE="Выберите порт для завершения"
+    MENU_HEADER="             Пользователь (процесс) порт:"
 else
+    MSG_NO_PROCESSES="No listening processes found on ports!"
+    MSG_CONFIRM="Terminate process PID %s on port %s?"
+    MSG_ERROR_PID="Error: Could not determine PID for port %s!"
+    MSG_KILL_FAILED="Failed to terminate process %s on port %s!"
+    TITLE="Select a port to terminate"
+    MENU_HEADER="             User (process) port:"
+
     MSG_NO_SCRIPTS="No available scripts or directories!"
     MSG_CANCELLED="Selection cancelled!"
     MSG_BACK="back"
