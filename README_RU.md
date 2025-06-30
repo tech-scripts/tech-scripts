@@ -1,5 +1,7 @@
 <p align="center">
-  <a href="README_RU.md">🇷🇺 RU</a> | <a href="README.md">🇺🇸 EN</a>
+  <a href="README_RU.md" style="text-decoration: none">🇷🇺 RU</a>  
+  <span> | </span>  
+  <a href="README.md" style="text-decoration: none">🇺🇸 EN</a>
 </p>
 
 <div style="border: 2px solid #d1d5db; padding: 20px; border-radius: 8px; background-color: #f9fafb;">
