@@ -42,7 +42,7 @@ update_packages() {
     elif command -v pacman &>/dev/null; then
         $SUDO pacman -Sy
     else
-        echo "The package manager could not be identified. Cannot update packages."
+        echo "The package manager could not be identified. Cannot update packages!"
         exit 1
     fi
 }
@@ -98,7 +98,7 @@ install_package() {
     elif command -v pacman &>/dev/null; then
         install_cmd="$SUDO pacman -S --noconfirm"
     else
-        echo "The package manager could not be identified. Cannot install $package."
+        echo "The package manager could not be identified. Cannot install $package!"
         exit 1
     fi
     eval "$install_cmd \"$package\""
