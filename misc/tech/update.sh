@@ -27,6 +27,7 @@ echo "Update completed!"
 fi
 echo ""
 EOF
+
 chmod 777 $USER_DIR/tmp/update.sh
 $USER_DIR/tmp/update.sh
 $SUDO rm -f /tmp/update.sh
