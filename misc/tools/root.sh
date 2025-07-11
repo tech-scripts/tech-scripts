@@ -15,17 +15,14 @@ check_dependencies() {
     fi
 }
 
-# Проверка root-прав
 check_root() {
     [ "$(id -u)" = "0" ]
 }
 
-# Проверка состояния SELinux
 check_selinux() {
     getenforce 2>/dev/null || echo "Disabled"
 }
 
-# Проверка состояния загрузчика
 check_bootloader() {
     if [ -d /sys/block/bootdevice ]; then
         echo "Unlocked"
@@ -34,12 +31,10 @@ check_bootloader() {
     fi
 }
 
-# Получение версии ядра в hex
 get_kernel_hex() {
     uname -r | awk -F. '{ printf "0x%x%02x%02x", $1, $2, $3 }'
 }
 
-# Получение информации о рут-доступе
 get_root_info() {
     if check_root; then
         echo "Root доступ: Active (UID 0)"
@@ -55,7 +50,6 @@ get_root_info() {
     fi
 }
 
-# Функция ремаунта и получения root-оболочки
 root_shell() {
     if ! check_root; then
         if ! tsu -c "mount -o remount,rw /system && echo 'Файловая система перемонтирована в RW'"; then
@@ -64,7 +58,6 @@ root_shell() {
         fi
     fi
     
-    # Ремаунт всех разделов в RW
     mount -o remount,rw / 2>/dev/null
     mount -o remount,rw /system 2>/dev/null
     mount -o remount,rw /data 2>/dev/null
@@ -94,7 +87,6 @@ root_shell() {
     done
 }
 
-# Удаление приложений
 remove_apps() {
     while true; do
         choice=$(whiptail --title "Удаление приложений" --menu "Выберите действие:" 15 50 4 \
@@ -124,7 +116,6 @@ remove_apps() {
     done
 }
 
-# Меню информации о системе
 system_info_menu() {
     local info=""
     info+="KernelPatch версия: 0x$(get_kernel_hex)\n"
@@ -140,7 +131,6 @@ system_info_menu() {
     whiptail --title "Информация о системе" --msgbox "$info" 20 70
 }
 
-# Управление модулями ядра
 modules_menu() {
     while true; do
         choice=$(whiptail --title "Управление модулями ядра" --menu "Выберите действие:" 15 50 5 \
@@ -176,7 +166,6 @@ modules_menu() {
     done
 }
 
-# Главное меню
 main_menu() {
     while true; do
         local root_status
@@ -242,7 +231,6 @@ main_menu() {
     done
 }
 
-# Инициализация
 check_dependencies
 clear
 echo "────────────────────────────────────────────"
@@ -253,7 +241,6 @@ echo " • SELinux: $(check_selinux)"
 echo " • Загрузчик: $(check_bootloader)"
 echo "────────────────────────────────────────────"
 
-# Проверка root-прав при запуске
 if ! check_root; then
     if whiptail --title "Root доступ" --yesno "Root доступ не обнаружен. Попытаться получить?" 10 50; then
         if ! tsu -c "echo 'Root получен!'"; then
@@ -262,5 +249,4 @@ if ! check_root; then
     fi
 fi
 
-# Запуск главного меню
 main_menu
