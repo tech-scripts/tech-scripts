@@ -67,7 +67,7 @@ if [ -z "$pid_to_kill" ]; then
     exit 1
 fi
 
-if (whiptail --title "Подтверждение" --yesno "$(printf "$MSG_CONFIRM" "$pid_to_kill" "$port_to_kill")" 8 60); then
+if (whiptail --title "$TITLE_DANGER" --yesno "$(printf "$MSG_CONFIRM" "$pid_to_kill" "$port_to_kill")" 8 60); then
     kill "$pid_to_kill" 2>/dev/null
     if [ $? -eq 0 ]; then
         exit 0
