@@ -108,7 +108,7 @@ curl -fsSL https://raw.githubusercontent.com/tech-scripts/tech-scripts/refs/head
 - **Kernel Modules Check**: `tech kernel`
 - **Check Ports**: `tech ports`
 - **Manage Root**: `tech root`
-- 
+
 ### LXC and VM Management
 - **Manage Lxc Containers**: `tech lxc`
 - **Manage Virtual Machines**: `tech vm`
