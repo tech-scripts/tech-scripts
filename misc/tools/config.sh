@@ -105,6 +105,7 @@ show_menu() {
         fi
     done
 }
+
 DIR_STACK=()
 CURRENT_DIR="$USER_DIR/"
 cd "$CURRENT_DIR" || { echo "$MSG_CD_ERROR"; exit 1; }
