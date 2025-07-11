@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 
-# Проверка зависимостей
+[ -w /tmp ] && USER_DIR="" || USER_DIR=$HOME
+
+source $USER_DIR/etc/tech-scripts/source.sh
+
 check_dependencies() {
     if ! command -v whiptail &> /dev/null; then
         echo "Установите whiptail: pkg install whiptail"
