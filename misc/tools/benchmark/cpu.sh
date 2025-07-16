@@ -4,21 +4,24 @@
 
 source $USER_DIR/etc/tech-scripts/source.sh
 
-install_npm() {
+install_sysbench() {
     if command -v apt &>/dev/null; then
-        $SUDO apt update && $SUDO apt install -y npm
+        wget -qO- https://packagecloud.io/install/repositories/akopytov/sysbench/script.deb.sh | $SUDO bash
+        $SUDO apt update && $SUDO apt install -y sysbench
     elif command -v yum &>/dev/null; then
-        $SUDO yum install -y npm
+        wget -qO- https://packagecloud.io/install/repositories/akopytov/sysbench/script.rpm.sh | $SUDO bash
+        $SUDO yum install -y sysbench
     elif command -v dnf &>/dev/null; then
-        $SUDO dnf install -y npm
+        wget -qO- https://packagecloud.io/install/repositories/akopytov/sysbench/script.rpm.sh | $SUDO bash
+        $SUDO dnf install -y sysbench
     elif command -v zypper &>/dev/null; then
-        $SUDO zypper install -y npm
+        $SUDO zypper install -y sysbench
     elif command -v pacman &>/dev/null; then
-        $SUDO pacman -S --noconfirm npm
+        $SUDO pacman -S --noconfirm sysbench
     elif command -v apk &>/dev/null; then
-        $SUDO apk add npm
+        $SUDO apk add sysbench
     elif command -v brew &>/dev/null; then
-        brew install npm
+        brew install sysbench
     else
         echo "$PACKAGE_MANAGER_ERROR"
         exit 1
@@ -27,22 +30,11 @@ install_npm() {
 
 if ! command -v sysbench &>/dev/null; then
     if whiptail --title "$INSTALL_TITLE" --yesno "$INSTALL_QUESTION" 10 60; then
-        install_npm
-        cd $USER_DIR/tmp
-        git clone https://github.com/akopytov/sysbench.git
-        cd sysbench
-        ./autogen.sh
-        ./configure
-        make -j$(nproc)
-        $SUDO make install
-        cd ..
-        $SUDO rm -rf sysbench
+        install_sysbench
     else
-        exit 1
+        exit 0
     fi
 fi
-
-command -v sysbench &> /dev/null || { echo ""; echo "$SYSBENCH_NOT_FOUND"; echo ""; exit 1; }
 
 show_progress() {
     (
