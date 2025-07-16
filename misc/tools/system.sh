@@ -9,6 +9,7 @@ show_temperature_info() {
         whiptail --title "$ERROR_SYSTEM" --msgbox "$INSTALL_SYSTEM" 15 60
         return 1
     fi
+    
     SENSORS_DATA=$(sensors)
     whiptail --title "$TEMPERATURE_SYSTEM" --scrolltext --msgbox "$SENSORS_DATA" 15 60
 }
@@ -47,10 +48,12 @@ $PACKAGES_SYSTEM: $PACKAGES
 $SHELL_SYSTEM: $SHELL $BASH_VERSION
 "
     [ -n "$RESOLUTION_SYSTEM" ] && MESSAGE+="$RESOLUTION_SYSTEM: $RESOLUTION\n"
+    
     MESSAGE+="$TERMINAL_SYSTEM: $TERMINAL\n"
     MESSAGE+="$CPU_SYSTEM: $CPU\n"
     MESSAGE+="$GPU_SYSTEM: $GPU\n"
     MESSAGE+="$MEMORY_SYSTEM: $MEMORY\n"
+    
     [ -n "$BATTERY_INFO" ] && MESSAGE+="\n$BATTERY_INFO"
     MESSAGE=$(echo "$MESSAGE" | sed '/^[[:space:]]*$/d')
     whiptail --title "$SYSTEM_INFO_SYSTEM" --scrolltext --msgbox "$MESSAGE" 20 70
