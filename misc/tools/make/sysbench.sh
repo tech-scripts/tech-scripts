@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 pkg update -y
-pkg install -y git make clang binutils automake autoconf libtool pkg-config
+pkg install -y git clang make automake autoconf libtool pkg-config binutils
 
 git clone https://github.com/akopytov/sysbench.git
 cd sysbench
