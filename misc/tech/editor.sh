@@ -2,10 +2,10 @@
 
 [ -w /tmp ] && USER_DIR="" || USER_DIR=$HOME
 
-source $USER_DIR/etc/tech-scripts/source.sh
+source $USER_DIR/opt/tech-scripts/source.sh
 
-[ ! -d "$USER_DIR/etc/tech-scripts" ] && $SUDO mkdir -p $USER_DIR/etc/tech-scripts
-[ ! -f "$USER_DIR/etc/tech-scripts/choose.conf" ] && $SUDO touch $USER_DIR/etc/tech-scripts/choose.conf
+[ ! -d "$USER_DIR/opt/tech-scripts" ] && $SUDO mkdir -p $USER_DIR/opt/tech-scripts
+[ ! -f "$USER_DIR/opt/tech-scripts/choose.conf" ] && $SUDO touch $USER_DIR/opt/tech-scripts/choose.conf
 
 EDITOR=$(whiptail --title "$TITLE_EDITOR" --menu "" 12 40 3 \
     1 "nano" \
@@ -34,7 +34,7 @@ case $EDITOR in
         ;;
 esac
 
-CONFIG_FILE="$USER_DIR/etc/tech-scripts/choose.conf"
+CONFIG_FILE="$USER_DIR/opt/tech-scripts/choose.conf"
 
 [ -w "$CONFIG_FILE" ] && sed -i "2s/.*/editor: $editor/" "$CONFIG_FILE" || $SUDO sed -i "2s/.*/editor: $editor/" "$CONFIG_FILE"
 
