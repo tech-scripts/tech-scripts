@@ -2,7 +2,7 @@
 
 [ -w /tmp ] && USER_DIR="" || USER_DIR=$HOME
 
-source $USER_DIR/etc/tech-scripts/source.sh
+source $USER_DIR/opt/tech-scripts/source.sh
 
 detect_init_system() {
     if command -v systemctl &> /dev/null; then
@@ -159,7 +159,7 @@ create_ssh_alert_script() {
 
 [ -w /tmp ] && USER_DIR="" || USER_DIR=$HOME
 
-source $USER_DIR/etc/tech-scripts/source.sh
+source $USER_DIR/opt/tech-scripts/source.sh
 
 [ -f "$CONFIG_FILE_SSH" ] && source "$CONFIG_FILE_SSH"
 
@@ -317,7 +317,7 @@ if yes_no_box "$CREATE_NOTIFY_SSH" "$CREATE_ALERT_SSH"; then
             fi
         done
 
-        $SUDO mkdir -p "/etc/tech-scripts"
+        $SUDO mkdir -p "/opt/tech-scripts"
         $SUDO tee "$CONFIG_FILE_SSH" >/dev/null <<EOF
 TELEGRAM_BOT_TOKEN=$TELEGRAM_BOT_TOKEN
 TELEGRAM_CHAT_ID=$TELEGRAM_CHAT_ID
