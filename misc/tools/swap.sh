@@ -2,7 +2,7 @@
 
 [ -w /tmp ] && USER_DIR="" || USER_DIR=$HOME
 
-source $USER_DIR/etc/tech-scripts/source.sh
+source $USER_DIR/opt/tech-scripts/source.sh
 
 is_valid_size() {
     [[ "$1" =~ ^[0-9]+[GgMmKk]$ ]]
