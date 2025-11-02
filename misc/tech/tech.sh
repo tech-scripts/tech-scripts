@@ -2,7 +2,7 @@
 
 [ -w /tmp ] && USER_DIR="" || USER_DIR=$HOME
 
-source $USER_DIR/etc/tech-scripts/source.sh
+source $USER_DIR/opt/tech-scripts/source.sh
 
 TECH_SCRIPT=$(cat <<EOF
 #!/usr/bin/env bash
@@ -13,7 +13,7 @@ TECH_SCRIPT=$(cat <<EOF
 
 SUDO=\$(env | grep -qi TERMUX && echo "" || command -v sudo 2>/dev/null)
 
-source \$USER_DIR/etc/tech-scripts/source.sh
+source \$USER_DIR/opt/tech-scripts/source.sh
 
 [ ! -d "\$USER_DIR/tmp/tech-scripts" ] && cd \$USER_DIR/tmp && git clone --depth 1 https://github.com/tech-scripts/tech-scripts.git && copy_files && change_directory_permissions
 
