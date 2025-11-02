@@ -2,7 +2,7 @@
 
 [ -w /tmp ] && USER_DIR="" || USER_DIR=$HOME
 
-source $USER_DIR/etc/tech-scripts/source.sh
+source $USER_DIR/opt/tech-scripts/source.sh
 
 ACCESS_LEVEL=$(whiptail --title "$ACCESS_TITLE" --menu "$ACCESS_MENU_TEXT" 12 40 4 \
 "1" "$ACCESS_OPTION1" \
@@ -20,7 +20,7 @@ case $ACCESS_LEVEL in
     *) exit 1 ;;
 esac
 
-CONFIG_FILE="$USER_DIR/etc/tech-scripts/choose.conf"
+CONFIG_FILE="$USER_DIR/opt/tech-scripts/choose.conf"
 
 [ -w "$CONFIG_FILE" ] && sed -i "3s/.*/access: $ACCESS_VALUE/" "$CONFIG_FILE" || $SUDO sed -i "3s/.*/access: $ACCESS_VALUE/" "$CONFIG_FILE"
 
