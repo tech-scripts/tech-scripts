@@ -2,7 +2,7 @@
 
 [ -w /tmp ] && USER_DIR="" || USER_DIR=$HOME
 
-source $USER_DIR/etc/tech-scripts/source.sh
+source $USER_DIR/opt/tech-scripts/source.sh
 
 GREEN="\e[32m"
 RED="\e[31m"
