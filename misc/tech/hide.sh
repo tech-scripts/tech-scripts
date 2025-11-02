@@ -2,7 +2,7 @@
 
 [ -w /tmp ] && USER_DIR="" || USER_DIR=$HOME
 
-source $USER_DIR/etc/tech-scripts/source.sh
+source $USER_DIR/opt/tech-scripts/source.sh
 
 HIDE_LEVEL=$(whiptail --title "$HIDE_TITLE" --menu "$HIDE_MENU_TEXT" 12 40 4 \
 "1" "$HIDE_OPTION1" \
@@ -16,7 +16,7 @@ case $HIDE_LEVEL in
     *) exit 1 ;;
 esac
 
-CONFIG_FILE="$USER_DIR/etc/tech-scripts/choose.conf"
+CONFIG_FILE="$USER_DIR/opt/tech-scripts/choose.conf"
 
 [ -w "$CONFIG_FILE" ] && sed -i "4s/.*/hide: $HIDE_VALUE/" "$CONFIG_FILE" || $SUDO sed -i "4s/.*/hide: $HIDE_VALUE/" "$CONFIG_FILE"
 
