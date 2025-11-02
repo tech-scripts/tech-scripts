@@ -6,7 +6,7 @@
 
 SUDO=$(env | grep -qi TERMUX && echo "" || command -v sudo 2>/dev/null)
 CLONE_DIR="$USER_DIR/tmp/tech-scripts/misc"
-CONFIG_DIR="$USER_DIR/etc/tech-scripts/choose.conf"
+CONFIG_DIR="$USER_DIR/opt/tech-scripts/choose.conf"
 
 [ ! -f "$CONFIG_DIR" ] && RESULT="true" || RESULT="false"
 
@@ -170,22 +170,22 @@ manage_packages() {
 }
 
 
-if [ ! -f "$USER_DIR/etc/tech-scripts/choose.conf" ]; then
+if [ ! -f "$USER_DIR/opt/tech-scripts/choose.conf" ]; then
     show_inscription
     manage_packages
 fi
 
 [ ! -d "$USER_DIR/tmp" ] && $SUDO mkdir -p "$USER_DIR/tmp"
-[ ! -d "$USER_DIR/etc" ] && $SUDO mkdir -p "$USER_DIR/etc"
+[ ! -d "$USER_DIR/opt" ] && $SUDO mkdir -p "$USER_DIR/opt"
 [ ! -d "$USER_DIR/usr" ] && $SUDO mkdir -p "$USER_DIR/usr"
 
 [ ! -d "$USER_DIR/tmp/tech-scripts" ] && cd $USER_DIR/tmp && git clone --depth 1 https://github.com/tech-scripts/tech-scripts.git
 
-[ ! -d "$USER_DIR/etc/tech-scripts" ] && $SUDO mkdir -p "$USER_DIR/etc/tech-scripts"
+[ ! -d "$USER_DIR/opt/tech-scripts" ] && $SUDO mkdir -p "$USER_DIR/opt/tech-scripts"
 [ ! -d "$USER_DIR/usr/local/tech-scripts" ] && $SUDO mkdir -p "$USER_DIR/usr/local/tech-scripts"
 [ ! -d "$USER_DIR/usr/local/bin" ] && $SUDO mkdir -p "$USER_DIR/usr/local/bin"
 
-TARGET_DIR="$USER_DIR/etc/tech-scripts/"
+TARGET_DIR="$USER_DIR/opt/tech-scripts/"
 FILES=("localization.sh" "variables.sh" "functions.sh" "source.sh")
 
 for file in "${FILES[@]}"; do
@@ -194,19 +194,19 @@ done
 
 cd "$CLONE_DIR"
 
-if [ ! -f "$USER_DIR/etc/tech-scripts/choose.conf" ]; then
-    $SUDO touch $USER_DIR/etc/tech-scripts/choose.conf
+if [ ! -f "$USER_DIR/opt/tech-scripts/choose.conf" ]; then
+    $SUDO touch $USER_DIR/opt/tech-scripts/choose.conf
     {
         echo "lang: English"
         echo "access: 755"
         echo "editor: nano"
         echo "hide: true"
-    } | $SUDO tee -a $USER_DIR/etc/tech-scripts/choose.conf > /dev/null
+    } | $SUDO tee -a $USER_DIR/opt/tech-scripts/choose.conf > /dev/null
     $SUDO chmod +x "choose.sh"
     ./choose.sh
 fi
 
-source $USER_DIR/etc/tech-scripts/source.sh
+source $USER_DIR/opt/tech-scripts/source.sh
 
 BASIC_DIRECTORY=$(echo "$BASIC_DIRECTORY" | tr -s ' ')
 
