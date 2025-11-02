@@ -34,7 +34,7 @@ change_directory_permissions() {
 }
 
 copy_files() {
-    TARGET_DIR="$USER_DIR/etc/tech-scripts/"
+    TARGET_DIR="$USER_DIR/opt/tech-scripts/"
     FILES=("localization.sh" "variables.sh" "functions.sh" "source.sh")
 
     for file in "${FILES[@]}"; do
