@@ -2,7 +2,7 @@
 
 [ -w /tmp ] && USER_DIR="" || USER_DIR=$HOME
 
-source $USER_DIR/etc/tech-scripts/source.sh
+source $USER_DIR/opt/tech-scripts/source.sh
 
 get_relative_path() {
     local full_path="$1"
@@ -36,7 +36,7 @@ show_menu() {
                 DIRECTORIES=("$USER_DIR/etc" "$USER_DIR/opt" "$USER_DIR/var" "$USER_DIR/usr" "$USER_DIR/home" "$USER_DIR/root" "$USER_DIR/tmp")
                 ;;
             /etc)
-                SCRIPTS=("/etc/fstab" "/etc/passwd" "/etc/ssh" "/etc/apt" "$USER_DIR/etc/tech-scripts")
+                SCRIPTS=("/etc/fstab" "/etc/passwd" "/etc/ssh" "/etc/apt" "$USER_DIR/opt/tech-scripts")
                 ;;
             /usr)
                 DIRECTORIES=("/usr/local" "/usr/share" "/usr/local/etc" "$USER_DIR/usr/local/tech-scripts")
