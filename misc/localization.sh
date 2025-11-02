@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-LANGUAGE=$(grep '^lang:' $USER_DIR/etc/tech-scripts/choose.conf | cut -d ' ' -f 2)
+LANGUAGE=$(grep '^lang:' $USER_DIR/opt/tech-scripts/choose.conf | cut -d ' ' -f 2)
 
 if [[ "$LANGUAGE" == "Русский" ]]; then
     MSG_NO_SCRIPTS="Нет доступных скриптов или директорий!"
