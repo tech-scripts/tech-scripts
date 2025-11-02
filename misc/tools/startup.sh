@@ -2,7 +2,7 @@
 
 [ -w /tmp ] && USER_DIR="" || USER_DIR=$HOME
 
-source $USER_DIR/etc/tech-scripts/source.sh
+source $USER_DIR/opt/tech-scripts/source.sh
 
 detect_init_system() {
     if command -v systemctl &> /dev/null; then
