@@ -1,3 +1,5 @@
+8.0 - Directory /etc to /opt
+
 6.0 - Added support for openrc, ruinit, s6 and dinit initialization systems to systemd and removed critical error
 
 5.1 - Improving translation and removing errors
