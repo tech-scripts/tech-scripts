@@ -1,5 +1,7 @@
 8.0 - Directory /etc to /opt
 
+7.0 - Fix errors
+
 6.0 - Added support for openrc, ruinit, s6 and dinit initialization systems to systemd and removed critical error
 
 5.1 - Improving translation and removing errors
@@ -19,3 +21,5 @@
 3.0 - The main functionality is ready
 
 2.0 - Completely rewriting the tech command
+
+1.0 - Initial scripts
