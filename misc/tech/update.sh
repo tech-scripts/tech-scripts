@@ -7,7 +7,7 @@ cat << 'EOF' > $USER_DIR/tmp/update.sh
 
 [ -w /tmp ] && USER_DIR="" || USER_DIR=$HOME
 
-source $USER_DIR/etc/tech-scripts/source.sh
+source $USER_DIR/opt/tech-scripts/source.sh
 
 cd $USER_DIR/tmp
 $SUDO rm -rf $USER_DIR/tmp/tech-scripts
