@@ -52,6 +52,7 @@ case "\$combined_args" in
     "swap") run_script "tools" "swap.sh" ;;
     "system") run_script "tools" "system.sh" ;;
     "config") run_script "tools" "config.sh" ;;
+    "wipe-frp") run_script "tools" "wipe-frp.sh" ;;
     *) echo ""; echo "\$UNKNOWN_COMMAND_TECH \$1"; echo "\$USAGE_TECH"; echo ""; exit 1 ;;
 esac
 EOF
