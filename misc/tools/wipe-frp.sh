@@ -26,7 +26,6 @@ main_wipe() {
     rm -rf /odm/frp/ 2>/dev/null
     rm -rf /backup/frp/ 2>/dev/null
     rm -rf /cache/frp/ 2>/dev/null
-    rm -rf /recovery/frp/ 2>/dev/null
 
     echo "[2/4] Clearing data partitions..."
     rm -rf /data/vendor_ce/0/frp/ 2>/dev/null
