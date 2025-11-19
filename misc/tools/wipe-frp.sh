@@ -1,6 +1,7 @@
-#!/system/bin/sh
+#!/usr/bin/env bash
+
 echo "========================================"
-echo "         FRP WIPE SCRIPT v2.0"
+echo "         FRP WIPE SCRIPT                "
 echo "========================================"
 
 check_root() {
