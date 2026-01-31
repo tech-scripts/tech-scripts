@@ -5,22 +5,31 @@
 source $USER_DIR/opt/tech-scripts/source.sh
 
 function get_process_list() {
-    ss -tulnp | awk 'NR>1 {
-        if (match($5, /.*:([0-9]+)/)) {
-            portm = substr($5, RSTART, RLENGTH)
-            port = substr(portm, match(portm, /[0-9]+/))
-        }
+    # Только TCP, только слушающие порты, без дубликатов
+    ss -tlnp 2>/dev/null | awk '
+    NR>1 {
+        # Извлекаем порт из последней части адреса:порта
+        split($5, a, ":")
+        port = a[length(a)]
+        
+        # Извлекаем PID
+        pid = ""
         if (match($0, /pid=([0-9]+)/)) {
-            pidm = substr($0, RSTART, RLENGTH)
-            pid = substr(pidm, match(pidm, /[0-9]+/))
+            pid = substr($0, RSTART+4, RLENGTH-4)
         }
-        if (pid != "") {
-            print port, pid;
+        
+        if (pid != "" && port != "") {
+            # Используем комбинацию порт:pid как ключ для уникальности
+            key = port ":" pid
+            if (!seen[key]++) {
+                print port, pid
+            }
         }
-    }' | sort -u | while read port pid; do
+    }' | while read port pid; do
         if [ -d "/proc/$pid" ]; then
-            user=$(ps -o user= -p $pid | xargs)
-            process_name=$(ps -o comm= -p $pid | xargs)
+            # Быстро получаем информацию о процессе
+            user=$(awk '/^Uid:/{print $2}' /proc/$pid/status 2>/dev/null | xargs id -nu 2>/dev/null || echo "unknown")
+            process_name=$(cat /proc/$pid/comm 2>/dev/null | tr -d '\0' || echo "unknown")
             echo "$user $process_name $port $pid"
         fi
     done
@@ -33,27 +42,13 @@ if [ ${#entries[@]} -eq 0 ]; then
     exit 0
 fi
 
-declare -A user_ports user_port_count
-
-for line in "${entries[@]}"; do
-    read user process_name port pid <<< "$line"
-    user_ports["$user"]+="$process_name:$port "
-    user_port_count["$user"]=$((user_port_count["$user"] + 1))
-done
-
-sorted_users=($(for u in "${!user_port_count[@]}"; do echo "$u ${user_port_count[$u]}"; done | sort -k2,2n | awk '{print $1}'))
-
+# Создаем список для whiptail напрямую
 whiptail_list=()
 index=1
-for user in "${sorted_users[@]}"; do
-    ports="${user_ports[$user]}"
-    for entry in $ports; do
-        process_name=$(echo "$entry" | cut -d':' -f1)
-        port=$(echo "$entry" | cut -d':' -f2)
-        pid=$(echo "${entries[@]}" | grep "$user $process_name $port" | awk '{print $4}')
-        whiptail_list+=("$index. $user ($process_name)" "$port")
-        index=$((index + 1))
-    done
+for line in "${entries[@]}"; do
+    read user process_name port pid <<< "$line"
+    whiptail_list+=("$index. $user ($process_name)" "$port")
+    index=$((index + 1))
 done
 
 CHOICE=$(whiptail --title "$TITLE" --menu "$MENU_HEADER" 20 60 10 "${whiptail_list[@]}" 3>&1 1>&2 2>&3)
