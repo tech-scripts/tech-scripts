@@ -5,12 +5,21 @@
 source $USER_DIR/opt/tech-scripts/source.sh
 
 function get_process_list() {
-    # Только TCP, только слушающие порты, без дубликатов
     ss -tlnp 2>/dev/null | awk '
     NR>1 {
-        # Извлекаем порт из последней части адреса:порта
-        split($5, a, ":")
-        port = a[length(a)]
+        # Обрабатываем Local Address:Port (5-е поле)
+        local_addr = $5
+        
+        # Извлекаем порт из адреса
+        port = ""
+        if (local_addr ~ /:/) {
+            # Разделяем адрес и порт
+            split(local_addr, parts, ":")
+            port = parts[length(parts)]
+        } else if (local_addr ~ /^\*/) {
+            # Случай "*:port" или просто "*"
+            port = local_addr
+        }
         
         # Извлекаем PID
         pid = ""
@@ -42,12 +51,19 @@ if [ ${#entries[@]} -eq 0 ]; then
     exit 0
 fi
 
-# Создаем список для whiptail напрямую
+# Формируем список для whiptail с правильным отображением портов
 whiptail_list=()
 index=1
 for line in "${entries[@]}"; do
     read user process_name port pid <<< "$line"
-    whiptail_list+=("$index. $user ($process_name)" "$port")
+    
+    # Форматируем отображение порта
+    display_port="$port"
+    if [ "$port" = "*" ]; then
+        display_port="all"
+    fi
+    
+    whiptail_list+=("$index. $user ($process_name)" "$display_port")
     index=$((index + 1))
 done
 
