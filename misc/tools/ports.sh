@@ -10,7 +10,6 @@ function get_process_list() {
         # 5-е поле содержит адрес:порт
         local_info = $5
         
-        # Извлекаем порт (после последнего двоеточия)
         port = ""
         if (local_info ~ /:/) {
             # Разделяем по двоеточиям
@@ -18,7 +17,6 @@ function get_process_list() {
             port = parts[n]
         }
         
-        # Если порт не найден или равен *, пытаемся получить его из 4-го поля
         if (port == "" || port == "*") {
             # 4-е поле тоже содержит адрес:порт (для некоторых форматов)
             local_info_alt = $4
@@ -28,19 +26,16 @@ function get_process_list() {
             }
         }
         
-        # Игнорируем если порт все еще * или пустой
         if (port == "*" || port == "") {
             next
         }
         
-        # Извлекаем PID
         pid = ""
         if (match($0, /pid=([0-9]+)/)) {
             pid = substr($0, RSTART+4, RLENGTH-4)
         }
         
         if (pid != "" && port != "") {
-            # Уникальная комбинация порт:pid
             key = port ":" pid
             if (!seen[key]++) {
                 print port, pid
@@ -62,7 +57,6 @@ if [ ${#entries[@]} -eq 0 ]; then
     exit 0
 fi
 
-# Сортируем по порту для удобства
 IFS=$'\n' sorted_entries=($(sort -k3 -n <<<"${entries[*]}"))
 unset IFS
 
