@@ -7,7 +7,6 @@ source $USER_DIR/opt/tech-scripts/source.sh
 function get_process_list() {
     ss -tlnp 2>/dev/null | awk '
     NR>1 {
-        # 5-е поле содержит адрес:порт
         local_info = $5
         
         port = ""
