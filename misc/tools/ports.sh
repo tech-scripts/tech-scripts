@@ -12,13 +12,11 @@ function get_process_list() {
         
         port = ""
         if (local_info ~ /:/) {
-            # Разделяем по двоеточиям
             n = split(local_info, parts, ":")
             port = parts[n]
         }
         
         if (port == "" || port == "*") {
-            # 4-е поле тоже содержит адрес:порт (для некоторых форматов)
             local_info_alt = $4
             if (local_info_alt ~ /:/) {
                 n = split(local_info_alt, parts, ":")
