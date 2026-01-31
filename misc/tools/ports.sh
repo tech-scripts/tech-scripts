@@ -6,20 +6,35 @@ source $USER_DIR/opt/tech-scripts/source.sh
 
 function get_process_list() {
     ss -tlnp 2>/dev/null | awk '
-    NR>1 {
-        # Обрабатываем Local Address:Port (5-е поле)
-        local_addr = $5
+    function get_port_from_address(addr_port) {
+        # addr_port может быть в форматах:
+        # 0.0.0.0:443
+        # [::]:443
+        # *:443
+        # *
+        # [fe80::...]:5353
         
-        # Извлекаем порт из адреса
-        port = ""
-        if (local_addr ~ /:/) {
-            # Разделяем адрес и порт
-            split(local_addr, parts, ":")
-            port = parts[length(parts)]
-        } else if (local_addr ~ /^\*/) {
-            # Случай "*:port" или просто "*"
-            port = local_addr
+        if (addr_port == "*") {
+            return "*"
         }
+        
+        # Разделяем по последнему двоеточию
+        n = split(addr_port, parts, ":")
+        if (n > 1) {
+            port = parts[n]
+            # Если порт содержит символы кроме цифр (например, *), берем как есть
+            return port
+        }
+        
+        return addr_port
+    }
+    
+    NR>1 {
+        # 5-е поле: Local Address:Port
+        local_addr_port = $5
+        
+        # Разделяем на адрес и порт
+        port = get_port_from_address(local_addr_port)
         
         # Извлекаем PID
         pid = ""
@@ -27,8 +42,8 @@ function get_process_list() {
             pid = substr($0, RSTART+4, RLENGTH-4)
         }
         
-        if (pid != "" && port != "") {
-            # Используем комбинацию порт:pid как ключ для уникальности
+        if (pid != "" && port != "" && port != "*") {
+            # Игнорируем записи где порт = * (это не конкретный порт)
             key = port ":" pid
             if (!seen[key]++) {
                 print port, pid
@@ -41,7 +56,7 @@ function get_process_list() {
             process_name=$(cat /proc/$pid/comm 2>/dev/null | tr -d '\0' || echo "unknown")
             echo "$user $process_name $port $pid"
         fi
-    done
+    done | sort -u
 }
 
 mapfile -t entries < <(get_process_list)
@@ -51,19 +66,12 @@ if [ ${#entries[@]} -eq 0 ]; then
     exit 0
 fi
 
-# Формируем список для whiptail с правильным отображением портов
+# Формируем список для whiptail
 whiptail_list=()
 index=1
 for line in "${entries[@]}"; do
     read user process_name port pid <<< "$line"
-    
-    # Форматируем отображение порта
-    display_port="$port"
-    if [ "$port" = "*" ]; then
-        display_port="all"
-    fi
-    
-    whiptail_list+=("$index. $user ($process_name)" "$display_port")
+    whiptail_list+=("$index. $user ($process_name)" "$port")
     index=$((index + 1))
 done
 
