@@ -6,35 +6,22 @@ source $USER_DIR/opt/tech-scripts/source.sh
 
 function get_process_list() {
     ss -tlnp 2>/dev/null | awk '
-    function get_port_from_address(addr_port) {
-        # addr_port может быть в форматах:
-        # 0.0.0.0:443
-        # [::]:443
-        # *:443
-        # *
-        # [fe80::...]:5353
-        
-        if (addr_port == "*") {
-            return "*"
-        }
-        
-        # Разделяем по последнему двоеточию
-        n = split(addr_port, parts, ":")
-        if (n > 1) {
-            port = parts[n]
-            # Если порт содержит символы кроме цифр (например, *), берем как есть
-            return port
-        }
-        
-        return addr_port
-    }
-    
     NR>1 {
-        # 5-е поле: Local Address:Port
-        local_addr_port = $5
+        # 5-е поле содержит адрес:порт или просто *
+        local_info = $5
         
-        # Разделяем на адрес и порт
-        port = get_port_from_address(local_addr_port)
+        # Извлекаем порт (после последнего двоеточия)
+        port = local_info
+        if (local_info ~ /:/) {
+            # Разделяем по двоеточиям
+            n = split(local_info, parts, ":")
+            port = parts[n]
+        }
+        
+        # Игнорируем если порт = * (не конкретный порт)
+        if (port == "*") {
+            next
+        }
         
         # Извлекаем PID
         pid = ""
@@ -42,8 +29,8 @@ function get_process_list() {
             pid = substr($0, RSTART+4, RLENGTH-4)
         }
         
-        if (pid != "" && port != "" && port != "*") {
-            # Игнорируем записи где порт = * (это не конкретный порт)
+        if (pid != "" && port != "") {
+            # Уникальная комбинация порт:pid
             key = port ":" pid
             if (!seen[key]++) {
                 print port, pid
@@ -51,12 +38,11 @@ function get_process_list() {
         }
     }' | while read port pid; do
         if [ -d "/proc/$pid" ]; then
-            # Быстро получаем информацию о процессе
             user=$(awk '/^Uid:/{print $2}' /proc/$pid/status 2>/dev/null | xargs id -nu 2>/dev/null || echo "unknown")
             process_name=$(cat /proc/$pid/comm 2>/dev/null | tr -d '\0' || echo "unknown")
             echo "$user $process_name $port $pid"
         fi
-    done | sort -u
+    done
 }
 
 mapfile -t entries < <(get_process_list)
@@ -66,37 +52,26 @@ if [ ${#entries[@]} -eq 0 ]; then
     exit 0
 fi
 
-# Формируем список для whiptail
+# Сортируем по порту для удобства
+IFS=$'\n' sorted_entries=($(sort -k3 -n <<<"${entries[*]}"))
+unset IFS
+
 whiptail_list=()
-index=1
-for line in "${entries[@]}"; do
-    read user process_name port pid <<< "$line"
-    whiptail_list+=("$index. $user ($process_name)" "$port")
-    index=$((index + 1))
+for i in "${!sorted_entries[@]}"; do
+    read user process_name port pid <<< "${sorted_entries[$i]}"
+    whiptail_list+=("$((i+1)). $user ($process_name)" "$port")
 done
 
 CHOICE=$(whiptail --title "$TITLE" --menu "$MENU_HEADER" 20 60 10 "${whiptail_list[@]}" 3>&1 1>&2 2>&3)
+[ $? -ne 0 ] && exit 0
 
-if [ $? -ne 0 ]; then
-    exit 0
-fi
+selected_index=$(echo "$CHOICE" | cut -d'.' -f1)
+chosen_entry="${sorted_entries[$((selected_index - 1))]}"
+read user process_name port_to_kill pid_to_kill <<< "$chosen_entry"
 
-selected_index=$(echo "$CHOICE" | awk '{print $1}' | cut -d'.' -f1)
-chosen_entry="${entries[$((selected_index - 1))]}"
+[ -z "$pid_to_kill" ] && echo "$(printf "$MSG_ERROR_PID" "$port_to_kill")" && exit 1
 
-pid_to_kill=$(echo "$chosen_entry" | awk '{print $4}')
-port_to_kill=$(echo "$chosen_entry" | awk '{print $3}')
-
-if [ -z "$pid_to_kill" ]; then
-    echo "$(printf "$MSG_ERROR_PID" "$port_to_kill")"
-    exit 1
-fi
-
-if (whiptail --title "$TITLE_DANGER" --yesno "$(printf "$MSG_CONFIRM" "$pid_to_kill" "$port_to_kill")" 8 60); then
-    kill "$pid_to_kill" 2>/dev/null
-    if [ $? -eq 0 ]; then
-        exit 0
-    else
-        whiptail --msgbox "$(printf "$MSG_KILL_FAILED" "$pid_to_kill" "$port_to_kill")" 8 50
-    fi
+if whiptail --title "$TITLE_DANGER" --yesno "$(printf "$MSG_CONFIRM" "$pid_to_kill" "$port_to_kill")" 8 60; then
+    kill "$pid_to_kill" 2>/dev/null && exit 0
+    whiptail --msgbox "$(printf "$MSG_KILL_FAILED" "$pid_to_kill" "$port_to_kill")" 8 50
 fi
