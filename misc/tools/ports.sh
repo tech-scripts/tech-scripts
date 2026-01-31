@@ -7,19 +7,29 @@ source $USER_DIR/opt/tech-scripts/source.sh
 function get_process_list() {
     ss -tlnp 2>/dev/null | awk '
     NR>1 {
-        # 5-е поле содержит адрес:порт или просто *
+        # 5-е поле содержит адрес:порт
         local_info = $5
         
         # Извлекаем порт (после последнего двоеточия)
-        port = local_info
+        port = ""
         if (local_info ~ /:/) {
             # Разделяем по двоеточиям
             n = split(local_info, parts, ":")
             port = parts[n]
         }
         
-        # Игнорируем если порт = * (не конкретный порт)
-        if (port == "*") {
+        # Если порт не найден или равен *, пытаемся получить его из 4-го поля
+        if (port == "" || port == "*") {
+            # 4-е поле тоже содержит адрес:порт (для некоторых форматов)
+            local_info_alt = $4
+            if (local_info_alt ~ /:/) {
+                n = split(local_info_alt, parts, ":")
+                port = parts[n]
+            }
+        }
+        
+        # Игнорируем если порт все еще * или пустой
+        if (port == "*" || port == "") {
             next
         }
         
