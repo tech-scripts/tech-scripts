@@ -5,19 +5,15 @@
 source $USER_DIR/opt/tech-scripts/source.sh
 
 function get_process_list() {
-    ss -tulnp | awk 'NR>1 {
-        match($5, /.*:([0-9]+)/, portm);
-        match($0, /pid=([0-9]+)/, pidm);
-        if (pidm[1] != "") {
-            print portm[1], pidm[1];
-        }
-    }' | sort -u | while read port pid; do
-        if [ -d "/proc/$pid" ]; then
+    ss -tulnp | grep -E 'pid=([0-9]+)' | while read line; do
+        port=$(echo "$line" | grep -oE ':[0-9]+' | tail -1 | cut -d: -f2)
+        pid=$(echo "$line" | grep -oE 'pid=([0-9]+)' | cut -d= -f2)
+        if [ -n "$pid" ] && [ -d "/proc/$pid" ]; then
             user=$(ps -o user= -p $pid | xargs)
             process_name=$(ps -o comm= -p $pid | xargs)
             echo "$user $process_name $port $pid"
         fi
-    done
+    done | sort -u
 }
 
 mapfile -t entries < <(get_process_list)
