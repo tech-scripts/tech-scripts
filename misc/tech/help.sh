@@ -32,7 +32,7 @@ echo ""
 
 echo -e "${BOLD}${BLUE}Security${RESET}"
 echo -e "  ${GREEN}SSH Notifications:${RESET}       ${WHITE}tech ssh${RESET}"
-echo -e "  ${GREEN}Kernel Modules Check:${RESET}     ${WHITE}tech kernel${RESET}"
+echo -e "  ${GREEN}Kernel Modules Check:${RESET}     ${WHITE}tech modules${RESET}"
 echo ""
 
 echo -e "${BOLD}${BLUE}LXC and VM Management${RESET}"
