@@ -105,7 +105,7 @@ curl -fsSL https://raw.githubusercontent.com/tech-scripts/tech-scripts/refs/head
 
 ### Security
 - **SSH Notifications**: `tech ssh`
-- **Kernel Modules Check**: `tech kernel`
+- **Kernel Modules Check**: `tech modules`
 - **Check Ports**: `tech ports`
 - **Manage Root**: `tech root`
 
