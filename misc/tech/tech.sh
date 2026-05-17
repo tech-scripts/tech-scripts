@@ -65,7 +65,6 @@ force_update() {
     fi
     $SUDO tee "$TECH_COMMAND_DIR/tech" > /dev/null <<< "$TECH_SCRIPT"
     $SUDO chmod +x "$TECH_COMMAND_DIR/tech"
-    hash -d tech &>/dev/null
     echo ""
     if [ -n "$LANGUAGE" ]; then
         echo "Обновление завершено!"
