@@ -36,7 +36,7 @@ case "$combined_args" in
     "memory") run_script "tools/benchmark" "memory.sh" ;;
     "autoupdate") run_script "tools" "autoupdate.sh" ;;
     "grub") run_script "tools" "grub.sh" ;;
-    "kernel") run_script "tools" "kernel.sh" ;;
+    "modules") run_script "tools" "modules.sh" ;;
     "ports") run_script "tools" "ports.sh" ;;
     "root") run_script "tools" "root.sh" ;;
     "ssh") run_script "tools" "ssh.sh" ;;
