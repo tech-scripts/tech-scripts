@@ -2,12 +2,6 @@
 
 [ -w /tmp ] && USER_DIR="" || USER_DIR=$HOME
 
-SUDO=$(env | grep -qi TERMUX && echo "" || command -v sudo 2>/dev/null)
-CURRENT_DIR=$(pwd)
-LANGUAGE=$(grep '^lang:' $USER_DIR/opt/tech-scripts/choose.conf | cut -d ' ' -f 2)
-EDITOR=$(grep '^editor:' $USER_DIR/opt/tech-scripts/choose.conf | cut -d ' ' -f 2)
-ACCESS=$(grep '^access:' $USER_DIR/opt/tech-scripts/choose.conf | cut -d ' ' -f 2)
-HIDE=$(grep '^hide:' $USER_DIR/opt/tech-scripts/choose.conf | cut -d ' ' -f 2)
 if env | grep -qi TERMUX; then
     TECH_COMMAND_DIR="$PREFIX/bin"
     USER_DIR="$PREFIX"
@@ -15,6 +9,13 @@ else
     TECH_COMMAND_DIR=/usr/local/bin
     [ -w /tmp ] && USER_DIR="" || USER_DIR=$HOME
 fi
+
+SUDO=$(env | grep -qi TERMUX && echo "" || command -v sudo 2>/dev/null)
+CURRENT_DIR=$(pwd)
+LANGUAGE=$(grep '^lang:' $USER_DIR/opt/tech-scripts/choose.conf | cut -d ' ' -f 2)
+EDITOR=$(grep '^editor:' $USER_DIR/opt/tech-scripts/choose.conf | cut -d ' ' -f 2)
+ACCESS=$(grep '^access:' $USER_DIR/opt/tech-scripts/choose.conf | cut -d ' ' -f 2)
+HIDE=$(grep '^hide:' $USER_DIR/opt/tech-scripts/choose.conf | cut -d ' ' -f 2)
 CONFIG_FILE="$USER_DIR/opt/tech-scripts/choose.conf"
 SCRIPT_DIR_SSH="$USER_DIR/usr/local/tech-scripts"
 CONFIG_FILE_SSH="$USER_DIR/opt/tech-scripts/alert.conf"
