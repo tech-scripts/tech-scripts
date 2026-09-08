@@ -219,7 +219,7 @@ for dir in "${directories[@]}"; do
     if ! chmod -R "$ACCESS" "$dir" 2>/dev/null; then
       $SUDO bash -c "$CMD"
     else
-      sh -c "$CMD"
+      bash -c "$CMD"
     fi
   fi
 done
