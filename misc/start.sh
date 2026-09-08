@@ -2,9 +2,9 @@
 
 [ "${HOME##*/}" = ".suroot" ] && export HOME="${HOME%/*}"
 
-[ -w /tmp ] && USER_DIR="" || USER_DIR=$HOME
+[ -n "$PREFIX" ] && USER_DIR="$PREFIX" || USER_DIR="$HOME"
 
-SUDO=$(env | grep -qi TERMUX && echo "" || command -v sudo 2>/dev/null)
+[ -n "$PREFIX" ] && SUDO="" || SUDO=$(command -v sudo 2>/dev/null)
 CLONE_DIR="$USER_DIR/tmp/tech-scripts/misc"
 CONFIG_DIR="$USER_DIR/opt/tech-scripts/choose.conf"
 

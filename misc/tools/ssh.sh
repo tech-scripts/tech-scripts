@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-[ -w /tmp ] && USER_DIR="" || USER_DIR=$HOME
+[ -n "$PREFIX" ] && USER_DIR="$PREFIX" || USER_DIR="$HOME"
 
 source $USER_DIR/opt/tech-scripts/source.sh
 
@@ -157,7 +157,7 @@ create_ssh_alert_script() {
     $SUDO tee "$SCRIPT_DIR_SSH/alert.sh" >/dev/null <<'EOF'
 #!/usr/bin/env bash
 
-[ -w /tmp ] && USER_DIR="" || USER_DIR=$HOME
+[ -n "$PREFIX" ] && USER_DIR="$PREFIX" || USER_DIR="$HOME"
 
 source $USER_DIR/opt/tech-scripts/source.sh
 

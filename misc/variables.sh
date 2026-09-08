@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-[ -w /tmp ] && USER_DIR="" || USER_DIR=$HOME
+[ -n "$PREFIX" ] && USER_DIR="$PREFIX" || USER_DIR="$HOME"
 
-SUDO=$(env | grep -qi TERMUX && echo "" || command -v sudo 2>/dev/null)
+[ -n "$PREFIX" ] && SUDO="" || SUDO=$(command -v sudo 2>/dev/null)
 CURRENT_DIR=$(pwd)
 LANGUAGE=$(grep '^lang:' $USER_DIR/opt/tech-scripts/choose.conf | cut -d ' ' -f 2)
 EDITOR=$(grep '^editor:' $USER_DIR/opt/tech-scripts/choose.conf | cut -d ' ' -f 2)

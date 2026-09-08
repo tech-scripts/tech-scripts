@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-[ -w /tmp ] && USER_DIR="" || USER_DIR=$HOME
+[ -n "$PREFIX" ] && USER_DIR="$PREFIX" || USER_DIR="$HOME"
 
-SUDO=$(env | grep -qi TERMUX && echo "" || command -v sudo 2>/dev/null)
+[ -n "$PREFIX" ] && SUDO="" || SUDO=$(command -v sudo 2>/dev/null)
 
 LANGUAGE=$(whiptail --title "Language Selection" --menu "" 12 40 2 \
     1 "English" \

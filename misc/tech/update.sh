@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
-[ -w /tmp ] && USER_DIR="" || USER_DIR=$HOME
+[ -n "$PREFIX" ] && USER_DIR="$PREFIX" || USER_DIR="$HOME"
 
 cat << 'EOF' > $USER_DIR/tmp/update.sh
 #!/usr/bin/env bash
 
-[ -w /tmp ] && USER_DIR="" || USER_DIR=$HOME
+[ -n "$PREFIX" ] && USER_DIR="$PREFIX" || USER_DIR="$HOME"
 
 source $USER_DIR/opt/tech-scripts/source.sh
 
