@@ -105,7 +105,7 @@ install_package() {
 }
 
 manage_packages() {
-    required_packages=(git)
+    required_packages=(git android-tools libnotify)
     optional_packages_1=(libnewt newt whiptail)
     optional_packages_2=(curl wget)
     optional_packages_3=(nano vim)
