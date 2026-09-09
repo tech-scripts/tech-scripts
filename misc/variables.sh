@@ -8,7 +8,7 @@ LANGUAGE=$(grep '^lang:' $USER_DIR/opt/tech-scripts/choose.conf | cut -d ' ' -f 
 EDITOR=$(grep '^editor:' $USER_DIR/opt/tech-scripts/choose.conf | cut -d ' ' -f 2)
 ACCESS=$(grep '^access:' $USER_DIR/opt/tech-scripts/choose.conf | cut -d ' ' -f 2)
 HIDE=$(grep '^hide:' $USER_DIR/opt/tech-scripts/choose.conf | cut -d ' ' -f 2)
-[ -n "$PREFIX" ] && TECH_COMMAND_DIR="$USER_DIR/usr/bin" || TECH_COMMAND_DIR="$USER_DIR/usr/local/bin"
+[ -n "$PREFIX" ] && TECH_COMMAND_DIR="$USER_DIR/bin" || TECH_COMMAND_DIR="/usr/local/bin"
 CONFIG_FILE="$USER_DIR/opt/tech-scripts/choose.conf"
 SCRIPT_DIR_SSH="$USER_DIR/usr/local/tech-scripts"
 CONFIG_FILE_SSH="$USER_DIR/opt/tech-scripts/alert.conf"
