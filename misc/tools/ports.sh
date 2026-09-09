@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-[ -n "$PREFIX" ] && USER_DIR="$PREFIX" || USER_DIR="$HOME"
+[ -n "$PREFIX" ] && USER_DIR="$PREFIX" || USER_DIR=""
 
 source $USER_DIR/opt/tech-scripts/source.sh
 

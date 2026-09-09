@@ -2,7 +2,7 @@
 
 [ "${HOME##*/}" = ".suroot" ] && export HOME="${HOME%/*}"
 
-[ -n "$PREFIX" ] && USER_DIR="$PREFIX" || USER_DIR="$HOME"
+[ -n "$PREFIX" ] && USER_DIR="$PREFIX" || USER_DIR=""
 
 [ -n "$PREFIX" ] && SUDO="" || SUDO=$(command -v sudo 2>/dev/null)
 CLONE_DIR="$USER_DIR/tmp/tech-scripts/misc"

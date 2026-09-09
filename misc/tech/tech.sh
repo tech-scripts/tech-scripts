@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 [ "${HOME##*/}" = ".suroot" ] && export HOME="${HOME%/*}"
-[ -n "$PREFIX" ] && USER_DIR="$PREFIX" || USER_DIR="$HOME"
+[ -n "$PREFIX" ] && USER_DIR="$PREFIX" || USER_DIR=""
 [ -n "$PREFIX" ] && SUDO="" || SUDO=$(command -v sudo 2>/dev/null)
 source $USER_DIR/opt/tech-scripts/source.sh
 
@@ -9,7 +9,7 @@ TECH_SCRIPT=$(cat <<'TECHSCRIPT'
 #!/usr/bin/env bash
 
 [ "${HOME##*/}" = ".suroot" ] && export HOME="${HOME%/*}"
-[ -n "$PREFIX" ] && USER_DIR="$PREFIX" || USER_DIR="$HOME"
+[ -n "$PREFIX" ] && USER_DIR="$PREFIX" || USER_DIR=""
 [ -n "$PREFIX" ] && SUDO="" || SUDO=$(command -v sudo 2>/dev/null)
 source $USER_DIR/opt/tech-scripts/source.sh
 [ ! -d "$USER_DIR/tmp/tech-scripts" ] && cd $USER_DIR/tmp && git clone --depth 1 https://github.com/tech-scripts/tech-scripts.git && copy_files && change_directory_permissions

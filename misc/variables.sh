@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-[ -n "$PREFIX" ] && USER_DIR="$PREFIX" || USER_DIR="$HOME"
+[ -n "$PREFIX" ] && USER_DIR="$PREFIX" || USER_DIR=""
 
 [ -n "$PREFIX" ] && SUDO="" || SUDO=$(command -v sudo 2>/dev/null)
 CURRENT_DIR=$(pwd)
