@@ -35,6 +35,21 @@
 
 ---
 
+### 🐧 Supported Systems
+
+**Tech Scripts** supports the following systems and their derivatives:
+
+- **Debian-based**: Debian, Linux Mint, Pop!_OS, Kali Linux, elementary OS, and derivatives (`apt`)
+- **Arch-based**: Arch Linux, CachyOS, Manjaro, ArcoLinux, and derivatives (`pacman`)
+- **Red Hat-based**: Fedora, CentOS, Rocky Linux, AlmaLinux, and derivatives (`yum`, `dnf`)
+- **SUSE-based**: openSUSE and derivatives (`zypper`)
+- **Alpine Linux** and derivatives (`apk`)
+- **Termux** (`pkg`)
+
+The scripts automatically detect your package manager and use the appropriate commands for your system.
+
+---
+
 ### 📦 Features
 
 ### Stress Testing
